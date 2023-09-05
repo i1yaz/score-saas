@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Models\Parent;
+use App\Models\ParentUser;
 use App\Repositories\BaseRepository;
 
 class ParentRepository extends BaseRepository
@@ -29,6 +29,6 @@ class ParentRepository extends BaseRepository
 
     public function model(): string
     {
-        return Parent::class;
+        return ParentUser::class;
     }
 }

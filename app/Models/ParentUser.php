@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Parent extends Model
+class ParentUser extends Model
 {
     public $table = 'parents';
 
@@ -39,8 +39,8 @@ class Parent extends Model
     ];
 
     public static array $rules = [
-        
+
     ];
 
-    
+
 }
