@@ -24,7 +24,7 @@
             <thead>
               <tr>
                 <th class="th">Id</th>
-                <th class="th">Name</th>
+                <th class="th">email</th>
                 <th class="th"># Roles</th>
                 @if(config('laratrust.panel.assign_permissions_to_user'))<th class="th"># Permissions</th>@endif
                 <th class="th"></th>
@@ -37,7 +37,7 @@
                   {{$user->getKey()}}
                 </td>
                 <td class="td text-sm leading-5 text-gray-900">
-                  {{$user->name ?? 'The model doesn\'t have a `name` attribute'}}
+                  {{$user->email ?? 'The model doesn\'t have a `name` attribute'}}
                 </td>
                 <td class="td text-sm leading-5 text-gray-900">
                   {{$user->roles_count}}

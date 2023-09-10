@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Parent;
+use App\Models\ParentUser;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateParentRequest extends FormRequest
@@ -24,6 +24,6 @@ class CreateParentRequest extends FormRequest
      */
     public function rules()
     {
-        return Parent::$rules;
+        return ParentUser::$rules;
     }
 }

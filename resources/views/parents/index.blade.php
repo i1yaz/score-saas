@@ -7,12 +7,14 @@
                 <div class="col-sm-6">
                     <h1>Parents</h1>
                 </div>
+                @permission('parent-create')
                 <div class="col-sm-6">
                     <a class="btn btn-primary float-right"
                        href="{{ route('parents.create') }}">
                         Add New
                     </a>
                 </div>
+                @endpermission
             </div>
         </div>
     </section>

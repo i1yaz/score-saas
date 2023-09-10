@@ -1,9 +1,3 @@
-<!-- User Id Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('user_id', 'User Id:') !!}
-    {!! Form::text('user_id', null, ['class' => 'form-control']) !!}
-</div>
-
 <!-- First Name Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('first_name', 'First Name:') !!}
@@ -52,20 +46,9 @@
     {!! Form::text('referral_source', null, ['class' => 'form-control']) !!}
 </div>
 
-<!-- Added By Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('added_by', 'Added By:') !!}
-    {!! Form::text('added_by', null, ['class' => 'form-control']) !!}
-</div>
-
-<!-- Added On Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('added_on', 'Added On:') !!}
-    {!! Form::text('added_on', null, ['class' => 'form-control']) !!}
-</div>
 
 <!-- Referral From Positive Experience With Tutor Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('referral_from_positive_experience_with_tutor', 'Referral From Positive Experience With Tutor:') !!}
-    {!! Form::text('referral_from_positive_experience_with_tutor', null, ['class' => 'form-control']) !!}
+    {!! Form::select('referral_from_positive_experience_with_tutor', ['yes' =>'YES','no'=>'NO'],null, ['class' => 'form-control custom-select'])  !!}
 </div>

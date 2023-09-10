@@ -5,10 +5,11 @@
         <p>Home</p>
     </a>
 </li>
-
+@permission('parent-index')
 <li class="nav-item">
     <a href="{{ route('parents.index') }}" class="nav-link {{ Request::is('parents*') ? 'active' : '' }}">
         <i class="nav-icon fas fa-home"></i>
         <p>Parents</p>
     </a>
 </li>
+@endpermission

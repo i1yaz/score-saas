@@ -15,12 +15,12 @@
         @csrf
         @method('PUT')
         <label class="block">
-          <span class="text-gray-700">Name</span>
+          <span class="text-gray-700">Email</span>
           <input
             class="form-input mt-1 block w-full bg-gray-200 text-gray-600"
             name="name"
             placeholder="this-will-be-the-code-name"
-            value="{{$user->name ?? 'The model doesn\'t have a `name` attribute'}}"
+            value="{{$user->email ?? 'The model doesn\'t have a `name` attribute'}}"
             readonly
             autocomplete="off"
           >

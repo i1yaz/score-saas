@@ -6,6 +6,7 @@ use App\Http\Requests\CreateParentRequest;
 use App\Http\Requests\UpdateParentRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Repositories\ParentRepository;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Flash;
 
@@ -44,11 +45,11 @@ class ParentController extends AppBaseController
     public function store(CreateParentRequest $request)
     {
         $input = $request->all();
-
-        $parent = $this->parentRepository->create($input);
-
+        $input['added_by'] = \Auth::id();
+        $input['added_on'] = Carbon::now();
+        $input['referral_from_positive_experience_with_tutor'] = $input['referral_from_positive_experience_with_tutor']=='yes';
+        $this->parentRepository->create($input);
         Flash::success('Parent saved successfully.');
-
         return redirect(route('parents.index'));
     }
 
