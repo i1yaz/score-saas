@@ -21,7 +21,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="#" class="nav-link">
+            <a href="{{route('acl.assignments.index')}}" class="nav-link  {{ Request::is('acl/assignments*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Assign Roles</p>
             </a>

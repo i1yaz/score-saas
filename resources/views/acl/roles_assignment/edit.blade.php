@@ -19,17 +19,17 @@
 
         <div class="card">
 
-            {!! Form::model($parent, ['route' => ['parents.update', $parent->id], 'method' => 'patch']) !!}
+            {!! Form::model($user, ['route' => ['acl.assignments.update',['roles_assignment' => $user->getKey(), 'model' => $modelKey]], 'method' => 'patch']) !!}
 
             <div class="card-body">
                 <div class="row">
-                    @include('parents.fields')
+                    @include('acl.roles_assignment.fields')
                 </div>
             </div>
 
             <div class="card-footer">
                 {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
-                <a href="{{ route('parents.index') }}" class="btn btn-default"> Cancel </a>
+                <a href="{{ route('acl.assignments.index') }}" class="btn btn-default"> Cancel </a>
             </div>
 
             {!! Form::close() !!}

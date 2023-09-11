@@ -31,7 +31,7 @@ class RolesAssignmentController
             abort(404);
         }
 
-        return View::make('laratrust::panel.roles-assignment.index', [
+        return View::make('acl.roles_assignment.index', [
             'models' => $modelsKeys,
             'modelKey' => $modelKey,
             'users' => $userModel::query()
@@ -76,7 +76,7 @@ class RolesAssignmentController
                 });
         }
 
-        return View::make('laratrust::panel.roles-assignment.edit', [
+        return View::make('acl.roles_assignment.edit', [
             'modelKey' => $modelKey,
             'roles' => $roles,
             'permissions' => $this->assignPermissions ? $permissions : null,
@@ -103,6 +103,6 @@ class RolesAssignmentController
 
         Session::flash('laratrust-success', 'Roles and permissions assigned successfully');
 
-        return redirect(route('laratrust.roles-assignment.index', ['model' => $modelKey]));
+        return redirect(route('acl.assignments.index', ['model' => $modelKey]));
     }
 }
