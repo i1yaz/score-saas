@@ -5,11 +5,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 @endpush
 <!-- Parents -->
-<div class="form-group col-sm-6">
-    {!! Form::label('parent_id', 'Parent:') !!}
-    {!! Form::select('parent_id', [], null, ['class' => 'form-control select2 ','id'=>'parent-id']) !!}
-</div>
-
+@if(!empty($parent))
+    <input type="hidden" name="parent_id" value="{{$parent}}">
+@else
+    <div class="form-group col-sm-6">
+        {!! Form::label('parent_id', 'Parent:') !!}
+        {!! Form::select('parent_id', [], null, ['class' => 'form-control select2 ','id'=>'parent-id']) !!}
+    </div>
+@endif
 <!-- School -->
 <div class="form-group col-sm-6">
     {!! Form::label('school_id', 'School:') !!}
