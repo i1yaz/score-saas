@@ -47,6 +47,7 @@ class User extends Authenticatable implements LaratrustUser
         'password' => 'hashed',
     ];
 
+    const CAN_ACCESS_ACL = [1];
     /**
      *------------------------------------------------------------------
      * Relationships

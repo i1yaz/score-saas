@@ -1,39 +1,42 @@
-<li class="nav-item {{Request::is('acl*')?'menu-is-opening menu-open active':''}}">
-    <a href="#" class="nav-link {{Request::is('acl*')?'active':''}}">
-        <i class="nav-icon fas fa-tree"></i>
-        <p>
-            Roles & Permissions
-            <i class="fas fa-angle-left right"></i>
-        </p>
-    </a>
-    <ul class="nav nav-treeview">
-
-        <li class="nav-item">
-            <a href="{{route('acl.permissions.index')}}" class="nav-link {{ Request::is('acl/permissions*') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Permissions</p>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="{{route('acl.roles.index')}}" class="nav-link {{ Request::is('acl/roles*') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Roles</p>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="{{route('acl.assignments.index')}}" class="nav-link  {{ Request::is('acl/assignments*') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Assign Roles</p>
-            </a>
-        </li>
-    </ul>
-</li>
 <li class="nav-item">
     <a href="{{ route('home') }}" class="nav-link {{ Request::is('home') ? 'active' : '' }}">
         <i class="nav-icon fas fa-home"></i>
         <p>Home</p>
     </a>
 </li>
+@if(in_array(Auth::id(),\App\Models\User::CAN_ACCESS_ACL))
+    <li class="nav-item {{Request::is('acl*')?'menu-is-opening menu-open active':''}}">
+        <a href="#" class="nav-link {{Request::is('acl*')?'active':''}}">
+            <i class="nav-icon fas fa-tree"></i>
+            <p>
+                Roles & Permissions
+                <i class="fas fa-angle-left right"></i>
+            </p>
+        </a>
+        <ul class="nav nav-treeview">
+
+            <li class="nav-item">
+                <a href="{{route('acl.permissions.index')}}" class="nav-link {{ Request::is('acl/permissions*') ? 'active' : '' }}">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Permissions</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{route('acl.roles.index')}}" class="nav-link {{ Request::is('acl/roles*') ? 'active' : '' }}">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Roles</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{route('acl.assignments.index')}}" class="nav-link  {{ Request::is('acl/assignments*') ? 'active' : '' }}">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Assign Roles</p>
+                </a>
+            </li>
+        </ul>
+    </li>
+@endif
+
 @permission('parent-index')
 <li class="nav-item">
     <a href="{{ route('parents.index') }}" class="nav-link {{ Request::is('parents*') ? 'active' : '' }}">

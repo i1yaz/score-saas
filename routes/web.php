@@ -1,7 +1,6 @@
 <?php
 
-use App\Http\Controllers\ACL\PermissionsController;
-use App\Http\Controllers\ACL\RolesController;
+
 use App\Http\Controllers\ParentController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SchoolController;
@@ -36,28 +35,8 @@ Auth::routes();
 
 
 Route::group(['middleware' => 'auth'],function (){
-    //ACL
-    Route::get('acl/permissions',[PermissionsController::class,'index'])->name('acl.permissions.index');
-    Route::get('acl/permissions/create',[PermissionsController::class,'create'])->name('acl.permissions.create');
-    Route::post('acl/permissions',[PermissionsController::class,'store'])->name('acl.permission.store');
-    Route::get('acl/permissions/{permission}/edit',[PermissionsController::class,'edit'])->name('acl.permissions.edit');
-    Route::patch('acl/permissions/{permission}',[PermissionsController::class,'update'])->name('acl.permissions.update');
 
-    Route::get('acl/roles',[RolesController::class,'index'])->name('acl.roles.index');
-    Route::get('acl/roles/create',[RolesController::class,'create'])->name('acl.roles.create');
-    Route::get('acl/roles/{role}',[RolesController::class,'show'])->name('acl.roles.show');
-    Route::post('acl/roles',[RolesController::class,'store'])->name('acl.roles.store');
-    Route::get('acl/roles/{role}/edit',[RolesController::class,'edit'])->name('acl.roles.edit');
-    Route::patch('acl/roles/{role}',[RolesController::class,'update'])->name('acl.roles.update');
-    Route::delete('acl/roles/{role}',[RolesController::class,'destroy'])->name('acl.roles.destroy');
 
-    Route::get('acl/assignments',[\App\Http\Controllers\ACL\RolesAssignmentController::class,'index'])->name('acl.assignments.index');
-//    Route::get('acl/roles/create',[\App\Http\Controllers\ACL\RolesController::class,'create'])->name('acl.roles.create');
-//    Route::get('acl/{role}',[\App\Http\Controllers\ACL\RolesController::class,'show'])->name('acl.roles.show');
-//    Route::post('acl/roles',[\App\Http\Controllers\ACL\RolesController::class,'store'])->name('acl.roles.store');
-    Route::get('acl/assignments/{roles_assignment}/edit',[\App\Http\Controllers\ACL\RolesAssignmentController::class,'edit'])->name('acl.assignments.edit');
-    Route::patch('acl/assignments/{roles_assignment}',[\App\Http\Controllers\ACL\RolesAssignmentController::class,'update'])->name('acl.assignments.update');
-//    Route::delete('acl/roles/{role}',[\App\Http\Controllers\ACL\RolesController::class,'destroy'])->name('acl.roles.destroy');
     //Parent
     Route::get('parents',[App\Http\Controllers\ParentController::class,'index'])->name('parents.index')->middleware(['permission:parent-index']);
     Route::get('parents/create',[App\Http\Controllers\ParentController::class,'create'])->name('parents.create')->middleware(['permission:parent-create']);
