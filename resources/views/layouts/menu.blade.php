@@ -22,3 +22,11 @@
     </a>
 </li>
 @endpermission
+@permission('school-index')
+<li class="nav-item">
+    <a href="{{ route('schools.index') }}" class="nav-link {{ Request::is('schools*') ? 'active' : '' }}">
+        <i class="nav-icon fas fa-school"></i>
+        <p>Schools</p>
+    </a>
+</li>
+@endpermission
