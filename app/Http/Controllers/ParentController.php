@@ -55,6 +55,7 @@ class ParentController extends AppBaseController
         $input['status'] = $input['status']=='yes';
         $this->parentRepository->create($input);
         $user->addRole('parent');
+
         Flash::success('Parent saved successfully.');
         return redirect(route('parents.index'));
     }
