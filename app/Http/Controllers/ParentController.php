@@ -6,10 +6,12 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Requests\CreateParentRequest;
 use App\Http\Requests\UpdateParentRequest;
 use App\Http\Controllers\AppBaseController;
+use App\Mail\ParentRegisteredMail;
 use App\Repositories\ParentRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Flash;
+use Illuminate\Support\Facades\Mail;
 
 class ParentController extends AppBaseController
 {
@@ -55,7 +57,7 @@ class ParentController extends AppBaseController
         $input['status'] = $input['status']=='yes';
         $this->parentRepository->create($input);
         $user->addRole('parent');
-
+        Mail::to($user)->send(new ParentRegisteredMail($input));
         Flash::success('Parent saved successfully.');
         return redirect(route('parents.index'));
     }
