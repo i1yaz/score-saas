@@ -48,6 +48,7 @@ Route::group(['middleware' => 'auth'],function (){
     Route::patch('students/{parent}',[App\Http\Controllers\StudentController::class,'update'])->name('students.update')->middleware(['permission:student-edit']);
     Route::delete('students/{parent}',[App\Http\Controllers\StudentController::class,'destroy'])->name('students.destroy')->middleware(['permission:student-destroy']);
     Route::get('student-parent-ajax', [App\Http\Controllers\StudentController::class,'studentParentAjax'])->name('student-parent-ajax')->middleware(['permission:student-create']);
+    Route::get('student-school-ajax', [App\Http\Controllers\StudentController::class,'studentSchoolAjax'])->name('student-school-ajax')->middleware(['permission:student-create']);
     //School
     Route::get('schools',[App\Http\Controllers\SchoolController::class,'index'])->name('schools.index')->middleware(['permission:school-index']);
     Route::get('schools/create',[App\Http\Controllers\SchoolController::class,'create'])->name('schools.create')->middleware(['permission:school-create']);

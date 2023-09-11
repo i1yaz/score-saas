@@ -4,6 +4,8 @@ namespace App\Repositories;
 
 use App\Models\Student;
 use App\Repositories\BaseRepository;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Model;
 
 class StudentRepository extends BaseRepository
 {
@@ -32,5 +34,31 @@ class StudentRepository extends BaseRepository
     public function model(): string
     {
         return Student::class;
+    }
+
+
+    /**
+     * Paginate records for scaffold.
+     */
+    public function paginate(int $perPage, array $columns = ['*']): LengthAwarePaginator
+    {
+        $query = $this->allQuery();
+        $query = $query->join('users as u','students.user_id','u.id');
+        $query->join('users as u1','students.user_id','u1.id');
+
+        return $query->paginate($perPage, $columns);
+    }
+
+    /**
+     * Find model record for given id
+     *
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|Model|null
+     */
+    public function find(int $id, array $columns = ['*'])
+    {
+        $query = $this->model->newQuery();
+        $query = $query->join('users as u','students.user_id','u.id');
+        $query = $query->join('users as u1','students.user_id','u1.id');
+        return $query->find($id, $columns);
     }
 }

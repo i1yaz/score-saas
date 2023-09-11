@@ -27,7 +27,7 @@
                         {!! Form::open(['route' => ['parents.destroy', $parent->id], 'method' => 'delete']) !!}
                         <div class='btn-group'>
                             @permission('student-create')
-                            <a href="{{ route('student.create', ['parent' => $parent->id]) }}"
+                            <a href="{{ route('students.create', ['parent' => $parent->id]) }}"
                                class='btn btn-default btn-sm'>
                                 <i class="fas fa-plus"></i>
                             </a>

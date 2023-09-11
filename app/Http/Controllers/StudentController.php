@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Requests\CreateStudentRequest;
 use App\Http\Requests\UpdateStudentRequest;
 use App\Http\Controllers\AppBaseController;
+use App\Models\School;
 use App\Models\User;
 use App\Repositories\StudentRepository;
 use Carbon\Carbon;
@@ -30,7 +31,7 @@ class StudentController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $students = $this->studentRepository->paginate(10);
+        $students = $this->studentRepository->paginate(10,['students.*','u.email as email','u1.email as created_by_email']);
 
         return view('students.index')
             ->with('students', $students);
@@ -80,7 +81,7 @@ class StudentController extends AppBaseController
      */
     public function show($id)
     {
-        $student = $this->studentRepository->find($id);
+        $student = $this->studentRepository->find($id,['students.*','u.email as email','u1.email as created_by_email']);
 
         if (empty($student)) {
             Flash::error('Student not found');
@@ -96,7 +97,7 @@ class StudentController extends AppBaseController
      */
     public function edit($id)
     {
-        $student = $this->studentRepository->find($id);
+        $student = $this->studentRepository->find($id,['students.*','u.email as email','u1.email as created_by_email']);
 
         if (empty($student)) {
             Flash::error('Student not found');
@@ -120,10 +121,12 @@ class StudentController extends AppBaseController
             return redirect(route('students.index'));
         }
 
-        $student = $this->studentRepository->update($request->all(), $id);
-
+        $input = $request->all();
+        $input['test_anxiety_challenge'] = $input['test_anxiety_challenge']=='yes';
+        $input['testing_accommodation'] = $input['testing_accommodation']=='yes';
+        $input['email_known'] = $input['email_known']=='yes';
+        $this->studentRepository->update($input, $id);
         Flash::success('Student updated successfully.');
-
         return redirect(route('students.index'));
     }
 
@@ -167,6 +170,22 @@ class StudentController extends AppBaseController
                     'id' =>$user->id,
                     'text' => $user->email
                 ];
+
+        }
+        return response()->json($data);
+    }
+    /**
+     * Fetch School.
+     *
+     * @throws \Exception
+     */
+    public function studentSchoolAjax(Request $request){
+        $data = [];
+        $schools = School::where('name','LIKE',"%{$request->name}%")->get();
+        if ($schools->isNotEmpty()){
+            foreach ($schools as $school){
+                $data[]= ['id'=>$school->id,'text' =>$school->name];
+            }
 
         }
         return response()->json($data);

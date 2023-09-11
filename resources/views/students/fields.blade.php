@@ -9,6 +9,12 @@
     {!! Form::select('parent_id', [], null, ['class' => 'form-control select2 ','id'=>'parent-id']) !!}
 </div>
 
+<!-- School -->
+<div class="form-group col-sm-6">
+    {!! Form::label('school_id', 'School:') !!}
+    {!! Form::select('school_id', [], null, ['class' => 'form-control select2 ','id'=>'school-id']) !!}
+</div>
+
 <!-- Email Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('email', 'Email:') !!}
@@ -89,6 +95,31 @@
                     cache: true
                 },
                 placeholder: "Please type full email...",
+                escapeMarkup: function (markup) {
+                    return markup;
+                }
+            });
+
+            $("#school-id").select2({
+                minimumInputLength: 3, // Minimum input length before triggering the AJAX call
+                ajax: {
+                    url: "{{route('student-school-ajax')}}", // Replace with your API endpoint
+                    dataType: "json",
+                    delay: 250, // Delay in milliseconds before making the AJAX request
+                    data: function (params) {
+                        return {
+                            name: params.term // Pass the user's input as the 'query' parameter
+                        };
+                    },
+                    processResults: function (data) {
+                        console.log(data)
+                        return {
+                            results: data // Assuming your API returns an array of objects with 'id' and 'text' properties
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: "Please type school name",
                 escapeMarkup: function (markup) {
                     return markup;
                 }
