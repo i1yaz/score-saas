@@ -7,26 +7,26 @@
                 <th>Name/Code</th>
                 <th>Display Name</th>
                 <th>Description</th>
-                <th></th>
+                <th>Actions</th>
             </tr>
             </thead>
             <tbody>
             @foreach ($permissions as $permission)
                 <tr>
-                    <td class="td text-sm leading-5 text-gray-900">
+                    <td>
                         {{$permission->getKey()}}
                     </td>
-                    <td class="td text-sm leading-5 text-gray-900">
+                    <td >
                         {{$permission->name}}
                     </td>
-                    <td class="td text-sm leading-5 text-gray-900">
+                    <td>
                         {{$permission->display_name}}
                     </td>
-                    <td class="td text-sm leading-5 text-gray-900">
+                    <td>
                         {{$permission->description}}
                     </td>
                     <td  style="width: 120px">
-                        <a href="{{route('acl.permissions.edit', $permission->getKey())}}"  class='btn btn-default btn-xs'><i class="far fa-edit"></i></a>
+                        <a href="{{route('acl.permissions.edit', $permission->getKey())}}"  class='btn btn-default btn-sm'><i class="far fa-edit"></i></a>
                     </td>
                 </tr>
             @endforeach

@@ -19,19 +19,19 @@
 
         <div class="card">
 
-            {!! Form::open(['route' => 'acl.permission.store']) !!}
+            {!! Form::open(['route' => 'acl.roles.store']) !!}
 
             <div class="card-body">
 
                 <div class="row">
-                    @include('acl.permissions.fields')
+                    @include('acl.roles.fields')
                 </div>
 
             </div>
 
             <div class="card-footer">
                 {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
-                <a href="{{ route('acl.permissions.index') }}" class="btn btn-default"> Cancel </a>
+                <a href="{{ route('acl.roles.index') }}" class="btn btn-default"> Cancel </a>
             </div>
 
             {!! Form::close() !!}

@@ -10,8 +10,8 @@
                 @if (config('laratrust.panel.create_permissions'))
                     <div class="col-sm-6">
                         <a class="btn btn-primary float-right"
-                           href="{{route('acl.permissions.create')}}">
-                            + New Permission
+                           href="{{route('acl.roles.create')}}">
+                            + New Role
                         </a>
                     </div>
                 @endif
@@ -26,7 +26,7 @@
         <div class="clearfix"></div>
 
         <div class="card">
-            @include('acl.permissions.table')
+            @include('acl.roles.table')
         </div>
     </div>
 

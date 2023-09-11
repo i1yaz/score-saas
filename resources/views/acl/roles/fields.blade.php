@@ -14,6 +14,23 @@
     {!! Form::label('name', 'Name/Code:') !!}
     {!! Form::email('name', null, ['class' => 'form-control','readonly' => true,'id'=>'name']) !!}
 </div>
+
+<div class="row">
+    <!-- Permissions -->
+{{--    @php--}}
+{{--        $groupName = "";--}}
+{{--        $currentGroupName = "";--}}
+{{--    @endphp--}}
+    @foreach ($permissions as $permission)
+{{--        @php--}}
+{{--            $groupName =  explode(' ',$permission->display_name)[0];--}}
+{{--        @endphp--}}
+        <div class="form-group col-sm-3">
+            {!! Form::checkbox('permissions[]', $permission->getKey()) !!}
+            {!! Form::label('permissions', $permission->display_name ?? $permission->name) !!}
+        </div>
+    @endforeach
+</div>
 @push('page_scripts')
     <script>
         function onChangeDisplayName() {

@@ -22,7 +22,7 @@ class RolesController
 
     public function index()
     {
-        return View::make('laratrust::panel.roles.index', [
+        return View::make('acl.roles.index', [
             'roles' => $this->rolesModel::withCount('permissions')
                 ->simplePaginate(10),
         ]);
@@ -30,7 +30,7 @@ class RolesController
 
     public function create()
     {
-        return View::make('laratrust::panel.edit', [
+        return View::make('acl.roles.create', [
             'model' => null,
             'permissions' => $this->permissionModel::all(['id', 'display_name']),
             'type' => 'role',
@@ -43,7 +43,7 @@ class RolesController
             ->with('permissions:id,name,display_name')
             ->findOrFail($id);
 
-        return View::make('laratrust::panel.roles.show', ['role' => $role]);
+        return View::make('acl.roles.index', ['role' => $role]);
     }
 
     public function store(Request $request)

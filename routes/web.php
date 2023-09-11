@@ -37,6 +37,10 @@ Route::group(['middleware' => 'auth'],function (){
     Route::post('acl/permissions',[\App\Http\Controllers\ACL\PermissionsController::class,'store'])->name('acl.permission.store');
     Route::get('acl/permissions/{permission}/edit',[\App\Http\Controllers\ACL\PermissionsController::class,'edit'])->name('acl.permissions.edit');
     Route::patch('acl/permissions/{permission}',[\App\Http\Controllers\ACL\PermissionsController::class,'update'])->name('acl.permissions.update');
+
+    Route::get('acl/roles',[\App\Http\Controllers\ACL\RolesController::class,'index'])->name('acl.roles.index');
+    Route::get('acl/roles/create',[\App\Http\Controllers\ACL\RolesController::class,'create'])->name('acl.roles.create');
+    Route::post('acl/roles',[\App\Http\Controllers\ACL\RolesController::class,'store'])->name('acl.roles.store');
     //Parent
     Route::get('parents',[App\Http\Controllers\ParentController::class,'index'])->name('parents.index')->middleware(['permission:parent-index']);
     Route::get('parents/create',[App\Http\Controllers\ParentController::class,'create'])->name('parents.create')->middleware(['permission:parent-create']);

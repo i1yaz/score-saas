@@ -1,5 +1,5 @@
-<li class="nav-item">
-    <a href="#" class="nav-link">
+<li class="nav-item {{Request::is('acl*')?'menu-is-opening menu-open active':''}}">
+    <a href="#" class="nav-link {{Request::is('acl*')?'active':''}}">
         <i class="nav-icon fas fa-tree"></i>
         <p>
             Roles & Permissions
@@ -7,14 +7,15 @@
         </p>
     </a>
     <ul class="nav nav-treeview">
+
         <li class="nav-item">
-            <a href="{{route('acl.permissions.index')}}" class="nav-link">
+            <a href="{{route('acl.permissions.index')}}" class="nav-link {{ Request::is('acl/permissions*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Permissions</p>
             </a>
         </li>
         <li class="nav-item">
-            <a href="#" class="nav-link">
+            <a href="{{route('acl.roles.index')}}" class="nav-link {{ Request::is('acl/roles*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Roles</p>
             </a>
