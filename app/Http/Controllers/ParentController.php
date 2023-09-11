@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Requests\CreateParentRequest;
 use App\Http\Requests\UpdateParentRequest;
 use App\Http\Controllers\AppBaseController;
@@ -25,8 +26,7 @@ class ParentController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $parents = $this->parentRepository->paginate(10);
-
+        $parents = $this->parentRepository->paginate(10,['parents.*','u.email as email','u1.email as created_by_email']);
         return view('parents.index')
             ->with('parents', $parents);
     }
@@ -45,10 +45,16 @@ class ParentController extends AppBaseController
     public function store(CreateParentRequest $request)
     {
         $input = $request->all();
+        $register = new RegisterController();
+        $input['password'] = $password = \Str::password(20);
+        $user = $register->register($request->merge(['password'=> $password,'password_confirmation' => $password,'userData'=>true]),false);
+        $input['user_id'] = $user->id;
         $input['added_by'] = \Auth::id();
         $input['added_on'] = Carbon::now();
         $input['referral_from_positive_experience_with_tutor'] = $input['referral_from_positive_experience_with_tutor']=='yes';
+        $input['status'] = $input['status']=='yes';
         $this->parentRepository->create($input);
+        $user->addRole('parent');
         Flash::success('Parent saved successfully.');
         return redirect(route('parents.index'));
     }
@@ -58,7 +64,7 @@ class ParentController extends AppBaseController
      */
     public function show($id)
     {
-        $parent = $this->parentRepository->find($id);
+        $parent = $this->parentRepository->find($id,['parents.*','u.email as email','u1.email as created_by_email']);
 
         if (empty($parent)) {
             Flash::error('Parent not found');
@@ -74,7 +80,7 @@ class ParentController extends AppBaseController
      */
     public function edit($id)
     {
-        $parent = $this->parentRepository->find($id);
+        $parent = $this->parentRepository->find($id,['parents.*','u.email as email','u1.email as created_by_email']);
 
         if (empty($parent)) {
             Flash::error('Parent not found');
@@ -97,11 +103,11 @@ class ParentController extends AppBaseController
 
             return redirect(route('parents.index'));
         }
-
-        $parent = $this->parentRepository->update($request->all(), $id);
-
+        $input = $request->all();
+        $input['referral_from_positive_experience_with_tutor'] = $input['referral_from_positive_experience_with_tutor']=='yes';
+        $input['status'] = $input['status']=='yes';
+        $this->parentRepository->update($input, $id);
         Flash::success('Parent updated successfully.');
-
         return redirect(route('parents.index'));
     }
 

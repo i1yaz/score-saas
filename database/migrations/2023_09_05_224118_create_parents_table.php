@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('parents', function (Blueprint $table) {
             $table->increments('id');
-            $table->bigInteger('user_id');
+            $table->unsignedBigInteger('user_id');
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
             $table->string('secondary_email')->nullable();
@@ -25,7 +25,7 @@ return new class extends Migration
             $table->text('address2')->nullable();
             $table->string('phone_alternate')->nullable();
             $table->text('referral_source')->nullable();
-            $table->bigInteger('added_by');
+            $table->unsignedBigInteger('added_by');
             $table->timestamp('added_on');
             $table->boolean('referral_from_positive_experience_with_tutor');
             $table->timestamps();

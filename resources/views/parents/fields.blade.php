@@ -1,3 +1,8 @@
+<!-- Email Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('email', 'Email:') !!}
+    {!! Form::email('email', null, ['class' => 'form-control']) !!}
+</div>
 <!-- First Name Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('first_name', 'First Name:') !!}
@@ -8,12 +13,6 @@
 <div class="form-group col-sm-6">
     {!! Form::label('last_name', 'Last Name:') !!}
     {!! Form::text('last_name', null, ['class' => 'form-control']) !!}
-</div>
-
-<!-- Status Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('status', 'Status:') !!}
-    {!! Form::text('status', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Phone Field -->
@@ -46,9 +45,13 @@
     {!! Form::text('referral_source', null, ['class' => 'form-control']) !!}
 </div>
 
-
+<!-- Status Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('status', 'Status:') !!}
+    {!! Form::select('status', ['yes' =>'YES','no'=>'NO'],booleanSelect($parent->status??null), ['class' => 'form-control custom-select'])  !!}
+</div>
 <!-- Referral From Positive Experience With Tutor Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('referral_from_positive_experience_with_tutor', 'Referral From Positive Experience With Tutor:') !!}
-    {!! Form::select('referral_from_positive_experience_with_tutor', ['yes' =>'YES','no'=>'NO'],null, ['class' => 'form-control custom-select'])  !!}
+    {!! Form::select('referral_from_positive_experience_with_tutor', ['yes' =>'YES','no'=>'NO'],booleanSelect($parent->referral_from_positive_experience_with_tutor??null), ['class' => 'form-control custom-select'])  !!}
 </div>

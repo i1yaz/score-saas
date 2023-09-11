@@ -3,48 +3,50 @@
         <table class="table" id="parents-table">
             <thead>
             <tr>
-                <th>User Id</th>
+                <th>Email</th>
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>Status</th>
                 <th>Phone</th>
-                <th>Address</th>
-                <th>Address2</th>
-                <th>Phone Alternate</th>
-                <th>Referral Source</th>
                 <th>Added By</th>
                 <th>Added On</th>
-                <th>Referral From Positive Experience With Tutor</th>
                 <th colspan="3">Action</th>
             </tr>
             </thead>
             <tbody>
             @foreach($parents as $parent)
                 <tr>
-                    <td>{{ $parent->user_id }}</td>
+                    <td>{{ $parent->email }}</td>
                     <td>{{ $parent->first_name }}</td>
                     <td>{{ $parent->last_name }}</td>
-                    <td>{{ $parent->status }}</td>
+                    <td>@include('partials.status_badge',['status' => $parent->status,'text_success' => 'Active','text_danger' => 'Inactive'])</td>
                     <td>{{ $parent->phone }}</td>
-                    <td>{{ $parent->address }}</td>
-                    <td>{{ $parent->address2 }}</td>
-                    <td>{{ $parent->phone_alternate }}</td>
-                    <td>{{ $parent->referral_source }}</td>
-                    <td>{{ $parent->added_by }}</td>
+                    <td>{{ $parent->created_by_email }}</td>
                     <td>{{ $parent->added_on }}</td>
-                    <td>{{ $parent->referral_from_positive_experience_with_tutor }}</td>
                     <td  style="width: 120px">
                         {!! Form::open(['route' => ['parents.destroy', $parent->id], 'method' => 'delete']) !!}
                         <div class='btn-group'>
+                            @permission('student-create')
+                            <a href="{{ route('student.create', ['parent' => $parent->id]) }}"
+                               class='btn btn-default btn-sm'>
+                                <i class="fas fa-plus"></i>
+                            </a>
+                            @endpermission
+                            @permission('parent-show')
                             <a href="{{ route('parents.show', [$parent->id]) }}"
-                               class='btn btn-default btn-xs'>
+                               class='btn btn-default btn-sm'>
                                 <i class="far fa-eye"></i>
                             </a>
+                            @endpermission
+                            @permission('parent-edit')
                             <a href="{{ route('parents.edit', [$parent->id]) }}"
-                               class='btn btn-default btn-xs'>
+                               class='btn btn-default btn-sm'>
                                 <i class="far fa-edit"></i>
                             </a>
-                            {!! Form::button('<i class="far fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
+                            @endpermission
+                            @permission('parent-destroy')
+                            {!! Form::button('<i class="far fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-sm', 'onclick' => "return confirm('Are you sure?')"]) !!}
+                            @endpermission
                         </div>
                         {!! Form::close() !!}
                     </td>

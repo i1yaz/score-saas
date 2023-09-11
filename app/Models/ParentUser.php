@@ -52,6 +52,9 @@ class ParentUser extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function addedBy():BelongsTo{
+        return $this->belongsTo(User::class);
+    }
 
 
 }

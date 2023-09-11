@@ -25,7 +25,7 @@
                                 <img src="https://assets.infyom.com/logo/blue_logo_150x150.png"
                                     class="img-circle elevation-2" alt="User Image">
                                 <p>
-                                    {{ Auth::user()->name }}
+                                    {{ Auth::user()->email }}
                                     <small>Member since {{ Auth::user()->created_at->format('M. Y') }}</small>
                                 </p>
                             </li>
