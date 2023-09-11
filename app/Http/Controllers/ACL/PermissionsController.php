@@ -44,7 +44,7 @@ class PermissionsController
 
         Session::flash('laratrust-success', 'Permission created successfully');
 
-        return redirect(route('laratrust.permissions.index'));
+        return redirect(route('acl.permissions.index'));
     }
 
     public function edit($id)
@@ -70,6 +70,6 @@ class PermissionsController
 
         Session::flash('laratrust-success', 'Permission updated successfully');
 
-        return redirect(route('laratrust.permissions.index'));
+        return redirect(route('acl.permissions.index'));
     }
 }

@@ -28,12 +28,12 @@
                     <td  style="width: 120px">
                         <div class="btn-group">
                             @if (\Laratrust\Helper::roleIsEditable($role))
-                                <a href="{{route('laratrust.roles.edit', $role->getKey())}}" class="btn btn-default btn-sm"><i class="far fa-edit"></i></a>
+                                <a href="{{route('acl.roles.edit', $role->getKey())}}" class="btn btn-default btn-sm"><i class="far fa-edit"></i></a>
                             @else
-                                <a href="{{route('laratrust.roles.show', $role->getKey())}}" class="btn btn-default btn-sm">Details</a>
+                                <a href="{{route('acl.roles.show', $role->getKey())}}" class="btn btn-default btn-sm">Details</a>
                             @endif
                             <form
-                                action="{{route('laratrust.roles.destroy', $role->getKey())}}"
+                                action="{{route('acl.roles.destroy', $role->getKey())}}"
                                 method="POST"
                                 onsubmit="return confirm('Are you sure you want to delete the record?');"
                             >

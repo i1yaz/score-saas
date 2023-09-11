@@ -59,7 +59,7 @@ class RolesController
 
         Session::flash('laratrust-success', 'Role created successfully');
 
-        return redirect(route('laratrust.roles.index'));
+        return redirect(route('acl.roles.index'));
     }
 
     public function edit($id)
@@ -83,7 +83,7 @@ class RolesController
                 return $permission;
             });
 
-        return View::make('laratrust::panel.edit', [
+        return View::make('acl.roles.edit', [
             'model' => $role,
             'permissions' => $permissions,
             'type' => 'role',
@@ -110,7 +110,7 @@ class RolesController
 
         Session::flash('laratrust-success', 'Role updated successfully');
 
-        return redirect(route('laratrust.roles.index'));
+        return redirect(route('acl.roles.index'));
     }
 
     public function destroy($id)
@@ -133,6 +133,6 @@ class RolesController
             $this->rolesModel::destroy($id);
         }
 
-        return redirect(route('laratrust.roles.index'));
+        return redirect(route('acl.roles.index'));
     }
 }
