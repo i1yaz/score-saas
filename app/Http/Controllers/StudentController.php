@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Requests\CreateStudentRequest;
 use App\Http\Requests\UpdateStudentRequest;
 use App\Http\Controllers\AppBaseController;
+use App\Mail\StudentRegistrationMail;
 use App\Models\School;
 use App\Models\User;
 use App\Repositories\StudentRepository;
@@ -15,6 +16,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Flash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class StudentController extends AppBaseController
 {
@@ -65,6 +67,7 @@ class StudentController extends AppBaseController
             $this->studentRepository->create($input);
             $user->addRole('student');
             DB::commit();
+            Mail::to($user)->send(new StudentRegistrationMail($input));
             Flash::success('Student saved successfully.');
             return redirect(route('students.index'));
         }catch (QueryException $queryException){
