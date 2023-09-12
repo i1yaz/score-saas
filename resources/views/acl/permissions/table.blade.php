@@ -7,6 +7,7 @@
                 <th>Name/Code</th>
                 <th>Display Name</th>
                 <th>Description</th>
+                <th>Resource</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -24,6 +25,9 @@
                     </td>
                     <td>
                         {{$permission->description}}
+                    </td>
+                    <td>
+                        {{$permission->resource}}
                     </td>
                     <td  style="width: 120px">
                         <a href="{{route('acl.permissions.edit', $permission->getKey())}}"  class='btn btn-default btn-sm'><i class="far fa-edit"></i></a>

@@ -6,7 +6,7 @@
             <div class="row mb-2">
                 <div class="col-sm-12">
                     <h1>
-                        Edit Permission
+
                     </h1>
                 </div>
             </div>
@@ -17,8 +17,10 @@
 
         @include('adminlte-templates::common.errors')
 
-        <div class="card">
-
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">Edit Role</h3>
+            </div>
             {!! Form::model($model, ['route' => ['acl.roles.update', $model->id], 'method' => 'patch']) !!}
 
             <div class="card-body">

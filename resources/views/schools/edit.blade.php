@@ -6,7 +6,7 @@
             <div class="row mb-2">
                 <div class="col-sm-12">
                     <h1>
-                        Edit School
+
                     </h1>
                 </div>
             </div>
@@ -17,7 +17,10 @@
 
         @include('adminlte-templates::common.errors')
 
-        <div class="card">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">Edit School</h3>
+            </div>
 
             {!! Form::model($school, ['route' => ['schools.update', $school->id], 'method' => 'patch']) !!}
 

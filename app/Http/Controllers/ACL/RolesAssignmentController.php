@@ -66,7 +66,7 @@ class RolesAssignmentController
             });
         if ($this->assignPermissions) {
             $permissions = $this->permissionModel::orderBy('name')
-                ->get(['id', 'name', 'display_name'])
+                ->get(['id', 'name', 'display_name','resource'])
                 ->map(function ($permission) use ($user) {
                     $permission->assigned = $user->permissions
                         ->pluck('id')
@@ -79,7 +79,7 @@ class RolesAssignmentController
         return View::make('acl.roles_assignment.edit', [
             'modelKey' => $modelKey,
             'roles' => $roles,
-            'permissions' => $this->assignPermissions ? $permissions : null,
+            'permissions' => $this->assignPermissions ? $permissions->groupBy('resource') : null,
             'user' => $user,
         ]);
     }

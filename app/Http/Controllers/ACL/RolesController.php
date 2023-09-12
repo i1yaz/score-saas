@@ -30,9 +30,10 @@ class RolesController
 
     public function create()
     {
+        $permissions = $this->permissionModel::all(['id', 'display_name','resource']);
         return View::make('acl.roles.create', [
             'model' => null,
-            'permissions' => $this->permissionModel::all(['id', 'display_name']),
+            'permissions' => $permissions->groupBy('resource'),
             'type' => 'role',
         ]);
     }
@@ -74,7 +75,7 @@ class RolesController
             return redirect()->back();
         }
 
-        $permissions = $this->permissionModel::all(['id', 'name', 'display_name'])
+        $permissions = $this->permissionModel::all(['id', 'name', 'display_name','resource'])
             ->map(function ($permission) use ($role) {
                 $permission->assigned = $role->permissions
                     ->pluck('id')
@@ -85,7 +86,7 @@ class RolesController
 
         return View::make('acl.roles.edit', [
             'model' => $role,
-            'permissions' => $permissions,
+            'permissions' => $permissions->groupBy('resource'),
             'type' => 'role',
         ]);
     }

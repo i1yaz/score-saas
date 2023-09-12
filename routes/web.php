@@ -36,7 +36,6 @@ Auth::routes();
 
 Route::group(['middleware' => 'auth'],function (){
 
-
     //Parent
     Route::get('parents',[App\Http\Controllers\ParentController::class,'index'])->name('parents.index')->middleware(['permission:parent-index']);
     Route::get('parents/create',[App\Http\Controllers\ParentController::class,'create'])->name('parents.create')->middleware(['permission:parent-create']);

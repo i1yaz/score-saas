@@ -15,11 +15,15 @@
 
 <h5 class="mb-4 w-100">Permissions</h5>
 <div class="row">
-
-    @foreach ($permissions as $permission)
-        <div class="form-group col-sm-3">
-            {!! Form::checkbox('permissions[]', $permission->getKey()) !!}
-            {!! Form::label('permissions', $permission->display_name ?? $permission->name) !!}
+    @foreach ($permissions as $groupName => $permissionsGroup)
+        <h5 class="mb-4 w-100">{{$groupName}}</h5>
+        <div class="row">
+            @foreach($permissionsGroup as $permission)
+                <div class="form-group col-sm-3">
+                    {!! Form::checkbox('permissions[]', $permission->getKey()) !!}
+                    {!! Form::label('permissions', $permission->display_name ?? $permission->name) !!}
+                </div>
+            @endforeach
         </div>
     @endforeach
 </div>

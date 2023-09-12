@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Roles and Permissions</h1>
+                    <h1></h1>
                 </div>
                 @if (config('laratrust.panel.create_permissions'))
                     <div class="col-sm-6">
@@ -25,7 +25,10 @@
 
         <div class="clearfix"></div>
 
-        <div class="card">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">Roles and Permissions</h3>
+            </div>
             @include('acl.roles.table')
         </div>
     </div>

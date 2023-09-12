@@ -38,6 +38,7 @@ class PermissionsController
             'name' => 'required|string|unique:'.config('laratrust.tables.roles', 'roles').',name',
             'display_name' => 'nullable|string',
             'description' => 'nullable|string',
+            'resource' => 'nullable|string',
         ]);
 
         $permission = $this->permissionModel::create($data);
@@ -64,6 +65,7 @@ class PermissionsController
         $data = $request->validate([
             'display_name' => 'nullable|string',
             'description' => 'nullable|string',
+            'resource' => 'nullable|string',
         ]);
 
         $permission->update($data);

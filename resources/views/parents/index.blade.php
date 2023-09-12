@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Parents</h1>
+                    <h1></h1>
                 </div>
                 @permission('parent-create')
                 <div class="col-sm-6">
@@ -25,7 +25,11 @@
 
         <div class="clearfix"></div>
 
-        <div class="card">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">Parents</h3>
+            </div>
+
             @include('parents.table')
         </div>
     </div>

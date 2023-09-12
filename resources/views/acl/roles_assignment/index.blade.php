@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Roles Assignment</h1>
+                    <h1></h1>
                 </div>
             </div>
         </div>
@@ -17,7 +17,10 @@
 
         <div class="clearfix"></div>
 
-        <div class="card">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">Role Assignment</h3>
+            </div>
             @include('acl.roles_assignment.table')
         </div>
     </div>
