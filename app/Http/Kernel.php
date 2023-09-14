@@ -88,6 +88,7 @@ class Kernel extends HttpKernel
         'signed' => ValidateSignature::class,
         'throttle' => ThrottleRequests::class,
         'verified' => EnsureEmailIsVerified::class,
-        'acl.access' => ACL::class
+        'acl.access' => ACL::class,
+        'web.general' => \App\Http\Middleware\WebGenralMiddleware::class
     ];
 }

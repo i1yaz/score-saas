@@ -57,8 +57,8 @@ class User extends Authenticatable implements LaratrustUser
     {
         return $this->hasOne(ParentUser::class);
     }
-    public function addedParents(): HasMany
+    public function studentUser(): HasOne
     {
-        return $this->hasMany(ParentUser::class);
+        return $this->hasOne(Student::class);
     }
 }

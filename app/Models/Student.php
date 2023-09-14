@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Student extends Model
 {
@@ -48,4 +50,50 @@ class Student extends Model
     ];
 
 
+    /**
+     *------------------------------------------------------------------
+     * Relationships
+     *------------------------------------------------------------------
+     */
+
+    public function parentUser(): BelongsTo
+    {
+        return $this->belongsTo(ParentUser::class);
+    }
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+    /**
+     *------------------------------------------------------------------
+     * Scopes
+     *------------------------------------------------------------------
+     */
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+
+        static::addGlobalScope('filterByRoles', function (Builder $query) {
+            if (\Auth::user()->hasRole(['parent'])) {
+
+                $query->where('parent_id', \Session::get('parent_table_id'));
+            } elseif (\Auth::user()->hasRole(['student'])) {
+
+                $query->whereHas('parentUser', function ($q) {
+                    $q->where(['user_id'=> \Session::get('student_table_id')]);
+                });
+            } elseif (\Auth::user()->hasRole(['tutor'])) {
+
+            } elseif (\Auth::user()->hasRole(['proctor'])) {
+
+            } elseif (\Auth::user()->hasRole(['client'])) {
+
+            } elseif (\Auth::user()->hasRole(['super-admin', 'admin'])) {
+
+            }
+
+        });
+    }
 }
