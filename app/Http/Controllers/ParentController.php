@@ -28,8 +28,7 @@ class ParentController extends AppBaseController
      */
     public function index(Request $request)
     {
-//        $this->authorize('viewAny');
-        $parents = $this->parentRepository->paginate(10,['parents.*','u.email as email','u1.email as created_by_email']);
+        $parents = $this->parentRepository->paginate(10);
         return view('parents.index')
             ->with('parents', $parents);
     }

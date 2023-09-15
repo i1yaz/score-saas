@@ -3,12 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laratrust\Contracts\LaratrustUser;
+use Laratrust\Traits\HasRolesAndPermissions;
+use Laravel\Sanctum\HasApiTokens;
 
-class Student extends Model
+class Student extends  Authenticatable implements LaratrustUser
 {
+    use HasApiTokens, HasFactory, Notifiable,HasRolesAndPermissions;
+
     public $table = 'students';
+
+    protected string $guard = "student";
 
     public $fillable = [
         'user_id',
@@ -75,25 +84,5 @@ class Student extends Model
     protected static function booted(): void
     {
 
-        static::addGlobalScope('filterByRoles', function (Builder $query) {
-            if (\Auth::user()->hasRole(['parent'])) {
-
-                $query->where('parent_id', \Session::get('parent_table_id'));
-            } elseif (\Auth::user()->hasRole(['student'])) {
-
-                $query->whereHas('parentUser', function ($q) {
-                    $q->where(['user_id'=> \Session::get('student_table_id')]);
-                });
-            } elseif (\Auth::user()->hasRole(['tutor'])) {
-
-            } elseif (\Auth::user()->hasRole(['proctor'])) {
-
-            } elseif (\Auth::user()->hasRole(['client'])) {
-
-            } elseif (\Auth::user()->hasRole(['super-admin', 'admin'])) {
-
-            }
-
-        });
     }
 }

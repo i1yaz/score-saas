@@ -99,7 +99,9 @@ return [
     |
     */
     'user_models' => [
-        'users' => \App\Models\User::class,
+        'users'   => \App\Models\User::class,
+        'parent'  => \App\Models\ParentUser::class,
+        'student' => \App\Models\Student::class
     ],
 
     /*
@@ -115,9 +117,7 @@ return [
     'models' => [
 
         'role' => \App\Models\Role::class,
-
         'permission' => \App\Models\Permission::class,
-
         /**
          * Will be used only if the teams functionality is enabled.
          */
@@ -363,7 +363,7 @@ return [
             'not_editable' => [],
 
             // The user won't be able to delete the role.
-            'not_deletable' => [],
+            'not_deletable' => ['super-admin','admin'],
         ],
     ],
 ];

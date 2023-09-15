@@ -15,9 +15,12 @@ return new class extends Migration
     {
         Schema::create('parents', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedBigInteger('user_id');
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->rememberToken();
             $table->string('secondary_email')->nullable();
             $table->boolean('status')->nullable();
             $table->string('phone')->nullable();

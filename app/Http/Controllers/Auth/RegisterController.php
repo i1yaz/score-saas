@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\ParentUser;
+use App\Models\Student;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -42,6 +44,8 @@ class RegisterController extends Controller
     public function __construct()
     {
         $this->middleware('guest');
+        $this->middleware('guest:parent');
+        $this->middleware('guest:student');
     }
 
     /**
@@ -81,7 +85,15 @@ class RegisterController extends Controller
     {
         $this->validator($request->all())->validate();
 
-        event(new Registered($user = $this->create($request->all())));
+        if ($request->registrationType=='parent'){
+            $user = $this->createParent($request->all());
+        }elseif ($request->registrationType=='student'){
+            $user = $this->createStudent($request->all());
+        }else{
+            $user = $this->create($request->all());
+        }
+
+        event(new Registered($user));
 
         if ($autologin){
             $this->guard()->login($user);
@@ -108,5 +120,27 @@ class RegisterController extends Controller
         if ($request->userData){
             return $user;
         }
+    }
+
+    protected function createParent(array $request)
+    {
+        $this->validator($request)->validate();
+        return ParentUser::create([
+            'first_name' => $request['first_name'],
+            'last_name' => $request['last_name'],
+            'email' => $request['email'],
+            'password' => Hash::make($request['password']),
+        ]);
+    }
+
+    protected function createStudent(array $request)
+    {
+        $this->validator($request)->validate();
+        return Student::create([
+            'first_name' => $request['first_name'],
+            'last_name' => $request['last_name'],
+            'email' => $request['email'],
+            'password' => Hash::make($request['password']),
+        ]);
     }
 }
