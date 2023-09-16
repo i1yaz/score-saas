@@ -104,15 +104,9 @@ class StudentController extends AppBaseController
     /**
      * Display the specified Student.
      */
-    public function show($id)
+    public function show(Student $student)
     {
-        $student = $this->studentRepository->find($id);
-
-        if (empty($student)) {
-            Flash::error('Student not found');
-
-            return redirect(route('students.index'));
-        }
+        $this->authorize('view', $student);
 
         return view('students.show')->with('student', $student);
     }

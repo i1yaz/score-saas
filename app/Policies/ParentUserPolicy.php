@@ -10,36 +10,40 @@ class ParentUserPolicy
 {
     use HandlesAuthorization;
 
+    public function before(User $user)
+    {
+        //['super-admin','admin','student','parent','tutor','proctor','client','developer']
+
+        if (\Auth::user()->hasRole(['super-admin','admin'])){
+            return true;
+        }
+    }
+
     public function viewAny(User $user): bool
     {
-        if (\Auth::user()->hasRole(['super-admin','admin','student','parent','tutor','proctor','client','developer'])){
+        if (\Auth::user()->hasRole(['student','parent'])){
             return true;
         }
         return false;
 
     }
 
-    public function view(User $user, ParentUser $parentUser): bool
+    public function view(User $user, ParentUser $parent): bool
     {
+
+        if (\Auth::user()->hasRole(['student','parent'])){
+           return $user->id == $parent->id || $user->parent_id==$parent->id;
+        }
+        return false;
     }
 
-    public function create(User $user): bool
+
+    public function update(User $user, ParentUser $parent): bool
     {
+        if (\Auth::user()->hasRole(['parent'])){
+            return $user->id == $parent->id || $user->parent_id==$parent->id;
+        }
+        return false;
     }
 
-    public function update(User $user, ParentUser $parentUser): bool
-    {
-    }
-
-    public function delete(User $user, ParentUser $parentUser): bool
-    {
-    }
-
-    public function restore(User $user, ParentUser $parentUser): bool
-    {
-    }
-
-    public function forceDelete(User $user, ParentUser $parentUser): bool
-    {
-    }
 }

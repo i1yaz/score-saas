@@ -84,15 +84,9 @@ class ParentController extends AppBaseController
     /**
      * Display the specified Parent.
      */
-    public function show($id)
+    public function show(ParentUser $parent)
     {
-        $parent = $this->parentRepository->find($id);
-
-        if (empty($parent)) {
-            Flash::error('Parent not found');
-
-            return redirect(route('parents.index'));
-        }
+        $this->authorize('view', $parent);
 
         return view('parents.show')->with('parent', $parent);
     }
@@ -100,15 +94,9 @@ class ParentController extends AppBaseController
     /**
      * Show the form for editing the specified Parent.
      */
-    public function edit($id)
+    public function edit(ParentUser $parent)
     {
-        $parent = $this->parentRepository->find($id);
-
-        if (empty($parent)) {
-            Flash::error('Parent not found');
-
-            return redirect(route('parents.index'));
-        }
+        $this->authorize('update', $parent);
 
         return view('parents.edit')->with('parent', $parent);
     }
@@ -116,19 +104,14 @@ class ParentController extends AppBaseController
     /**
      * Update the specified Parent in storage.
      */
-    public function update($id, UpdateParentRequest $request)
+    public function update(ParentUser $parent, UpdateParentRequest $request)
     {
-        $parent = $this->parentRepository->find($id);
+        $this->authorize('update', $parent);
 
-        if (empty($parent)) {
-            Flash::error('Parent not found');
-
-            return redirect(route('parents.index'));
-        }
         $input = $request->all();
         $input['referral_from_positive_experience_with_tutor'] = $input['referral_from_positive_experience_with_tutor']=='yes';
         $input['status'] = $input['status']=='yes';
-        $this->parentRepository->update($input, $id);
+        $this->parentRepository->update($input, $parent->id);
         Flash::success('Parent updated successfully.');
         return redirect(route('parents.index'));
     }
