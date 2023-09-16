@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateParentRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Mail\ParentRegisteredMail;
 use App\Models\ParentUser;
+use App\Models\Student;
 use App\Repositories\ParentRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -30,8 +31,15 @@ class ParentController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $parents = ParentUser::select(['id','email','first_name','last_name','status','phone','added_on'])
-        ->paginate(50);
+        $this->authorize('viewAny', ParentUser::class);
+        $parents = ParentUser::select(['id','email','first_name','last_name','status','phone','added_on']);
+        if (\Auth::user()->hasRole('parent')&&\Auth::user() instanceof ParentUser){
+            $parents = $parents->where('id',\Auth::id());
+        }
+        if (\Auth::user()->hasRole('student')&&\Auth::user() instanceof Student){
+            $parents = $parents->where('id',\Auth::user()->parent_id);
+        }
+        $parents = $parents->paginate(50);
 
         return view('parents.index')
             ->with('parents', $parents);
@@ -51,8 +59,10 @@ class ParentController extends AppBaseController
     public function store(CreateParentRequest $request)
     {
         $input = $request->all();
+        $passwordString = \Str::password(20);
         $register = new RegisterController();
-        $input['password'] = $password = \App::environment(['production'])?Hash::make(\Str::password(20)):Hash::make('abcd1234');
+        $input['password'] = $password = \App::environment(['production'])?Hash::make($passwordString):Hash::make('abcd1234');
+        $input['password_confirmation'] = $password;
         $input['first_name'] = $request['first_name'];
         $input['last_name'] = $request['last_name'];
         $input['email'] = $request['email'];
@@ -61,11 +71,11 @@ class ParentController extends AppBaseController
         $input['added_on'] = Carbon::now();
         $input['referral_from_positive_experience_with_tutor'] = $input['referral_from_positive_experience_with_tutor']=='yes';
         $input['status'] = $input['status']=='yes';
-        $input['password_confirmation'] = $password;
         $input['userData'] = true;
         $input['registrationType']='parent';
         $user = $register->register($request->merge($input),false);
         $user->addRole('parent');
+        $input['password'] = $passwordString;
         Mail::to($user)->send(new ParentRegisteredMail($input));
         Flash::success('Parent saved successfully.');
         return redirect(route('parents.index'));

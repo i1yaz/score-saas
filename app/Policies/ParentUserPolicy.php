@@ -3,8 +3,8 @@
 namespace App\Policies;
 
 use App\Models\ParentUser;
-use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Foundation\Auth\User;
 
 class ParentUserPolicy
 {
@@ -12,6 +12,10 @@ class ParentUserPolicy
 
     public function viewAny(User $user): bool
     {
+        if (\Auth::user()->hasRole(['super-admin','admin','student','parent','tutor','proctor','client','developer'])){
+            return true;
+        }
+        return false;
 
     }
 

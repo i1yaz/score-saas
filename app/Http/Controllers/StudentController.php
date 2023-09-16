@@ -36,10 +36,21 @@ class StudentController extends AppBaseController
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Student::class);
         $students = Student::select(['id','parent_id','email','first_name','last_name','official_baseline_act_score','official_baseline_sat_score','status'])
             ->with(['parentUser'=>function ($query){
             $query->select(['id']);
-        }])->paginate(50);
+        }]);
+
+        if (\Auth::user()->hasRole('parent')&&\Auth::user() instanceof ParentUser){
+            $students = $students->where('parent_id',\Auth::id());
+        }
+        if (\Auth::user()->hasRole('student')&&\Auth::user() instanceof Student){
+            $students = $students->where('id',\Auth::id());
+        }
+
+
+        $students = $students->paginate(50);
 
         return view('students.index')
             ->with('students', $students);
@@ -61,21 +72,23 @@ class StudentController extends AppBaseController
         DB::beginTransaction();
         try {
             $input = $request->all();
+            $passwordString = \Str::password(20);
             $register = new RegisterController();
-            $input['password'] = $password = \App::environment(['production'])?Hash::make(\Str::password(20)):Hash::make('abcd1234');
+            $input['password'] = $password = \App::environment(['production'])?Hash::make($passwordString):Hash::make('abcd1234');
+            $input['password_confirmation'] = $password;
             $input['test_anxiety_challenge'] = $input['test_anxiety_challenge']=='yes';
             $input['testing_accommodation'] = $input['testing_accommodation']=='yes';
             $input['email_known'] = $input['email_known']=='yes';
             $input['added_by'] = \Auth::id();
             $input['auth_guard'] = \Auth::guard()->name;
             $input['added_on'] = Carbon::now();
-            $input['password_confirmation'] = $password;
             $input['status'] = $input['status']=='yes';
             $input['userData'] = true;
             $input['registrationType']='student';
             $user = $register->register($request->merge($input));
             $user->addRole('student');
             DB::commit();
+            $input['password'] = $passwordString;
             Mail::to($user)->send(new StudentRegistrationMail($input));
             Flash::success('Student saved successfully.');
             return redirect(route('students.index'));
