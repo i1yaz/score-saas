@@ -73,7 +73,11 @@
     {!! Form::select('testing_accommodation', ['yes' =>'YES','no'=>'NO'], booleanSelect($student->testing_accommodation??''),  ['class' => 'form-control custom-select']) !!}
 
 </div>
-
+<!-- Status Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('status', 'Status:') !!}
+    {!! Form::select('status', ['yes' =>'YES','no'=>'NO'],booleanSelect($student->status??null), ['class' => 'form-control custom-select'])  !!}
+</div>
 @push('page_scripts')
 
     <script>

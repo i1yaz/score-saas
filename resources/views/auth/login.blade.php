@@ -15,6 +15,18 @@
                     <form method="post" action="{{ url('/login') }}">
                         @csrf
 
+                        <div class="form-group">
+                            <div class="custom-control custom-radio">
+                                <input class="custom-control-input" type="radio" id="student" name="type" value="student" checked>
+                                <label for="student" class="custom-control-label">Student</label>
+                            </div>
+                            <div class="custom-control custom-radio">
+                                <input class="custom-control-input" type="radio" id="parent" name="type" value="parent" >
+                                <label for="parent" class="custom-control-label">Parent</label>
+                            </div>
+
+                        </div>
+
                         <div class="input-group mb-3">
                             <input type="email" name="email" value="{{ old('email') }}" placeholder="Email"
                                 class="form-control @error('email') is-invalid @enderror">

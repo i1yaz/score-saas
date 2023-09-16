@@ -34,4 +34,12 @@ class ParentRepository extends BaseRepository
         return ParentUser::class;
     }
 
+    public function find(int $id, array $columns = ['*'],$withAddedBy=false)
+    {
+        $query = $this->model->newQuery();
+//        if ($withAddedBy){
+//            $query = $query->join('users','parents.added_by','users.id');
+//        }
+        return $query->find($id, $columns);
+    }
 }

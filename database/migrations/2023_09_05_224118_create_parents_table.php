@@ -30,7 +30,7 @@ return new class extends Migration
             $table->text('referral_source')->nullable();
             $table->unsignedBigInteger('added_by');
             $table->timestamp('added_on');
-            $table->boolean('referral_from_positive_experience_with_tutor');
+            $table->boolean('referral_from_positive_experience_with_tutor')->default(false);
             $table->timestamps();
         });
     }

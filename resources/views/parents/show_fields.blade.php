@@ -58,11 +58,6 @@
     <p>{{ $parent->referral_source }}</p>
 </div>
 
-<!-- Added By Field -->
-<div class="col-sm-12">
-    {!! Form::label('added_by', 'Added By:') !!}
-    <p>{{ $parent->added_by }}</p>
-</div>
 
 <!-- Added On Field -->
 <div class="col-sm-12">

@@ -20,11 +20,12 @@ class ParentUser extends Authenticatable implements LaratrustUser
     public $table = 'parents';
 
     protected string $guard = "parent";
-
+    const FAMILY_CODE_START=5000;
     public $fillable = [
-        'user_id',
+        'email',
         'first_name',
         'last_name',
+        'password',
         'status',
         'phone',
         'address',
@@ -33,14 +34,15 @@ class ParentUser extends Authenticatable implements LaratrustUser
         'referral_source',
         'added_by',
         'added_on',
+        'auth_guard',
         'referral_from_positive_experience_with_tutor'
     ];
 
     protected $casts = [
         'id' => 'integer',
-        'user_id' => 'integer',
         'first_name' => 'string',
         'last_name' => 'string',
+        'email' => 'string',
         'status' => 'boolean',
         'phone' => 'string',
         'address' => 'string',
@@ -60,13 +62,8 @@ class ParentUser extends Authenticatable implements LaratrustUser
      * Relationships
      *------------------------------------------------------------------
      */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-    public function addedBy():BelongsTo{
-        return $this->belongsTo(User::class);
-    }
+
+
     public function family(): HasMany
     {
         return $this->hasMany(Children::class);
@@ -77,12 +74,16 @@ class ParentUser extends Authenticatable implements LaratrustUser
      * Scopes
      *------------------------------------------------------------------
      */
-    /**
-     * The "booted" method of the model.
-     */
-    protected static function booted(): void
-    {
 
+    /**
+     *------------------------------------------------------------------
+     * Accessor
+     *------------------------------------------------------------------
+     */
+
+    public function getFamilyCodeAttribute(): string
+    {
+        return $this->id + static::FAMILY_CODE_START;
     }
 
 

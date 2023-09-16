@@ -53,12 +53,5 @@ class User extends Authenticatable implements LaratrustUser
      * Relationships
      *------------------------------------------------------------------
      */
-    public function parentUser(): HasOne
-    {
-        return $this->hasOne(ParentUser::class);
-    }
-    public function studentUser(): HasOne
-    {
-        return $this->hasOne(Student::class);
-    }
+
 }

@@ -3,12 +3,12 @@
         <table class="table" id="parents-table">
             <thead>
             <tr>
+                <th>Family Code</th>
                 <th>Email</th>
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>Status</th>
                 <th>Phone</th>
-                <th>Added By</th>
                 <th>Added On</th>
                 <th colspan="3">Action</th>
             </tr>
@@ -16,12 +16,12 @@
             <tbody>
             @foreach($parents as $parent)
                 <tr>
+                    <td>{{ $parent->family_code }}</td>
                     <td>{{ $parent->email }}</td>
                     <td>{{ $parent->first_name }}</td>
                     <td>{{ $parent->last_name }}</td>
                     <td>@include('partials.status_badge',['status' => $parent->status,'text_success' => 'Active','text_danger' => 'Inactive'])</td>
                     <td>{{ $parent->phone }}</td>
-                    <td>{{ $parent->created_by_email }}</td>
                     <td>{{ $parent->added_on }}</td>
                     <td  style="width: 120px">
                         {!! Form::open(['route' => ['parents.destroy', $parent->id], 'method' => 'delete']) !!}

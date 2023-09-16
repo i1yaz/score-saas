@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ParentController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SchoolController;
@@ -29,12 +30,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Auth::routes();
+Route::get('admin/login',[LoginController::class,'showAdminLoginForm'])->name('admin.login');
 
-
-Route::group(['middleware' => 'auth'],function (){
+Route::group(['middleware' => ['auth:web,parent,student']],function (){
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
     //Parent
     Route::get('parents',[App\Http\Controllers\ParentController::class,'index'])->name('parents.index')->middleware(['permission:parent-index']);

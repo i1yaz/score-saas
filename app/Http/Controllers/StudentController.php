@@ -7,7 +7,9 @@ use App\Http\Requests\CreateStudentRequest;
 use App\Http\Requests\UpdateStudentRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Mail\StudentRegistrationMail;
+use App\Models\ParentUser;
 use App\Models\School;
+use App\Models\Student;
 use App\Models\User;
 use App\Repositories\StudentRepository;
 use Carbon\Carbon;
@@ -15,6 +17,7 @@ use DB;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Flash;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
@@ -33,7 +36,10 @@ class StudentController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $students = $this->studentRepository->paginate(10,['students.*','u.email as email','u1.email as created_by_email']);
+        $students = Student::select(['id','parent_id','email','first_name','last_name','official_baseline_act_score','official_baseline_sat_score','status'])
+            ->with(['parentUser'=>function ($query){
+            $query->select(['id']);
+        }])->paginate(50);
 
         return view('students.index')
             ->with('students', $students);
@@ -56,15 +62,18 @@ class StudentController extends AppBaseController
         try {
             $input = $request->all();
             $register = new RegisterController();
-            $input['password'] = $password = \Str::password(20);
-            $user = $register->register($request->merge(['password'=> $password,'password_confirmation' => $password,'userData'=>true]),false);
-            $input['user_id'] = $user->id;
+            $input['password'] = $password = \App::environment(['production'])?Hash::make(\Str::password(20)):Hash::make('abcd1234');
             $input['test_anxiety_challenge'] = $input['test_anxiety_challenge']=='yes';
             $input['testing_accommodation'] = $input['testing_accommodation']=='yes';
             $input['email_known'] = $input['email_known']=='yes';
             $input['added_by'] = \Auth::id();
+            $input['auth_guard'] = \Auth::guard()->name;
             $input['added_on'] = Carbon::now();
-            $this->studentRepository->create($input);
+            $input['password_confirmation'] = $password;
+            $input['status'] = $input['status']=='yes';
+            $input['userData'] = true;
+            $input['registrationType']='student';
+            $user = $register->register($request->merge($input));
             $user->addRole('student');
             DB::commit();
             Mail::to($user)->send(new StudentRegistrationMail($input));
@@ -84,7 +93,7 @@ class StudentController extends AppBaseController
      */
     public function show($id)
     {
-        $student = $this->studentRepository->find($id,['students.*','u.email as email','u1.email as created_by_email']);
+        $student = $this->studentRepository->find($id);
 
         if (empty($student)) {
             Flash::error('Student not found');
@@ -100,7 +109,7 @@ class StudentController extends AppBaseController
      */
     public function edit($id)
     {
-        $student = $this->studentRepository->find($id,['students.*','u.email as email','u1.email as created_by_email']);
+        $student = $this->studentRepository->find($id);
 
         if (empty($student)) {
             Flash::error('Student not found');
@@ -128,6 +137,7 @@ class StudentController extends AppBaseController
         $input['test_anxiety_challenge'] = $input['test_anxiety_challenge']=='yes';
         $input['testing_accommodation'] = $input['testing_accommodation']=='yes';
         $input['email_known'] = $input['email_known']=='yes';
+        $input['status'] = $input['status']=='yes';
         $this->studentRepository->update($input, $id);
         Flash::success('Student updated successfully.');
         return redirect(route('students.index'));
@@ -161,10 +171,8 @@ class StudentController extends AppBaseController
      */
     public function studentParentAjax(Request $request){
         $data = [];
-        $user = User::whereHasRole('parent')
-            ->select(['users.id','users.email'])
-            ->join('parents','users.id','parents.user_id')
-            ->where('users.email',$request->email)
+        $user = ParentUser::select(['parents.id','parents.email'])
+            ->where('parents.email',trim($request->email))
             ->where('parents.status',true)
             ->first();
         if ($user){

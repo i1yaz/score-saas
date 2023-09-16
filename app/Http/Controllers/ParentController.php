@@ -7,10 +7,12 @@ use App\Http\Requests\CreateParentRequest;
 use App\Http\Requests\UpdateParentRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Mail\ParentRegisteredMail;
+use App\Models\ParentUser;
 use App\Repositories\ParentRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Flash;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
 class ParentController extends AppBaseController
@@ -28,7 +30,9 @@ class ParentController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $parents = $this->parentRepository->paginate(10);
+        $parents = ParentUser::select(['id','email','first_name','last_name','status','phone','added_on'])
+        ->paginate(50);
+
         return view('parents.index')
             ->with('parents', $parents);
     }
@@ -48,14 +52,19 @@ class ParentController extends AppBaseController
     {
         $input = $request->all();
         $register = new RegisterController();
-        $input['password'] = $password = \Str::password(20);
-        $user = $register->register($request->merge(['password'=> $password,'password_confirmation' => $password,'userData'=>true]),false);
-        $input['user_id'] = $user->id;
+        $input['password'] = $password = \App::environment(['production'])?Hash::make(\Str::password(20)):Hash::make('abcd1234');
+        $input['first_name'] = $request['first_name'];
+        $input['last_name'] = $request['last_name'];
+        $input['email'] = $request['email'];
+        $input['auth_guard'] =\Auth::guard()->name;
         $input['added_by'] = \Auth::id();
         $input['added_on'] = Carbon::now();
         $input['referral_from_positive_experience_with_tutor'] = $input['referral_from_positive_experience_with_tutor']=='yes';
         $input['status'] = $input['status']=='yes';
-        $this->parentRepository->create($input);
+        $input['password_confirmation'] = $password;
+        $input['userData'] = true;
+        $input['registrationType']='parent';
+        $user = $register->register($request->merge($input),false);
         $user->addRole('parent');
         Mail::to($user)->send(new ParentRegisteredMail($input));
         Flash::success('Parent saved successfully.');
@@ -67,7 +76,7 @@ class ParentController extends AppBaseController
      */
     public function show($id)
     {
-        $parent = $this->parentRepository->find($id,['parents.*','u.email as email','u1.email as created_by_email']);
+        $parent = $this->parentRepository->find($id);
 
         if (empty($parent)) {
             Flash::error('Parent not found');
@@ -83,7 +92,7 @@ class ParentController extends AppBaseController
      */
     public function edit($id)
     {
-        $parent = $this->parentRepository->find($id,['parents.*','u.email as email','u1.email as created_by_email']);
+        $parent = $this->parentRepository->find($id);
 
         if (empty($parent)) {
             Flash::error('Parent not found');

@@ -20,8 +20,9 @@ class Student extends  Authenticatable implements LaratrustUser
     protected string $guard = "student";
 
     public $fillable = [
-        'user_id',
         'school_id',
+        'email',
+        'password',
         'first_name',
         'last_name',
         'email_known',
@@ -33,12 +34,13 @@ class Student extends  Authenticatable implements LaratrustUser
         'parent_id',
         'added_by',
         'added_on',
+        'auth_guard',
         'status',
     ];
 
     protected $casts = [
         'id' => 'integer',
-        'user_id' => 'integer',
+        'email' => 'string',
         'school_id' => 'integer',
         'first_name' => 'string',
         'last_name' => 'string',
@@ -67,12 +69,9 @@ class Student extends  Authenticatable implements LaratrustUser
 
     public function parentUser(): BelongsTo
     {
-        return $this->belongsTo(ParentUser::class);
+        return $this->belongsTo(ParentUser::class,'parent_id','id');
     }
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
+
     /**
      *------------------------------------------------------------------
      * Scopes

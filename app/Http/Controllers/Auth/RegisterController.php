@@ -7,6 +7,7 @@ use App\Models\ParentUser;
 use App\Models\Student;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\JsonResponse;
@@ -125,22 +126,12 @@ class RegisterController extends Controller
     protected function createParent(array $request)
     {
         $this->validator($request)->validate();
-        return ParentUser::create([
-            'first_name' => $request['first_name'],
-            'last_name' => $request['last_name'],
-            'email' => $request['email'],
-            'password' => Hash::make($request['password']),
-        ]);
+        return ParentUser::create($request);
     }
 
     protected function createStudent(array $request)
     {
         $this->validator($request)->validate();
-        return Student::create([
-            'first_name' => $request['first_name'],
-            'last_name' => $request['last_name'],
-            'email' => $request['email'],
-            'password' => Hash::make($request['password']),
-        ]);
+        return Student::create($request);
     }
 }
