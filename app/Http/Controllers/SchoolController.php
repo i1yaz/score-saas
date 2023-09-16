@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateSchoolRequest;
 use App\Http\Requests\UpdateSchoolRequest;
 use App\Http\Controllers\AppBaseController;
+use App\Models\School;
 use App\Repositories\SchoolRepository;
 use Illuminate\Http\Request;
 use Flash;
@@ -111,18 +112,15 @@ class SchoolController extends AppBaseController
      */
     public function destroy($id)
     {
-        $school = $this->schoolRepository->find($id);
-
-        if (empty($school)) {
-            Flash::error('School not found');
-
+        $school = School::with(['studentsEnrolled'=>function($query){
+            $query->first();
+        }])->findOrFail($id);
+        if ($school->studentsEnrolled->isNotEmpty()){
+            Flash::error('There are students enrolled in this school');
             return redirect(route('schools.index'));
         }
-
         $this->schoolRepository->delete($id);
-
         Flash::success('School deleted successfully.');
-
         return redirect(route('schools.index'));
     }
 }

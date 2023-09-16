@@ -4,7 +4,7 @@
         <p>Home</p>
     </a>
 </li>
-@if(in_array(Auth::id(),\App\Models\User::CAN_ACCESS_ACL))
+@if(in_array(Auth::id(),\App\Models\User::CAN_ACCESS_ACL) && Auth::user() instanceof \App\Models\User)
     <li class="nav-item {{Request::is('acl*')?'menu-is-opening menu-open active':''}}">
         <a href="#" class="nav-link {{Request::is('acl*')?'active':''}}">
             <i class="nav-icon fas fa-tree"></i>

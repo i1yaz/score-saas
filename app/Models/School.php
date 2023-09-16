@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class School extends Model
 {
@@ -19,8 +20,18 @@ class School extends Model
     ];
 
     public static array $rules = [
-        
+
     ];
 
-    
+
+    /**
+     *------------------------------------------------------------------
+     * Relationships
+     *------------------------------------------------------------------
+     */
+
+    public function studentsEnrolled(): HasMany
+    {
+        return $this->hasMany(Student::class);
+    }
 }
