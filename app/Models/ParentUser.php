@@ -54,7 +54,7 @@ class ParentUser extends Authenticatable implements LaratrustUser
     ];
 
     public static array $rules = [
-
+        'email' => ['required', 'string', 'email', 'max:255', 'unique:parents']
     ];
 
     /**

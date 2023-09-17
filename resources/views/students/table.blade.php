@@ -1,5 +1,10 @@
-<div class="card-body p-0">
-    <div class="table-responsive">
+@push('page_css')
+    <link  rel="stylesheet" href="{{asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css')}}">
+    <link  rel="stylesheet" href="{{asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
+    <link  rel="stylesheet" href="{{asset('plugins/datatables-buttons/css/buttons.bootstrap4.min.css')}}">
+@endpush
+<div class="card-body">
+    <div class="table-responsive dataTables_wrapper dt-bootstrap4">
         <table class="table" id="students-table">
             <thead>
             <tr>
@@ -7,52 +12,53 @@
                 <th>Email</th>
                 <th>First Name</th>
                 <th>Last Name</th>
-                <th>Official Baseline Act Score</th>
-                <th>Official Baseline Sat Score</th>
                 <th>Status</th>
-                <th colspan="3">Action</th>
+                <th>Action</th>
             </tr>
             </thead>
-            <tbody>
-            @foreach($students as $student)
-                <tr>
-                    <td>{{getFamilyCodeFromId($student->parentUser->id)}}</td>
-                    <td>{{ $student->email }}</td>
-                    <td>{{ $student->first_name }}</td>
-                    <td>{{ $student->last_name }}</td>
-                    <td>{{ $student->official_baseline_act_score }}</td>
-                    <td>{{ $student->official_baseline_sat_score }}</td>
-                    <td>@include('partials.status_badge',['status' => $student->status,'text_success' => 'Active','text_danger' => 'Inactive'])</td>
-                    <td  style="width: 120px">
-                        {!! Form::open(['route' => ['students.destroy', $student->id], 'method' => 'delete']) !!}
-                        <div class='btn-group'>
-                            @permission('student-show')
-                            <a href="{{ route('students.show', [$student->id]) }}"
-                               class='btn btn-default btn-xs'>
-                                <i class="far fa-eye"></i>
-                            </a>
-                            @endpermission
-                            @permission('student-edit')
-                            <a href="{{ route('students.edit', [$student->id]) }}"
-                               class='btn btn-default btn-xs'>
-                                <i class="far fa-edit"></i>
-                            </a>
-                            @endpermission
-                            @permission('student-destroy')
-                            {!! Form::button('<i class="far fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
-                            @endpermission
-                        </div>
-                        {!! Form::close() !!}
-                    </td>
-                </tr>
-            @endforeach
-            </tbody>
         </table>
     </div>
-
-    <div class="card-footer clearfix">
-        <div class="float-right">
-            @include('adminlte-templates::common.paginate', ['records' => $students])
-        </div>
-    </div>
 </div>
+
+@push('page_scripts')
+    <script src="{{asset('plugins/jquery/jquery.min.js')}}"></script>
+    <script src="{{asset('plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables/jquery.dataTables.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables-responsive/js/dataTables.responsive.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables-buttons/js/dataTables.buttons.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables-buttons/js/buttons.bootstrap4.min.js')}}"></script>
+    {{--    <script src="../../plugins/jszip/jszip.min.js"></script>--}}
+    {{--    <script src="../../plugins/pdfmake/pdfmake.min.js"></script>--}}
+    {{--    <script src="../../plugins/pdfmake/vfs_fonts.js"></script>--}}
+    {{--    <script src="../../plugins/datatables-buttons/js/buttons.html5.min.js"></script>--}}
+    {{--    <script src="../../plugins/datatables-buttons/js/buttons.print.min.js"></script>--}}
+    {{--    <script src="../../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>--}}
+    <script>
+        $(document).ready(function() {
+
+            $('#students-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ route('students.index') }}",
+                    dataType: "json",
+                    data: function (d) {
+                        d.search = $('input[type="search"]').val();
+                    }
+                },
+                columns: [
+                    { data: 'family_code', name: 'family_code', orderable: true },
+                    { data: 'email', name: 'email', orderable: false },
+                    { data: 'first_name', name: 'first_name', orderable: false },
+                    { data: 'last_name', name: 'last_name', orderable: false },
+                    { data: 'status', name: 'status', orderable: true },
+                    { data: 'action', name: 'action', orderable: false },
+
+                ]
+            });
+
+        });
+    </script>
+@endpush

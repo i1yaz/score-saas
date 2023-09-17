@@ -5,20 +5,18 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Requests\CreateStudentRequest;
 use App\Http\Requests\UpdateStudentRequest;
-use App\Http\Controllers\AppBaseController;
 use App\Mail\StudentRegistrationMail;
 use App\Models\ParentUser;
 use App\Models\School;
 use App\Models\Student;
-use App\Models\User;
 use App\Repositories\StudentRepository;
 use Carbon\Carbon;
 use DB;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Flash;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class StudentController extends AppBaseController
@@ -37,23 +35,40 @@ class StudentController extends AppBaseController
     public function index(Request $request)
     {
         $this->authorize('viewAny', Student::class);
-        $students = Student::select(['id','parent_id','email','first_name','last_name','official_baseline_act_score','official_baseline_sat_score','status'])
-            ->with(['parentUser'=>function ($query){
-            $query->select(['id']);
-        }]);
+        if ($request->ajax()){
+            $columns = [
+                'family_code',
+                'email',
+                'first_name',
+                'last_name',
+                'status',
+                'action'
+            ];
+            $totalData = Student::count();
 
-        if (\Auth::user()->hasRole('parent')&&\Auth::user() instanceof ParentUser){
-            $students = $students->where('parent_id',\Auth::id());
+            $limit = $request->input('length');
+            $start = $request->input('start');
+            $order = $columns[$request->input('order.0.column')];
+            $dir = $request->input('order.0.dir');
+            $search = $request->input('search');
+
+            $students = $this->sortAndFilterRecords($search, $start, $limit, $order, $dir);
+            $totalFiltered = $this->totalFilteredRecords($search);
+            $data = $this->populateRecords($students);
+            $json_data = [
+                "draw"            => intval($request->input('draw')),
+                "recordsTotal"    => intval($totalData),
+                "recordsFiltered" => intval($totalFiltered),
+                "data"            => $data
+            ];
+
+            return response()->json($json_data);
+
         }
-        if (\Auth::user()->hasRole('student')&&\Auth::user() instanceof Student){
-            $students = $students->where('id',\Auth::id());
-        }
 
 
-        $students = $students->paginate(50);
 
-        return view('students.index')
-            ->with('students', $students);
+        return view('students.index');
     }
 
     /**
@@ -207,5 +222,70 @@ class StudentController extends AppBaseController
 
         }
         return response()->json($data);
+    }
+
+    private function sortAndFilterRecords(mixed $search, mixed $start, mixed $limit, string $order, mixed $dir)
+    {
+        $columns = [
+            'family_code' => 'parent_id',
+        ];
+        $order = $columns[$order]??$order;
+        $students = Student::query()->select(['id','parent_id','email','first_name','last_name','official_baseline_act_score','official_baseline_sat_score','status']);
+        $students = $this->getStudentsQueryBySearch($search, $students);
+        $students = $students->offset($start)
+            ->limit($limit)
+            ->orderBy($order, $dir);
+        return $students->get();
+
+    }
+
+    private function totalFilteredRecords(mixed $search)
+    {
+        $students = Student::select(['id'])
+            ->with(['parentUser'=>function ($query){
+                $query->select(['id']);
+            }]);
+        $students = $this->getStudentsQueryBySearch($search, $students);
+        return $students->count();
+    }
+
+    private function populateRecords($students)
+    {
+        $data = [];
+        if (!empty($students)) {
+            foreach ($students as $student) {
+                $nestedData['family_code'] = getFamilyCodeFromId($student->parent_id);
+                $nestedData['email'] = $student->email;
+                $nestedData['first_name'] = $student->first_name;
+                $nestedData['last_name'] =  $student->last_name;
+                $nestedData['status'] = view('partials.status_badge',['status' => $student->status,'text_success' => 'Active','text_danger' => 'Inactive'])->render();
+                $nestedData['action'] = view('students.action',['student' => $student])->render();
+                $data[] = $nestedData;
+            }
+        }
+        return $data;
+    }
+
+    /**
+     * @param mixed $search
+     * @param Builder $students
+     * @return Builder
+     */
+    private function getStudentsQueryBySearch(mixed $search, Builder $students): Builder
+    {
+        if (!empty($search)) {
+            $students = $students->where(function ($q) use ($search) {
+                $q->where('first_name', 'like', "%{$search}%")
+                    ->orWhere('last_name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+        if (\Auth::user()->hasRole('parent') && \Auth::user() instanceof ParentUser) {
+            $students = $students->where('parent_id', \Auth::id());
+        }
+        if (\Auth::user()->hasRole('student') && \Auth::user() instanceof Student) {
+            $students = $students->where('id', \Auth::id());
+        }
+        return $students;
     }
 }

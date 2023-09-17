@@ -125,13 +125,14 @@ class RegisterController extends Controller
 
     protected function createParent(array $request)
     {
-        $this->validator($request)->validate();
+        Validator::make($request,ParentUser::$rules);
         return ParentUser::create($request);
     }
 
     protected function createStudent(array $request)
     {
-        $this->validator($request)->validate();
+        dd($request);
+        Validator::make($request,Student::$rules);
         return Student::create($request);
     }
 }
