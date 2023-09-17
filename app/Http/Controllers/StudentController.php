@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\StudentsDataTable;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Requests\CreateStudentRequest;
 use App\Http\Requests\UpdateStudentRequest;
@@ -44,7 +45,7 @@ class StudentController extends AppBaseController
                 'status',
                 'action'
             ];
-            $totalData = Student::count();
+            $totalData = StudentsDataTable::totalRecords();
 
             $limit = $request->input('length');
             $start = $request->input('start');
@@ -52,9 +53,9 @@ class StudentController extends AppBaseController
             $dir = $request->input('order.0.dir');
             $search = $request->input('search');
 
-            $students = $this->sortAndFilterRecords($search, $start, $limit, $order, $dir);
-            $totalFiltered = $this->totalFilteredRecords($search);
-            $data = $this->populateRecords($students);
+            $students = StudentsDataTable::sortAndFilterRecords($search, $start, $limit, $order, $dir);
+            $totalFiltered = StudentsDataTable::totalFilteredRecords($search);
+            $data = StudentsDataTable::populateRecords($students);
             $json_data = [
                 "draw"            => intval($request->input('draw')),
                 "recordsTotal"    => intval($totalData),
@@ -224,68 +225,4 @@ class StudentController extends AppBaseController
         return response()->json($data);
     }
 
-    private function sortAndFilterRecords(mixed $search, mixed $start, mixed $limit, string $order, mixed $dir)
-    {
-        $columns = [
-            'family_code' => 'parent_id',
-        ];
-        $order = $columns[$order]??$order;
-        $students = Student::query()->select(['id','parent_id','email','first_name','last_name','official_baseline_act_score','official_baseline_sat_score','status']);
-        $students = $this->getStudentsQueryBySearch($search, $students);
-        $students = $students->offset($start)
-            ->limit($limit)
-            ->orderBy($order, $dir);
-        return $students->get();
-
-    }
-
-    private function totalFilteredRecords(mixed $search)
-    {
-        $students = Student::select(['id'])
-            ->with(['parentUser'=>function ($query){
-                $query->select(['id']);
-            }]);
-        $students = $this->getStudentsQueryBySearch($search, $students);
-        return $students->count();
-    }
-
-    private function populateRecords($students)
-    {
-        $data = [];
-        if (!empty($students)) {
-            foreach ($students as $student) {
-                $nestedData['family_code'] = getFamilyCodeFromId($student->parent_id);
-                $nestedData['email'] = $student->email;
-                $nestedData['first_name'] = $student->first_name;
-                $nestedData['last_name'] =  $student->last_name;
-                $nestedData['status'] = view('partials.status_badge',['status' => $student->status,'text_success' => 'Active','text_danger' => 'Inactive'])->render();
-                $nestedData['action'] = view('students.action',['student' => $student])->render();
-                $data[] = $nestedData;
-            }
-        }
-        return $data;
-    }
-
-    /**
-     * @param mixed $search
-     * @param Builder $students
-     * @return Builder
-     */
-    private function getStudentsQueryBySearch(mixed $search, Builder $students): Builder
-    {
-        if (!empty($search)) {
-            $students = $students->where(function ($q) use ($search) {
-                $q->where('first_name', 'like', "%{$search}%")
-                    ->orWhere('last_name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
-            });
-        }
-        if (\Auth::user()->hasRole('parent') && \Auth::user() instanceof ParentUser) {
-            $students = $students->where('parent_id', \Auth::id());
-        }
-        if (\Auth::user()->hasRole('student') && \Auth::user() instanceof Student) {
-            $students = $students->where('id', \Auth::id());
-        }
-        return $students;
-    }
 }
