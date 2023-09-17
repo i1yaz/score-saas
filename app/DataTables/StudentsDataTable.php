@@ -31,17 +31,17 @@ class StudentsDataTable implements IDataTables
         return $students->count();
     }
 
-    public static function populateRecords($students): array
+    public static function populateRecords($records): array
     {
         $data = [];
-        if (!empty($students)) {
-            foreach ($students as $student) {
+        if (!empty($records)) {
+            foreach ($records as $student) {
                 $nestedData['family_code'] = getFamilyCodeFromId($student->parent_id);
                 $nestedData['email'] = $student->email;
                 $nestedData['first_name'] = $student->first_name;
                 $nestedData['last_name'] =  $student->last_name;
                 $nestedData['status'] = view('partials.status_badge',['status' => $student->status,'text_success' => 'Active','text_danger' => 'Inactive'])->render();
-                $nestedData['action'] = view('students.action',['student' => $student])->render();
+                $nestedData['action'] = view('students.actions',['student' => $student])->render();
                 $data[] = $nestedData;
             }
         }
@@ -51,25 +51,25 @@ class StudentsDataTable implements IDataTables
 
     /**
      * @param mixed $search
-     * @param Builder $students
+     * @param Builder $records
      * @return Builder
      */
-    public static function getStudentsQueryBySearch(mixed $search, Builder $students): Builder
+    public static function getStudentsQueryBySearch(mixed $search, Builder $records): Builder
     {
         if (!empty($search)) {
-            $students = $students->where(function ($q) use ($search) {
+            $records = $records->where(function ($q) use ($search) {
                 $q->where('first_name', 'like', "%{$search}%")
                     ->orWhere('last_name', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%");
             });
         }
         if (\Auth::user()->hasRole('parent') && \Auth::user() instanceof ParentUser) {
-            $students = $students->where('parent_id', \Auth::id());
+            $records = $records->where('parent_id', \Auth::id());
         }
         if (\Auth::user()->hasRole('student') && \Auth::user() instanceof Student) {
-            $students = $students->where('id', \Auth::id());
+            $records = $records->where('id', \Auth::id());
         }
-        return $students;
+        return $records;
     }
 
     public static function totalRecords():int

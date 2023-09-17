@@ -1,4 +1,9 @@
-<div class="card-body p-0">
+@push('page_css')
+    <link  rel="stylesheet" href="{{asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css')}}">
+    <link  rel="stylesheet" href="{{asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
+    <link  rel="stylesheet" href="{{asset('plugins/datatables-buttons/css/buttons.bootstrap4.min.css')}}">
+@endpush
+<div class="card-body">
     <div class="table-responsive">
         <table class="table" id="parents-table">
             <thead>
@@ -7,58 +12,72 @@
                 <th>Email</th>
                 <th>First Name</th>
                 <th>Last Name</th>
-                <th>Status</th>
                 <th>Phone</th>
-                <th>Added On</th>
-                <th colspan="3">Action</th>
+                <th>Status</th>
+                <th>Actions</th>
             </tr>
             </thead>
-            <tbody>
-            @foreach($parents as $parent)
-                <tr>
-                    <td>{{ $parent->family_code }}</td>
-                    <td>{{ $parent->email }}</td>
-                    <td>{{ $parent->first_name }}</td>
-                    <td>{{ $parent->last_name }}</td>
-                    <td>@include('partials.status_badge',['status' => $parent->status,'text_success' => 'Active','text_danger' => 'Inactive'])</td>
-                    <td>{{ $parent->phone }}</td>
-                    <td>{{ $parent->added_on }}</td>
-                    <td  style="width: 120px">
-                        {!! Form::open(['route' => ['parents.destroy', $parent->id], 'method' => 'delete']) !!}
-                        <div class='btn-group'>
-                            @permission('student-create')
-                            <a href="{{ route('students.create', ['parent' => $parent->id]) }}"
-                               class='btn btn-default btn-sm'>
-                                <i class="fas fa-plus"></i>
-                            </a>
-                            @endpermission
-                            @permission('parent-show')
-                            <a href="{{ route('parents.show', [$parent->id]) }}"
-                               class='btn btn-default btn-sm'>
-                                <i class="far fa-eye"></i>
-                            </a>
-                            @endpermission
-                            @permission('parent-edit')
-                            <a href="{{ route('parents.edit', [$parent->id]) }}"
-                               class='btn btn-default btn-sm'>
-                                <i class="far fa-edit"></i>
-                            </a>
-                            @endpermission
-                            @permission('parent-destroy')
-                            {!! Form::button('<i class="far fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-sm', 'onclick' => "return confirm('Are you sure?')"]) !!}
-                            @endpermission
-                        </div>
-                        {!! Form::close() !!}
-                    </td>
-                </tr>
-            @endforeach
-            </tbody>
+{{--            <tbody>--}}
+{{--            @foreach($parents as $parent)--}}
+{{--                <tr>--}}
+{{--                    <td>{{ $parent->family_code }}</td>--}}
+{{--                    <td>{{ $parent->email }}</td>--}}
+{{--                    <td>{{ $parent->first_name }}</td>--}}
+{{--                    <td>{{ $parent->last_name }}</td>--}}
+{{--                    <td>@include('partials.status_badge',['status' => $parent->status,'text_success' => 'Active','text_danger' => 'Inactive'])</td>--}}
+{{--                    <td>{{ $parent->phone }}</td>--}}
+{{--                    <td>{{ $parent->added_on }}</td>--}}
+{{--                    <td  style="width: 120px">--}}
+
+{{--                    </td>--}}
+{{--                </tr>--}}
+{{--            @endforeach--}}
+{{--            </tbody>--}}
         </table>
     </div>
 
-    <div class="card-footer clearfix">
-        <div class="float-right">
-            @include('adminlte-templates::common.paginate', ['records' => $parents])
-        </div>
-    </div>
 </div>
+
+@push('page_scripts')
+    <script src="{{asset('plugins/jquery/jquery.min.js')}}"></script>
+    <script src="{{asset('plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables/jquery.dataTables.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables-responsive/js/dataTables.responsive.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables-buttons/js/dataTables.buttons.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables-buttons/js/buttons.bootstrap4.min.js')}}"></script>
+    {{--    <script src="../../plugins/jszip/jszip.min.js"></script>--}}
+    {{--    <script src="../../plugins/pdfmake/pdfmake.min.js"></script>--}}
+    {{--    <script src="../../plugins/pdfmake/vfs_fonts.js"></script>--}}
+    {{--    <script src="../../plugins/datatables-buttons/js/buttons.html5.min.js"></script>--}}
+    {{--    <script src="../../plugins/datatables-buttons/js/buttons.print.min.js"></script>--}}
+    {{--    <script src="../../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>--}}
+    <script>
+        $(document).ready(function() {
+
+            $('#parents-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ route('parents.index') }}",
+                    dataType: "json",
+                    data: function (d) {
+                        d.search = $('input[type="search"]').val();
+                    }
+                },
+                columns: [
+                    { data: 'family_code', name: 'family_code', orderable: true },
+                    { data: 'email', name: 'email', orderable: false },
+                    { data: 'first_name', name: 'first_name', orderable: false },
+                    { data: 'last_name', name: 'last_name', orderable: false },
+                    { data: 'phone', name: 'phone', orderable: false },
+                    { data: 'status', name: 'status', orderable: true },
+                    { data: 'action', name: 'action', orderable: false },
+
+                ]
+            });
+
+        });
+    </script>
+@endpush

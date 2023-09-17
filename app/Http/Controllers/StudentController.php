@@ -45,14 +45,12 @@ class StudentController extends AppBaseController
                 'status',
                 'action'
             ];
-            $totalData = StudentsDataTable::totalRecords();
-
             $limit = $request->input('length');
             $start = $request->input('start');
             $order = $columns[$request->input('order.0.column')];
             $dir = $request->input('order.0.dir');
             $search = $request->input('search');
-
+            $totalData = StudentsDataTable::totalRecords();
             $students = StudentsDataTable::sortAndFilterRecords($search, $start, $limit, $order, $dir);
             $totalFiltered = StudentsDataTable::totalFilteredRecords($search);
             $data = StudentsDataTable::populateRecords($students);
@@ -66,9 +64,6 @@ class StudentController extends AppBaseController
             return response()->json($json_data);
 
         }
-
-
-
         return view('students.index');
     }
 

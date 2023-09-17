@@ -9,7 +9,7 @@ interface IDataTables
 {
     public static function sortAndFilterRecords(mixed $search, mixed $start, mixed $limit, string $order, mixed $dir): Collection|array;
     public static function totalFilteredRecords(mixed $search): int;
-    public static function populateRecords($students): array;
-    public static function getStudentsQueryBySearch(mixed $search, Builder $students): Builder;
+    public static function populateRecords($records): array;
+    public static function getStudentsQueryBySearch(mixed $search, Builder $records): Builder;
     public static function totalRecords():int;
 }

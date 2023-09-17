@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\ParentsDataTable;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Requests\CreateParentRequest;
 use App\Http\Requests\UpdateParentRequest;
@@ -32,17 +33,38 @@ class ParentController extends AppBaseController
     public function index(Request $request)
     {
         $this->authorize('viewAny', ParentUser::class);
-        $parents = ParentUser::select(['id','email','first_name','last_name','status','phone','added_on']);
-        if (\Auth::user()->hasRole('parent')&&\Auth::user() instanceof ParentUser){
-            $parents = $parents->where('id',\Auth::id());
-        }
-        if (\Auth::user()->hasRole('student')&&\Auth::user() instanceof Student){
-            $parents = $parents->where('id',\Auth::user()->parent_id);
-        }
-        $parents = $parents->paginate(50);
 
-        return view('parents.index')
-            ->with('parents', $parents);
+        if ($request->ajax()){
+            $columns = [
+                'family_code',
+                'email',
+                'first_name',
+                'last_name',
+                'phone',
+                'status',
+                'action'
+            ];
+            $limit = $request->input('length');
+            $start = $request->input('start');
+            $order = $columns[$request->input('order.0.column')];
+            $dir = $request->input('order.0.dir');
+            $search = $request->input('search');
+            $totalData = ParentsDataTable::totalRecords();
+            $parents = ParentsDataTable::sortAndFilterRecords($search, $start, $limit, $order, $dir);
+            $totalFiltered = ParentsDataTable::totalFilteredRecords($search);
+            $data = ParentsDataTable::populateRecords($parents);
+            $json_data = [
+                "draw"            => intval($request->input('draw')),
+                "recordsTotal"    => intval($totalData),
+                "recordsFiltered" => intval($totalFiltered),
+                "data"            => $data
+            ];
+
+            return response()->json($json_data);
+
+        }
+
+        return view('parents.index');
     }
 
     /**
