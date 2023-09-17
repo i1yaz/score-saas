@@ -133,7 +133,7 @@
                     $('#dismiss-school-modal').trigger('click');
                 })
                 .fail(function() {
-                    toastr.success("something went wrong!")
+                    toastr.error("something went wrong!")
                 });
         });
         $(document).ready(function () {
