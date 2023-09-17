@@ -24,7 +24,7 @@ class ParentUserFactory extends Factory
             'phone_alternate' => $this->faker->phoneNumber(),
             'referral_source' => $this->faker->word(),
             'added_by' => $this->faker->randomNumber(),
-            'added_on' => Carbon::now(),
+            'added_at' => Carbon::now(),
             'referral_from_positive_experience_with_tutor' => $this->faker->boolean(),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),

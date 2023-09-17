@@ -61,8 +61,8 @@
 
 <!-- Added On Field -->
 <div class="col-sm-12">
-    {!! Form::label('added_on', 'Added On:') !!}
-    <p>{{ $parent->added_on }}</p>
+    {!! Form::label('added_at', 'Added On:') !!}
+    <p>{{ $parent->added_at }}</p>
 </div>
 
 <!-- Referral From Positive Experience With Tutor Field -->

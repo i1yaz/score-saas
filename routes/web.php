@@ -34,7 +34,7 @@ Route::get('/', function () {
 Auth::routes();
 Route::get('admin/login',[LoginController::class,'showAdminLoginForm'])->name('admin.login');
 
-Route::group(['middleware' => ['auth:web,parent,student']],function (){
+Route::group(['middleware' => ['auth:web,parent,student,tutor']],function (){
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
     //Parent
@@ -63,6 +63,13 @@ Route::group(['middleware' => ['auth:web,parent,student']],function (){
     Route::get('schools/{school}/edit',[App\Http\Controllers\SchoolController::class,'edit'])->name('schools.edit')->middleware(['permission:school-edit']);
     Route::patch('schools/{school}',[App\Http\Controllers\SchoolController::class,'update'])->name('schools.update')->middleware(['permission:school-edit']);
     Route::delete('schools/{school}',[App\Http\Controllers\SchoolController::class,'destroy'])->name('schools.destroy')->middleware(['permission:school-destroy']);
+    //Tutor
+    Route::get('tutors',[App\Http\Controllers\TutorController::class,'index'])->name('tutors.index')->middleware(['permission:tutor-index']);
+    Route::get('tutors/create',[App\Http\Controllers\TutorController::class,'create'])->name('tutors.create')->middleware(['permission:tutor-create']);
+    Route::post('tutors',[App\Http\Controllers\TutorController::class,'store'])->name('tutors.store')->middleware(['permission:tutor-create']);;
+    Route::get('tutors/{tutor}',[App\Http\Controllers\TutorController::class,'show'])->name('tutors.show')->middleware(['permission:tutor-show']);
+    Route::get('tutors/{tutor}/edit',[App\Http\Controllers\TutorController::class,'edit'])->name('tutors.edit')->middleware(['permission:tutor-edit']);
+    Route::patch('tutors/{tutor}',[App\Http\Controllers\TutorController::class,'update'])->name('tutors.update')->middleware(['permission:tutor-edit']);
+    Route::delete('tutors/{tutor}',[App\Http\Controllers\TutorController::class,'destroy'])->name('tutors.destroy')->middleware(['permission:tutor-destroy']);
 
 });
-

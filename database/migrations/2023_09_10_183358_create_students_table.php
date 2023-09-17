@@ -31,7 +31,7 @@ return new class extends Migration
             $table->boolean('test_anxiety_challenge')->nullable();
             $table->boolean('status')->default(true);
             $table->unsignedBigInteger('added_by');
-            $table->timestamp('added_on');
+            $table->timestamp('added_at');
             $table->timestamps();
 
         });

@@ -101,7 +101,8 @@ return [
     'user_models' => [
         'users'   => \App\Models\User::class,
         'parent'  => \App\Models\ParentUser::class,
-        'student' => \App\Models\Student::class
+        'student' => \App\Models\Student::class,
+        'tutor' => \App\Models\Tutor::class
     ],
 
     /*

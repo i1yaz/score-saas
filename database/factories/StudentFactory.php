@@ -28,7 +28,7 @@ class StudentFactory extends Factory
             'parent_id' => $this->faker->randomNumber(),
             'status' => $this->faker->boolean(),
             'added_by' => $this->faker->randomNumber(),
-            'added_on' => Carbon::now(),
+            'added_at' => Carbon::now(),
             'user_id' => User::factory(),
         ];
     }

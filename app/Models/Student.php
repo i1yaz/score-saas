@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -33,7 +32,7 @@ class Student extends  Authenticatable implements LaratrustUser
         'test_anxiety_challenge',
         'parent_id',
         'added_by',
-        'added_on',
+        'added_at',
         'auth_guard',
         'status',
     ];
@@ -52,7 +51,7 @@ class Student extends  Authenticatable implements LaratrustUser
         'test_anxiety_challenge' => 'boolean',
         'parent_id' =>'integer',
         'added_by' => 'integer',
-        'added_on' => 'timestamp',
+        'added_at' => 'timestamp',
         'status' => 'boolean',
     ];
 

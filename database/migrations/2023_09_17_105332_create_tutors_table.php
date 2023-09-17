@@ -13,24 +13,24 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('parents', function (Blueprint $table) {
+        Schema::create('tutors', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('first_name')->nullable();
+            $table->string('first_name');
             $table->string('last_name')->nullable();
-            $table->string('email')->unique();
+            $table->string('email');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->string('secondary_email')->nullable();
-            $table->boolean('status')->nullable();
             $table->string('phone')->nullable();
-            $table->text('address')->nullable();
-            $table->text('address2')->nullable();
-            $table->string('phone_alternate')->nullable();
-            $table->text('referral_source')->nullable();
-            $table->unsignedBigInteger('added_by');
+            $table->string('secondary_phone')->nullable();
+            $table->string('picture')->nullable();
+            $table->string('resume')->nullable();
+            $table->date('start_date')->nullable();
+            $table->string('auth_guard');
+            $table->bigInteger('added_by');
             $table->timestamp('added_at');
-            $table->boolean('referral_from_positive_experience_with_tutor')->default(false);
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }
@@ -42,6 +42,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::drop('parents');
+        Schema::drop('tutors');
     }
 };

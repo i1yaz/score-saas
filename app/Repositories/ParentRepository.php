@@ -20,7 +20,7 @@ class ParentRepository extends BaseRepository
         'phone_alternate',
         'referral_source',
         'added_by',
-        'added_on',
+        'added_at',
         'referral_from_positive_experience_with_tutor'
     ];
 

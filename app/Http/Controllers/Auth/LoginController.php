@@ -40,6 +40,7 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
         $this->middleware('guest:parent')->except('logout');
         $this->middleware('guest:student')->except('logout');
+        $this->middleware('guest:tutor')->except('logout');
     }
     /**
      * Show the application's login form.
@@ -58,6 +59,9 @@ class LoginController extends Controller
         }
         if ($request->type==='student'){
             return $this->studentLogin($request);
+        }
+        if ($request->type==='tutor'){
+            return $this->tutorLogin($request);
         }
 
         $this->validateLogin($request);
@@ -90,28 +94,20 @@ class LoginController extends Controller
 
     public function parentLogin(Request $request)
     {
-        $this->validate($request, [
-            'email' => 'required|email',
-            'password' => 'required|min:6'
-        ]);
-        if (method_exists($this, 'hasTooManyLoginAttempts') &&
-            $this->hasTooManyLoginAttempts($request)) {
-            $this->fireLockoutEvent($request);
-            return $this->sendLockoutResponse($request);
-        }
-        if (Auth::guard('parent')->attempt(['email' => $request->email, 'password' => $request->password], $request->get('remember'))) {
-            if ($request->hasSession()) {
-                $request->session()->put('auth.password_confirmed_at', time());
-            }
-            return $this->sendLoginResponse($request);
-        }
-        $this->incrementLoginAttempts($request);
-        return $this->sendFailedLoginResponse($request);
+        return $this->loginByRoleGuards($request,'parent');
 
     }
 
     public function studentLogin(Request $request)
     {
+        return $this->loginByRoleGuards($request,'student');
+    }
+
+    private function tutorLogin(Request $request)
+    {
+        return $this->loginByRoleGuards($request,'tutor');
+    }
+    private function loginByRoleGuards(Request $request,string $guard){
         $this->validate($request, [
             'email' => 'required|email',
             'password' => 'required|min:6'
@@ -121,7 +117,7 @@ class LoginController extends Controller
             $this->fireLockoutEvent($request);
             return $this->sendLockoutResponse($request);
         }
-        if (Auth::guard('student')->attempt(['email' => $request->email, 'password' => $request->password], $request->get('remember'))) {
+        if (Auth::guard($guard)->attempt(['email' => $request->email, 'password' => $request->password], $request->get('remember'))) {
             if ($request->hasSession()) {
                 $request->session()->put('auth.password_confirmed_at', time());
             }

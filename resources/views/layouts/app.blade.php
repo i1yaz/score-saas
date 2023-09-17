@@ -12,7 +12,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-widget="pushmenu" href="#" role="button">
-                            <strong>{{getRoleOfLoggedInUser()}}</strong>
+                            <strong>{{getRoleDescriptionOfLoggedInUser()}}</strong>
                         </a>
                     </li>
                 </ul>

@@ -133,9 +133,7 @@ abstract class BaseRepository
         $model = $query->findOrFail($id);
 
         $model->fill($input);
-
         $model->save();
-
         return $model;
     }
 

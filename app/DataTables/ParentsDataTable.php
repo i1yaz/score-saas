@@ -17,7 +17,7 @@ class ParentsDataTable implements IDataTables
             'family_code' => 'id',
         ];
         $order = $columns[$order]??$order;
-        $parents = ParentUser::query()->select(['id','email','first_name','last_name','status','phone','added_on']);
+        $parents = ParentUser::query()->select(['id','email','first_name','last_name','status','phone','added_at']);
         $parents = static::getStudentsQueryBySearch($search, $parents);
         $parents = $parents->offset($start)
             ->limit($limit)

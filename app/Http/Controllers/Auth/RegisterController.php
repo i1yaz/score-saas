@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\ParentUser;
 use App\Models\Student;
+use App\Models\Tutor;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use Carbon\Carbon;
@@ -47,6 +48,7 @@ class RegisterController extends Controller
         $this->middleware('guest');
         $this->middleware('guest:parent');
         $this->middleware('guest:student');
+        $this->middleware('guest:tutor');
     }
 
     /**
@@ -90,7 +92,10 @@ class RegisterController extends Controller
             $user = $this->createParent($request->all());
         }elseif ($request->registrationType=='student'){
             $user = $this->createStudent($request->all());
-        }else{
+        }elseif($request->registrationType=='tutor'){
+            $user = $this->createTutor($request->all());
+        }
+        else{
             $user = $this->create($request->all());
         }
 
@@ -131,8 +136,13 @@ class RegisterController extends Controller
 
     protected function createStudent(array $request)
     {
-        dd($request);
         Validator::make($request,Student::$rules);
         return Student::create($request);
+    }
+
+    private function createTutor(array $request)
+    {
+        Validator::make($request,Tutor::$rules);
+        return Tutor::create($request);
     }
 }

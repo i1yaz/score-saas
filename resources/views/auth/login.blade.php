@@ -24,7 +24,10 @@
                                 <input class="custom-control-input" type="radio" id="parent" name="type" value="parent" >
                                 <label for="parent" class="custom-control-label">Parent</label>
                             </div>
-
+                            <div class="custom-control custom-radio">
+                                <input class="custom-control-input" type="radio" id="tutor" name="type" value="tutor" >
+                                <label for="tutor" class="custom-control-label">Tutor</label>
+                            </div>
                         </div>
 
                         <div class="input-group mb-3">
