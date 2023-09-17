@@ -99,7 +99,7 @@ class TutorController extends AppBaseController
             $this->storePictureOrResume($request, $user);
             $user->addRole('tutor');
             DB::commit();
-            $input['password'] = $passwordString;
+            $input['password'] =\App::environment(['production'])?$passwordString:'abcd1234';
             Mail::to($user)->send(new TutorRegistrationMail($input));
             Flash::success('Tutor saved successfully.');
             return redirect(route('tutors.index'));

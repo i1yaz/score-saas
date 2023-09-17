@@ -97,7 +97,7 @@ class ParentController extends AppBaseController
         $input['registrationType']='parent';
         $user = $register->register($request->merge($input),false);
         $user->addRole('parent');
-        $input['password'] = $passwordString;
+        $input['password'] =\App::environment(['production'])?$passwordString:'abcd1234';
         Mail::to($user)->send(new ParentRegisteredMail($input));
         Flash::success('Parent saved successfully.');
         return redirect(route('parents.index'));

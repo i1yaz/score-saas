@@ -65,7 +65,7 @@
 @permission('tutor-index')
 <li class="nav-item">
     <a href="{{ route('tutors.index') }}" class="nav-link {{ Request::is('tutors*') ? 'active' : '' }}">
-        <i class="nav-icon fas fa-home"></i>
+        <i class="nav-icon fas fa-book-reader"></i>
         <p>Tutors</p>
     </a>
 </li>

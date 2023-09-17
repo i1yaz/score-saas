@@ -31,12 +31,11 @@ Route::get('/', function () {
 });
 
 
-Auth::routes();
+Auth::routes(['register' => false]);
 Route::get('admin/login',[LoginController::class,'showAdminLoginForm'])->name('admin.login');
 
 Route::group(['middleware' => ['auth:web,parent,student,tutor']],function (){
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
     //Parent
     Route::get('parents',[App\Http\Controllers\ParentController::class,'index'])->name('parents.index')->middleware(['permission:parent-index']);
     Route::get('parents/create',[App\Http\Controllers\ParentController::class,'create'])->name('parents.create')->middleware(['permission:parent-create']);

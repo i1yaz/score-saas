@@ -99,7 +99,7 @@ class StudentController extends AppBaseController
             $user = $register->register($request->merge($input),false);
             $user->addRole('student');
             DB::commit();
-            $input['password'] = $passwordString;
+            $input['password'] =\App::environment(['production'])?$passwordString:'abcd1234';
             Mail::to($user)->send(new StudentRegistrationMail($input));
             Flash::success('Student saved successfully.');
             return redirect(route('students.index'));
