@@ -16,7 +16,8 @@ class School extends Model
 
     protected $casts = [
         'id' => 'integer',
-        'name' => 'string'
+        'name' => 'string',
+        'address' => 'string'
     ];
 
     public static array $rules = [

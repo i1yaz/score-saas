@@ -189,8 +189,9 @@ class StudentController extends AppBaseController
      */
     public function studentParentAjax(Request $request){
         $data = [];
+        $email = trim($request->email);
         $user = ParentUser::select(['parents.id','parents.email'])
-            ->where('parents.email',trim($request->email))
+            ->where('parents.email','LIKE',"%{$email}%")
             ->where('parents.status',true)
             ->first();
         if ($user){

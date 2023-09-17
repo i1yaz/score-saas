@@ -46,7 +46,11 @@ class SchoolController extends AppBaseController
     {
         $input = $request->all();
 
-        $school = $this->schoolRepository->create($input);
+        $this->schoolRepository->create($input);
+
+        if($request->ajax()){
+            return response()->json(['success'=>"School saved successfully."]);
+        }
 
         Flash::success('School saved successfully.');
 
