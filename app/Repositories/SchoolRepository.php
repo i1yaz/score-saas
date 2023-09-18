@@ -3,13 +3,12 @@
 namespace App\Repositories;
 
 use App\Models\School;
-use App\Repositories\BaseRepository;
 
 class SchoolRepository extends BaseRepository
 {
     protected $fieldSearchable = [
         'name',
-        'address'
+        'address',
     ];
 
     public function getFieldsSearchable(): array

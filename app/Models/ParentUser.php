@@ -2,10 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Builder;
 use App\Models\Student as Children;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -15,12 +13,14 @@ use Laravel\Sanctum\HasApiTokens;
 
 class ParentUser extends Authenticatable implements LaratrustUser
 {
-    use HasApiTokens, HasFactory, Notifiable,HasRolesAndPermissions;
+    use HasApiTokens, HasFactory, HasRolesAndPermissions,Notifiable;
 
     public $table = 'parents';
 
-    protected string $guard = "parent";
-    const FAMILY_CODE_START=5000;
+    protected string $guard = 'parent';
+
+    const FAMILY_CODE_START = 5000;
+
     public $fillable = [
         'email',
         'first_name',
@@ -35,7 +35,7 @@ class ParentUser extends Authenticatable implements LaratrustUser
         'added_by',
         'added_at',
         'auth_guard',
-        'referral_from_positive_experience_with_tutor'
+        'referral_from_positive_experience_with_tutor',
     ];
 
     protected $casts = [
@@ -50,11 +50,11 @@ class ParentUser extends Authenticatable implements LaratrustUser
         'phone_alternate' => 'string',
         'referral_source' => 'string',
         'added_by' => 'integer',
-        'referral_from_positive_experience_with_tutor' => 'boolean'
+        'referral_from_positive_experience_with_tutor' => 'boolean',
     ];
 
     public static array $rules = [
-        'email' => ['required', 'string', 'email', 'max:255', 'unique:parents']
+        'email' => ['required', 'string', 'email', 'max:255', 'unique:parents'],
     ];
 
     /**
@@ -62,8 +62,6 @@ class ParentUser extends Authenticatable implements LaratrustUser
      * Relationships
      *------------------------------------------------------------------
      */
-
-
     public function family(): HasMany
     {
         return $this->hasMany(Children::class);
@@ -80,11 +78,8 @@ class ParentUser extends Authenticatable implements LaratrustUser
      * Accessor
      *------------------------------------------------------------------
      */
-
     public function getFamilyCodeAttribute(): string
     {
         return $this->id + static::FAMILY_CODE_START;
     }
-
-
 }

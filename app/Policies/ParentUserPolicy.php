@@ -14,16 +14,17 @@ class ParentUserPolicy
     {
         //['super-admin','admin','student','parent','tutor','proctor','client','developer']
 
-        if (\Auth::user()->hasRole(['super-admin','admin'])){
+        if (\Auth::user()->hasRole(['super-admin', 'admin'])) {
             return true;
         }
     }
 
     public function viewAny(User $user): bool
     {
-        if (\Auth::user()->hasRole(['student','parent'])){
+        if (\Auth::user()->hasRole(['student', 'parent'])) {
             return true;
         }
+
         return false;
 
     }
@@ -31,19 +32,19 @@ class ParentUserPolicy
     public function view(User $user, ParentUser $parent): bool
     {
 
-        if (\Auth::user()->hasRole(['student','parent'])){
-           return $user->id == $parent->id || $user->parent_id==$parent->id;
+        if (\Auth::user()->hasRole(['student', 'parent'])) {
+            return $user->id == $parent->id || $user->parent_id == $parent->id;
         }
+
         return false;
     }
-
 
     public function update(User $user, ParentUser $parent): bool
     {
-        if (\Auth::user()->hasRole(['parent'])){
-            return $user->id == $parent->id || $user->parent_id==$parent->id;
+        if (\Auth::user()->hasRole(['parent'])) {
+            return $user->id == $parent->id || $user->parent_id == $parent->id;
         }
+
         return false;
     }
-
 }

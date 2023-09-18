@@ -13,16 +13,15 @@ use App\Models\Student;
 use App\Repositories\StudentRepository;
 use Carbon\Carbon;
 use DB;
-use Illuminate\Database\Eloquent\Builder;
+use Flash;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Flash;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
 class StudentController extends AppBaseController
 {
-    /** @var StudentRepository $studentRepository*/
+    /** @var StudentRepository */
     private $studentRepository;
 
     public function __construct(StudentRepository $studentRepo)
@@ -36,14 +35,14 @@ class StudentController extends AppBaseController
     public function index(Request $request)
     {
         $this->authorize('viewAny', Student::class);
-        if ($request->ajax()){
+        if ($request->ajax()) {
             $columns = [
                 'family_code',
                 'email',
                 'first_name',
                 'last_name',
                 'status',
-                'action'
+                'action',
             ];
             $limit = $request->input('length');
             $start = $request->input('start');
@@ -55,15 +54,16 @@ class StudentController extends AppBaseController
             $totalFiltered = StudentsDataTable::totalFilteredRecords($search);
             $data = StudentsDataTable::populateRecords($students);
             $json_data = [
-                "draw"            => intval($request->input('draw')),
-                "recordsTotal"    => intval($totalData),
-                "recordsFiltered" => intval($totalFiltered),
-                "data"            => $data
+                'draw' => intval($request->input('draw')),
+                'recordsTotal' => intval($totalData),
+                'recordsFiltered' => intval($totalFiltered),
+                'data' => $data,
             ];
 
             return response()->json($json_data);
 
         }
+
         return view('students.index');
     }
 
@@ -72,7 +72,7 @@ class StudentController extends AppBaseController
      */
     public function create(Request $request)
     {
-        return view('students.create',['parent'=>$request->parent??'']);
+        return view('students.create', ['parent' => $request->parent ?? '']);
     }
 
     /**
@@ -85,28 +85,30 @@ class StudentController extends AppBaseController
             $input = $request->all();
             $passwordString = \Str::password(20);
             $register = new RegisterController();
-            $input['password'] = $password = \App::environment(['production'])?Hash::make($passwordString):Hash::make('abcd1234');
+            $input['password'] = $password = \App::environment(['production']) ? Hash::make($passwordString) : Hash::make('abcd1234');
             $input['password_confirmation'] = $password;
-            $input['test_anxiety_challenge'] = $input['test_anxiety_challenge']=='yes';
-            $input['testing_accommodation'] = $input['testing_accommodation']=='yes';
-            $input['email_known'] = $input['email_known']=='yes';
+            $input['test_anxiety_challenge'] = $input['test_anxiety_challenge'] == 'yes';
+            $input['testing_accommodation'] = $input['testing_accommodation'] == 'yes';
+            $input['email_known'] = $input['email_known'] == 'yes';
             $input['added_by'] = \Auth::id();
             $input['auth_guard'] = \Auth::guard()->name;
             $input['added_at'] = Carbon::now();
-            $input['status'] = $input['status']=='yes';
+            $input['status'] = $input['status'] == 'yes';
             $input['userData'] = true;
-            $input['registrationType']='student';
-            $user = $register->register($request->merge($input),false);
+            $input['registrationType'] = 'student';
+            $user = $register->register($request->merge($input), false);
             $user->addRole('student');
             DB::commit();
-            $input['password'] =\App::environment(['production'])?$passwordString:'abcd1234';
+            $input['password'] = \App::environment(['production']) ? $passwordString : 'abcd1234';
             Mail::to($user)->send(new StudentRegistrationMail($input));
             Flash::success('Student saved successfully.');
+
             return redirect(route('students.index'));
-        }catch (QueryException $queryException){
+        } catch (QueryException $queryException) {
             DB::rollBack();
             report($queryException);
             Flash::error('something went wrong');
+
             return redirect(route('students.index'));
         }
 
@@ -152,12 +154,13 @@ class StudentController extends AppBaseController
         }
 
         $input = $request->all();
-        $input['test_anxiety_challenge'] = $input['test_anxiety_challenge']=='yes';
-        $input['testing_accommodation'] = $input['testing_accommodation']=='yes';
-        $input['email_known'] = $input['email_known']=='yes';
-        $input['status'] = $input['status']=='yes';
+        $input['test_anxiety_challenge'] = $input['test_anxiety_challenge'] == 'yes';
+        $input['testing_accommodation'] = $input['testing_accommodation'] == 'yes';
+        $input['email_known'] = $input['email_known'] == 'yes';
+        $input['status'] = $input['status'] == 'yes';
         $this->studentRepository->update($input, $id);
         Flash::success('Student updated successfully.');
+
         return redirect(route('students.index'));
     }
 
@@ -182,43 +185,48 @@ class StudentController extends AppBaseController
 
         return redirect(route('students.index'));
     }
+
     /**
      * Fetch Parents.
      *
      * @throws \Exception
      */
-    public function studentParentAjax(Request $request){
+    public function studentParentAjax(Request $request)
+    {
         $data = [];
         $email = trim($request->email);
-        $user = ParentUser::select(['parents.id','parents.email'])
-            ->where('parents.email','LIKE',"%{$email}%")
-            ->where('parents.status',true)
+        $user = ParentUser::select(['parents.id', 'parents.email'])
+            ->where('parents.email', 'LIKE', "%{$email}%")
+            ->where('parents.status', true)
             ->first();
-        if ($user){
+        if ($user) {
             $data[] =
                 [
-                    'id' =>$user->id,
-                    'text' => $user->email
+                    'id' => $user->id,
+                    'text' => $user->email,
                 ];
 
         }
+
         return response()->json($data);
     }
+
     /**
      * Fetch School.
      *
      * @throws \Exception
      */
-    public function studentSchoolAjax(Request $request){
+    public function studentSchoolAjax(Request $request)
+    {
         $data = [];
-        $schools = School::where('name','LIKE',"%{$request->name}%")->get();
-        if ($schools->isNotEmpty()){
-            foreach ($schools as $school){
-                $data[]= ['id'=>$school->id,'text' =>$school->name];
+        $schools = School::where('name', 'LIKE', "%{$request->name}%")->get();
+        if ($schools->isNotEmpty()) {
+            foreach ($schools as $school) {
+                $data[] = ['id' => $school->id, 'text' => $school->name];
             }
 
         }
+
         return response()->json($data);
     }
-
 }

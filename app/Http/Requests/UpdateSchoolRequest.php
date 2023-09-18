@@ -25,7 +25,7 @@ class UpdateSchoolRequest extends FormRequest
     public function rules()
     {
         $rules = School::$rules;
-        
+
         return $rules;
     }
 }

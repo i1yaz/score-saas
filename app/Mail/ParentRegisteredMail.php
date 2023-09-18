@@ -29,7 +29,7 @@ class ParentRegisteredMail extends Mailable implements ShouldQueue
         return new Content(
             markdown: 'emails.parent-registered',
             with: [
-                'password' => $this->data['password']
+                'password' => $this->data['password'],
             ]
         );
     }

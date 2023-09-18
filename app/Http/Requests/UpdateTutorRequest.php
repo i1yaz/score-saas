@@ -25,7 +25,7 @@ class UpdateTutorRequest extends FormRequest
     public function rules()
     {
         $rules = Tutor::$rules;
-        
+
         return $rules;
     }
 }

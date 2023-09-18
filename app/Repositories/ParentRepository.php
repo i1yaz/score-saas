@@ -3,9 +3,6 @@
 namespace App\Repositories;
 
 use App\Models\ParentUser;
-use App\Repositories\BaseRepository;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Model;
 
 class ParentRepository extends BaseRepository
 {
@@ -21,7 +18,7 @@ class ParentRepository extends BaseRepository
         'referral_source',
         'added_by',
         'added_at',
-        'referral_from_positive_experience_with_tutor'
+        'referral_from_positive_experience_with_tutor',
     ];
 
     public function getFieldsSearchable(): array
@@ -34,12 +31,13 @@ class ParentRepository extends BaseRepository
         return ParentUser::class;
     }
 
-    public function find(int $id, array $columns = ['*'],$withAddedBy=false)
+    public function find(int $id, array $columns = ['*'], $withAddedBy = false)
     {
         $query = $this->model->newQuery();
-//        if ($withAddedBy){
-//            $query = $query->join('users','parents.added_by','users.id');
-//        }
+
+        //        if ($withAddedBy){
+        //            $query = $query->join('users','parents.added_by','users.id');
+        //        }
         return $query->find($id, $columns);
     }
 }

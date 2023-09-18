@@ -9,7 +9,6 @@ use App\Policies\ParentUserPolicy;
 use App\Policies\StudentPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
-
 class AuthServiceProvider extends ServiceProvider
 {
     /**

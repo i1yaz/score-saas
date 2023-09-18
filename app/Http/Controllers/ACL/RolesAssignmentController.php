@@ -11,7 +11,9 @@ use Laratrust\Helper;
 class RolesAssignmentController
 {
     protected $rolesModel;
+
     protected $permissionModel;
+
     protected $assignPermissions;
 
     public function __construct()
@@ -58,7 +60,7 @@ class RolesAssignmentController
         $roles = $this->rolesModel::orderBy('name')->get(['id', 'name', 'display_name'])
             ->map(function ($role) use ($user) {
                 $role->assigned = $user->roles
-                ->pluck('id')
+                    ->pluck('id')
                     ->contains($role->id);
                 $role->isRemovable = Helper::roleIsRemovable($role);
 
@@ -66,7 +68,7 @@ class RolesAssignmentController
             });
         if ($this->assignPermissions) {
             $permissions = $this->permissionModel::orderBy('name')
-                ->get(['id', 'name', 'display_name','resource'])
+                ->get(['id', 'name', 'display_name', 'resource'])
                 ->map(function ($permission) use ($user) {
                     $permission->assigned = $user->permissions
                         ->pluck('id')

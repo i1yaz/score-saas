@@ -6,20 +6,18 @@ use App\DataTables\ParentsDataTable;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Requests\CreateParentRequest;
 use App\Http\Requests\UpdateParentRequest;
-use App\Http\Controllers\AppBaseController;
 use App\Mail\ParentRegisteredMail;
 use App\Models\ParentUser;
-use App\Models\Student;
 use App\Repositories\ParentRepository;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Flash;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
 class ParentController extends AppBaseController
 {
-    /** @var ParentRepository $parentRepository*/
+    /** @var ParentRepository */
     private $parentRepository;
 
     public function __construct(ParentRepository $parentRepo)
@@ -34,7 +32,7 @@ class ParentController extends AppBaseController
     {
         $this->authorize('viewAny', ParentUser::class);
 
-        if ($request->ajax()){
+        if ($request->ajax()) {
             $columns = [
                 'family_code',
                 'email',
@@ -42,7 +40,7 @@ class ParentController extends AppBaseController
                 'last_name',
                 'phone',
                 'status',
-                'action'
+                'action',
             ];
             $limit = $request->input('length');
             $start = $request->input('start');
@@ -54,10 +52,10 @@ class ParentController extends AppBaseController
             $totalFiltered = ParentsDataTable::totalFilteredRecords($search);
             $data = ParentsDataTable::populateRecords($parents);
             $json_data = [
-                "draw"            => intval($request->input('draw')),
-                "recordsTotal"    => intval($totalData),
-                "recordsFiltered" => intval($totalFiltered),
-                "data"            => $data
+                'draw' => intval($request->input('draw')),
+                'recordsTotal' => intval($totalData),
+                'recordsFiltered' => intval($totalFiltered),
+                'data' => $data,
             ];
 
             return response()->json($json_data);
@@ -83,23 +81,24 @@ class ParentController extends AppBaseController
         $input = $request->all();
         $passwordString = \Str::password(20);
         $register = new RegisterController();
-        $input['password'] = $password = \App::environment(['production'])?Hash::make($passwordString):Hash::make('abcd1234');
+        $input['password'] = $password = \App::environment(['production']) ? Hash::make($passwordString) : Hash::make('abcd1234');
         $input['password_confirmation'] = $password;
         $input['first_name'] = $request['first_name'];
         $input['last_name'] = $request['last_name'];
         $input['email'] = $request['email'];
-        $input['auth_guard'] =\Auth::guard()->name;
+        $input['auth_guard'] = \Auth::guard()->name;
         $input['added_by'] = \Auth::id();
         $input['added_at'] = Carbon::now();
-        $input['referral_from_positive_experience_with_tutor'] = $input['referral_from_positive_experience_with_tutor']=='yes';
-        $input['status'] = $input['status']=='yes';
+        $input['referral_from_positive_experience_with_tutor'] = $input['referral_from_positive_experience_with_tutor'] == 'yes';
+        $input['status'] = $input['status'] == 'yes';
         $input['userData'] = true;
-        $input['registrationType']='parent';
-        $user = $register->register($request->merge($input),false);
+        $input['registrationType'] = 'parent';
+        $user = $register->register($request->merge($input), false);
         $user->addRole('parent');
-        $input['password'] =\App::environment(['production'])?$passwordString:'abcd1234';
+        $input['password'] = \App::environment(['production']) ? $passwordString : 'abcd1234';
         Mail::to($user)->send(new ParentRegisteredMail($input));
         Flash::success('Parent saved successfully.');
+
         return redirect(route('parents.index'));
     }
 
@@ -131,10 +130,11 @@ class ParentController extends AppBaseController
         $this->authorize('update', $parent);
 
         $input = $request->all();
-        $input['referral_from_positive_experience_with_tutor'] = $input['referral_from_positive_experience_with_tutor']=='yes';
-        $input['status'] = $input['status']=='yes';
+        $input['referral_from_positive_experience_with_tutor'] = $input['referral_from_positive_experience_with_tutor'] == 'yes';
+        $input['status'] = $input['status'] == 'yes';
         $this->parentRepository->update($input, $parent->id);
         Flash::success('Parent updated successfully.');
+
         return redirect(route('parents.index'));
     }
 

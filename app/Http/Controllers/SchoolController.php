@@ -4,15 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateSchoolRequest;
 use App\Http\Requests\UpdateSchoolRequest;
-use App\Http\Controllers\AppBaseController;
 use App\Models\School;
 use App\Repositories\SchoolRepository;
-use Illuminate\Http\Request;
 use Flash;
+use Illuminate\Http\Request;
 
 class SchoolController extends AppBaseController
 {
-    /** @var SchoolRepository $schoolRepository*/
+    /** @var SchoolRepository */
     private $schoolRepository;
 
     public function __construct(SchoolRepository $schoolRepo)
@@ -48,8 +47,8 @@ class SchoolController extends AppBaseController
 
         $this->schoolRepository->create($input);
 
-        if($request->ajax()){
-            return response()->json(['success'=>"School saved successfully."]);
+        if ($request->ajax()) {
+            return response()->json(['success' => 'School saved successfully.']);
         }
 
         Flash::success('School saved successfully.');
@@ -116,15 +115,17 @@ class SchoolController extends AppBaseController
      */
     public function destroy($id)
     {
-        $school = School::with(['studentsEnrolled'=>function($query){
+        $school = School::with(['studentsEnrolled' => function ($query) {
             $query->first();
         }])->findOrFail($id);
-        if ($school->studentsEnrolled->isNotEmpty()){
+        if ($school->studentsEnrolled->isNotEmpty()) {
             Flash::error('There are students enrolled in this school');
+
             return redirect(route('schools.index'));
         }
         $this->schoolRepository->delete($id);
         Flash::success('School deleted successfully.');
+
         return redirect(route('schools.index'));
     }
 }

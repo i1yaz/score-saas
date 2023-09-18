@@ -29,7 +29,7 @@ class TutorRegistrationMail extends Mailable implements ShouldQueue
         return new Content(
             markdown: 'emails.tutor-registration',
             with: [
-                'password' => $this->data['password']
+                'password' => $this->data['password'],
             ]
         );
 

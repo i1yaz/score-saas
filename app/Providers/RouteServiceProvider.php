@@ -40,7 +40,7 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('web')
                 ->group(base_path('routes/acl.php'));
 
-            if (App::environment(['local'])){
+            if (App::environment(['local'])) {
                 Route::middleware('web')
                     ->group(base_path('routes/infyome.php'));
             }

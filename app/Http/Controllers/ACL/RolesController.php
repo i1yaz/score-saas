@@ -12,6 +12,7 @@ use Laratrust\Helper;
 class RolesController
 {
     protected $rolesModel;
+
     protected $permissionModel;
 
     public function __construct()
@@ -30,7 +31,8 @@ class RolesController
 
     public function create()
     {
-        $permissions = $this->permissionModel::all(['id', 'display_name','resource']);
+        $permissions = $this->permissionModel::all(['id', 'display_name', 'resource']);
+
         return View::make('acl.roles.create', [
             'model' => null,
             'permissions' => $permissions->groupBy('resource'),
@@ -75,7 +77,7 @@ class RolesController
             return redirect()->back();
         }
 
-        $permissions = $this->permissionModel::all(['id', 'name', 'display_name','resource'])
+        $permissions = $this->permissionModel::all(['id', 'name', 'display_name', 'resource'])
             ->map(function ($permission) use ($role) {
                 $permission->assigned = $role->permissions
                     ->pluck('id')

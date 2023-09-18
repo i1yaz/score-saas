@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use Illuminate\Container\Container as Application;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -36,15 +35,15 @@ abstract class BaseRepository
     /**
      * Make Model instance
      *
-     * @throws \Exception
-     *
      * @return Model
+     *
+     * @throws \Exception
      */
     public function makeModel()
     {
         $model = app($this->model());
 
-        if (!$model instanceof Model) {
+        if (! $model instanceof Model) {
             throw new \Exception("Class {$this->model()} must be an instance of Illuminate\\Database\\Eloquent\\Model");
         }
 
@@ -69,18 +68,18 @@ abstract class BaseRepository
         $query = $this->model->newQuery();
 
         if (count($search)) {
-            foreach($search as $key => $value) {
+            foreach ($search as $key => $value) {
                 if (in_array($key, $this->getFieldsSearchable())) {
                     $query->where($key, $value);
                 }
             }
         }
 
-        if (!is_null($skip)) {
+        if (! is_null($skip)) {
             $query->skip($skip);
         }
 
-        if (!is_null($limit)) {
+        if (! is_null($limit)) {
             $query->limit($limit);
         }
 
@@ -134,13 +133,14 @@ abstract class BaseRepository
 
         $model->fill($input);
         $model->save();
+
         return $model;
     }
 
     /**
-     * @throws \Exception
-     *
      * @return bool|mixed|null
+     *
+     * @throws \Exception
      */
     public function delete(int $id)
     {

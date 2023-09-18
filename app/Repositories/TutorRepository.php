@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Models\Tutor;
-use App\Repositories\BaseRepository;
 
 class TutorRepository extends BaseRepository
 {
@@ -16,7 +15,7 @@ class TutorRepository extends BaseRepository
         'secondary_phone',
         'picture',
         'resume',
-        'start_date'
+        'start_date',
     ];
 
     public function getFieldsSearchable(): array

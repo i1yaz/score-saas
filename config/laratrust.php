@@ -99,10 +99,10 @@ return [
     |
     */
     'user_models' => [
-        'users'   => \App\Models\User::class,
-        'parent'  => \App\Models\ParentUser::class,
+        'users' => \App\Models\User::class,
+        'parent' => \App\Models\ParentUser::class,
         'student' => \App\Models\Student::class,
-        'tutor' => \App\Models\Tutor::class
+        'tutor' => \App\Models\Tutor::class,
     ],
 
     /*
@@ -364,7 +364,7 @@ return [
             'not_editable' => [],
 
             // The user won't be able to delete the role.
-            'not_deletable' => ['super-admin','admin'],
+            'not_deletable' => ['super-admin', 'admin'],
         ],
     ],
 ];

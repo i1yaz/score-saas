@@ -10,13 +10,13 @@ use Laratrust\Contracts\LaratrustUser;
 use Laratrust\Traits\HasRolesAndPermissions;
 use Laravel\Sanctum\HasApiTokens;
 
-class Student extends  Authenticatable implements LaratrustUser
+class Student extends Authenticatable implements LaratrustUser
 {
-    use HasApiTokens, HasFactory, Notifiable,HasRolesAndPermissions;
+    use HasApiTokens, HasFactory, HasRolesAndPermissions,Notifiable;
 
     public $table = 'students';
 
-    protected string $guard = "student";
+    protected string $guard = 'student';
 
     public $fillable = [
         'school_id',
@@ -49,26 +49,24 @@ class Student extends  Authenticatable implements LaratrustUser
         'official_baseline_act_score' => 'string',
         'official_baseline_sat_score' => 'string',
         'test_anxiety_challenge' => 'boolean',
-        'parent_id' =>'integer',
+        'parent_id' => 'integer',
         'added_by' => 'integer',
         'added_at' => 'timestamp',
         'status' => 'boolean',
     ];
 
     public static array $rules = [
-        'email' => ['required', 'string', 'email', 'max:255', 'unique:students']
+        'email' => ['required', 'string', 'email', 'max:255', 'unique:students'],
     ];
-
 
     /**
      *------------------------------------------------------------------
      * Relationships
      *------------------------------------------------------------------
      */
-
     public function parentUser(): BelongsTo
     {
-        return $this->belongsTo(ParentUser::class,'parent_id','id');
+        return $this->belongsTo(ParentUser::class, 'parent_id', 'id');
     }
 
     /**

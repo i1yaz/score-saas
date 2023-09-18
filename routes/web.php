@@ -1,10 +1,6 @@
 <?php
 
-
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\ParentController;
-use App\Http\Controllers\StudentController;
-use App\Http\Controllers\SchoolController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -30,45 +26,44 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
 Auth::routes(['register' => false]);
-Route::get('admin/login',[LoginController::class,'showAdminLoginForm'])->name('admin.login');
+Route::get('admin/login', [LoginController::class, 'showAdminLoginForm'])->name('admin.login');
 
-Route::group(['middleware' => ['auth:web,parent,student,tutor']],function (){
+Route::group(['middleware' => ['auth:web,parent,student,tutor']], function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     //Parent
-    Route::get('parents',[App\Http\Controllers\ParentController::class,'index'])->name('parents.index')->middleware(['permission:parent-index']);
-    Route::get('parents/create',[App\Http\Controllers\ParentController::class,'create'])->name('parents.create')->middleware(['permission:parent-create']);
-    Route::post('parents',[App\Http\Controllers\ParentController::class,'store'])->name('parents.store')->middleware(['permission:parent-create']);;
-    Route::get('parents/{parent}',[App\Http\Controllers\ParentController::class,'show'])->name('parents.show')->middleware(['permission:parent-show']);
-    Route::get('parents/{parent}/edit',[App\Http\Controllers\ParentController::class,'edit'])->name('parents.edit')->middleware(['permission:parent-edit']);
-    Route::patch('parents/{parent}',[App\Http\Controllers\ParentController::class,'update'])->name('parents.update')->middleware(['permission:parent-edit']);
-    Route::delete('parents/{parent}',[App\Http\Controllers\ParentController::class,'destroy'])->name('parents.destroy')->middleware(['permission:parent-destroy']);
+    Route::get('parents', [App\Http\Controllers\ParentController::class, 'index'])->name('parents.index')->middleware(['permission:parent-index']);
+    Route::get('parents/create', [App\Http\Controllers\ParentController::class, 'create'])->name('parents.create')->middleware(['permission:parent-create']);
+    Route::post('parents', [App\Http\Controllers\ParentController::class, 'store'])->name('parents.store')->middleware(['permission:parent-create']);
+    Route::get('parents/{parent}', [App\Http\Controllers\ParentController::class, 'show'])->name('parents.show')->middleware(['permission:parent-show']);
+    Route::get('parents/{parent}/edit', [App\Http\Controllers\ParentController::class, 'edit'])->name('parents.edit')->middleware(['permission:parent-edit']);
+    Route::patch('parents/{parent}', [App\Http\Controllers\ParentController::class, 'update'])->name('parents.update')->middleware(['permission:parent-edit']);
+    Route::delete('parents/{parent}', [App\Http\Controllers\ParentController::class, 'destroy'])->name('parents.destroy')->middleware(['permission:parent-destroy']);
     //Student
-    Route::get('students',[App\Http\Controllers\StudentController::class,'index'])->name('students.index')->middleware(['permission:student-index']);
-    Route::get('students/create',[App\Http\Controllers\StudentController::class,'create'])->name('students.create')->middleware(['permission:student-create']);
-    Route::post('students',[App\Http\Controllers\StudentController::class,'store'])->name('students.store')->middleware(['permission:student-create']);;
-    Route::get('students/{parent}',[App\Http\Controllers\StudentController::class,'show'])->name('students.show')->middleware(['permission:student-show']);
-    Route::get('students/{parent}/edit',[App\Http\Controllers\StudentController::class,'edit'])->name('students.edit')->middleware(['permission:student-edit']);
-    Route::patch('students/{parent}',[App\Http\Controllers\StudentController::class,'update'])->name('students.update')->middleware(['permission:student-edit']);
-    Route::delete('students/{parent}',[App\Http\Controllers\StudentController::class,'destroy'])->name('students.destroy')->middleware(['permission:student-destroy']);
-    Route::get('student-parent-ajax', [App\Http\Controllers\StudentController::class,'studentParentAjax'])->name('student-parent-ajax')->middleware(['permission:student-create']);
-    Route::get('student-school-ajax', [App\Http\Controllers\StudentController::class,'studentSchoolAjax'])->name('student-school-ajax')->middleware(['permission:student-create']);
+    Route::get('students', [App\Http\Controllers\StudentController::class, 'index'])->name('students.index')->middleware(['permission:student-index']);
+    Route::get('students/create', [App\Http\Controllers\StudentController::class, 'create'])->name('students.create')->middleware(['permission:student-create']);
+    Route::post('students', [App\Http\Controllers\StudentController::class, 'store'])->name('students.store')->middleware(['permission:student-create']);
+    Route::get('students/{parent}', [App\Http\Controllers\StudentController::class, 'show'])->name('students.show')->middleware(['permission:student-show']);
+    Route::get('students/{parent}/edit', [App\Http\Controllers\StudentController::class, 'edit'])->name('students.edit')->middleware(['permission:student-edit']);
+    Route::patch('students/{parent}', [App\Http\Controllers\StudentController::class, 'update'])->name('students.update')->middleware(['permission:student-edit']);
+    Route::delete('students/{parent}', [App\Http\Controllers\StudentController::class, 'destroy'])->name('students.destroy')->middleware(['permission:student-destroy']);
+    Route::get('student-parent-ajax', [App\Http\Controllers\StudentController::class, 'studentParentAjax'])->name('student-parent-ajax')->middleware(['permission:student-create']);
+    Route::get('student-school-ajax', [App\Http\Controllers\StudentController::class, 'studentSchoolAjax'])->name('student-school-ajax')->middleware(['permission:student-create']);
     //School
-    Route::get('schools',[App\Http\Controllers\SchoolController::class,'index'])->name('schools.index')->middleware(['permission:school-index']);
-    Route::get('schools/create',[App\Http\Controllers\SchoolController::class,'create'])->name('schools.create')->middleware(['permission:school-create']);
-    Route::post('schools',[App\Http\Controllers\SchoolController::class,'store'])->name('schools.store')->middleware(['permission:school-create']);;
-    Route::get('schools/{school}',[App\Http\Controllers\SchoolController::class,'show'])->name('schools.show')->middleware(['permission:school-show']);
-    Route::get('schools/{school}/edit',[App\Http\Controllers\SchoolController::class,'edit'])->name('schools.edit')->middleware(['permission:school-edit']);
-    Route::patch('schools/{school}',[App\Http\Controllers\SchoolController::class,'update'])->name('schools.update')->middleware(['permission:school-edit']);
-    Route::delete('schools/{school}',[App\Http\Controllers\SchoolController::class,'destroy'])->name('schools.destroy')->middleware(['permission:school-destroy']);
+    Route::get('schools', [App\Http\Controllers\SchoolController::class, 'index'])->name('schools.index')->middleware(['permission:school-index']);
+    Route::get('schools/create', [App\Http\Controllers\SchoolController::class, 'create'])->name('schools.create')->middleware(['permission:school-create']);
+    Route::post('schools', [App\Http\Controllers\SchoolController::class, 'store'])->name('schools.store')->middleware(['permission:school-create']);
+    Route::get('schools/{school}', [App\Http\Controllers\SchoolController::class, 'show'])->name('schools.show')->middleware(['permission:school-show']);
+    Route::get('schools/{school}/edit', [App\Http\Controllers\SchoolController::class, 'edit'])->name('schools.edit')->middleware(['permission:school-edit']);
+    Route::patch('schools/{school}', [App\Http\Controllers\SchoolController::class, 'update'])->name('schools.update')->middleware(['permission:school-edit']);
+    Route::delete('schools/{school}', [App\Http\Controllers\SchoolController::class, 'destroy'])->name('schools.destroy')->middleware(['permission:school-destroy']);
     //Tutor
-    Route::get('tutors',[App\Http\Controllers\TutorController::class,'index'])->name('tutors.index')->middleware(['permission:tutor-index']);
-    Route::get('tutors/create',[App\Http\Controllers\TutorController::class,'create'])->name('tutors.create')->middleware(['permission:tutor-create']);
-    Route::post('tutors',[App\Http\Controllers\TutorController::class,'store'])->name('tutors.store')->middleware(['permission:tutor-create']);;
-    Route::get('tutors/{tutor}',[App\Http\Controllers\TutorController::class,'show'])->name('tutors.show')->middleware(['permission:tutor-show']);
-    Route::get('tutors/{tutor}/edit',[App\Http\Controllers\TutorController::class,'edit'])->name('tutors.edit')->middleware(['permission:tutor-edit']);
-    Route::patch('tutors/{tutor}',[App\Http\Controllers\TutorController::class,'update'])->name('tutors.update')->middleware(['permission:tutor-edit']);
-    Route::delete('tutors/{tutor}',[App\Http\Controllers\TutorController::class,'destroy'])->name('tutors.destroy')->middleware(['permission:tutor-destroy']);
+    Route::get('tutors', [App\Http\Controllers\TutorController::class, 'index'])->name('tutors.index')->middleware(['permission:tutor-index']);
+    Route::get('tutors/create', [App\Http\Controllers\TutorController::class, 'create'])->name('tutors.create')->middleware(['permission:tutor-create']);
+    Route::post('tutors', [App\Http\Controllers\TutorController::class, 'store'])->name('tutors.store')->middleware(['permission:tutor-create']);
+    Route::get('tutors/{tutor}', [App\Http\Controllers\TutorController::class, 'show'])->name('tutors.show')->middleware(['permission:tutor-show']);
+    Route::get('tutors/{tutor}/edit', [App\Http\Controllers\TutorController::class, 'edit'])->name('tutors.edit')->middleware(['permission:tutor-edit']);
+    Route::patch('tutors/{tutor}', [App\Http\Controllers\TutorController::class, 'update'])->name('tutors.update')->middleware(['permission:tutor-edit']);
+    Route::delete('tutors/{tutor}', [App\Http\Controllers\TutorController::class, 'destroy'])->name('tutors.destroy')->middleware(['permission:tutor-destroy']);
 
 });

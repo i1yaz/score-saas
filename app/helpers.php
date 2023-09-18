@@ -1,77 +1,79 @@
 <?php
 
-
 use App\Models\ParentUser;
 use Illuminate\Http\UploadedFile;
 
 if (! function_exists('booleanSelect')) {
-    function booleanSelect($value):string
+    function booleanSelect($value): string
     {
-        return $value==1?'yes':'no';
+        return $value == 1 ? 'yes' : 'no';
     }
 }
 if (! function_exists('getRoleDescriptionOfLoggedInUser')) {
-    function getRoleDescriptionOfLoggedInUser():string
+    function getRoleDescriptionOfLoggedInUser(): string
     {
-        if (Auth::user()->hasRole('super-admin')){
+        if (Auth::user()->hasRole('super-admin')) {
             return 'Super Admin';
         }
-        if (Auth::user()->hasRole('admin')){
+        if (Auth::user()->hasRole('admin')) {
             return 'Admin';
         }
-        if (Auth::user()->hasRole('student')){
+        if (Auth::user()->hasRole('student')) {
             return 'Student';
         }
-        if (Auth::user()->hasRole('parent')){
+        if (Auth::user()->hasRole('parent')) {
             return 'Parent';
         }
-        if (Auth::user()->hasRole('tutor')){
+        if (Auth::user()->hasRole('tutor')) {
             return 'Tutor';
         }
-        return "";
+
+        return '';
     }
 }
 if (! function_exists('getRoleOfLoggedInUser')) {
-    function getRoleOfLoggedInUser():string
+    function getRoleOfLoggedInUser(): string
     {
-        if (Auth::user()->hasRole('super-admin')){
+        if (Auth::user()->hasRole('super-admin')) {
             return 'super-admin';
         }
-        if (Auth::user()->hasRole('admin')){
+        if (Auth::user()->hasRole('admin')) {
             return 'admin';
         }
-        if (Auth::user()->hasRole('student')){
+        if (Auth::user()->hasRole('student')) {
             return 'student';
         }
-        if (Auth::user()->hasRole('parent')){
+        if (Auth::user()->hasRole('parent')) {
             return 'parent';
         }
-        if (Auth::user()->hasRole('tutor')){
+        if (Auth::user()->hasRole('tutor')) {
             return 'tutor';
         }
-        return "";
+
+        return '';
     }
 }
 if (! function_exists('getFamilyCodeFromId')) {
-    function getFamilyCodeFromId($id):string
+    function getFamilyCodeFromId($id): string
     {
         return $id + ParentUser::FAMILY_CODE_START;
     }
 }
 
 if (! function_exists('storeFile')) {
-    function storeFile(string $path,File|UploadedFile $file,string $name=null):string
+    function storeFile(string $path, File|UploadedFile $file, string $name = null): string
     {
-        if (!empty($name)){
-            return Storage::putFileAs($path,$file,$name);
+        if (! empty($name)) {
+            return Storage::putFileAs($path, $file, $name);
 
         }
-        return Storage::putFile($path,$file);
+
+        return Storage::putFile($path, $file);
 
     }
 }
 if (! function_exists('getFile')) {
-    function getFile($id):string
+    function getFile($id): string
     {
 
     }

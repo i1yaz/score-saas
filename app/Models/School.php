@@ -11,26 +11,24 @@ class School extends Model
 
     public $fillable = [
         'name',
-        'address'
+        'address',
     ];
 
     protected $casts = [
         'id' => 'integer',
         'name' => 'string',
-        'address' => 'string'
+        'address' => 'string',
     ];
 
     public static array $rules = [
 
     ];
 
-
     /**
      *------------------------------------------------------------------
      * Relationships
      *------------------------------------------------------------------
      */
-
     public function studentsEnrolled(): HasMany
     {
         return $this->hasMany(Student::class);

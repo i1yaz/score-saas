@@ -2,27 +2,25 @@
 
 namespace App\Http\Controllers;
 
-
 use App\DataTables\TutorDataTable;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Requests\CreateTutorRequest;
 use App\Http\Requests\UpdateTutorRequest;
-use App\Mail\StudentRegistrationMail;
 use App\Mail\TutorRegistrationMail;
 use App\Models\Tutor;
 use App\Repositories\TutorRepository;
 use Carbon\Carbon;
+use Flash;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Flash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
 class TutorController extends AppBaseController
 {
-    /** @var TutorRepository $tutorRepository*/
+    /** @var TutorRepository */
     private $tutorRepository;
 
     public function __construct(TutorRepository $tutorRepo)
@@ -35,7 +33,7 @@ class TutorController extends AppBaseController
      */
     public function index(Request $request)
     {
-        if ($request->ajax()){
+        if ($request->ajax()) {
             $columns = [
                 'email',
                 'first_name',
@@ -43,7 +41,7 @@ class TutorController extends AppBaseController
                 'status',
                 'start_date',
                 'phone',
-                'action'
+                'action',
             ];
             $limit = $request->input('length');
             $start = $request->input('start');
@@ -55,10 +53,10 @@ class TutorController extends AppBaseController
             $totalFiltered = TutorDataTable::totalFilteredRecords($search);
             $data = TutorDataTable::populateRecords($tutors);
             $json_data = [
-                "draw"            => intval($request->input('draw')),
-                "recordsTotal"    => intval($totalData),
-                "recordsFiltered" => intval($totalFiltered),
-                "data"            => $data
+                'draw' => intval($request->input('draw')),
+                'recordsTotal' => intval($totalData),
+                'recordsFiltered' => intval($totalFiltered),
+                'data' => $data,
             ];
 
             return response()->json($json_data);
@@ -86,27 +84,29 @@ class TutorController extends AppBaseController
             $input = $request->all();
             $passwordString = \Str::password(20);
             $register = new RegisterController();
-            $input['password'] = $password = \App::environment(['production'])?Hash::make($passwordString):Hash::make('abcd1234');
+            $input['password'] = $password = \App::environment(['production']) ? Hash::make($passwordString) : Hash::make('abcd1234');
             $input['password_confirmation'] = $password;
             $input['added_by'] = \Auth::id();
             $input['auth_guard'] = \Auth::guard()->name;
             $input['added_at'] = Carbon::now();
-            $input['status'] = $input['status']=='yes';
+            $input['status'] = $input['status'] == 'yes';
             $input['userData'] = true;
-            $input['registrationType']='tutor';
+            $input['registrationType'] = 'tutor';
             unset($input['picture'],$input['resume']);
-            $user = $register->register($request->merge($input),false);
+            $user = $register->register($request->merge($input), false);
             $this->storePictureOrResume($request, $user);
             $user->addRole('tutor');
             DB::commit();
-            $input['password'] =\App::environment(['production'])?$passwordString:'abcd1234';
+            $input['password'] = \App::environment(['production']) ? $passwordString : 'abcd1234';
             Mail::to($user)->send(new TutorRegistrationMail($input));
             Flash::success('Tutor saved successfully.');
+
             return redirect(route('tutors.index'));
-        }catch (QueryException $queryException){
+        } catch (QueryException $queryException) {
             DB::rollBack();
             report($queryException);
             Flash::error('something went wrong');
+
             return redirect(route('tutors.index'));
         }
     }
@@ -155,11 +155,12 @@ class TutorController extends AppBaseController
             return redirect(route('tutors.index'));
         }
         $input = $request->all();
-        $input['status'] = $input['status']=='yes';
+        $input['status'] = $input['status'] == 'yes';
         unset($input['picture'],$input['resume']);
         $this->tutorRepository->update($input, $id);
         $this->storePictureOrResume($request, $tutor);
         Flash::success('Tutor updated successfully.');
+
         return redirect(route('tutors.index'));
     }
 
@@ -174,21 +175,18 @@ class TutorController extends AppBaseController
 
         if (empty($tutor)) {
             Flash::error('Tutor not found');
+
             return redirect(route('tutors.index'));
         }
         $this->tutorRepository->delete($id);
         Flash::success('Tutor deleted successfully.');
+
         return redirect(route('tutors.index'));
     }
 
-    /**
-     * @param Request $request
-     * @param Tutor|TutorRepository|Model $tutor
-     * @return void
-     */
-    private function storePictureOrResume(Request $request,Tutor|TutorRepository|Model $tutor): void
+    private function storePictureOrResume(Request $request, Tutor|TutorRepository|Model $tutor): void
     {
-        $input= [];
+        $input = [];
         if ($request->has('picture')) {
             deleteFile($tutor->picture);
             $input['picture'] = storeFile("pictures/tutors/{$tutor->id}", $request->file('picture'));
@@ -202,5 +200,4 @@ class TutorController extends AppBaseController
 
         }
     }
-
 }

@@ -6,9 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\ParentUser;
 use App\Models\Student;
 use App\Models\Tutor;
-use App\Providers\RouteServiceProvider;
 use App\Models\User;
-use Carbon\Carbon;
+use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\JsonResponse;
@@ -54,7 +53,6 @@ class RegisterController extends Controller
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array  $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
@@ -68,7 +66,6 @@ class RegisterController extends Controller
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
      * @return \App\Models\User
      */
     protected function create(array $data)
@@ -78,30 +75,29 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
         ]);
     }
+
     /**
      * Handle a registration request for the application.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse|User
      */
-    public function register(Request $request,$autologin=true)
+    public function register(Request $request, $autologin = true)
     {
         $this->validator($request->all())->validate();
 
-        if ($request->registrationType=='parent'){
+        if ($request->registrationType == 'parent') {
             $user = $this->createParent($request->all());
-        }elseif ($request->registrationType=='student'){
+        } elseif ($request->registrationType == 'student') {
             $user = $this->createStudent($request->all());
-        }elseif($request->registrationType=='tutor'){
+        } elseif ($request->registrationType == 'tutor') {
             $user = $this->createTutor($request->all());
-        }
-        else{
+        } else {
             $user = $this->create($request->all());
         }
 
         event(new Registered($user));
 
-        if ($autologin){
+        if ($autologin) {
             $this->guard()->login($user);
         }
 
@@ -117,32 +113,34 @@ class RegisterController extends Controller
     /**
      * The user has been registered.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  mixed  $user
      * @return User   $user
      */
     protected function registered(Request $request, $user)
     {
-        if ($request->userData){
+        if ($request->userData) {
             return $user;
         }
     }
 
     protected function createParent(array $request)
     {
-        Validator::make($request,ParentUser::$rules);
+        Validator::make($request, ParentUser::$rules);
+
         return ParentUser::create($request);
     }
 
     protected function createStudent(array $request)
     {
-        Validator::make($request,Student::$rules);
+        Validator::make($request, Student::$rules);
+
         return Student::create($request);
     }
 
     private function createTutor(array $request)
     {
-        Validator::make($request,Tutor::$rules);
+        Validator::make($request, Tutor::$rules);
+
         return Tutor::create($request);
     }
 }

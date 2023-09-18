@@ -42,6 +42,12 @@
         }
     },
     "scripts": {
+        "phpstan": [
+            "./vendor/bin/phpstan analyse"
+        ],
+        "pint":[
+            "./vendor/bin/pint"
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
@@ -55,6 +61,10 @@
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
         ]
+    },
+    "scripts-descriptions": {
+        "phpstan": "Run PHPStan static analysis against your application.",
+        "pint" : "Running pint"
     },
     "extra": {
         "laravel": {

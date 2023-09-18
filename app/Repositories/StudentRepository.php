@@ -3,9 +3,6 @@
 namespace App\Repositories;
 
 use App\Models\Student;
-use App\Repositories\BaseRepository;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Model;
 
 class StudentRepository extends BaseRepository
 {
@@ -35,5 +32,4 @@ class StudentRepository extends BaseRepository
     {
         return Student::class;
     }
-
 }
