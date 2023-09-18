@@ -11,6 +11,7 @@ use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
 use App\Http\Middleware\ValidateSignature;
 use App\Http\Middleware\VerifyCsrfToken;
+use App\Http\Middleware\WebGeneralMiddleware;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Auth\Middleware\EnsureEmailIsVerified;
@@ -89,6 +90,6 @@ class Kernel extends HttpKernel
         'throttle' => ThrottleRequests::class,
         'verified' => EnsureEmailIsVerified::class,
         'acl.access' => ACL::class,
-        'web.general' => \App\Http\Middleware\WebGenralMiddleware::class,
+        'web.general' => WebGeneralMiddleware::class,
     ];
 }

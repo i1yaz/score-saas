@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Student;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User;
+use Illuminate\Support\Facades\Auth;
 
 class StudentPolicy
 {
@@ -14,14 +15,14 @@ class StudentPolicy
     {
         //['super-admin','admin','student','parent','tutor','proctor','client','developer']
 
-        if (\Auth::user()->hasRole(['super-admin', 'admin'])) {
+        if (Auth::user()->hasRole(['super-admin', 'admin'])) {
             return true;
         }
     }
 
     public function viewAny(User $user): bool
     {
-        if (\Auth::user()->hasRole(['student', 'parent'])) {
+        if (Auth::user()->hasRole(['student', 'parent'])) {
             return true;
         }
 
@@ -31,30 +32,10 @@ class StudentPolicy
 
     public function view(User $user, Student $student): bool
     {
-        if (\Auth::user()->hasRole(['student', 'parent'])) {
+        if (Auth::user()->hasRole(['student', 'parent'])) {
             return $user->id == $student->id || $user->id == $student->parent_id;
         }
 
         return false;
-    }
-
-    public function create(User $user): bool
-    {
-    }
-
-    public function update(User $user, Student $student): bool
-    {
-    }
-
-    public function delete(User $user, Student $student): bool
-    {
-    }
-
-    public function restore(User $user, Student $student): bool
-    {
-    }
-
-    public function forceDelete(User $user, Student $student): bool
-    {
     }
 }

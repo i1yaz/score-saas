@@ -6,8 +6,8 @@ use App\Http\Requests\CreateSchoolRequest;
 use App\Http\Requests\UpdateSchoolRequest;
 use App\Models\School;
 use App\Repositories\SchoolRepository;
-use Flash;
 use Illuminate\Http\Request;
+use Laracasts\Flash\Flash;
 
 class SchoolController extends AppBaseController
 {

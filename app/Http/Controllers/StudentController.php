@@ -12,12 +12,15 @@ use App\Models\School;
 use App\Models\Student;
 use App\Repositories\StudentRepository;
 use Carbon\Carbon;
-use DB;
-use Flash;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
+use Laracasts\Flash\Flash;
 
 class StudentController extends AppBaseController
 {
@@ -83,15 +86,15 @@ class StudentController extends AppBaseController
         DB::beginTransaction();
         try {
             $input = $request->all();
-            $passwordString = \Str::password(20);
+            $passwordString = Str::password(20);
             $register = new RegisterController();
-            $input['password'] = $password = \App::environment(['production']) ? Hash::make($passwordString) : Hash::make('abcd1234');
+            $input['password'] = $password = App::environment(['production']) ? Hash::make($passwordString) : Hash::make('abcd1234');
             $input['password_confirmation'] = $password;
             $input['test_anxiety_challenge'] = $input['test_anxiety_challenge'] == 'yes';
             $input['testing_accommodation'] = $input['testing_accommodation'] == 'yes';
             $input['email_known'] = $input['email_known'] == 'yes';
-            $input['added_by'] = \Auth::id();
-            $input['auth_guard'] = \Auth::guard()->name;
+            $input['added_by'] = Auth::id();
+            $input['auth_guard'] = Auth::guard()->name;
             $input['added_at'] = Carbon::now();
             $input['status'] = $input['status'] == 'yes';
             $input['userData'] = true;
@@ -99,7 +102,7 @@ class StudentController extends AppBaseController
             $user = $register->register($request->merge($input), false);
             $user->addRole('student');
             DB::commit();
-            $input['password'] = \App::environment(['production']) ? $passwordString : 'abcd1234';
+            $input['password'] = App::environment(['production']) ? $passwordString : 'abcd1234';
             Mail::to($user)->send(new StudentRegistrationMail($input));
             Flash::success('Student saved successfully.');
 

@@ -6,6 +6,7 @@ use App\Models\ParentUser;
 use App\Models\Student;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Auth;
 
 class ParentsDataTable implements IDataTables
 {
@@ -62,11 +63,11 @@ class ParentsDataTable implements IDataTables
             });
         }
 
-        if (\Auth::user()->hasRole('parent') && \Auth::user() instanceof ParentUser) {
-            $records = $records->where('id', \Auth::id());
+        if (Auth::user()->hasRole('parent') && Auth::user() instanceof ParentUser) {
+            $records = $records->where('id', Auth::id());
         }
-        if (\Auth::user()->hasRole('student') && \Auth::user() instanceof Student) {
-            $records = $records->where('id', \Auth::user()->parent_id);
+        if (Auth::user()->hasRole('student') && Auth::user() instanceof Student) {
+            $records = $records->where('id', Auth::user()->parent_id);
         }
 
         return $records;
@@ -75,11 +76,11 @@ class ParentsDataTable implements IDataTables
     public static function totalRecords(): int
     {
         $students = ParentUser::query()->select(['id']);
-        if (\Auth::user()->hasRole('parent') && \Auth::user() instanceof ParentUser) {
-            $students = $students->where('id', \Auth::id());
+        if (Auth::user()->hasRole('parent') && Auth::user() instanceof ParentUser) {
+            $students = $students->where('id', Auth::id());
         }
-        if (\Auth::user()->hasRole('student') && \Auth::user() instanceof Student) {
-            $students = $students->where('id', \Auth::user()->parent_id);
+        if (Auth::user()->hasRole('student') && Auth::user() instanceof Student) {
+            $students = $students->where('id', Auth::user()->parent_id);
         }
 
         return $students->count();

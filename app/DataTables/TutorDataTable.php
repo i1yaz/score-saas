@@ -7,6 +7,7 @@ use App\Models\Tutor;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Auth;
 
 class TutorDataTable implements IDataTables
 {
@@ -59,8 +60,8 @@ class TutorDataTable implements IDataTables
                     ->orWhere('email', 'like', "%{$search}%");
             });
         }
-        if (\Auth::user()->hasRole('tutor') && \Auth::user() instanceof Tutor) {
-            $records = $records->where('id', \Auth::id());
+        if (Auth::user()->hasRole('tutor') && Auth::user() instanceof Tutor) {
+            $records = $records->where('id', Auth::id());
         }
 
         return $records;
@@ -69,8 +70,8 @@ class TutorDataTable implements IDataTables
     public static function totalRecords(): int
     {
         $tutors = Tutor::query()->select(['id']);
-        if (\Auth::user()->hasRole('tutor') && \Auth::user() instanceof ParentUser) {
-            $tutors = $tutors->where('id', \Auth::id());
+        if (Auth::user()->hasRole('tutor') && Auth::user() instanceof ParentUser) {
+            $tutors = $tutors->where('id', Auth::id());
         }
 
         return $tutors->count();

@@ -2,6 +2,8 @@
 
 use App\Models\ParentUser;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 if (! function_exists('booleanSelect')) {
     function booleanSelect($value): string
@@ -75,7 +77,7 @@ if (! function_exists('storeFile')) {
 if (! function_exists('getFile')) {
     function getFile($id): string
     {
-
+        return '';
     }
 }
 if (! function_exists('deleteFile')) {

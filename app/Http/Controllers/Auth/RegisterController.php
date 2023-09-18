@@ -114,13 +114,15 @@ class RegisterController extends Controller
      * The user has been registered.
      *
      * @param  mixed  $user
-     * @return User   $user
+     * @return bool|User   $user
      */
     protected function registered(Request $request, $user)
     {
         if ($request->userData) {
             return $user;
         }
+
+        return false;
     }
 
     protected function createParent(array $request)
