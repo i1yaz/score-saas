@@ -57,7 +57,8 @@
                     { data: 'start_date', name: 'start_date', orderable: true },
                     { data: 'action', name: 'action', orderable: false },
 
-                ]
+                ],
+                order: [[0, 'desc']]
             });
 
         });

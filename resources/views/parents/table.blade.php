@@ -59,7 +59,8 @@
                     { data: 'status', name: 'status', orderable: true },
                     { data: 'action', name: 'action', orderable: false },
 
-                ]
+                ],
+                order: [[0, 'desc']]
             });
 
         });
