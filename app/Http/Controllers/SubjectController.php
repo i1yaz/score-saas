@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateSubjectRequest;
 use App\Http\Requests\UpdateSubjectRequest;
 use App\Repositories\SubjectRepository;
-use Flash;
 use Illuminate\Http\Request;
+use Laracasts\Flash\Flash;
 
 class SubjectController extends AppBaseController
 {

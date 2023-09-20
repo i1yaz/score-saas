@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateTutoringLocationRequest;
 use App\Http\Requests\UpdateTutoringLocationRequest;
 use App\Repositories\TutoringLocationRepository;
-use Flash;
 use Illuminate\Http\Request;
+use Laracasts\Flash\Flash;
 
 class TutoringLocationController extends AppBaseController
 {

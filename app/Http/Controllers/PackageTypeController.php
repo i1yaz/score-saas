@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreatePackageTypeRequest;
 use App\Http\Requests\UpdatePackageTypeRequest;
 use App\Repositories\PackageTypeRepository;
-use Flash;
 use Illuminate\Http\Request;
+use Laracasts\Flash\Flash;
 
 class PackageTypeController extends AppBaseController
 {
