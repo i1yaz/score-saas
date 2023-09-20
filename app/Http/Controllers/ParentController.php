@@ -20,7 +20,7 @@ use Laracasts\Flash\Flash;
 class ParentController extends AppBaseController
 {
     /** @var ParentRepository */
-    private $parentRepository;
+    private ParentRepository $parentRepository;
 
     public function __construct(ParentRepository $parentRepo)
     {

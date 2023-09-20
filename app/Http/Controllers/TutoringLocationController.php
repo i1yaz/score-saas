@@ -11,7 +11,7 @@ use Laracasts\Flash\Flash;
 class TutoringLocationController extends AppBaseController
 {
     /** @var TutoringLocationRepository */
-    private $tutoringLocationRepository;
+    private TutoringLocationRepository $tutoringLocationRepository;
 
     public function __construct(TutoringLocationRepository $tutoringLocationRepo)
     {
@@ -44,7 +44,7 @@ class TutoringLocationController extends AppBaseController
     {
         $input = $request->all();
 
-        $tutoringLocation = $this->tutoringLocationRepository->create($input);
+        $this->tutoringLocationRepository->create($input);
 
         Flash::success('Tutoring Location saved successfully.');
 
@@ -96,7 +96,7 @@ class TutoringLocationController extends AppBaseController
             return redirect(route('tutoring-locations.index'));
         }
 
-        $tutoringLocation = $this->tutoringLocationRepository->update($request->all(), $id);
+        $this->tutoringLocationRepository->update($request->all(), $id);
 
         Flash::success('Tutoring Location updated successfully.');
 

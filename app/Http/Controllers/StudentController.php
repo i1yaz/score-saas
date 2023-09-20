@@ -24,7 +24,7 @@ use Laracasts\Flash\Flash;
 class StudentController extends AppBaseController
 {
     /** @var StudentRepository */
-    private $studentRepository;
+    private StudentRepository $studentRepository;
 
     public function __construct(StudentRepository $studentRepo)
     {

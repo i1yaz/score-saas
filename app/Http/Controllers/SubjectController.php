@@ -11,7 +11,7 @@ use Laracasts\Flash\Flash;
 class SubjectController extends AppBaseController
 {
     /** @var SubjectRepository */
-    private $subjectRepository;
+    private SubjectRepository $subjectRepository;
 
     public function __construct(SubjectRepository $subjectRepo)
     {
@@ -44,7 +44,7 @@ class SubjectController extends AppBaseController
     {
         $input = $request->all();
 
-        $subject = $this->subjectRepository->create($input);
+        $this->subjectRepository->create($input);
 
         Flash::success('Subject saved successfully.');
 
@@ -96,7 +96,7 @@ class SubjectController extends AppBaseController
             return redirect(route('subjects.index'));
         }
 
-        $subject = $this->subjectRepository->update($request->all(), $id);
+        $this->subjectRepository->update($request->all(), $id);
 
         Flash::success('Subject updated successfully.');
 

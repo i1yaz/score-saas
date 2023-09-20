@@ -23,7 +23,7 @@ use Laracasts\Flash\Flash;
 class TutorController extends AppBaseController
 {
     /** @var TutorRepository */
-    private $tutorRepository;
+    private TutorRepository $tutorRepository;
 
     public function __construct(TutorRepository $tutorRepo)
     {

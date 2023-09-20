@@ -11,7 +11,7 @@ use Laracasts\Flash\Flash;
 class PackageTypeController extends AppBaseController
 {
     /** @var PackageTypeRepository */
-    private $packageTypeRepository;
+    private PackageTypeRepository $packageTypeRepository;
 
     public function __construct(PackageTypeRepository $packageTypeRepo)
     {

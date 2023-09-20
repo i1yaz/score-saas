@@ -12,7 +12,7 @@ use Laracasts\Flash\Flash;
 class SchoolController extends AppBaseController
 {
     /** @var SchoolRepository */
-    private $schoolRepository;
+    private SchoolRepository $schoolRepository;
 
     public function __construct(SchoolRepository $schoolRepo)
     {
