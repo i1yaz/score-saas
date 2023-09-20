@@ -8,6 +8,7 @@ use App\Http\Requests\CreateParentRequest;
 use App\Http\Requests\UpdateParentRequest;
 use App\Mail\ParentRegisteredMail;
 use App\Models\ParentUser;
+use App\Models\Student;
 use App\Repositories\ParentRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -146,11 +147,11 @@ class ParentController extends AppBaseController
      */
     public function destroy($id)
     {
-        $parent = $this->parentRepository->find($id);
-
-        if (empty($parent)) {
-            Flash::error('Parent not found');
-
+        $children = ParentUser::with(['family' => function ($query) {
+            $query->first();
+        }])->findOrFail($id);
+        if ($children->family->isNotEmpty()){
+            Flash::error('This parent have children in student section.');
             return redirect(route('parents.index'));
         }
 

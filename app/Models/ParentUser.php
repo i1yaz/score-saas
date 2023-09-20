@@ -63,7 +63,7 @@ class ParentUser extends Authenticatable implements LaratrustUser
      */
     public function family(): HasMany
     {
-        return $this->hasMany(Children::class);
+        return $this->hasMany(Children::class,'parent_id','id');
     }
 
     /**
