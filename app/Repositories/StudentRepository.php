@@ -19,7 +19,6 @@ class StudentRepository extends BaseRepository
         'test_anxiety_challenge',
         'parent_id',
         'added_by',
-        'added_at',
         'status',
     ];
 

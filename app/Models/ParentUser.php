@@ -33,7 +33,6 @@ class ParentUser extends Authenticatable implements LaratrustUser
         'phone_alternate',
         'referral_source',
         'added_by',
-        'added_at',
         'auth_guard',
         'referral_from_positive_experience_with_tutor',
     ];

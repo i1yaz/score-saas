@@ -12,7 +12,6 @@ class PackageType extends Model
         'name',
         'hours',
         'added_by',
-        'added_at',
         'auth_guard',
     ];
 

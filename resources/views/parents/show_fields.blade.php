@@ -59,12 +59,6 @@
 </div>
 
 
-<!-- Added On Field -->
-<div class="col-sm-12">
-    {!! Form::label('added_at', 'Added On:') !!}
-    <p>{{ $parent->added_at }}</p>
-</div>
-
 <!-- Referral From Positive Experience With Tutor Field -->
 <div class="col-sm-12">
     {!! Form::label('referral_from_positive_experience_with_tutor', 'Referral From Positive Experience With Tutor:') !!}

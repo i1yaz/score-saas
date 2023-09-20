@@ -29,7 +29,6 @@ class Tutor extends Authenticatable implements LaratrustUser
         'resume',
         'start_date',
         'added_by',
-        'added_at',
         'auth_guard',
         'status',
     ];
@@ -47,7 +46,6 @@ class Tutor extends Authenticatable implements LaratrustUser
         'resume' => 'string',
         'start_date' => 'date',
         'added_by' => 'integer',
-        'added_at' => 'timestamp',
         'status' => 'boolean',
     ];
 

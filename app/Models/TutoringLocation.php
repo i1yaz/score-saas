@@ -11,7 +11,6 @@ class TutoringLocation extends Model
     public $fillable = [
         'name',
         'added_by',
-        'added_at',
         'auth_guard',
     ];
 

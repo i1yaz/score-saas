@@ -29,7 +29,6 @@ return new class extends Migration
             $table->date('start_date')->nullable();
             $table->string('auth_guard');
             $table->bigInteger('added_by');
-            $table->timestamp('added_at');
             $table->boolean('status')->default(true);
             $table->timestamps();
         });

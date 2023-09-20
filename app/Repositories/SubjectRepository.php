@@ -27,7 +27,6 @@ class SubjectRepository extends BaseRepository
     {
         $input['auth_guard'] = Auth::guard()->name;
         $input['added_by'] = Auth::id();
-        $input['added_at'] = Carbon::now();
         $model = $this->model->newInstance($input);
 
         $model->save();

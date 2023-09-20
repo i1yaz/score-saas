@@ -91,7 +91,6 @@ class ParentController extends AppBaseController
         $input['email'] = $request['email'];
         $input['auth_guard'] = Auth::guard()->name;
         $input['added_by'] = Auth::id();
-        $input['added_at'] = Carbon::now();
         $input['referral_from_positive_experience_with_tutor'] = $input['referral_from_positive_experience_with_tutor'] == 'yes';
         $input['status'] = $input['status'] == 'yes';
         $input['userData'] = true;

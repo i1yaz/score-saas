@@ -12,6 +12,8 @@ class School extends Model
     public $fillable = [
         'name',
         'address',
+        'added_by',
+        'auth_guard',
     ];
 
     protected $casts = [

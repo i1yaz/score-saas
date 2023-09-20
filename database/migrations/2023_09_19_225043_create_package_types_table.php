@@ -19,7 +19,6 @@ return new class extends Migration
             $table->integer('hours');
             $table->string('auth_guard');
             $table->bigInteger('added_by');
-            $table->timestamp('added_at');
             $table->boolean('status')->default(true);
             $table->timestamps();
         });

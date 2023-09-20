@@ -91,7 +91,6 @@ class TutorController extends AppBaseController
             $input['password_confirmation'] = $password;
             $input['added_by'] = Auth::id();
             $input['auth_guard'] = Auth::guard()->name;
-            $input['added_at'] = Carbon::now();
             $input['status'] = $input['status'] == 'yes';
             $input['userData'] = true;
             $input['registrationType'] = 'tutor';

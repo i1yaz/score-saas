@@ -32,7 +32,6 @@ class Student extends Authenticatable implements LaratrustUser
         'test_anxiety_challenge',
         'parent_id',
         'added_by',
-        'added_at',
         'auth_guard',
         'status',
     ];
@@ -51,7 +50,6 @@ class Student extends Authenticatable implements LaratrustUser
         'test_anxiety_challenge' => 'boolean',
         'parent_id' => 'integer',
         'added_by' => 'integer',
-        'added_at' => 'timestamp',
         'status' => 'boolean',
     ];
 

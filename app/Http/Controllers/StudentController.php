@@ -95,7 +95,6 @@ class StudentController extends AppBaseController
             $input['email_known'] = $input['email_known'] == 'yes';
             $input['added_by'] = Auth::id();
             $input['auth_guard'] = Auth::guard()->name;
-            $input['added_at'] = Carbon::now();
             $input['status'] = $input['status'] == 'yes';
             $input['userData'] = true;
             $input['registrationType'] = 'student';

@@ -132,18 +132,6 @@
         "inView": true
     },
     {
-        "name": "added_at",
-        "dbType": "timestamp",
-        "htmlType": "text",
-        "validations": "",
-        "searchable": true,
-        "fillable": true,
-        "primary": false,
-        "inForm": true,
-        "inIndex": true,
-        "inView": true
-    },
-    {
         "name": "referral_from_positive_experience_with_tutor",
         "dbType": "boolean",
         "htmlType": "text",
