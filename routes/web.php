@@ -14,13 +14,13 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-//Route::get('school',[App\Http\Controllers\SchoolController::class,'index'])->name('schools.index')->middleware(['permission:school-index']);
-//Route::get('school/create',[App\Http\Controllers\SchoolController::class,'create'])->name('schools.create')->middleware(['permission:school-create']);
-//Route::post('school',[App\Http\Controllers\SchoolController::class,'store'])->name('schools.store')->middleware(['permission:school-create']);;
-//Route::get('school/{school}',[App\Http\Controllers\SchoolController::class,'show'])->name('schools.show')->middleware(['permission:school-show']);
-//Route::get('school/{school}/edit',[App\Http\Controllers\SchoolController::class,'edit'])->name('schools.edit')->middleware(['permission:school-edit']);
-//Route::patch('school/{school}',[App\Http\Controllers\SchoolController::class,'update'])->name('schools.update')->middleware(['permission:school-edit']);
-//Route::delete('school/{school}',[App\Http\Controllers\SchoolController::class,'destroy'])->name('schools.destroy')->middleware(['permission:school-destroy']);
+//Route::get('packages',[App\Http\Controllers\SchoolController::class,'index'])->name('packages.index')->middleware(['permission:package-index']);
+//Route::get('packages/create',[App\Http\Controllers\SchoolController::class,'create'])->name('packages.create')->middleware(['permission:package-create']);
+//Route::post('packages',[App\Http\Controllers\SchoolController::class,'store'])->name('packages.store')->middleware(['permission:package-create']);;
+//Route::get('packages/{package}',[App\Http\Controllers\SchoolController::class,'show'])->name('packages.show')->middleware(['permission:package-show']);
+//Route::get('packages/{package}/edit',[App\Http\Controllers\SchoolController::class,'edit'])->name('packages.edit')->middleware(['permission:package-edit']);
+//Route::patch('packages/{package}',[App\Http\Controllers\SchoolController::class,'update'])->name('packages.update')->middleware(['permission:package-edit']);
+//Route::delete('packages/{package}',[App\Http\Controllers\SchoolController::class,'destroy'])->name('packages.destroy')->middleware(['permission:package-destroy']);
 
 Route::get('/', function () {
     return view('welcome');
@@ -65,5 +65,37 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor']], function () {
     Route::get('tutors/{tutor}/edit', [App\Http\Controllers\TutorController::class, 'edit'])->name('tutors.edit')->middleware(['permission:tutor-edit']);
     Route::patch('tutors/{tutor}', [App\Http\Controllers\TutorController::class, 'update'])->name('tutors.update')->middleware(['permission:tutor-edit']);
     Route::delete('tutors/{tutor}', [App\Http\Controllers\TutorController::class, 'destroy'])->name('tutors.destroy')->middleware(['permission:tutor-destroy']);
-
+    //Package Types
+    Route::get('package-types', [App\Http\Controllers\PackageTypeController::class, 'index'])->name('package-types.index')->middleware(['permission:package_type-index']);
+    Route::get('package-types/create', [App\Http\Controllers\PackageTypeController::class, 'create'])->name('package-types.create')->middleware(['permission:package_type-create']);
+    Route::post('package-types', [App\Http\Controllers\PackageTypeController::class, 'store'])->name('package-types.store')->middleware(['permission:package_type-create']);
+    Route::get('package-types/{package_type}', [App\Http\Controllers\PackageTypeController::class, 'show'])->name('package-types.show')->middleware(['permission:package_type-show']);
+    Route::get('package-types/{package_type}/edit', [App\Http\Controllers\PackageTypeController::class, 'edit'])->name('package-types.edit')->middleware(['permission:package_type-edit']);
+    Route::patch('package-types/{package_type}', [App\Http\Controllers\PackageTypeController::class, 'update'])->name('package-types.update')->middleware(['permission:package_type-edit']);
+    Route::delete('package-types/{package_type}', [App\Http\Controllers\PackageTypeController::class, 'destroy'])->name('package-types.destroy')->middleware(['permission:package_type-destroy']);
+    //Subjects
+    Route::get('subjects',[App\Http\Controllers\SubjectController::class,'index'])->name('subjects.index')->middleware(['permission:subject-index']);
+    Route::get('subjects/create',[App\Http\Controllers\SubjectController::class,'create'])->name('subjects.create')->middleware(['permission:subject-create']);
+    Route::post('subjects',[App\Http\Controllers\SubjectController::class,'store'])->name('subjects.store')->middleware(['permission:subject-create']);;
+    Route::get('subjects/{subject}',[App\Http\Controllers\SubjectController::class,'show'])->name('subjects.show')->middleware(['permission:subject-show']);
+    Route::get('subjects/{subject}/edit',[App\Http\Controllers\SubjectController::class,'edit'])->name('subjects.edit')->middleware(['permission:subject-edit']);
+    Route::patch('subjects/{subject}',[App\Http\Controllers\SubjectController::class,'update'])->name('subjects.update')->middleware(['permission:subject-edit']);
+    Route::delete('subjects/{subject}',[App\Http\Controllers\SubjectController::class,'destroy'])->name('subjects.destroy')->middleware(['permission:subject-destroy']);
+    //Tutoring Locations
+    Route::get('tutoring-locations',[App\Http\Controllers\TutoringLocationController::class,'index'])->name('tutoring-locations.index')->middleware(['permission:tutoring_location-index']);
+    Route::get('tutoring-locations/create',[App\Http\Controllers\TutoringLocationController::class,'create'])->name('tutoring-locations.create')->middleware(['permission:tutoring_location-create']);
+    Route::post('tutoring-locations',[App\Http\Controllers\TutoringLocationController::class,'store'])->name('tutoring-locations.store')->middleware(['permission:tutoring_location-create']);;
+    Route::get('tutoring-locations/{tutoring_location}',[App\Http\Controllers\TutoringLocationController::class,'show'])->name('tutoring-locations.show')->middleware(['permission:tutoring_location-show']);
+    Route::get('tutoring-locations/{tutoring_location}/edit',[App\Http\Controllers\TutoringLocationController::class,'edit'])->name('tutoring-locations.edit')->middleware(['permission:tutoring_location-edit']);
+    Route::patch('tutoring-locations/{tutoring_location}',[App\Http\Controllers\TutoringLocationController::class,'update'])->name('tutoring-locations.update')->middleware(['permission:tutoring_location-edit']);
+    Route::delete('tutoring-locations/{tutoring_location}',[App\Http\Controllers\TutoringLocationController::class,'destroy'])->name('tutoring-locations.destroy')->middleware(['permission:tutoring_location-destroy']);
+    //Packages
+//    Route::get('packages',[App\Http\Controllers\SchoolController::class,'index'])->name('packages.index')->middleware(['permission:package-index']);
+//    Route::get('packages/create',[App\Http\Controllers\SchoolController::class,'create'])->name('packages.create')->middleware(['permission:package-create']);
+//    Route::post('packages',[App\Http\Controllers\SchoolController::class,'store'])->name('packages.store')->middleware(['permission:package-create']);;
+//    Route::get('packages/{package}',[App\Http\Controllers\SchoolController::class,'show'])->name('packages.show')->middleware(['permission:package-show']);
+//    Route::get('packages/{package}/edit',[App\Http\Controllers\SchoolController::class,'edit'])->name('packages.edit')->middleware(['permission:package-edit']);
+//    Route::patch('packages/{package}',[App\Http\Controllers\SchoolController::class,'update'])->name('packages.update')->middleware(['permission:package-edit']);
+//    Route::delete('packages/{package}',[App\Http\Controllers\SchoolController::class,'destroy'])->name('packages.destroy')->middleware(['permission:package-destroy']);
 });
+

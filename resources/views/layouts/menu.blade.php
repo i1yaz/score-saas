@@ -70,3 +70,54 @@
     </a>
 </li>
 @endpermission
+
+{{--@permission('package-index')--}}
+{{--<li class="nav-item">--}}
+{{--    <a href="{{ route('packages.index') }}" class="nav-link {{ Request::is('packages*') ? 'active' : '' }}">--}}
+{{--        <i class="nav-icon fas fa-book-reader"></i>--}}
+{{--        <p>Packages</p>--}}
+{{--    </a>--}}
+{{--</li>--}}
+{{--@endpermission--}}
+
+@permission(['package_type-index','subject-index','tutoring_location-index'])
+<li class="nav-item {{Request::is(['package-types*','subjects*','tutoring-locations*'])?'menu-is-opening menu-open active':''}}">
+    <a href="#" class="nav-link {{Request::is(['package-types*','subjects*','tutoring-locations*'])?'active':''}}">
+        <i class="nav-icon fas fa-tree"></i>
+        <p>
+            Options
+            <i class="fas fa-angle-left right"></i>
+        </p>
+    </a>
+    <ul class="nav nav-treeview">
+        @permission('package_type-index')
+
+        <li class="nav-item">
+            <a href="{{ route('package-types.index') }}" class="nav-link {{ Request::is('package-types*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Package Types</p>
+            </a>
+        </li>
+        @endpermission
+        @permission('subject-index')
+        <li class="nav-item">
+            <a href="{{ route('subjects.index') }}" class="nav-link {{ Request::is('subjects*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Subjects</p>
+            </a>
+        </li>
+        @endpermission
+        @permission('tutoring_location-index')
+        <li class="nav-item">
+            <a href="{{ route('tutoring-locations.index') }}" class="nav-link {{ Request::is('tutoring-locations*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Tutoring Locations</p>
+            </a>
+        </li>
+        @endpermission
+    </ul>
+</li>
+@endpermission
+
+
+
