@@ -25,7 +25,7 @@ class UpdateTutoringLocationRequest extends FormRequest
     public function rules()
     {
         $rules = TutoringLocation::$rules;
-        
+
         return $rules;
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Models\School;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,6 +22,7 @@ class SchoolRepository extends BaseRepository
     {
         return School::class;
     }
+
     public function create(array $input): Model
     {
         $input['auth_guard'] = Auth::guard()->name;

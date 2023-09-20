@@ -4,14 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateTutoringLocationRequest;
 use App\Http\Requests\UpdateTutoringLocationRequest;
-use App\Http\Controllers\AppBaseController;
 use App\Repositories\TutoringLocationRepository;
-use Illuminate\Http\Request;
 use Flash;
+use Illuminate\Http\Request;
 
 class TutoringLocationController extends AppBaseController
 {
-    /** @var TutoringLocationRepository $tutoringLocationRepository*/
+    /** @var TutoringLocationRepository */
     private $tutoringLocationRepository;
 
     public function __construct(TutoringLocationRepository $tutoringLocationRepo)

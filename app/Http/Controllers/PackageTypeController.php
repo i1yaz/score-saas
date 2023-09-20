@@ -4,14 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreatePackageTypeRequest;
 use App\Http\Requests\UpdatePackageTypeRequest;
-use App\Http\Controllers\AppBaseController;
 use App\Repositories\PackageTypeRepository;
-use Illuminate\Http\Request;
 use Flash;
+use Illuminate\Http\Request;
 
 class PackageTypeController extends AppBaseController
 {
-    /** @var PackageTypeRepository $packageTypeRepository*/
+    /** @var PackageTypeRepository */
     private $packageTypeRepository;
 
     public function __construct(PackageTypeRepository $packageTypeRepo)

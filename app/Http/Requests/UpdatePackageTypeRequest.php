@@ -25,7 +25,7 @@ class UpdatePackageTypeRequest extends FormRequest
     public function rules()
     {
         $rules = PackageType::$rules;
-        
+
         return $rules;
     }
 }

@@ -25,7 +25,7 @@ class UpdateSubjectRequest extends FormRequest
     public function rules()
     {
         $rules = Subject::$rules;
-        
+
         return $rules;
     }
 }

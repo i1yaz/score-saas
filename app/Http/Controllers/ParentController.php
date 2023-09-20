@@ -9,7 +9,6 @@ use App\Http\Requests\UpdateParentRequest;
 use App\Mail\ParentRegisteredMail;
 use App\Models\ParentUser;
 use App\Repositories\ParentRepository;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;

@@ -3,15 +3,13 @@
 namespace App\Repositories;
 
 use App\Models\TutoringLocation;
-use App\Repositories\BaseRepository;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class TutoringLocationRepository extends BaseRepository
 {
     protected $fieldSearchable = [
-        'name'
+        'name',
     ];
 
     public function getFieldsSearchable(): array
@@ -23,6 +21,7 @@ class TutoringLocationRepository extends BaseRepository
     {
         return TutoringLocation::class;
     }
+
     public function create(array $input): Model
     {
         $input['auth_guard'] = Auth::guard()->name;

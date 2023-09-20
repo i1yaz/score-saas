@@ -3,8 +3,6 @@
 namespace App\Repositories;
 
 use App\Models\PackageType;
-use App\Repositories\BaseRepository;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,7 +10,7 @@ class PackageTypeRepository extends BaseRepository
 {
     protected $fieldSearchable = [
         'name',
-        'hours'
+        'hours',
     ];
 
     public function getFieldsSearchable(): array

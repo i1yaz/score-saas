@@ -16,12 +16,10 @@ class TutoringLocation extends Model
 
     protected $casts = [
         'id' => 'integer',
-        'name' => 'string'
+        'name' => 'string',
     ];
 
     public static array $rules = [
 
     ];
-
-
 }

@@ -18,12 +18,10 @@ class PackageType extends Model
     protected $casts = [
         'id' => 'integer',
         'name' => 'string',
-        'hours' => 'integer'
+        'hours' => 'integer',
     ];
 
     public static array $rules = [
-        'hours' => ['sometimes','numeric','gt:0']
+        'hours' => ['sometimes', 'numeric', 'gt:0'],
     ];
-
-
 }

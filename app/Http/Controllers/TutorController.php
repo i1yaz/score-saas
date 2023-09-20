@@ -9,7 +9,6 @@ use App\Http\Requests\UpdateTutorRequest;
 use App\Mail\TutorRegistrationMail;
 use App\Models\Tutor;
 use App\Repositories\TutorRepository;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
