@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Student as Children;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -71,6 +72,14 @@ class ParentUser extends Authenticatable implements LaratrustUser
      * Scopes
      *------------------------------------------------------------------
      */
+    public function scopeActive(Builder $query): void
+    {
+        $query->where('status',true);
+    }
+    public function scopeInActive(Builder $query): void
+    {
+        $query->where('status',false);
+    }
 
     /**
      *------------------------------------------------------------------

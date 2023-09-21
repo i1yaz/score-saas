@@ -3,7 +3,9 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,9 +16,14 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+         \App\Models\User::create([
+             'first_name' => 'Super',
+             'last_name' => 'Admin',
+             'email' => 'admin@admin.com',
+             'email_verified_at' => Carbon::now(),
+             'password' => Hash::make('abcd1234'),
+             'created_at' =>  Carbon::now(),
+             'updated_at' => Carbon::now()
+         ]);
     }
 }

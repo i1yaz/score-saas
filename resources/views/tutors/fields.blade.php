@@ -1,6 +1,5 @@
 @push('page_css')
     <link rel="stylesheet" href="{{asset('plugins/jquery-ui/jquery-ui.min.css')}}">
-
 @endpush
 <!-- First Name Field -->
 <div class="form-group col-sm-6">

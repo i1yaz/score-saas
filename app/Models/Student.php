@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -72,6 +73,15 @@ class Student extends Authenticatable implements LaratrustUser
      * Scopes
      *------------------------------------------------------------------
      */
+    public function scopeActive(Builder $query): void
+    {
+        $query->where('status',true);
+    }
+    public function scopeInActive(Builder $query): void
+    {
+        $query->where('status',false);
+    }
+
     /**
      * The "booted" method of the model.
      */

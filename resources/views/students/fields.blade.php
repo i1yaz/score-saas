@@ -140,20 +140,24 @@
             // Initialize Select2
             $("#parent-id").select2({
                 theme: 'bootstrap4',
-                minimumInputLength: 3, // Minimum input length before triggering the AJAX call
+                minimumInputLength: 3,
                 ajax: {
-                    url: "{{route('student-parent-ajax')}}", // Replace with your API endpoint
+                    url: "{{route('student-parent-ajax')}}",
                     dataType: "json",
-                    delay: 250, // Delay in milliseconds before making the AJAX request
+                    delay: 250,
                     data: function (params) {
                         return {
-                            email: params.term // Pass the user's input as the 'query' parameter
+                            email: params.term
                         };
                     },
                     processResults: function (data) {
-                        console.log(data)
                         return {
-                            results: data // Assuming your API returns an array of objects with 'id' and 'text' properties
+                            results: $.map(data, function (item) {
+                                return {
+                                    text: item.text,
+                                    id: item.id
+                                }
+                            })
                         };
                     },
                     cache: true
@@ -166,20 +170,24 @@
 
             $("#school-id").select2({
                 theme: 'bootstrap4',
-                minimumInputLength: 3, // Minimum input length before triggering the AJAX call
+                minimumInputLength: 3,
                 ajax: {
-                    url: "{{route('student-school-ajax')}}", // Replace with your API endpoint
+                    url: "{{route('student-school-ajax')}}",
                     dataType: "json",
-                    delay: 250, // Delay in milliseconds before making the AJAX request
+                    delay: 250,
                     data: function (params) {
                         return {
-                            name: params.term // Pass the user's input as the 'query' parameter
+                            name: params.term
                         };
                     },
                     processResults: function (data) {
-                        console.log(data)
                         return {
-                            results: data // Assuming your API returns an array of objects with 'id' and 'text' properties
+                            results: $.map(data, function (item) {
+                                return {
+                                    text: item.text,
+                                    id: item.id
+                                }
+                            })
                         };
                     },
                     cache: true

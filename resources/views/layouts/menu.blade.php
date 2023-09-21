@@ -71,14 +71,15 @@
 </li>
 @endpermission
 
-{{--@permission('package-index')--}}
-{{--<li class="nav-item">--}}
-{{--    <a href="{{ route('packages.index') }}" class="nav-link {{ Request::is('packages*') ? 'active' : '' }}">--}}
-{{--        <i class="nav-icon fas fa-book-reader"></i>--}}
-{{--        <p>Packages</p>--}}
-{{--    </a>--}}
-{{--</li>--}}
-{{--@endpermission--}}
+@permission('student_tutoring_package-index')
+<li class="nav-item">
+    <a href="{{ route('student-tutoring-packages.index') }}" class="nav-link {{ Request::is('student-tutoring-packages*') ? 'active' : '' }}">
+        <i class="nav-icon fas fa-home"></i>
+        <p>Tutoring Packages</p>
+    </a>
+</li>
+
+@endpermission
 
 @permission(['package_type-index','subject-index','tutoring_location-index'])
 <li class="nav-item {{Request::is(['package-types*','subjects*','tutoring-locations*'])?'menu-is-opening menu-open active':''}}">
@@ -118,6 +119,3 @@
     </ul>
 </li>
 @endpermission
-
-
-

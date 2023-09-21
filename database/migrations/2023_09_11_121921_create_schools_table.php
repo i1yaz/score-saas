@@ -14,9 +14,12 @@ return new class extends Migration
     public function up()
     {
         Schema::create('schools', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->text('name');
             $table->mediumText('address');
+            $table->boolean('status')->default(true);
+            $table->string('auth_guard');
+            $table->bigInteger('added_by');
             $table->timestamps();
         });
     }

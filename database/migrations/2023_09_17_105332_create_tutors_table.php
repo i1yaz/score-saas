@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('tutors', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('first_name');
             $table->string('last_name')->nullable();
             $table->string('email');
@@ -27,9 +27,9 @@ return new class extends Migration
             $table->string('picture')->nullable();
             $table->string('resume')->nullable();
             $table->date('start_date')->nullable();
+            $table->boolean('status')->default(true);
             $table->string('auth_guard');
             $table->bigInteger('added_by');
-            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

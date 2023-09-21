@@ -14,11 +14,11 @@ return new class extends Migration
     public function up()
     {
         Schema::create('subjects', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->text('name');
+            $table->boolean('status')->default(true);
             $table->string('auth_guard');
             $table->bigInteger('added_by');
-            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

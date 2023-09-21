@@ -194,22 +194,13 @@ class StudentController extends AppBaseController
      */
     public function studentParentAjax(Request $request)
     {
-        $data = [];
         $email = trim($request->email);
-        $user = ParentUser::select(['parents.id', 'parents.email'])
+        $user = ParentUser::select(['parents.id as id', 'parents.email as text'])
+            ->active()
             ->where('parents.email', 'LIKE', "%{$email}%")
-            ->where('parents.status', true)
-            ->first();
-        if ($user) {
-            $data[] =
-                [
-                    'id' => $user->id,
-                    'text' => $user->email,
-                ];
-
-        }
-
-        return response()->json($data);
+            ->limit(5)
+            ->get();
+        return response()->json($user->toArray());
     }
 
     /**
@@ -219,15 +210,12 @@ class StudentController extends AppBaseController
      */
     public function studentSchoolAjax(Request $request)
     {
-        $data = [];
-        $schools = School::where('name', 'LIKE', "%{$request->name}%")->get();
-        if ($schools->isNotEmpty()) {
-            foreach ($schools as $school) {
-                $data[] = ['id' => $school->id, 'text' => $school->name];
-            }
-
-        }
-
-        return response()->json($data);
+        $name = trim($request->name);
+        $schools = School::select(['schools.id as id', 'schools.name as text'])
+            ->active()
+            ->where('schools.name', 'LIKE', "%{$name}%")
+            ->where('status',true)
+            ->get();
+        return response()->json($schools->toArray());
     }
 }

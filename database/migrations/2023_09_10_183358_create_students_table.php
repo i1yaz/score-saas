@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\ParentUser;
+use App\Models\School;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,9 +17,9 @@ return new class extends Migration
     public function up()
     {
         Schema::create('students', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedBigInteger('school_id');
-            $table->unsignedBigInteger('parent_id');
+            $table->bigIncrements('id');
+            $table->foreignIdFor(School::class);
+            $table->foreignIdFor(ParentUser::class,'parent_id')->nullable();
             $table->string('first_name');
             $table->string('last_name')->nullable();
             $table->string('email')->unique();
@@ -30,7 +33,8 @@ return new class extends Migration
             $table->string('official_baseline_sat_score')->nullable();
             $table->boolean('test_anxiety_challenge')->nullable();
             $table->boolean('status')->default(true);
-            $table->unsignedBigInteger('added_by');
+            $table->string('auth_guard');
+            $table->bigInteger('added_by');
             $table->timestamps();
 
         });

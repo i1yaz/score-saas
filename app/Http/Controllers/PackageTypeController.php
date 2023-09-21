@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreatePackageTypeRequest;
 use App\Http\Requests\UpdatePackageTypeRequest;
+use App\Models\PackageType;
+use App\Models\ParentUser;
 use App\Repositories\PackageTypeRepository;
 use Illuminate\Http\Request;
 use Laracasts\Flash\Flash;
