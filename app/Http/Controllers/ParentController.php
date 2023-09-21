@@ -5,14 +5,18 @@ namespace App\Http\Controllers;
 use App\DataTables\ParentsDataTable;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Requests\CreateParentRequest;
+use App\Http\Requests\CreateStudentRequest;
 use App\Http\Requests\UpdateParentRequest;
 use App\Mail\ParentRegisteredMail;
+use App\Mail\StudentRegistrationMail;
 use App\Models\ParentUser;
 use App\Models\Student;
 use App\Repositories\ParentRepository;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -81,27 +85,37 @@ class ParentController extends AppBaseController
      */
     public function store(CreateParentRequest $request)
     {
-        $input = $request->all();
-        $passwordString = Str::password(20);
-        $register = new RegisterController();
-        $input['password'] = $password = App::environment(['production']) ? Hash::make($passwordString) : Hash::make('abcd1234');
-        $input['password_confirmation'] = $password;
-        $input['first_name'] = $request['first_name'];
-        $input['last_name'] = $request['last_name'];
-        $input['email'] = $request['email'];
-        $input['auth_guard'] = Auth::guard()->name;
-        $input['added_by'] = Auth::id();
-        $input['referral_from_positive_experience_with_tutor'] = $input['referral_from_positive_experience_with_tutor'] == 'yes';
-        $input['status'] = $input['status'] == 'yes';
-        $input['userData'] = true;
-        $input['registrationType'] = 'parent';
-        $user = $register->register($request->merge($input), false);
-        $user->addRole('parent');
-        $input['password'] = App::environment(['production']) ? $passwordString : 'abcd1234';
-        Mail::to($user)->send(new ParentRegisteredMail($input));
-        Flash::success('Parent saved successfully.');
+        DB::beginTransaction();
+        try {
+            $input = $request->all();
+            $passwordString = Str::password(20);
+            $register = new RegisterController();
+            $input['password'] = $password = App::environment(['production']) ? Hash::make($passwordString) : Hash::make('abcd1234');
+            $input['password_confirmation'] = $password;
+            $input['first_name'] = $request['first_name'];
+            $input['last_name'] = $request['last_name'];
+            $input['email'] = $request['email'];
+            $input['auth_guard'] = Auth::guard()->name;
+            $input['added_by'] = Auth::id();
+            $input['referral_from_positive_experience_with_tutor'] = $input['referral_from_positive_experience_with_tutor'] == 'yes';
+            $input['status'] = $input['status'] == 'yes';
+            $input['userData'] = true;
+            $input['registrationType'] = 'parent';
+            $user = $register->register($request->merge($input), false);
+            $user->addRole('parent');
+            DB::commit();
+            $input['password'] = App::environment(['production']) ? $passwordString : 'abcd1234';
+            Mail::to($user)->send(new ParentRegisteredMail($input));
+            Flash::success('Parent saved successfully.');
+            return redirect(route('parents.index'));
 
-        return redirect(route('parents.index'));
+        } catch (QueryException $queryException) {
+            DB::rollBack();
+            report($queryException);
+            Flash::error('something went wrong');
+            return redirect(route('parents.index'));
+        }
+
     }
 
     /**

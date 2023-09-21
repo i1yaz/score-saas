@@ -34,9 +34,6 @@ class ParentRepository extends BaseRepository
     {
         $query = $this->model->newQuery();
 
-        //        if ($withAddedBy){
-        //            $query = $query->join('users','parents.added_by','users.id');
-        //        }
         return $query->find($id, $columns);
     }
 }

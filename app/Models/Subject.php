@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Subject extends BaseModel
 {
@@ -22,4 +23,14 @@ class Subject extends BaseModel
     public static array $rules = [
 
     ];
+
+    /**
+     *------------------------------------------------------------------
+     * Relationships
+     *------------------------------------------------------------------
+     */
+    public function tutoringPackages(): BelongsToMany
+    {
+        return $this->belongsToMany(StudentTutoringPackage::class);
+    }
 }

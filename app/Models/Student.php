@@ -56,6 +56,8 @@ class Student extends Authenticatable implements LaratrustUser
 
     public static array $rules = [
         'email' => ['required', 'string', 'email', 'max:255', 'unique:students'],
+        'school_id' => ['required'],
+        'parent_id' => ['sometimes'],
     ];
 
     /**

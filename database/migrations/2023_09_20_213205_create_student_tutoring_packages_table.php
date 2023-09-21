@@ -18,9 +18,9 @@ return new class extends Migration
     {
         Schema::create('student_tutoring_packages', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->foreignIdFor(Student::class);
-            $table->foreignIdFor(PackageType::class);
-            $table->foreignIdFor(TutoringLocation::class);
+            $table->foreignIdFor(Student::class)->constrained();
+            $table->foreignIdFor(PackageType::class)->constrained();
+            $table->foreignIdFor(TutoringLocation::class)->constrained();
             $table->text('notes')->nullable();
             $table->text('internal_noted')->nullable();
             $table->integer('hours');
@@ -29,6 +29,7 @@ return new class extends Migration
             $table->integer('discount_type')->nullable();
             $table->date('start_date')->nullable();
             $table->integer('tutor_hourly_rate');
+            $table->boolean('is_confirmed')->default(false);
             $table->boolean('status')->default(true);
             $table->string('auth_guard');
             $table->bigInteger('added_by');

@@ -4,6 +4,8 @@ namespace App\Repositories;
 
 use App\Models\StudentTutoringPackage;
 use App\Repositories\BaseRepository;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class StudentTutoringPackageRepository extends BaseRepository
 {
@@ -30,5 +32,16 @@ class StudentTutoringPackageRepository extends BaseRepository
     public function model(): string
     {
         return StudentTutoringPackage::class;
+    }
+
+    public function create(array $input): StudentTutoringPackage
+    {
+        $input['auth_guard'] = Auth::guard()->name;
+        $input['added_by'] = Auth::id();
+
+        $model = $this->model->newInstance($input);
+        $model->save();
+
+        return $model;
     }
 }

@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class StudentTutoringPackage extends BaseModel
 {
+    const FLAT_DISCOUNT = 0;
+    const PERCENTAGE_DISCOUNT = 1;
     public $table = 'student_tutoring_packages';
 
     public $fillable = [
@@ -20,7 +23,10 @@ class StudentTutoringPackage extends BaseModel
         'discount',
         'discount_type',
         'start_date',
-        'tutor_hourly_rate'
+        'tutor_hourly_rate',
+        'added_by',
+        'auth_guard',
+        'status',
     ];
 
     protected $casts = [
@@ -42,6 +48,20 @@ class StudentTutoringPackage extends BaseModel
     public static array $rules = [
 
     ];
+
+    /**
+     *------------------------------------------------------------------
+     * Relationships
+     *------------------------------------------------------------------
+     */
+    public function subjects(): BelongsToMany
+    {
+        return $this->belongsToMany(Subject::class);
+    }
+    public function tutors():BelongsToMany
+    {
+        return $this->belongsToMany(Tutor::class);
+    }
 
 
 }

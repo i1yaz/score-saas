@@ -21,7 +21,7 @@
 <!-- Tutor Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('tutor-id', 'Tutor:') !!}
-    {!! Form::select('tutor_id[]', [],null, ['class' => 'form-control','id'=>'tutor-id']) !!}
+    {!! Form::select('tutor_ids[]', [],null, ['class' => 'form-control','id'=>'tutor-id']) !!}
 </div>
 <!-- Tutoring Location Field -->
 <div class="form-group col-sm-6">
@@ -56,11 +56,11 @@
 <div class="form-group col-sm-6">
     {!! Form::label('discount_type', 'Discount:') !!}
     <div class="input-group">
-        {!!  Form::text('discount', null, ['class' => 'form-control'])  !!}
+        {!!  Form::number('discount', null, ['class' => 'form-control'])  !!}
         <div class="input-group-append">
             <select class="form-control input-group-text" name="discount_type" id = 'discount-type'>
-                <option>Flat</option>
-                <option>%</option>
+                <option value="1">Flat</option>
+                <option value="2">%</option>
             </select>
         </div>
     </div>
@@ -77,6 +77,29 @@
     {!! Form::text('start_date', null, ['class' => 'form-control']) !!}
 </div>
 
+<div class="form-group col-sm-12">
+    <h5 class="mb-4">Subjects</h5>
+
+    <div class="row">
+        @foreach ($subjects as $subject)
+            <div class="form-group col-sm-2">
+                <div class="custom-control custom-checkbox">
+                    <input
+                        type="checkbox"
+                        class="custom-control-input"
+                        name="subject_ids[]"
+                        value="{{$subject->id}}"
+                        {!! $subject->assigned ? 'checked' : '' !!}
+                        id="subject-{{$subject->id}}"
+                    >
+
+                    <label for="subject-{{$subject->id}}" class="custom-control-label" style="flex: 1 0 20%;">{{$subject->name}}</label>
+                </div>
+            </div>
+
+        @endforeach
+    </div>
+</div>
 
 @push('page_scripts')
     <script src="{{asset("plugins/toastr/toastr.min.js")}}"></script>

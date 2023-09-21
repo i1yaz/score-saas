@@ -10,8 +10,8 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('student_tutoring_package_tutor', function (Blueprint $table) {
-            $table->foreignIdFor(Tutor::class);
-            $table->foreignIdFor(StudentTutoringPackage::class);
+            $table->foreignIdFor(Tutor::class)->constrained(indexName: 'tutoring_package_tutor');
+            $table->foreignIdFor(StudentTutoringPackage::class)->constrained(indexName: 'tutoring_package_id');
         });
     }
 

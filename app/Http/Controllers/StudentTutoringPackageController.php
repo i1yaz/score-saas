@@ -8,10 +8,15 @@ use App\Http\Controllers\AppBaseController;
 use App\Models\PackageType;
 use App\Models\ParentUser;
 use App\Models\Student;
+use App\Models\StudentTutoringPackage;
+use App\Models\Subject;
+use App\Models\Tutor;
 use App\Models\TutoringLocation;
 use App\Repositories\StudentTutoringPackageRepository;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Flash;
+use Illuminate\Support\Facades\DB;
 
 class StudentTutoringPackageController extends AppBaseController
 {
@@ -39,7 +44,8 @@ class StudentTutoringPackageController extends AppBaseController
      */
     public function create()
     {
-        return view('student_tutoring_packages.create');
+        $subjects = Subject::get(['id','name']);
+        return view('student_tutoring_packages.create',['subjects'=>$subjects]);
     }
 
     /**
@@ -47,13 +53,25 @@ class StudentTutoringPackageController extends AppBaseController
      */
     public function store(CreateStudentTutoringPackageRequest $request)
     {
-        $input = $request->all();
+        DB::beginTransaction();
+        try {
+            $input = $request->all();
+            $tutors = $input['tutor_ids'];
+            $subjects = $input['subject_ids'];
+            unset($input['tutor_ids'],$input['subject_ids']);
+            $studentTutoringPackage = $this->studentTutoringPackageRepository->create($input);
+            $studentTutoringPackage->tutors()->sync($tutors);
+            $studentTutoringPackage->subjects()->sync($subjects);
+            DB::commit();
+            Flash::success('Student Tutoring Package saved successfully.');
+            return view('student_tutoring_packages.show')->with('studentTutoringPackage', $studentTutoringPackage);
+        } catch (QueryException $queryException) {
+            DB::rollBack();
+            report($queryException);
+            \Laracasts\Flash\Flash::error('something went wrong');
+            return redirect(route('student-tutoring-packages.index'));
+        }
 
-        $studentTutoringPackage = $this->studentTutoringPackageRepository->create($input);
-
-        Flash::success('Student Tutoring Package saved successfully.');
-
-        return redirect(route('student-tutoring-packages.index'));
     }
 
     /**
@@ -150,13 +168,13 @@ class StudentTutoringPackageController extends AppBaseController
     }
     public function tutorEmailAjax(Request $request){
         $email = trim($request->email);
-        $parents = ParentUser::active()
-            ->select(['parents.id as id', 'parents.email as text'])
-            ->where('parents.email', 'LIKE', "%{$email}%")
+        $tutors = Tutor::active()
+            ->select(['tutors.id as id', 'tutors.email as text'])
+            ->where('tutors.email', 'LIKE', "%{$email}%")
             ->limit(5)
             ->get();
 
-        return response()->json($parents->toArray());
+        return response()->json($tutors->toArray());
     }
     public function tutoringLocationAjax(Request $request){
         $name = trim($request->name);
