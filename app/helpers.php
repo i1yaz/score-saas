@@ -119,7 +119,7 @@ if (! function_exists('getPriceFromHoursAndHourlyWithDiscounts')) {
      * @param int $discountType
      * @return string
      */
-    function getPriceFromHoursAndHourlyWithDiscounts(float $hourlyRate, float $hours, float $discount=1, int $discountType=1): string
+    function getPriceFromHoursAndHourlyWithDiscount(float $hourlyRate, float $hours, float $discount=1, int $discountType=1): string
     {
         $price = ($hourlyRate*$hours);
 

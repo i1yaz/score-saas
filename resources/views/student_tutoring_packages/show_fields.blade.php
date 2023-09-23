@@ -44,7 +44,7 @@
                 </tr>
                 <tr>
                     <td> <strong> Price After Discount</strong></td>
-                    <td>{{getPriceFromHoursAndHourlyWithDiscounts($studentTutoringPackage->hours, $studentTutoringPackage->hourly_rate, $studentTutoringPackage->discount, $studentTutoringPackage->discount_type)}}</td>
+                    <td>{{getPriceFromHoursAndHourlyWithDiscount($studentTutoringPackage->hours, $studentTutoringPackage->hourly_rate, $studentTutoringPackage->discount, $studentTutoringPackage->discount_type)}}</td>
                 </tr>
                 <tr>
                     <td> <strong> Discounted Amount</strong></td>
