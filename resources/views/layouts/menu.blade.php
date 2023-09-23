@@ -86,7 +86,7 @@
     <a href="#" class="nav-link {{Request::is(['package-types*','subjects*','tutoring-locations*'])?'active':''}}">
         <i class="nav-icon fas fa-tree"></i>
         <p>
-            Options
+            Settings
             <i class="fas fa-angle-left right"></i>
         </p>
     </a>

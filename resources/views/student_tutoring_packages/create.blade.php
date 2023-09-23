@@ -6,7 +6,7 @@
             <div class="row mb-2">
                 <div class="col-sm-12">
                     <h1>
-                    Create Student Tutoring Packages
+
                     </h1>
                 </div>
             </div>
@@ -17,8 +17,10 @@
 
         @include('adminlte-templates::common.errors')
 
-        <div class="card">
-
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">Create Student Tutoring Packages</h3>
+            </div>
             {!! Form::open(['route' => 'student-tutoring-packages.store']) !!}
 
             <div class="card-body">

@@ -24,8 +24,10 @@ class UpdateStudentTutoringPackageRequest extends FormRequest
      */
     public function rules()
     {
-        $rules = StudentTutoringPackage::$rules;
-        
-        return $rules;
+        return StudentTutoringPackage::$rulesEdit;
+    }
+    public function messages(): array
+    {
+        return StudentTutoringPackage::$messages;
     }
 }

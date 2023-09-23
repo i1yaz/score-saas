@@ -17,7 +17,7 @@ class ParentsDataTable implements IDataTables
         ];
         $order = $columns[$order] ?? $order;
         $parents = ParentUser::query()->select(['id', 'email', 'first_name', 'last_name', 'status', 'phone', 'created_at']);
-        $parents = static::getStudentsQueryBySearch($search, $parents);
+        $parents = static::getModelQueryBySearch($search, $parents);
         $parents = $parents->offset($start)
             ->limit($limit)
             ->orderBy($order, $dir);
@@ -29,7 +29,7 @@ class ParentsDataTable implements IDataTables
     public static function totalFilteredRecords(mixed $search): int
     {
         $students = ParentUser::query()->select(['id']);
-        $students = static::getStudentsQueryBySearch($search, $students);
+        $students = static::getModelQueryBySearch($search, $students);
 
         return $students->count();
     }
@@ -53,7 +53,7 @@ class ParentsDataTable implements IDataTables
         return $data;
     }
 
-    public static function getStudentsQueryBySearch(mixed $search, Builder $records): Builder
+    public static function getModelQueryBySearch(mixed $search, Builder $records): Builder
     {
         if (! empty($search)) {
             $records = $records->where(function ($q) use ($search) {

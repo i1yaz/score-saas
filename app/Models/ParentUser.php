@@ -88,6 +88,6 @@ class ParentUser extends Authenticatable implements LaratrustUser
      */
     public function getFamilyCodeAttribute(): string
     {
-        return $this->id + static::FAMILY_CODE_START;
+        return getFamilyCodeFromId($this->id);
     }
 }

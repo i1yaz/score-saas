@@ -13,7 +13,7 @@ interface IDataTables
 
     public static function populateRecords($records): array;
 
-    public static function getStudentsQueryBySearch(mixed $search, Builder $records): Builder;
+    public static function getModelQueryBySearch(mixed $search, Builder $records): Builder;
 
     public static function totalRecords(): int;
 }

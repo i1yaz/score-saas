@@ -60,7 +60,7 @@
         "inView": true
     },
     {
-        "name": "internal_noted",
+        "name": "internal_notes",
         "dbType": "text",
         "htmlType": "text",
         "validations": "",

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->foreignIdFor(PackageType::class)->constrained();
             $table->foreignIdFor(TutoringLocation::class)->constrained();
             $table->text('notes')->nullable();
-            $table->text('internal_noted')->nullable();
+            $table->text('internal_notes')->nullable();
             $table->integer('hours');
             $table->integer('hourly_rate');
             $table->integer('discount')->nullable();

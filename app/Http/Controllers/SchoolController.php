@@ -101,7 +101,7 @@ class SchoolController extends AppBaseController
             return redirect(route('schools.index'));
         }
 
-        $school = $this->schoolRepository->update($request->all(), $id);
+         $this->schoolRepository->update($request->all(), $id);
 
         Flash::success('School updated successfully.');
 

@@ -1,62 +1,64 @@
-<div class="card-body p-0">
-    <div class="table-responsive">
+@push('page_css')
+    <link  rel="stylesheet" href="{{asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css')}}">
+    <link  rel="stylesheet" href="{{asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
+    <link  rel="stylesheet" href="{{asset('plugins/datatables-buttons/css/buttons.bootstrap4.min.css')}}">
+@endpush
+<div class="card-body">
+    <div class="table-responsive dataTables_wrapper dt-bootstrap4">
         <table class="table" id="student-tutoring-packages-table">
             <thead>
             <tr>
-                <th>Student Id</th>
-                <th>Package Type Id</th>
-                <th>Tutor Id</th>
+                <th>Package ID</th>
+                <th>Student</th>
+                <th>Package Type</th>
                 <th>Notes</th>
-                <th>Internal Noted</th>
                 <th>Hours</th>
-                <th>Hourly Rate</th>
-                <th>Tutoring Location Id</th>
-                <th>Discount</th>
-                <th>Discount Type</th>
+                <th>Tutoring Location</th>
                 <th>Start Date</th>
-                <th>Tutor Hourly Rate</th>
-                <th colspan="3">Action</th>
+                <th>Action</th>
             </tr>
             </thead>
-            <tbody>
-            @foreach($studentTutoringPackages as $studentTutoringPackage)
-                <tr>
-                    <td>{{ $studentTutoringPackage->student_id }}</td>
-                    <td>{{ $studentTutoringPackage->package_type_id }}</td>
-                    <td>{{ $studentTutoringPackage->tutor_id }}</td>
-                    <td>{{ $studentTutoringPackage->notes }}</td>
-                    <td>{{ $studentTutoringPackage->internal_noted }}</td>
-                    <td>{{ $studentTutoringPackage->hours }}</td>
-                    <td>{{ $studentTutoringPackage->hourly_rate }}</td>
-                    <td>{{ $studentTutoringPackage->tutoring_location_id }}</td>
-                    <td>{{ $studentTutoringPackage->discount }}</td>
-                    <td>{{ $studentTutoringPackage->discount_type }}</td>
-                    <td>{{ $studentTutoringPackage->start_date }}</td>
-                    <td>{{ $studentTutoringPackage->tutor_hourly_rate }}</td>
-                    <td  style="width: 120px">
-                        {!! Form::open(['route' => ['student-tutoring-packages.destroy', $studentTutoringPackage->id], 'method' => 'delete']) !!}
-                        <div class='btn-group'>
-                            <a href="{{ route('student-tutoring-packages.show', [$studentTutoringPackage->id]) }}"
-                               class='btn btn-default btn-xs'>
-                                <i class="far fa-eye"></i>
-                            </a>
-                            <a href="{{ route('student-tutoring-packages.edit', [$studentTutoringPackage->id]) }}"
-                               class='btn btn-default btn-xs'>
-                                <i class="far fa-edit"></i>
-                            </a>
-                            {!! Form::button('<i class="far fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
-                        </div>
-                        {!! Form::close() !!}
-                    </td>
-                </tr>
-            @endforeach
-            </tbody>
         </table>
     </div>
 
-    <div class="card-footer clearfix">
-        <div class="float-right">
-            @include('adminlte-templates::common.paginate', ['records' => $studentTutoringPackages])
-        </div>
-    </div>
 </div>
+
+@push('page_scripts')
+    <script src="{{asset('plugins/jquery/jquery.min.js')}}"></script>
+    <script src="{{asset('plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables/jquery.dataTables.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables-responsive/js/dataTables.responsive.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables-buttons/js/dataTables.buttons.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables-buttons/js/buttons.bootstrap4.min.js')}}"></script>
+    <script>
+        $(document).ready(function() {
+
+            $('#student-tutoring-packages-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ route('student-tutoring-packages.index') }}",
+                    dataType: "json",
+                    data: function (d) {
+                        d.search = $('input[type="search"]').val();
+                    }
+                },
+                columns: [
+                    { data: 'package_id', name: 'package_id', orderable: true },
+                    { data: 'student', name: 'student', orderable: true },
+                    { data: 'package_type', name: 'package_type', orderable: false },
+                    { data: 'notes', name: 'notes', orderable: false },
+                    { data: 'hours', name: 'hours', orderable: true },
+                    { data: 'location', name: 'location', orderable: false },
+                    { data: 'start_date', name: 'start_date', orderable: true },
+                    { data: 'action', name: 'action', orderable: false },
+
+                ],
+                order: [[0, 'desc']]
+            });
+
+        });
+    </script>
+@endpush

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\StudentsDataTable;
+use App\DataTables\StudentTutoringPackageDataTable;
 use App\Http\Requests\CreateStudentTutoringPackageRequest;
 use App\Http\Requests\UpdateStudentTutoringPackageRequest;
 use App\Http\Controllers\AppBaseController;
@@ -33,10 +35,39 @@ class StudentTutoringPackageController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $studentTutoringPackages = $this->studentTutoringPackageRepository->paginate(10);
 
-        return view('student_tutoring_packages.index')
-            ->with('studentTutoringPackages', $studentTutoringPackages);
+        if ($request->ajax()) {
+            $columns = [
+                'package_id',
+                'student',
+                'package_type',
+                'notes',
+                'hours',
+                'location',
+                'start_date',
+                'action',
+            ];
+            $limit = $request->input('length');
+            $start = $request->input('start');
+            $order = $columns[$request->input('order.0.column')];
+            $dir = $request->input('order.0.dir');
+            $search = $request->input('search');
+            $totalData = StudentTutoringPackageDataTable::totalRecords();
+            $studentTutoringPackages = StudentTutoringPackageDataTable::sortAndFilterRecords($search, $start, $limit, $order, $dir);
+            $totalFiltered = StudentTutoringPackageDataTable::totalFilteredRecords($search);
+            $data = StudentTutoringPackageDataTable::populateRecords($studentTutoringPackages);
+            $json_data = [
+                'draw' => intval($request->input('draw')),
+                'recordsTotal' => intval($totalData),
+                'recordsFiltered' => intval($totalFiltered),
+                'data' => $data,
+            ];
+
+            return response()->json($json_data);
+
+        }
+
+        return view('student_tutoring_packages.index');
     }
 
     /**
@@ -59,12 +90,16 @@ class StudentTutoringPackageController extends AppBaseController
             $tutors = $input['tutor_ids'];
             $subjects = $input['subject_ids'];
             unset($input['tutor_ids'],$input['subject_ids']);
+            if (empty($input['discount'])) {
+                $input['discount'] = 0;
+            }
             $studentTutoringPackage = $this->studentTutoringPackageRepository->create($input);
             $studentTutoringPackage->tutors()->sync($tutors);
             $studentTutoringPackage->subjects()->sync($subjects);
             DB::commit();
             Flash::success('Student Tutoring Package saved successfully.');
-            return view('student_tutoring_packages.show')->with('studentTutoringPackage', $studentTutoringPackage);
+
+            return redirect(route('student-tutoring-packages.show',['student_tutoring_package'=> $studentTutoringPackage->id]));
         } catch (QueryException $queryException) {
             DB::rollBack();
             report($queryException);
@@ -79,7 +114,7 @@ class StudentTutoringPackageController extends AppBaseController
      */
     public function show($id)
     {
-        $studentTutoringPackage = $this->studentTutoringPackageRepository->find($id);
+        $studentTutoringPackage = $this->studentTutoringPackageRepository->show($id);
 
         if (empty($studentTutoringPackage)) {
             Flash::error('Student Tutoring Package not found');
@@ -95,7 +130,9 @@ class StudentTutoringPackageController extends AppBaseController
      */
     public function edit($id)
     {
-        $studentTutoringPackage = $this->studentTutoringPackageRepository->find($id);
+        $subjects = Subject::get(['id','name']);
+        $studentTutoringPackage = StudentTutoringPackage::with(['subjects'])->find($id);
+        $selectedSubjects = $studentTutoringPackage->subjects->pluck(['id'])->toArray();
 
         if (empty($studentTutoringPackage)) {
             Flash::error('Student Tutoring Package not found');
@@ -103,7 +140,9 @@ class StudentTutoringPackageController extends AppBaseController
             return redirect(route('student-tutoring-packages.index'));
         }
 
-        return view('student_tutoring_packages.edit')->with('studentTutoringPackage', $studentTutoringPackage);
+        return view('student_tutoring_packages.edit')->with('studentTutoringPackage', $studentTutoringPackage)
+            ->with('selectedSubjects',$selectedSubjects)
+            ->with('subjects',$subjects);
     }
 
     /**
@@ -111,6 +150,7 @@ class StudentTutoringPackageController extends AppBaseController
      */
     public function update($id, UpdateStudentTutoringPackageRequest $request)
     {
+
         $studentTutoringPackage = $this->studentTutoringPackageRepository->find($id);
 
         if (empty($studentTutoringPackage)) {
@@ -119,7 +159,32 @@ class StudentTutoringPackageController extends AppBaseController
             return redirect(route('student-tutoring-packages.index'));
         }
 
-        $studentTutoringPackage = $this->studentTutoringPackageRepository->update($request->all(), $id);
+        DB::beginTransaction();
+        try {
+            $input = $request->all();
+            if (isset($input['tutor_ids']) && is_array($input['tutor_ids']) && count($input['tutor_ids']) > 0) {
+                $tutors = $input['tutor_ids'];
+                $studentTutoringPackage->tutors()->sync($tutors);
+                unset($input['tutor_ids']);
+            }
+            if (isset($input['subject_ids']) && is_array($input['subject_ids']) && count($input['subject_ids']) > 0) {
+                $subjects = $input['subject_ids'];
+                $studentTutoringPackage->subjects()->sync($subjects);
+                unset($input['subject_ids']);
+            }
+
+            $studentTutoringPackage = $this->studentTutoringPackageRepository->update($input, $id);
+            DB::commit();
+            Flash::success('Student Tutoring Package saved successfully.');
+            return view('student_tutoring_packages.show')->with('studentTutoringPackage', $studentTutoringPackage);
+        } catch (QueryException $queryException) {
+            DB::rollBack();
+            report($queryException);
+            \Laracasts\Flash\Flash::error('something went wrong');
+            return redirect(route('student-tutoring-packages.index'));
+        }
+
+
 
         Flash::success('Student Tutoring Package updated successfully.');
 

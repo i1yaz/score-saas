@@ -37,6 +37,12 @@
     {!! Form::text('secondary_phone', null, ['class' => 'form-control']) !!}
 </div>
 
+<!-- Secondary Phone Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('hourly_rate', 'Hourly Rate:') !!}
+    {!! Form::number('hourly_rate', null, ['class' => 'form-control','min'=>0]) !!}
+</div>
+
 <!-- Picture Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('picture', 'Picture:') !!}

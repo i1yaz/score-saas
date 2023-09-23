@@ -16,7 +16,7 @@ class TutorDataTable implements IDataTables
 
         $order = $columns[$order] ?? $order;
         $tutors = Tutor::query()->select(['id', 'email', 'first_name', 'last_name', 'status', 'status', 'phone', 'start_date']);
-        $tutors = static::getStudentsQueryBySearch($search, $tutors);
+        $tutors = static::getModelQueryBySearch($search, $tutors);
         $tutors = $tutors->offset($start)
             ->limit($limit)
             ->orderBy($order, $dir);
@@ -27,7 +27,7 @@ class TutorDataTable implements IDataTables
     public static function totalFilteredRecords(mixed $search): int
     {
         $tutors = Tutor::query()->select(['id']);
-        $tutors = static::getStudentsQueryBySearch($search, $tutors);
+        $tutors = static::getModelQueryBySearch($search, $tutors);
 
         return $tutors->count();
     }
@@ -51,7 +51,7 @@ class TutorDataTable implements IDataTables
         return $data;
     }
 
-    public static function getStudentsQueryBySearch(mixed $search, Builder $records): Builder
+    public static function getModelQueryBySearch(mixed $search, Builder $records): Builder
     {
         if (! empty($search)) {
             $records = $records->where(function ($q) use ($search) {

@@ -7,8 +7,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class StudentTutoringPackage extends BaseModel
 {
-    const FLAT_DISCOUNT = 0;
-    const PERCENTAGE_DISCOUNT = 1;
+    const FLAT_DISCOUNT = 1;
+    const PERCENTAGE_DISCOUNT = 2;
+    const PACKAGE_ID_START = 3000;
+    const PACKAGE_PREFIX_START = 'T';
+    /**
+     * @var \Illuminate\Database\Eloquent\HigherOrderBuilderProxy|mixed
+     */
+
     public $table = 'student_tutoring_packages';
 
     public $fillable = [
@@ -16,7 +22,7 @@ class StudentTutoringPackage extends BaseModel
         'package_type_id',
         'tutor_id',
         'notes',
-        'internal_noted',
+        'internal_notes',
         'hours',
         'hourly_rate',
         'tutoring_location_id',
@@ -35,7 +41,7 @@ class StudentTutoringPackage extends BaseModel
         'package_type_id' => 'integer',
         'tutor_id' => 'integer',
         'notes' => 'string',
-        'internal_noted' => 'string',
+        'internal_notes' => 'string',
         'hours' => 'integer',
         'hourly_rate' => 'integer',
         'tutoring_location_id' => 'integer',
@@ -46,9 +52,32 @@ class StudentTutoringPackage extends BaseModel
     ];
 
     public static array $rules = [
-
+        'student_id' => 'required',
+        'package_type_id' => 'required',
+        'tutor_ids' => ['required','array','min:1'],
+        'subject_ids' => ['required','array','min:1'],
+        'tutoring_location_id' => 'required',
+        'internal_notes' => 'string',
+        'hours' => ['required','numeric','min:1'],
+        'hourly_rate' => ['required','numeric','min:1'],
+        'discount_type' => 'required',
+        'start_date' => 'required',
+        'tutor_hourly_rate' => ['sometimes','numeric','min:1'],
+    ];
+    public static array $rulesEdit = [
+        'subject_ids' => ['required','array','min:1'],
+        'internal_notes' => 'string',
+        'hours' => ['required','numeric','min:1'],
+        'hourly_rate' => ['required','numeric','min:1'],
+        'discount_type' => 'required',
+        'start_date' => 'required',
+        'tutor_hourly_rate' => ['sometimes','numeric','min:1'],
     ];
 
+    public static mixed $messages = [
+        'tutor_ids.required' => 'Please select at least one tutor',
+        'subject_ids.required' => 'Please select at least one subject'
+    ];
     /**
      *------------------------------------------------------------------
      * Relationships

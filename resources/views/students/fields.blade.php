@@ -90,7 +90,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Default Modal</h4>
+                <h4 class="modal-title">Add School</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
@@ -114,9 +114,7 @@
                 <button type="button" class="btn btn-primary" id="store-school">Save changes</button>
             </div>
         </div>
-
     </div>
-
 </div>
 @push('page_scripts')
     <script src="{{asset("plugins/toastr/toastr.min.js")}}"></script>
