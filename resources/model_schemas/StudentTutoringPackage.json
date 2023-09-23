@@ -24,7 +24,7 @@
         "inView": true
     },
     {
-        "name": "package_type_id",
+        "name": "tutoring_package_type_id",
         "dbType": "integer",
         "htmlType": "text",
         "validations": "",

@@ -6,7 +6,7 @@
             <div class="row mb-2">
                 <div class="col-sm-12">
                     <h1>
-                    Create Package Types
+                        Edit Tutoring Package Type
                     </h1>
                 </div>
             </div>
@@ -19,19 +19,17 @@
 
         <div class="card">
 
-            {!! Form::open(['route' => 'package-types.store']) !!}
+            {!! Form::model($tutoringPackageType, ['route' => ['tutoring-package-types.update', $tutoringPackageType->id], 'method' => 'patch']) !!}
 
             <div class="card-body">
-
                 <div class="row">
-                    @include('package_types.fields')
+                    @include('tutoring_package_types.fields')
                 </div>
-
             </div>
 
             <div class="card-footer">
                 {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
-                <a href="{{ route('package-types.index') }}" class="btn btn-default"> Cancel </a>
+                <a href="{{ route('tutoring-package-types.index') }}" class="btn btn-default"> Cancel </a>
             </div>
 
             {!! Form::close() !!}

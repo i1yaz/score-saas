@@ -21,11 +21,11 @@ class StudentTutoringPackageDataTable implements IDataTables
         ];
         $order = $columns[$order] ?? $order;
         $studentTutoringPackages = StudentTutoringPackage::query()
-            ->select(['student_tutoring_packages.id','students.email as student','package_types.name as package','tutoring_locations.name as location',
+            ->select(['student_tutoring_packages.id','students.email as student','tutoring_package_types.name as package','tutoring_locations.name as location',
                 'student_tutoring_packages.notes as notes','student_tutoring_packages.hours as hours',
                 'student_tutoring_packages.start_date as start_date'])
             ->join('students','student_tutoring_packages.student_id','students.id')
-            ->join('package_types','student_tutoring_packages.package_type_id','package_types.id')
+            ->join('tutoring_package_types','student_tutoring_packages.tutoring_package_type_id','tutoring_package_types.id')
             ->join('tutoring_locations','student_tutoring_packages.tutoring_location_id','tutoring_locations.id');
         $studentTutoringPackages = static::getModelQueryBySearch($search, $studentTutoringPackages);
         $studentTutoringPackages = $studentTutoringPackages->offset($start)
@@ -51,7 +51,7 @@ class StudentTutoringPackageDataTable implements IDataTables
             foreach ($records as $studentTutoringPackage) {
                 $nestedData['package_id'] = getPackageIdFromId($studentTutoringPackage->id);
                 $nestedData['student'] = $studentTutoringPackage->student;
-                $nestedData['package_type'] = $studentTutoringPackage->package;
+                $nestedData['tutoring_package_type'] = $studentTutoringPackage->package;
                 $nestedData['notes'] = $studentTutoringPackage->notes;
                 $nestedData['hours'] = $studentTutoringPackage->hours;
                 $nestedData['location'] = $studentTutoringPackage->location;

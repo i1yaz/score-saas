@@ -7,7 +7,7 @@
             <table class="table table-striped">
                 <tbody>
                 <tr>
-                    <td> <strong> Package Type</strong></td>
+                    <td> <strong> Tutoring Package Type</strong></td>
                     <td>{{$studentTutoringPackage->package_name}}</td>
                 </tr>
                 <tr>

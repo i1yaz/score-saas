@@ -6,12 +6,12 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1>
-Package Type Details
+Tutoring Package Type Details
                     </h1>
                 </div>
                 <div class="col-sm-6">
                     <a class="btn btn-default float-right"
-                       href="{{ route('package-types.index') }}">
+                       href="{{ route('tutoring-package-types.index') }}">
                                                     Back
                                             </a>
                 </div>
@@ -23,7 +23,7 @@ Package Type Details
         <div class="card">
             <div class="card-body">
                 <div class="row">
-                    @include('package_types.show_fields')
+                    @include('tutoring_package_types.show_fields')
                 </div>
             </div>
         </div>

@@ -12,10 +12,10 @@
     {!! Form::select('student_id', [],null, ['class' => 'form-control','id'=>'student-id']) !!}
 </div>
 
-<!-- Package Type Field -->
+<!-- Tutoring Package Type Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('package_type_id', 'Package Type:') !!}
-    {!! Form::select('package_type_id', [],null, ['class' => 'form-control','id'=>'package-type-id']) !!}
+    {!! Form::label('tutoring_package_type_id', 'Tutoring Package Type:') !!}
+    {!! Form::select('tutoring_package_type_id', [],null, ['class' => 'form-control','id'=>'tutoring-package-type-id']) !!}
 </div>
 
 <!-- Tutor Field -->
@@ -59,8 +59,8 @@
         {!!  Form::number('discount', null, ['class' => 'form-control'])  !!}
         <div class="input-group-append">
             <select class="form-control input-group-text" name="discount_type" id = 'discount-type'>
-                <option value="1" @if($studentTutoringPackage->discount_type == \App\Models\StudentTutoringPackage::FLAT_DISCOUNT) selected @endif>Flat</option>
-                <option value="2" @if ($studentTutoringPackage->discount_type == \App\Models\StudentTutoringPackage::PERCENTAGE_DISCOUNT) selected @endif>%</option>
+                <option value="1" @if(isset($studentTutoringPackage) && $studentTutoringPackage->discount_type == \App\Models\StudentTutoringPackage::FLAT_DISCOUNT) selected @endif>Flat</option>
+                <option value="2" @if (isset($studentTutoringPackage) && $studentTutoringPackage->discount_type == \App\Models\StudentTutoringPackage::PERCENTAGE_DISCOUNT) selected @endif>%</option>
             </select>
         </div>
     </div>
@@ -136,11 +136,11 @@
         });
         $(document).ready(function () {
             // Initialize Select2
-            $("#package-type-id").select2({
+            $("#tutoring-package-type-id").select2({
                 theme: 'bootstrap4',
                 minimumInputLength: 2,
                 ajax: {
-                    url: "{{route('package-type-ajax')}}",
+                    url: "{{route('tutoring-package-type-ajax')}}",
                     dataType: "json",
                     delay: 250,
                     data: function (params) {
@@ -166,7 +166,7 @@
                     return markup;
                 }
             });
-            $('#package-type-id').on('select2:select', function (e) {
+            $('#tutoring-package-type-id').on('select2:select', function (e) {
                 let data = e.params.data;
                 $('#hours').empty()
                 $('#hours').val(data.hours)

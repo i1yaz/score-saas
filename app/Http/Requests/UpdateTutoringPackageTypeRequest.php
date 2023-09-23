@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Models\PackageType;
+use App\Models\TutoringPackageType;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdatePackageTypeRequest extends FormRequest
+class UpdateTutoringPackageTypeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,7 @@ class UpdatePackageTypeRequest extends FormRequest
      */
     public function rules()
     {
-        $rules = PackageType::$rules;
+        $rules = TutoringPackageType::$rules;
 
         return $rules;
     }

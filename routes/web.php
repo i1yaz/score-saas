@@ -9,7 +9,7 @@ use App\Http\Controllers\ParentController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\TutorController;
-use App\Http\Controllers\PackageTypeController;
+use App\Http\Controllers\TutoringPackageTypeController;
 use App\Http\Controllers\SubjectController;
 
 /*
@@ -73,14 +73,14 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor']], function () {
     Route::get('tutors/{tutor}/edit', [TutorController::class, 'edit'])->name('tutors.edit')->middleware(['permission:tutor-edit']);
     Route::patch('tutors/{tutor}', [TutorController::class, 'update'])->name('tutors.update')->middleware(['permission:tutor-edit']);
     Route::delete('tutors/{tutor}', [TutorController::class, 'destroy'])->name('tutors.destroy')->middleware(['permission:tutor-destroy']);
-    //Package Types
-    Route::get('package-types', [PackageTypeController::class, 'index'])->name('package-types.index')->middleware(['permission:package_type-index']);
-    Route::get('package-types/create', [PackageTypeController::class, 'create'])->name('package-types.create')->middleware(['permission:package_type-create']);
-    Route::post('package-types', [PackageTypeController::class, 'store'])->name('package-types.store')->middleware(['permission:package_type-create']);
-    Route::get('package-types/{package_type}', [PackageTypeController::class, 'show'])->name('package-types.show')->middleware(['permission:package_type-show']);
-    Route::get('package-types/{package_type}/edit', [PackageTypeController::class, 'edit'])->name('package-types.edit')->middleware(['permission:package_type-edit']);
-    Route::patch('package-types/{package_type}', [PackageTypeController::class, 'update'])->name('package-types.update')->middleware(['permission:package_type-edit']);
-    Route::delete('package-types/{package_type}', [PackageTypeController::class, 'destroy'])->name('package-types.destroy')->middleware(['permission:package_type-destroy']);
+    //Tutoring Package Types
+    Route::get('tutoring-package-types', [TutoringPackageTypeController::class, 'index'])->name('tutoring-package-types.index')->middleware(['permission:tutoring_package_type-index']);
+    Route::get('tutoring-package-types/create', [TutoringPackageTypeController::class, 'create'])->name('tutoring-package-types.create')->middleware(['permission:tutoring_package_type-create']);
+    Route::post('tutoring-package-types', [TutoringPackageTypeController::class, 'store'])->name('tutoring-package-types.store')->middleware(['permission:tutoring_package_type-create']);
+    Route::get('tutoring-package-types/{tutoring_package_type}', [TutoringPackageTypeController::class, 'show'])->name('tutoring-package-types.show')->middleware(['permission:tutoring_package_type-show']);
+    Route::get('tutoring-package-types/{tutoring_package_type}/edit', [TutoringPackageTypeController::class, 'edit'])->name('tutoring-package-types.edit')->middleware(['permission:tutoring_package_type-edit']);
+    Route::patch('tutoring-package-types/{tutoring_package_type}', [TutoringPackageTypeController::class, 'update'])->name('tutoring-package-types.update')->middleware(['permission:tutoring_package_type-edit']);
+    Route::delete('tutoring-package-types/{tutoring_package_type}', [TutoringPackageTypeController::class, 'destroy'])->name('tutoring-package-types.destroy')->middleware(['permission:tutoring_package_type-destroy']);
     //Subjects
     Route::get('subjects', [SubjectController::class, 'index'])->name('subjects.index')->middleware(['permission:subject-index']);
     Route::get('subjects/create', [SubjectController::class, 'create'])->name('subjects.create')->middleware(['permission:subject-create']);
@@ -105,7 +105,7 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor']], function () {
     Route::get('student-tutoring-packages/{student_tutoring_package}/edit', [StudentTutoringPackageController::class, 'edit'])->name('student-tutoring-packages.edit')->middleware(['permission:student_tutoring_package-edit']);
     Route::patch('student-tutoring-packages/{student_tutoring_package}', [StudentTutoringPackageController::class, 'update'])->name('student-tutoring-packages.update')->middleware(['permission:student_tutoring_package-edit']);
     Route::delete('student-tutoring-packages/{student_tutoring_package}', [StudentTutoringPackageController::class, 'destroy'])->name('student-tutoring-packages.destroy')->middleware(['permission:student_tutoring_package-destroy']);
-    Route::get('package-type-ajax', [StudentTutoringPackageController::class, 'packageTypeAjax'])->name('package-type-ajax')->middleware(['permission:student_tutoring_package-create']);
+    Route::get('tutoring-package-type-ajax', [StudentTutoringPackageController::class, 'tutoringPackageTypeAjax'])->name('tutoring-package-type-ajax')->middleware(['permission:student_tutoring_package-create']);
     Route::get('student-email-ajax', [StudentTutoringPackageController::class, 'studentEmailAjax'])->name('student-email-ajax')->middleware(['permission:student_tutoring_package-create']);
     Route::get('tutor-email-ajax', [StudentTutoringPackageController::class, 'tutorEmailAjax'])->name('tutor-email-ajax')->middleware(['permission:student_tutoring_package-create']);
     Route::get('tutoring-location-ajax', [StudentTutoringPackageController::class, 'tutoringLocationAjax'])->name('tutoring-location-ajax')->middleware(['permission:student_tutoring_package-create']);

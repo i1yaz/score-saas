@@ -5,12 +5,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Package Types</h1>
+                    <h1>Tutoring Package Types</h1>
                 </div>
-                @permission('package_type-create')
+                @permission('tutoring_package_type-create')
                 <div class="col-sm-6">
                     <a class="btn btn-primary float-right"
-                       href="{{ route('package-types.create') }}">
+                       href="{{ route('tutoring-package-types.create') }}">
                         Add New
                     </a>
                 </div>
@@ -26,7 +26,7 @@
         <div class="clearfix"></div>
 
         <div class="card">
-            @include('package_types.table')
+            @include('tutoring_package_types.table')
         </div>
     </div>
 

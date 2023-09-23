@@ -2,11 +2,11 @@
 
 namespace App\Repositories;
 
-use App\Models\PackageType;
+use App\Models\TutoringPackageType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
-class PackageTypeRepository extends BaseRepository
+class TutoringPackageTypeRepository extends BaseRepository
 {
     protected $fieldSearchable = [
         'name',
@@ -20,7 +20,7 @@ class PackageTypeRepository extends BaseRepository
 
     public function model(): string
     {
-        return PackageType::class;
+        return TutoringPackageType::class;
     }
 
     public function create(array $input): Model

@@ -10,7 +10,7 @@
             <tr>
                 <th>Package ID</th>
                 <th>Student</th>
-                <th>Package Type</th>
+                <th>Tutoring Package Type</th>
                 <th>Notes</th>
                 <th>Hours</th>
                 <th>Tutoring Location</th>
@@ -48,7 +48,7 @@
                 columns: [
                     { data: 'package_id', name: 'package_id', orderable: true },
                     { data: 'student', name: 'student', orderable: true },
-                    { data: 'package_type', name: 'package_type', orderable: false },
+                    { data: 'tutoring_package_type', name: 'tutoring_package_type', orderable: false },
                     { data: 'notes', name: 'notes', orderable: false },
                     { data: 'hours', name: 'hours', orderable: true },
                     { data: 'location', name: 'location', orderable: false },

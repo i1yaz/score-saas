@@ -81,9 +81,9 @@
 
 @endpermission
 
-@permission(['package_type-index','subject-index','tutoring_location-index'])
-<li class="nav-item {{Request::is(['package-types*','subjects*','tutoring-locations*'])?'menu-is-opening menu-open active':''}}">
-    <a href="#" class="nav-link {{Request::is(['package-types*','subjects*','tutoring-locations*'])?'active':''}}">
+@permission(['tutoring_package_type-index','subject-index','tutoring_location-index'])
+<li class="nav-item {{Request::is(['tutoring-package-types*','subjects*','tutoring-locations*'])?'menu-is-opening menu-open active':''}}">
+    <a href="#" class="nav-link {{Request::is(['tutoring-package-types*','subjects*','tutoring-locations*'])?'active':''}}">
         <i class="nav-icon fas fa-tree"></i>
         <p>
             Settings
@@ -91,12 +91,12 @@
         </p>
     </a>
     <ul class="nav nav-treeview">
-        @permission('package_type-index')
+        @permission('tutoring_package_type-index')
 
         <li class="nav-item">
-            <a href="{{ route('package-types.index') }}" class="nav-link {{ Request::is('package-types*') ? 'active' : '' }}">
+            <a href="{{ route('tutoring-package-types.index') }}" class="nav-link {{ Request::is('tutoring-package-types*') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Package Types</p>
+                <p>Tutoring Package Types</p>
             </a>
         </li>
         @endpermission

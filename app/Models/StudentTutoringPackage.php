@@ -19,7 +19,7 @@ class StudentTutoringPackage extends BaseModel
 
     public $fillable = [
         'student_id',
-        'package_type_id',
+        'tutoring_package_type_id',
         'tutor_id',
         'notes',
         'internal_notes',
@@ -38,7 +38,7 @@ class StudentTutoringPackage extends BaseModel
     protected $casts = [
         'id' => 'integer',
         'student_id' => 'integer',
-        'package_type_id' => 'integer',
+        'tutoring_package_type_id' => 'integer',
         'tutor_id' => 'integer',
         'notes' => 'string',
         'internal_notes' => 'string',
@@ -53,7 +53,7 @@ class StudentTutoringPackage extends BaseModel
 
     public static array $rules = [
         'student_id' => 'required',
-        'package_type_id' => 'required',
+        'tutoring_package_type_id' => 'required',
         'tutor_ids' => ['required','array','min:1'],
         'subject_ids' => ['required','array','min:1'],
         'tutoring_location_id' => 'required',

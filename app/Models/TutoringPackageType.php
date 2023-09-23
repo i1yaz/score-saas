@@ -3,9 +3,9 @@
 namespace App\Models;
 
 
-class PackageType extends BaseModel
+class TutoringPackageType extends BaseModel
 {
-    public $table = 'package_types';
+    public $table = 'tutoring_package_types';
 
     public $fillable = [
         'name',

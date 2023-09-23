@@ -1,30 +1,30 @@
 <!-- Id Field -->
 <div class="col-sm-12">
     {!! Form::label('id', 'Id:') !!}
-    <p>{{ $packageType->id }}</p>
+    <p>{{ $tutoringPackageType->id }}</p>
 </div>
 
 <!-- Name Field -->
 <div class="col-sm-12">
     {!! Form::label('name', 'Name:') !!}
-    <p>{{ $packageType->name }}</p>
+    <p>{{ $tutoringPackageType->name }}</p>
 </div>
 
 <!-- Hours Field -->
 <div class="col-sm-12">
     {!! Form::label('hours', 'Hours:') !!}
-    <p>{{ $packageType->hours }}</p>
+    <p>{{ $tutoringPackageType->hours }}</p>
 </div>
 
 <!-- Created At Field -->
 <div class="col-sm-12">
     {!! Form::label('created_at', 'Created At:') !!}
-    <p>{{ $packageType->created_at }}</p>
+    <p>{{ $tutoringPackageType->created_at }}</p>
 </div>
 
 <!-- Updated At Field -->
 <div class="col-sm-12">
     {!! Form::label('updated_at', 'Updated At:') !!}
-    <p>{{ $packageType->updated_at }}</p>
+    <p>{{ $tutoringPackageType->updated_at }}</p>
 </div>
 

@@ -7,7 +7,7 @@ use App\DataTables\StudentTutoringPackageDataTable;
 use App\Http\Requests\CreateStudentTutoringPackageRequest;
 use App\Http\Requests\UpdateStudentTutoringPackageRequest;
 use App\Http\Controllers\AppBaseController;
-use App\Models\PackageType;
+use App\Models\TutoringPackageType;
 use App\Models\ParentUser;
 use App\Models\Student;
 use App\Models\StudentTutoringPackage;
@@ -40,7 +40,7 @@ class StudentTutoringPackageController extends AppBaseController
             $columns = [
                 'package_id',
                 'student',
-                'package_type',
+                'tutoring_package_type',
                 'notes',
                 'hours',
                 'location',
@@ -213,14 +213,14 @@ class StudentTutoringPackageController extends AppBaseController
         return redirect(route('student-tutoring-packages.index'));
     }
 
-    public function packageTypeAjax(Request $request){
+    public function tutoringPackageTypeAjax(Request $request){
         $name = trim($request->name);
-        $packageTypes = PackageType::active()
-            ->select(['package_types.id as id','package_types.name as text','package_types.hours'])
-            ->where('package_types.name','LIKE',"%{$name}%")
+        $tutoringPackageTypes = TutoringPackageType::active()
+            ->select(['tutoring_package_types.id as id','tutoring_package_types.name as text','tutoring_package_types.hours'])
+            ->where('tutoring_package_types.name','LIKE',"%{$name}%")
             ->limit(5)
             ->get();
-        return response()->json($packageTypes->toArray());
+        return response()->json($tutoringPackageTypes->toArray());
     }
     public function studentEmailAjax(Request $request){
         $email = trim($request->email);

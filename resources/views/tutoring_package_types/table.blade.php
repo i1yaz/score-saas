@@ -1,6 +1,6 @@
 <div class="card-body p-0">
     <div class="table-responsive">
-        <table class="table" id="package-types-table">
+        <table class="table" id="tutoring-package-types-table">
             <thead>
             <tr>
                 <th>Name</th>
@@ -9,26 +9,26 @@
             </tr>
             </thead>
             <tbody>
-            @foreach($packageTypes as $packageType)
+            @foreach($tutoringPackageTypes as $tutoringPackageType)
                 <tr>
-                    <td>{{ $packageType->name }}</td>
-                    <td>{{ $packageType->hours }}</td>
+                    <td>{{ $tutoringPackageType->name }}</td>
+                    <td>{{ $tutoringPackageType->hours }}</td>
                     <td  style="width: 120px">
-                        {!! Form::open(['route' => ['package-types.destroy', $packageType->id], 'method' => 'delete']) !!}
+                        {!! Form::open(['route' => ['tutoring-package-types.destroy', $tutoringPackageType->id], 'method' => 'delete']) !!}
                         <div class='btn-group'>
-                            @permission('package_type-show')
-                            <a href="{{ route('package-types.show', [$packageType->id]) }}"
+                            @permission('tutoring_package_type-show')
+                            <a href="{{ route('tutoring-package-types.show', [$tutoringPackageType->id]) }}"
                                class='btn btn-default btn-sm'>
                                 <i class="far fa-eye"></i>
                             </a>
                             @endpermission
-                            @permission('package_type-edit')
-                            <a href="{{ route('package-types.edit', [$packageType->id]) }}"
+                            @permission('tutoring_package_type-edit')
+                            <a href="{{ route('tutoring-package-types.edit', [$tutoringPackageType->id]) }}"
                                class='btn btn-default btn-sm'>
                                 <i class="far fa-edit"></i>
                             </a>
                             @endpermission
-                            @permission('package_type-destroy')
+                            @permission('tutoring_package_type-destroy')
                             {!! Form::button('<i class="far fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-sm', 'onclick' => "return confirm('Are you sure?')"]) !!}
                             @endpermission
                         </div>
@@ -42,7 +42,7 @@
 
     <div class="card-footer clearfix">
         <div class="float-right">
-            @include('adminlte-templates::common.paginate', ['records' => $packageTypes])
+            @include('adminlte-templates::common.paginate', ['records' => $tutoringPackageTypes])
         </div>
     </div>
 </div>

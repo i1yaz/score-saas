@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\PackageType;
+use App\Models\TutoringPackageType;
 use App\Models\Student;
 use App\Models\TutoringLocation;
 use Illuminate\Database\Migrations\Migration;
@@ -19,7 +19,7 @@ return new class extends Migration
         Schema::create('student_tutoring_packages', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->foreignIdFor(Student::class)->constrained();
-            $table->foreignIdFor(PackageType::class)->constrained();
+            $table->foreignIdFor(TutoringPackageType::class)->constrained();
             $table->foreignIdFor(TutoringLocation::class)->constrained();
             $table->text('notes')->nullable();
             $table->text('internal_notes')->nullable();

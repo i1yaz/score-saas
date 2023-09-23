@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('package_types', function (Blueprint $table) {
+        Schema::create('tutoring_package_types', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->text('name');
             $table->integer('hours');
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::drop('package_types');
+        Schema::drop('tutoring_package_types');
     }
 };
