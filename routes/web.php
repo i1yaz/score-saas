@@ -2,16 +2,16 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\InvoicePackageTypeController;
+use App\Http\Controllers\ParentController;
+use App\Http\Controllers\SchoolController;
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentTutoringPackageController;
+use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\TutorController;
 use App\Http\Controllers\TutoringLocationController;
+use App\Http\Controllers\TutoringPackageTypeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ParentController;
-use App\Http\Controllers\StudentController;
-use App\Http\Controllers\SchoolController;
-use App\Http\Controllers\TutorController;
-use App\Http\Controllers\TutoringPackageTypeController;
-use App\Http\Controllers\SubjectController;
 
 /*
 |--------------------------------------------------------------------------
@@ -118,6 +118,5 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor']], function () {
     Route::get('invoice-package-types/{invoice_package_type}/edit', [InvoicePackageTypeController::class, 'edit'])->name('invoice-package-types.edit')->middleware(['permission:invoice_package_type-edit']);
     Route::patch('invoice-package-types/{invoice_package_type}', [InvoicePackageTypeController::class, 'update'])->name('invoice-package-types.update')->middleware(['permission:invoice_package_type-edit']);
     Route::delete('invoice-package-types/{invoice_package_type}', [InvoicePackageTypeController::class, 'destroy'])->name('invoice-package-types.destroy')->middleware(['permission:invoice_package_type-destroy']);
-
 
 });

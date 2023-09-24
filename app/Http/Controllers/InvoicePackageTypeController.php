@@ -4,14 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateInvoicePackageTypeRequest;
 use App\Http\Requests\UpdateInvoicePackageTypeRequest;
-use App\Http\Controllers\AppBaseController;
 use App\Repositories\InvoicePackageTypeRepository;
-use Illuminate\Http\Request;
 use Flash;
+use Illuminate\Http\Request;
 
 class InvoicePackageTypeController extends AppBaseController
 {
-    /** @var InvoicePackageTypeRepository $invoicePackageTypeRepository*/
+    /** @var InvoicePackageTypeRepository */
     private $invoicePackageTypeRepository;
 
     public function __construct(InvoicePackageTypeRepository $invoicePackageTypeRepo)

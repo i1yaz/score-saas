@@ -33,7 +33,7 @@ class Tutor extends Authenticatable implements LaratrustUser
         'added_by',
         'auth_guard',
         'status',
-        'hourly_rate'
+        'hourly_rate',
     ];
 
     protected $casts = [
@@ -56,8 +56,9 @@ class Tutor extends Authenticatable implements LaratrustUser
         'email' => ['required', 'string', 'email', 'max:255', 'unique:students'],
         'picture' => ['sometimes', 'mimes:jpg,bmp,png,jpeg,JPG,BMP,PNG,JPEG', 'max:2048'],
         'resume' => ['sometimes', 'mimes:doc,docx,docm,pdf', 'max:2048'],
-        'hourly_rate' => ['sometimes', 'numeric','gt:0'],
+        'hourly_rate' => ['sometimes', 'numeric', 'gt:0'],
     ];
+
     /**
      *------------------------------------------------------------------
      * Relationships
@@ -67,6 +68,7 @@ class Tutor extends Authenticatable implements LaratrustUser
     {
         return $this->belongsToMany(StudentTutoringPackage::class);
     }
+
     /**
      *------------------------------------------------------------------
      * Scopes
@@ -74,18 +76,19 @@ class Tutor extends Authenticatable implements LaratrustUser
      */
     public function scopeActive(Builder $query): void
     {
-        $query->where('status',true);
+        $query->where('status', true);
     }
+
     public function scopeInActive(Builder $query): void
     {
-        $query->where('status',false);
+        $query->where('status', false);
     }
+
     /**
      *------------------------------------------------------------------
      * Accessors
      *------------------------------------------------------------------
      */
-
     public function getFullNameAttribute(): string
     {
         return "{$this->first_name} {$this->last_name}";

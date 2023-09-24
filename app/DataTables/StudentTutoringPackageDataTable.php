@@ -2,18 +2,13 @@
 
 namespace App\DataTables;
 
-use App\DataTables\IDataTables;
-use App\Models\ParentUser;
-use App\Models\Student;
 use App\Models\StudentTutoringPackage;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Auth;
 
 class StudentTutoringPackageDataTable implements IDataTables
 {
-
     public static function sortAndFilterRecords(mixed $search, mixed $start, mixed $limit, string $order, mixed $dir): Collection|array
     {
         $columns = [
@@ -21,12 +16,12 @@ class StudentTutoringPackageDataTable implements IDataTables
         ];
         $order = $columns[$order] ?? $order;
         $studentTutoringPackages = StudentTutoringPackage::query()
-            ->select(['student_tutoring_packages.id','students.email as student','tutoring_package_types.name as package','tutoring_locations.name as location',
-                'student_tutoring_packages.notes as notes','student_tutoring_packages.hours as hours',
+            ->select(['student_tutoring_packages.id', 'students.email as student', 'tutoring_package_types.name as package', 'tutoring_locations.name as location',
+                'student_tutoring_packages.notes as notes', 'student_tutoring_packages.hours as hours',
                 'student_tutoring_packages.start_date as start_date'])
-            ->join('students','student_tutoring_packages.student_id','students.id')
-            ->join('tutoring_package_types','student_tutoring_packages.tutoring_package_type_id','tutoring_package_types.id')
-            ->join('tutoring_locations','student_tutoring_packages.tutoring_location_id','tutoring_locations.id');
+            ->join('students', 'student_tutoring_packages.student_id', 'students.id')
+            ->join('tutoring_package_types', 'student_tutoring_packages.tutoring_package_type_id', 'tutoring_package_types.id')
+            ->join('tutoring_locations', 'student_tutoring_packages.tutoring_location_id', 'tutoring_locations.id');
         $studentTutoringPackages = static::getModelQueryBySearch($search, $studentTutoringPackages);
         $studentTutoringPackages = $studentTutoringPackages->offset($start)
             ->limit($limit)
@@ -55,7 +50,7 @@ class StudentTutoringPackageDataTable implements IDataTables
                 $nestedData['notes'] = $studentTutoringPackage->notes;
                 $nestedData['hours'] = $studentTutoringPackage->hours;
                 $nestedData['location'] = $studentTutoringPackage->location;
-                $nestedData['start_date'] = Carbon::parse($studentTutoringPackage->start_date)->format('j F,Y') ;
+                $nestedData['start_date'] = Carbon::parse($studentTutoringPackage->start_date)->format('j F,Y');
                 $nestedData['action'] = view('student_tutoring_packages.actions', ['studentTutoringPackage' => $studentTutoringPackage])->render();
                 $data[] = $nestedData;
 

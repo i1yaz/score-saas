@@ -26,6 +26,7 @@ class CreateStudentTutoringPackageRequest extends FormRequest
     {
         return StudentTutoringPackage::$rules;
     }
+
     /**
      * Get the error messages for the defined validation rules.
      *

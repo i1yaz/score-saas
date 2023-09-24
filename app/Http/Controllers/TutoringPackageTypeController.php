@@ -5,14 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateTutoringPackageTypeRequest;
 use App\Http\Requests\UpdateTutoringPackageTypeRequest;
 use App\Models\TutoringPackageType;
-use App\Models\ParentUser;
 use App\Repositories\TutoringPackageTypeRepository;
 use Illuminate\Http\Request;
 use Laracasts\Flash\Flash;
 
 class TutoringPackageTypeController extends AppBaseController
 {
-    /** @var TutoringPackageTypeRepository */
     private TutoringPackageTypeRepository $tutoringPackageTypeRepository;
 
     public function __construct(TutoringPackageTypeRepository $tutoringPackageTypeRepo)

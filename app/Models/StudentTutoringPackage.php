@@ -2,19 +2,21 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class StudentTutoringPackage extends BaseModel
 {
     const FLAT_DISCOUNT = 1;
+
     const PERCENTAGE_DISCOUNT = 2;
+
     const PACKAGE_ID_START = 3000;
+
     const PACKAGE_PREFIX_START = 'T';
+
     /**
      * @var \Illuminate\Database\Eloquent\HigherOrderBuilderProxy|mixed
      */
-
     public $table = 'student_tutoring_packages';
 
     public $fillable = [
@@ -48,36 +50,38 @@ class StudentTutoringPackage extends BaseModel
         'discount' => 'integer',
         'discount_type' => 'integer',
         'start_date' => 'date',
-        'tutor_hourly_rate' => 'integer'
+        'tutor_hourly_rate' => 'integer',
     ];
 
     public static array $rules = [
         'student_id' => 'required',
         'tutoring_package_type_id' => 'required',
-        'tutor_ids' => ['required','array','min:1'],
-        'subject_ids' => ['required','array','min:1'],
+        'tutor_ids' => ['required', 'array', 'min:1'],
+        'subject_ids' => ['required', 'array', 'min:1'],
         'tutoring_location_id' => 'required',
         'internal_notes' => 'string',
-        'hours' => ['required','numeric','min:1'],
-        'hourly_rate' => ['required','numeric','min:1'],
+        'hours' => ['required', 'numeric', 'min:1'],
+        'hourly_rate' => ['required', 'numeric', 'min:1'],
         'discount_type' => 'required',
         'start_date' => 'required',
-        'tutor_hourly_rate' => ['sometimes','numeric','min:1'],
+        'tutor_hourly_rate' => ['sometimes', 'numeric', 'min:1'],
     ];
+
     public static array $rulesEdit = [
-        'subject_ids' => ['required','array','min:1'],
+        'subject_ids' => ['required', 'array', 'min:1'],
         'internal_notes' => 'string',
-        'hours' => ['required','numeric','min:1'],
-        'hourly_rate' => ['required','numeric','min:1'],
+        'hours' => ['required', 'numeric', 'min:1'],
+        'hourly_rate' => ['required', 'numeric', 'min:1'],
         'discount_type' => 'required',
         'start_date' => 'required',
-        'tutor_hourly_rate' => ['sometimes','numeric','min:1'],
+        'tutor_hourly_rate' => ['sometimes', 'numeric', 'min:1'],
     ];
 
     public static mixed $messages = [
         'tutor_ids.required' => 'Please select at least one tutor',
-        'subject_ids.required' => 'Please select at least one subject'
+        'subject_ids.required' => 'Please select at least one subject',
     ];
+
     /**
      *------------------------------------------------------------------
      * Relationships
@@ -87,10 +91,9 @@ class StudentTutoringPackage extends BaseModel
     {
         return $this->belongsToMany(Subject::class);
     }
-    public function tutors():BelongsToMany
+
+    public function tutors(): BelongsToMany
     {
         return $this->belongsToMany(Tutor::class);
     }
-
-
 }

@@ -11,7 +11,6 @@ use Laracasts\Flash\Flash;
 
 class SubjectController extends AppBaseController
 {
-    /** @var SubjectRepository */
     private SubjectRepository $subjectRepository;
 
     public function __construct(SubjectRepository $subjectRepo)
@@ -47,10 +46,11 @@ class SubjectController extends AppBaseController
 
         $this->subjectRepository->create($input);
         if ($request->ajax()) {
-            $studentTutoringPackage = StudentTutoringPackage::with(['subjects'])->where('id',$input['student_tutoring_package_id'])->first(['id']);
+            $studentTutoringPackage = StudentTutoringPackage::with(['subjects'])->where('id', $input['student_tutoring_package_id'])->first(['id']);
             $subjects = $studentTutoringPackage->subjects->pluck(['id'])->toArray();
-            $subjectsRenderedView = view('student_tutoring_packages.subjects', ['subjects' => $this->subjectRepository->all(),'selectedSubjects' => $subjects])->render();
-            return response()->json(['success' => 'Subject added successfully.','html' => $subjectsRenderedView]);
+            $subjectsRenderedView = view('student_tutoring_packages.subjects', ['subjects' => $this->subjectRepository->all(), 'selectedSubjects' => $subjects])->render();
+
+            return response()->json(['success' => 'Subject added successfully.', 'html' => $subjectsRenderedView]);
         }
         Flash::success('Subject saved successfully.');
 

@@ -3,8 +3,6 @@
 namespace App\Repositories;
 
 use App\Models\StudentTutoringPackage;
-use App\Repositories\BaseRepository;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class StudentTutoringPackageRepository extends BaseRepository
@@ -21,7 +19,7 @@ class StudentTutoringPackageRepository extends BaseRepository
         'discount',
         'discount_type',
         'start_date',
-        'tutor_hourly_rate'
+        'tutor_hourly_rate',
     ];
 
     public function getFieldsSearchable(): array
@@ -48,18 +46,18 @@ class StudentTutoringPackageRepository extends BaseRepository
     public function show($id): StudentTutoringPackage
     {
         return StudentTutoringPackage::query()
-            ->with(['tutors','subjects'])
+            ->with(['tutors', 'subjects'])
             ->select([
                 'student_tutoring_packages.*',
                 'students.email as student_email',
                 'tutoring_package_types.name as package_name',
                 'tutoring_package_types.hours as package_hours',
-                'tutoring_locations.name as location_name'
+                'tutoring_locations.name as location_name',
             ])
-            ->join('students','student_tutoring_packages.student_id','students.id')
-            ->join('tutoring_package_types','student_tutoring_packages.tutoring_package_type_id','tutoring_package_types.id')
-            ->join('tutoring_locations','student_tutoring_packages.tutoring_location_id','tutoring_locations.id')
-            ->where('student_tutoring_packages.id',$id)
+            ->join('students', 'student_tutoring_packages.student_id', 'students.id')
+            ->join('tutoring_package_types', 'student_tutoring_packages.tutoring_package_type_id', 'tutoring_package_types.id')
+            ->join('tutoring_locations', 'student_tutoring_packages.tutoring_location_id', 'tutoring_locations.id')
+            ->where('student_tutoring_packages.id', $id)
             ->first();
     }
 }

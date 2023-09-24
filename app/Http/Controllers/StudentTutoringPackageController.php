@@ -2,27 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\DataTables\StudentsDataTable;
 use App\DataTables\StudentTutoringPackageDataTable;
 use App\Http\Requests\CreateStudentTutoringPackageRequest;
 use App\Http\Requests\UpdateStudentTutoringPackageRequest;
-use App\Http\Controllers\AppBaseController;
-use App\Models\TutoringPackageType;
-use App\Models\ParentUser;
 use App\Models\Student;
 use App\Models\StudentTutoringPackage;
 use App\Models\Subject;
 use App\Models\Tutor;
 use App\Models\TutoringLocation;
+use App\Models\TutoringPackageType;
 use App\Repositories\StudentTutoringPackageRepository;
+use Flash;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Flash;
 use Illuminate\Support\Facades\DB;
 
 class StudentTutoringPackageController extends AppBaseController
 {
-    /** @var StudentTutoringPackageRepository $studentTutoringPackageRepository*/
     private StudentTutoringPackageRepository $studentTutoringPackageRepository;
 
     public function __construct(StudentTutoringPackageRepository $studentTutoringPackageRepo)
@@ -75,8 +71,9 @@ class StudentTutoringPackageController extends AppBaseController
      */
     public function create()
     {
-        $subjects = Subject::get(['id','name']);
-        return view('student_tutoring_packages.create',['subjects'=>$subjects]);
+        $subjects = Subject::get(['id', 'name']);
+
+        return view('student_tutoring_packages.create', ['subjects' => $subjects]);
     }
 
     /**
@@ -99,11 +96,12 @@ class StudentTutoringPackageController extends AppBaseController
             DB::commit();
             Flash::success('Student Tutoring Package saved successfully.');
 
-            return redirect(route('student-tutoring-packages.show',['student_tutoring_package'=> $studentTutoringPackage->id]));
+            return redirect(route('student-tutoring-packages.show', ['student_tutoring_package' => $studentTutoringPackage->id]));
         } catch (QueryException $queryException) {
             DB::rollBack();
             report($queryException);
             \Laracasts\Flash\Flash::error('something went wrong');
+
             return redirect(route('student-tutoring-packages.index'));
         }
 
@@ -130,7 +128,7 @@ class StudentTutoringPackageController extends AppBaseController
      */
     public function edit($id)
     {
-        $subjects = Subject::get(['id','name']);
+        $subjects = Subject::get(['id', 'name']);
         $studentTutoringPackage = StudentTutoringPackage::with(['subjects'])->find($id);
         $selectedSubjects = $studentTutoringPackage->subjects->pluck(['id'])->toArray();
 
@@ -141,8 +139,8 @@ class StudentTutoringPackageController extends AppBaseController
         }
 
         return view('student_tutoring_packages.edit')->with('studentTutoringPackage', $studentTutoringPackage)
-            ->with('selectedSubjects',$selectedSubjects)
-            ->with('subjects',$subjects);
+            ->with('selectedSubjects', $selectedSubjects)
+            ->with('subjects', $subjects);
     }
 
     /**
@@ -176,15 +174,15 @@ class StudentTutoringPackageController extends AppBaseController
             $studentTutoringPackage = $this->studentTutoringPackageRepository->update($input, $id);
             DB::commit();
             Flash::success('Student Tutoring Package saved successfully.');
+
             return view('student_tutoring_packages.show')->with('studentTutoringPackage', $studentTutoringPackage);
         } catch (QueryException $queryException) {
             DB::rollBack();
             report($queryException);
             \Laracasts\Flash\Flash::error('something went wrong');
+
             return redirect(route('student-tutoring-packages.index'));
         }
-
-
 
         Flash::success('Student Tutoring Package updated successfully.');
 
@@ -213,25 +211,32 @@ class StudentTutoringPackageController extends AppBaseController
         return redirect(route('student-tutoring-packages.index'));
     }
 
-    public function tutoringPackageTypeAjax(Request $request){
+    public function tutoringPackageTypeAjax(Request $request)
+    {
         $name = trim($request->name);
         $tutoringPackageTypes = TutoringPackageType::active()
-            ->select(['tutoring_package_types.id as id','tutoring_package_types.name as text','tutoring_package_types.hours'])
-            ->where('tutoring_package_types.name','LIKE',"%{$name}%")
+            ->select(['tutoring_package_types.id as id', 'tutoring_package_types.name as text', 'tutoring_package_types.hours'])
+            ->where('tutoring_package_types.name', 'LIKE', "%{$name}%")
             ->limit(5)
             ->get();
+
         return response()->json($tutoringPackageTypes->toArray());
     }
-    public function studentEmailAjax(Request $request){
+
+    public function studentEmailAjax(Request $request)
+    {
         $email = trim($request->email);
         $students = Student::active()
             ->select(['students.id as id', 'students.email as text'])
             ->where('students.email', 'LIKE', "%{$email}%")
             ->limit(5)
             ->get();
+
         return response()->json($students->toArray());
     }
-    public function tutorEmailAjax(Request $request){
+
+    public function tutorEmailAjax(Request $request)
+    {
         $email = trim($request->email);
         $tutors = Tutor::active()
             ->select(['tutors.id as id', 'tutors.email as text'])
@@ -241,12 +246,15 @@ class StudentTutoringPackageController extends AppBaseController
 
         return response()->json($tutors->toArray());
     }
-    public function tutoringLocationAjax(Request $request){
+
+    public function tutoringLocationAjax(Request $request)
+    {
         $name = trim($request->name);
-        $tutoringLocations = TutoringLocation::select(['tutoring_locations.id as id','tutoring_locations.name as text'])
-            ->where('tutoring_locations.name','LIKE', "%{$name}%")
+        $tutoringLocations = TutoringLocation::select(['tutoring_locations.id as id', 'tutoring_locations.name as text'])
+            ->where('tutoring_locations.name', 'LIKE', "%{$name}%")
             ->limit(5)
             ->get();
+
         return response()->json($tutoringLocations->toArray());
 
     }

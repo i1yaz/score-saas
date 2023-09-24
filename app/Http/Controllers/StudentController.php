@@ -23,7 +23,6 @@ use Laracasts\Flash\Flash;
 
 class StudentController extends AppBaseController
 {
-    /** @var StudentRepository */
     private StudentRepository $studentRepository;
 
     public function __construct(StudentRepository $studentRepo)
@@ -200,6 +199,7 @@ class StudentController extends AppBaseController
             ->where('parents.email', 'LIKE', "%{$email}%")
             ->limit(5)
             ->get();
+
         return response()->json($user->toArray());
     }
 
@@ -214,8 +214,9 @@ class StudentController extends AppBaseController
         $schools = School::select(['schools.id as id', 'schools.name as text'])
             ->active()
             ->where('schools.name', 'LIKE', "%{$name}%")
-            ->where('status',true)
+            ->where('status', true)
             ->get();
+
         return response()->json($schools->toArray());
     }
 }

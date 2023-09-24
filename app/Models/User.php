@@ -60,11 +60,11 @@ class User extends Authenticatable implements LaratrustUser
      */
     public function scopeActive(Builder $query): void
     {
-        $query->where('status',true);
-    }
-    public function scopeInActive(Builder $query): void
-    {
-        $query->where('status',false);
+        $query->where('status', true);
     }
 
+    public function scopeInActive(Builder $query): void
+    {
+        $query->where('status', false);
+    }
 }

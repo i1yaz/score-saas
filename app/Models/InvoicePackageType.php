@@ -9,17 +9,15 @@ class InvoicePackageType extends Model
     public $table = 'invoice_package_types';
 
     public $fillable = [
-        'name'
+        'name',
     ];
 
     protected $casts = [
         'id' => 'integer',
-        'name' => 'string'
+        'name' => 'string',
     ];
 
     public static array $rules = [
-        
-    ];
 
-    
+    ];
 }

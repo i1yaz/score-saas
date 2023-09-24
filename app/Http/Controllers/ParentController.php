@@ -5,12 +5,9 @@ namespace App\Http\Controllers;
 use App\DataTables\ParentsDataTable;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Requests\CreateParentRequest;
-use App\Http\Requests\CreateStudentRequest;
 use App\Http\Requests\UpdateParentRequest;
 use App\Mail\ParentRegisteredMail;
-use App\Mail\StudentRegistrationMail;
 use App\Models\ParentUser;
-use App\Models\Student;
 use App\Repositories\ParentRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -24,7 +21,6 @@ use Laracasts\Flash\Flash;
 
 class ParentController extends AppBaseController
 {
-    /** @var ParentRepository */
     private ParentRepository $parentRepository;
 
     public function __construct(ParentRepository $parentRepo)
@@ -107,12 +103,14 @@ class ParentController extends AppBaseController
             $input['password'] = App::environment(['production']) ? $passwordString : 'abcd1234';
             Mail::to($user)->send(new ParentRegisteredMail($input));
             Flash::success('Parent saved successfully.');
+
             return redirect(route('parents.index'));
 
         } catch (QueryException $queryException) {
             DB::rollBack();
             report($queryException);
             Flash::error('something went wrong');
+
             return redirect(route('parents.index'));
         }
 
@@ -164,8 +162,9 @@ class ParentController extends AppBaseController
         $children = ParentUser::with(['family' => function ($query) {
             $query->first();
         }])->findOrFail($id);
-        if ($children->family->isNotEmpty()){
+        if ($children->family->isNotEmpty()) {
             Flash::error('This parent have children in student section.');
+
             return redirect(route('parents.index'));
         }
 

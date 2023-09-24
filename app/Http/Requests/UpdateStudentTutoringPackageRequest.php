@@ -26,6 +26,7 @@ class UpdateStudentTutoringPackageRequest extends FormRequest
     {
         return StudentTutoringPackage::$rulesEdit;
     }
+
     public function messages(): array
     {
         return StudentTutoringPackage::$messages;

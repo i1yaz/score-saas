@@ -25,7 +25,7 @@ class UpdateInvoicePackageTypeRequest extends FormRequest
     public function rules()
     {
         $rules = InvoicePackageType::$rules;
-        
+
         return $rules;
     }
 }

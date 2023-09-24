@@ -3,12 +3,11 @@
 namespace App\Repositories;
 
 use App\Models\InvoicePackageType;
-use App\Repositories\BaseRepository;
 
 class InvoicePackageTypeRepository extends BaseRepository
 {
     protected $fieldSearchable = [
-        'name'
+        'name',
     ];
 
     public function getFieldsSearchable(): array

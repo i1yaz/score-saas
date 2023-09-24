@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-
 class TutoringPackageType extends BaseModel
 {
     public $table = 'tutoring_package_types';

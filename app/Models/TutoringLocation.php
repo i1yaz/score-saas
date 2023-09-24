@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
 class TutoringLocation extends BaseModel
 {
     public $table = 'tutoring_locations';

@@ -10,7 +10,6 @@ use Laracasts\Flash\Flash;
 
 class TutoringLocationController extends AppBaseController
 {
-    /** @var TutoringLocationRepository */
     private TutoringLocationRepository $tutoringLocationRepository;
 
     public function __construct(TutoringLocationRepository $tutoringLocationRepo)

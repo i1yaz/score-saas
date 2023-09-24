@@ -11,7 +11,6 @@ use Laracasts\Flash\Flash;
 
 class SchoolController extends AppBaseController
 {
-    /** @var SchoolRepository */
     private SchoolRepository $schoolRepository;
 
     public function __construct(SchoolRepository $schoolRepo)
@@ -101,7 +100,7 @@ class SchoolController extends AppBaseController
             return redirect(route('schools.index'));
         }
 
-         $this->schoolRepository->update($request->all(), $id);
+        $this->schoolRepository->update($request->all(), $id);
 
         Flash::success('School updated successfully.');
 
