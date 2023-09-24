@@ -17,19 +17,16 @@
 
             <li class="nav-item">
                 <a href="{{route('acl.permissions.index')}}" class="nav-link {{ Request::is('acl/permissions*') ? 'active' : '' }}">
-                    <i class="far fa-circle nav-icon"></i>
                     <p>Permissions</p>
                 </a>
             </li>
             <li class="nav-item">
                 <a href="{{route('acl.roles.index')}}" class="nav-link {{ Request::is('acl/roles*') ? 'active' : '' }}">
-                    <i class="far fa-circle nav-icon"></i>
                     <p>Roles</p>
                 </a>
             </li>
             <li class="nav-item">
                 <a href="{{route('acl.assignments.index')}}" class="nav-link  {{ Request::is('acl/assignments*') ? 'active' : '' }}">
-                    <i class="far fa-circle nav-icon"></i>
                     <p>Assign Roles</p>
                 </a>
             </li>
@@ -95,7 +92,6 @@
 
         <li class="nav-item">
             <a href="{{ route('tutoring-package-types.index') }}" class="nav-link {{ Request::is('tutoring-package-types*') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon"></i>
                 <p>Tutoring Package Types</p>
             </a>
         </li>
@@ -103,7 +99,6 @@
         @permission('subject-index')
         <li class="nav-item">
             <a href="{{ route('subjects.index') }}" class="nav-link {{ Request::is('subjects*') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon"></i>
                 <p>Subjects</p>
             </a>
         </li>
@@ -111,8 +106,14 @@
         @permission('tutoring_location-index')
         <li class="nav-item">
             <a href="{{ route('tutoring-locations.index') }}" class="nav-link {{ Request::is('tutoring-locations*') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon"></i>
                 <p>Tutoring Locations</p>
+            </a>
+        </li>
+        @endpermission
+        @permission('invoice_package_type-index')
+        <li class="nav-item">
+            <a href="{{ route('invoice-package-types.index') }}" class="nav-link {{ Request::is('invoice-package-types*') ? 'active' : '' }}">
+                <p>Invoice Package Types</p>
             </a>
         </li>
         @endpermission

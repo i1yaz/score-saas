@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\InvoicePackageTypeController;
 use App\Http\Controllers\StudentTutoringPackageController;
 use App\Http\Controllers\TutoringLocationController;
 use Illuminate\Support\Facades\Auth;
@@ -109,5 +110,14 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor']], function () {
     Route::get('student-email-ajax', [StudentTutoringPackageController::class, 'studentEmailAjax'])->name('student-email-ajax')->middleware(['permission:student_tutoring_package-create']);
     Route::get('tutor-email-ajax', [StudentTutoringPackageController::class, 'tutorEmailAjax'])->name('tutor-email-ajax')->middleware(['permission:student_tutoring_package-create']);
     Route::get('tutoring-location-ajax', [StudentTutoringPackageController::class, 'tutoringLocationAjax'])->name('tutoring-location-ajax')->middleware(['permission:student_tutoring_package-create']);
+    ///Invoice Package Types
+    Route::get('invoice-package-types', [InvoicePackageTypeController::class, 'index'])->name('invoice-package-types.index')->middleware(['permission:invoice_package_type-index']);
+    Route::get('invoice-package-types/create', [InvoicePackageTypeController::class, 'create'])->name('invoice-package-types.create')->middleware(['permission:invoice_package_type-create']);
+    Route::post('invoice-package-types', [InvoicePackageTypeController::class, 'store'])->name('invoice-package-types.store')->middleware(['permission:invoice_package_type-create']);
+    Route::get('invoice-package-types/{invoice_package_type}', [InvoicePackageTypeController::class, 'show'])->name('invoice-package-types.show')->middleware(['permission:invoice_package_type-show']);
+    Route::get('invoice-package-types/{invoice_package_type}/edit', [InvoicePackageTypeController::class, 'edit'])->name('invoice-package-types.edit')->middleware(['permission:invoice_package_type-edit']);
+    Route::patch('invoice-package-types/{invoice_package_type}', [InvoicePackageTypeController::class, 'update'])->name('invoice-package-types.update')->middleware(['permission:invoice_package_type-edit']);
+    Route::delete('invoice-package-types/{invoice_package_type}', [InvoicePackageTypeController::class, 'destroy'])->name('invoice-package-types.destroy')->middleware(['permission:invoice_package_type-destroy']);
+
 
 });
