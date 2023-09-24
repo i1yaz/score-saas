@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\InvoicePackageTypeController;
 use App\Http\Controllers\ParentController;
 use App\Http\Controllers\SchoolController;
@@ -118,5 +119,14 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor']], function () {
     Route::get('invoice-package-types/{invoice_package_type}/edit', [InvoicePackageTypeController::class, 'edit'])->name('invoice-package-types.edit')->middleware(['permission:invoice_package_type-edit']);
     Route::patch('invoice-package-types/{invoice_package_type}', [InvoicePackageTypeController::class, 'update'])->name('invoice-package-types.update')->middleware(['permission:invoice_package_type-edit']);
     Route::delete('invoice-package-types/{invoice_package_type}', [InvoicePackageTypeController::class, 'destroy'])->name('invoice-package-types.destroy')->middleware(['permission:invoice_package_type-destroy']);
+    //Invoice
+    Route::get('invoices',[InvoiceController::class,'index'])->name('invoices.index')->middleware(['permission:invoice-index']);
+    Route::get('invoices/create',[InvoiceController::class,'create'])->name('invoices.create')->middleware(['permission:invoice-create']);
+    Route::post('invoices',[InvoiceController::class,'store'])->name('invoices.store')->middleware(['permission:invoice-create']);;
+    Route::get('invoices/{invoice}',[InvoiceController::class,'show'])->name('invoices.show')->middleware(['permission:invoice-show']);
+    Route::get('invoices/{invoice}/edit',[InvoiceController::class,'edit'])->name('invoices.edit')->middleware(['permission:invoice-edit']);
+    Route::patch('invoices/{invoice}',[InvoiceController::class,'update'])->name('invoices.update')->middleware(['permission:invoice-edit']);
+    Route::delete('invoices/{invoice}',[InvoiceController::class,'destroy'])->name('invoices.destroy')->middleware(['permission:invoice-destroy']);
 
 });
+
