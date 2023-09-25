@@ -55,7 +55,7 @@ class InvoiceController extends AppBaseController
                 'recordsFiltered' => intval($totalFiltered),
                 'data' => $data
             ];
-
+            return response()->json($json_data);
         }
         return view('invoices.index');
     }
