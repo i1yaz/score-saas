@@ -87,7 +87,7 @@ class InvoiceController extends AppBaseController
      */
     public function show($id)
     {
-        $invoice = $this->invoiceRepository->find($id);
+        $invoice = $this->invoiceRepository->show($id);
 
         if (empty($invoice)) {
             Flash::error('Invoice not found');

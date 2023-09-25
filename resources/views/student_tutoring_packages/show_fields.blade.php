@@ -3,6 +3,7 @@
         <div class="card-header">
             <h5>Package Details</h5>
         </div>
+
         <div class="card-body p-0">
             <table class="table table-striped">
                 <tbody>
