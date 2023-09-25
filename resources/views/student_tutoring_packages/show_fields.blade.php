@@ -7,6 +7,10 @@
             <table class="table table-striped">
                 <tbody>
                 <tr>
+                    <td> <strong> Tutoring Package ID</strong></td>
+                    <td>{{getStudentTutoringPackageIdCodeFromId($studentTutoringPackage->id)}}</td>
+                </tr>
+                <tr>
                     <td> <strong> Tutoring Package Type</strong></td>
                     <td>{{$studentTutoringPackage->package_name}}</td>
                 </tr>
@@ -42,10 +46,7 @@
                     <td> <strong>Total Price</strong></td>
                     <td>{{getPriceFromHoursAndHourlyWithoutDiscount($studentTutoringPackage->hourly_rate, $studentTutoringPackage->hours)}}</td>
                 </tr>
-                <tr>
-                    <td> <strong> Price After Discount</strong></td>
-                    <td>{{getPriceFromHoursAndHourlyWithDiscount($studentTutoringPackage->hours, $studentTutoringPackage->hourly_rate, $studentTutoringPackage->discount, $studentTutoringPackage->discount_type)}}</td>
-                </tr>
+
                 <tr>
                     <td> <strong> Discounted Amount</strong></td>
                     <td>{{getDiscountedAmount($studentTutoringPackage->hourly_rate,$studentTutoringPackage->hours, $studentTutoringPackage->discount, $studentTutoringPackage->discount_type)}}</td>
@@ -57,8 +58,20 @@
                     </tr>
                 @endif
                 <tr>
+                    <td> <strong> Final Price</strong></td>
+                    <td><strong>{{getPriceFromHoursAndHourlyWithDiscount($studentTutoringPackage->hours, $studentTutoringPackage->hourly_rate, $studentTutoringPackage->discount, $studentTutoringPackage->discount_type)}}</strong></td>
+                </tr>
+                <tr>
                     <td> <strong> Notes</strong></td>
                     <td>{{$studentTutoringPackage->notes}}</td>
+                </tr>
+                <tr>
+                    <td> <strong> Start Date</strong></td>
+                    <td>{{ formatDate($studentTutoringPackage->start_date) }}</td>
+                </tr>
+                <tr>
+                    <td> <strong> Primary Tutoring Location</strong></td>
+                    <td>{{ $studentTutoringPackage->location_name }}</td>
                 </tr>
                 </tbody>
             </table>
@@ -66,6 +79,7 @@
 
     </div>
 </div>
+@dd($studentTutoringPackage)
 <div class="col-md-6">
     <div class="card">
         <div class="card-header">

@@ -63,8 +63,8 @@ if (! function_exists('getFamilyCodeFromId')) {
     }
 }
 
-if (! function_exists('getPackageIdFromId')) {
-    function getPackageIdFromId($id): string
+if (! function_exists('getStudentTutoringPackageIdCodeFromId')) {
+    function getStudentTutoringPackageIdCodeFromId($id): string
     {
         return StudentTutoringPackage::PACKAGE_PREFIX_START.($id + StudentTutoringPackage::PACKAGE_ID_START);
     }
@@ -159,5 +159,12 @@ if (! function_exists('formatAmountWithCurrency')) {
     function formatAmountWithCurrency(float $amount, $decimals = 2): string
     {
         return '$'.number_format($amount, 2, '.', '');
+    }
+}
+
+if (!function_exists('formatDate')) {
+    function formatDate($date): string
+    {
+        return date('m/d/Y', strtotime($date));
     }
 }

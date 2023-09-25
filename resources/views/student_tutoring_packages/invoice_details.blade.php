@@ -1,0 +1,44 @@
+<h5 class="mb-4">Invoice Detail</h5>
+
+<div class="row">
+{{--    <!-- Invoice Date Field -->--}}
+{{--    <div class="form-group col-sm-6">--}}
+{{--        {!! Form::label('invoice_date', 'Invoice Date:') !!}--}}
+{{--        {!! Form::text('invoice_date', null, ['class' => 'form-control date-input']) !!}--}}
+{{--    </div>--}}
+    <!-- Due Date Field -->
+    <div class="form-group col-sm-6">
+        {!! Form::label('due_date', 'Due Date:') !!}
+        {!! Form::text('due_date', null, ['class' => 'form-control date-input']) !!}
+    </div>
+
+    <!-- General Description Field -->
+    <div class="form-group col-sm-6">
+        {!! Form::label('general_description', 'General Description:') !!}
+        {!! Form::text('general_description', null, ['class' => 'form-control']) !!}
+    </div>
+
+    <!-- General Description Field -->
+    <div class="form-group col-sm-6">
+        {!! Form::label('email_to_parent', 'Should the parent receive the invoice via email:') !!}
+
+        <div class="radio">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="email_to_parent" id="send-email-to-parent-yes" value="1">
+                <label class="form-check-label" for="send-email-to-parent-yes"><strong>  YES</strong></label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="email_to_parent" id="send-email-to-parent-no" value="0">
+                <label class="form-check-label" for="send-email-to-parent-no"><strong>  NO</strong></label>
+            </div>
+
+        </div>
+    </div>
+    <!-- Detailed Description Field -->
+    <div class="form-group col-sm-6">
+        {!! Form::label('detailed_description', 'Detailed Description:') !!}
+        {!! Form::textarea('detailed_description', null, ['class' => 'form-control']) !!}
+    </div>
+</div>
+
+

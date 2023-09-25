@@ -29,7 +29,6 @@ return new class extends Migration
             $table->integer('discount_type')->nullable();
             $table->date('start_date')->nullable();
             $table->integer('tutor_hourly_rate');
-            $table->boolean('is_confirmed')->default(false);
             $table->boolean('status')->default(true);
             $table->string('auth_guard');
             $table->bigInteger('added_by');

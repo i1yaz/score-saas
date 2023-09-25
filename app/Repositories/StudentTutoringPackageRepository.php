@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use App\Models\Invoice;
+use App\Models\InvoicePackageType;
 use App\Models\StudentTutoringPackage;
 use Illuminate\Support\Facades\Auth;
 
@@ -53,11 +55,38 @@ class StudentTutoringPackageRepository extends BaseRepository
                 'tutoring_package_types.name as package_name',
                 'tutoring_package_types.hours as package_hours',
                 'tutoring_locations.name as location_name',
+                'invoices.id as invoice_id',
+                'invoices.id as invoiceable_type',
+                'invoices.id as due_date',
+                'invoices.id as general_description',
+                'invoices.id as detailed_description',
+                'invoices.paid_status as invoice_status'
             ])
             ->join('students', 'student_tutoring_packages.student_id', 'students.id')
             ->join('tutoring_package_types', 'student_tutoring_packages.tutoring_package_type_id', 'tutoring_package_types.id')
             ->join('tutoring_locations', 'student_tutoring_packages.tutoring_location_id', 'tutoring_locations.id')
+            ->join('invoices',function ($query){
+                $query->on('invoices.invoiceable_id', '=', 'student_tutoring_packages.id')
+                    ->where('invoices.invoiceable_type', '=', StudentTutoringPackage::class);
+            })
             ->where('student_tutoring_packages.id', $id)
             ->first();
+    }
+    public function createInvoiceForPackage($studentTutoringPackage,$input = []): Invoice
+    {
+        $invoice = new Invoice();
+        $invoice->invoice_package_type_id = 1;
+        $invoice->due_date = $studentTutoringPackage->start_date;
+        $invoice->general_description = $input['general_description'] ?? null;
+        $invoice->detailed_description = $input['detailed_description'] ?? null;
+        $invoice->email_to_parent = $input['email_to_parent'] ?? false;
+        $invoice->amount_paid = 0;
+        $invoice->paid_status = Invoice::PENDING;
+        $invoice->invoiceable_type = StudentTutoringPackage::class;
+        $invoice->invoiceable_id = $studentTutoringPackage->id;
+        $invoice->auth_guard = Auth::guard()->name;
+        $invoice->added_by = Auth::id();
+        $invoice->save();
+        return $invoice;
     }
 }

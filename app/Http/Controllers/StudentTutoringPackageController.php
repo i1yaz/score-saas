@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\DataTables\StudentTutoringPackageDataTable;
 use App\Http\Requests\CreateStudentTutoringPackageRequest;
 use App\Http\Requests\UpdateStudentTutoringPackageRequest;
+use App\Mail\ParentInvoiceMailAfterStudentTutoringPackageCreation;
 use App\Models\Student;
 use App\Models\StudentTutoringPackage;
 use App\Models\Subject;
@@ -16,6 +17,7 @@ use Flash;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class StudentTutoringPackageController extends AppBaseController
 {
@@ -93,7 +95,13 @@ class StudentTutoringPackageController extends AppBaseController
             $studentTutoringPackage = $this->studentTutoringPackageRepository->create($input);
             $studentTutoringPackage->tutors()->sync($tutors);
             $studentTutoringPackage->subjects()->sync($subjects);
+            $this->studentTutoringPackageRepository->createInvoiceForPackage($studentTutoringPackage,$input);
             DB::commit();
+            if ($input['email_to_parent'] == 1) {
+                $parentEmail = Student::select(['parents.email as parent_email','students.id','students.parent_id'])->where('students.id',$input['student_id'])
+                    ->join('parents', 'students.parent_id', '=', 'parents.id')->first();
+                Mail::to($parentEmail->parent_email)->send(new ParentInvoiceMailAfterStudentTutoringPackageCreation($studentTutoringPackage));
+            }
             Flash::success('Student Tutoring Package saved successfully.');
 
             return redirect(route('student-tutoring-packages.show', ['student_tutoring_package' => $studentTutoringPackage->id]));

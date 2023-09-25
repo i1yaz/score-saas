@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('invoice_package_types', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->text('name');
             $table->timestamps();
         });

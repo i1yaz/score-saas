@@ -74,10 +74,13 @@
 <!-- Start Date Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('start_date', 'Start Date:') !!}
-    {!! Form::text('start_date', null, ['class' => 'form-control']) !!}
+    {!! Form::text('start_date', null, ['class' => 'form-control date-input']) !!}
 </div>
 <div class="form-group col-sm-12" id="all-subjects">
     @include('student_tutoring_packages.subjects')
+</div>
+<div class="form-group col-sm-12">
+    @include('student_tutoring_packages.invoice_details')
 </div>
 <div class="modal fade" id="store-subject" style="display: none;" aria-hidden="true">
     <div class="modal-dialog">
@@ -107,12 +110,11 @@
     <script src="{{asset("plugins/toastr/toastr.min.js")}}"></script>
     <script src="{{asset('plugins/jquery-ui/jquery-ui.min.js')}}"></script>
     <script type="text/javascript">
-        $('#start_date').datepicker()
+        $('.date-input').datepicker()
     </script>
     <script>
         $("#store-subject-button").click(function(){
             let subject = $("#subject-name").val();
-            console.log(subject.trim())
             if(subject.trim()) {
                 $.post("{{route('subjects.store')}}",
                     {

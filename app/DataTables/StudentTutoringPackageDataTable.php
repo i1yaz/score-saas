@@ -44,7 +44,7 @@ class StudentTutoringPackageDataTable implements IDataTables
         $data = [];
         if (! empty($records)) {
             foreach ($records as $studentTutoringPackage) {
-                $nestedData['package_id'] = getPackageIdFromId($studentTutoringPackage->id);
+                $nestedData['package_id'] = getStudentTutoringPackageIdCodeFromId($studentTutoringPackage->id);
                 $nestedData['student'] = $studentTutoringPackage->student;
                 $nestedData['tutoring_package_type'] = $studentTutoringPackage->package;
                 $nestedData['notes'] = $studentTutoringPackage->notes;
