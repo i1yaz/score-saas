@@ -96,7 +96,8 @@ class InvoiceDataTable implements IDataTables
             $records = $records->where('parent_id', Auth::id());
         }
         if (Auth::user()->hasRole('student') && Auth::user() instanceof Student) {
-            $records = $records->where('student_id', Auth::id());
+            $records = $records->where('student_id', Auth::id())
+                ->WhereRaw('CASE WHEN students.parent_id IS NULL THEN true ELSE false END');
         }
 
         return $records;
@@ -116,10 +117,11 @@ class InvoiceDataTable implements IDataTables
             ->leftJoin('parents', 'students.parent_id', '=', 'parents.id');
 
         if (Auth::user()->hasRole('parent') && Auth::user() instanceof ParentUser) {
-            $records = $invoices->where('parent_id', Auth::id());
+            $invoices = $invoices->where('parent_id', Auth::id());
         }
         if (Auth::user()->hasRole('student') && Auth::user() instanceof Student) {
-            $records = $invoices->where('student_id', Auth::id());
+            $invoices = $invoices->where('student_id', Auth::id())
+                ->WhereRaw('CASE WHEN students.parent_id IS NULL THEN true ELSE false END');
         }
 
         return $invoices->count();

@@ -63,7 +63,8 @@ class InvoiceRepository extends BaseRepository
             $invoice = $invoice->where('parent_id', Auth::id());
         }
         if (Auth::user()->hasRole('student') && Auth::user() instanceof Student) {
-            $invoice = $invoice->where('student_id', Auth::id());
+            $invoice = $invoice->where('student_id', Auth::id())
+                ->WhereRaw('CASE WHEN students.parent_id IS NULL THEN true ELSE false END');
         }
         return $invoice->where('invoices.id', $id)->first();
 
