@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Invoice;
 use App\Models\ParentUser;
 use App\Models\StudentTutoringPackage;
 use Illuminate\Http\UploadedFile;
@@ -63,12 +64,17 @@ if (! function_exists('getFamilyCodeFromId')) {
     }
 }
 
-if (! function_exists('getStudentTutoringPackageIdCodeFromId')) {
-    function getStudentTutoringPackageIdCodeFromId($id): string
+if (! function_exists('getStudentTutoringPackageCodeFromId')) {
+    function getStudentTutoringPackageCodeFromId($id): string
     {
-        return StudentTutoringPackage::PACKAGE_PREFIX_START.($id + StudentTutoringPackage::PACKAGE_ID_START);
+        return StudentTutoringPackage::PREFIX_START.($id + StudentTutoringPackage::CODE_START);
     }
 }
+if (!function_exists('getInvoiceCodeFromId')){
+    function getInvoiceCodeFromId($id): string
+    {
+        return Invoice::PREFIX_START.($id + Invoice::ID_START);
+    }}
 
 if (! function_exists('storeFile')) {
     function storeFile(string $path, File|UploadedFile $file, string $name = null): string
@@ -161,10 +167,52 @@ if (! function_exists('formatAmountWithCurrency')) {
         return '$'.number_format($amount, 2, '.', '');
     }
 }
+if (!function_exists('cleanAmountWithCurrencyFormat')){
+    function cleanAmountWithCurrencyFormat(string $amount): string
+    {
+        return str_replace('$', '', $amount);
+    }
+}
 
 if (!function_exists('formatDate')) {
     function formatDate($date): string
     {
         return date('m/d/Y', strtotime($date));
+    }
+}
+
+if (!function_exists('getInvoiceTypeFromClass')){
+    function getInvoiceTypeFromClass($type): string
+    {
+        if ($type == StudentTutoringPackage::class) {
+            return 'Tutoring Package';
+        }
+    }
+}
+if (!function_exists('getInvoiceStatusFromId')){
+    /**
+     * Get the status of an invoice based on its ID.
+     *
+     * @param int $status The ID of the invoice status.
+     * @return string The description of the invoice status.
+     */
+    function getInvoiceStatusFromId(int $status): string
+    {
+        // Check the status ID and return the corresponding description
+        return match ($status) {
+            Invoice::DRAFT => '<span class="badge badge-secondary">Draft</span>',
+            Invoice::PENDING => '<span class="badge badge-warning">Pending</span>',
+            Invoice::PARTIAL_PAYMENT => '<span class="badge badge-info">Partially Paid</span>',
+            Invoice::PAID => '<span class="badge badge-success">Paid</span>',
+            Invoice::VOID => '<span class="badge badge-info">Void</span>',
+            default => throw new InvalidArgumentException('Invalid invoice status ID'),
+        };
+    }
+}
+
+if (!function_exists('getRemainingAmountFromTotalAndPaidAmount')) {
+    function getRemainingAmountFromTotalAndPaidAmount(float $total, float $paid): string
+    {
+        return formatAmountWithCurrency($total - $paid);
     }
 }

@@ -8,7 +8,7 @@
                 <tbody>
                 <tr>
                     <td> <strong> Tutoring Package ID</strong></td>
-                    <td>{{getStudentTutoringPackageIdCodeFromId($studentTutoringPackage->id)}}</td>
+                    <td>{{getStudentTutoringPackageCodeFromId($studentTutoringPackage->id)}}</td>
                 </tr>
                 <tr>
                     <td> <strong> Tutoring Package Type</strong></td>

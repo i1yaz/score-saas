@@ -12,6 +12,9 @@ class Invoice extends Model
     public const PARTIAL_PAYMENT = 2;
     public const PAID = 3;
     public const VOID = 4;
+    const ID_START = 1000;
+
+    const PREFIX_START = 'INV-';
 
     public $fillable = [
         'invoice_package_type_id',
@@ -50,5 +53,13 @@ class Invoice extends Model
 
     ];
 
-
+    /**
+     *------------------------------------------------------------------
+     * Accessor
+     *------------------------------------------------------------------
+     */
+    public function getInvoiceCodeAttribute(): string
+    {
+        return getInvoiceCodeFromId($this->id);
+    }
 }

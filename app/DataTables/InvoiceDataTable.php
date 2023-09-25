@@ -23,7 +23,8 @@ class InvoiceDataTable implements IDataTables
                 'students.parent_id as parent_id','students.id as student_id','students.email as student_email','parents.id as student_id','parents.email as parent_email','invoices.created_at as invoice_created_at',
                 'invoices.due_date','student_tutoring_packages.hourly_rate','student_tutoring_packages.hours','student_tutoring_packages.discount',
                 'student_tutoring_packages.discount_type',
-                'invoices.fully_paid_at'
+                'invoices.fully_paid_at',
+                'invoices.amount_paid'
 
             ])
             ->leftJoin('student_tutoring_packages', function ($q){
@@ -60,16 +61,18 @@ class InvoiceDataTable implements IDataTables
         $data = [];
         if (! empty($records)) {
             foreach ($records as $invoice) {
-                $nestedData['invoice_id'] = $invoice->invoice_id;
-                $nestedData['invoice_status'] = $invoice->invoice_status;
-                $nestedData['invoice_type'] = $invoice->invoiceable_type;
+                $invoice_total = getPriceFromHoursAndHourlyWithDiscount($invoice->hourly_rate,$invoice->hours,$invoice->discount,$invoice->discount_type);
+
+                $nestedData['invoice_id'] = getInvoiceCodeFromId($invoice->invoice_id);
+                $nestedData['invoice_status'] = getInvoiceStatusFromId($invoice->invoice_status);
+                $nestedData['invoice_type'] = getInvoiceTypeFromClass($invoice->invoiceable_type);
                 $nestedData['student'] = $invoice->student_email;
                 $nestedData['parent'] = $invoice->parent_email;
-                $nestedData['created_at'] = $invoice->invoice_created_at;
-                $nestedData['due_date'] = $invoice->due_date;
-                $nestedData['invoice_total'] = getPriceFromHoursAndHourlyWithDiscount($invoice->hourly_rate,$invoice->hours,$invoice->discount,$invoice->discount_type);
-                $nestedData['amount_paid'] = $invoice->last_name;
-                $nestedData['amount_remaining'] = $invoice->last_name;
+                $nestedData['created_at'] = formatDate($invoice->invoice_created_at);
+                $nestedData['due_date'] = formatDate($invoice->due_date);
+                $nestedData['invoice_total'] = $invoice_total;
+                $nestedData['amount_paid'] = formatAmountWithCurrency($invoice->amount_paid);
+                $nestedData['amount_remaining'] = getRemainingAmountFromTotalAndPaidAmount(total:cleanAmountWithCurrencyFormat( $invoice_total), paid: $invoice->amount_paid);
                 $nestedData['fully_paid_at'] = $invoice->fully_paid_at;
                 $nestedData['action'] = view('invoices.actions', ['invoice' => $invoice])->render();
                 $data[] = $nestedData;
@@ -101,6 +104,25 @@ class InvoiceDataTable implements IDataTables
 
     public static function totalRecords(): int
     {
-        return Invoice::all()->count();
+
+        $invoices = Invoice::query()->select(
+            [
+                'invoices.id as invoice_id',
+            ])
+            ->leftJoin('student_tutoring_packages', function ($q){
+                $q->on('invoices.invoiceable_id', '=', 'student_tutoring_packages.id')->where('invoices.invoiceable_type', '=', StudentTutoringPackage::class);
+            })
+            ->leftJoin('students', 'student_tutoring_packages.student_id', '=', 'students.id')
+            ->leftJoin('parents', 'students.parent_id', '=', 'parents.id');
+
+        if (Auth::user()->hasRole('parent') && Auth::user() instanceof ParentUser) {
+            $records = $invoices->where('parent_id', Auth::id());
+        }
+        if (Auth::user()->hasRole('student') && Auth::user() instanceof Student) {
+            $records = $invoices->where('student_id', Auth::id());
+        }
+
+        return $invoices->count();
+
     }
 }

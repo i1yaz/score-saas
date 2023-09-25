@@ -10,9 +10,9 @@ class StudentTutoringPackage extends BaseModel
 
     const PERCENTAGE_DISCOUNT = 2;
 
-    const PACKAGE_ID_START = 3000;
+    const CODE_START = 3000;
 
-    const PACKAGE_PREFIX_START = 'T';
+    const PREFIX_START = 'T';
 
     /**
      * @var \Illuminate\Database\Eloquent\HigherOrderBuilderProxy|mixed
@@ -95,5 +95,15 @@ class StudentTutoringPackage extends BaseModel
     public function tutors(): BelongsToMany
     {
         return $this->belongsToMany(Tutor::class);
+    }
+
+    /**
+     *------------------------------------------------------------------
+     * Accessor
+     *------------------------------------------------------------------
+     */
+    public function getStudentTutoringPackageCodeAttribute(): string
+    {
+        return getStudentTutoringPackageCodeFromId($this->id);
     }
 }
