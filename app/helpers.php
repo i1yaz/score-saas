@@ -60,7 +60,10 @@ if (! function_exists('getRoleOfLoggedInUser')) {
 if (! function_exists('getFamilyCodeFromId')) {
     function getFamilyCodeFromId($id): string
     {
-        return $id + ParentUser::FAMILY_CODE_START;
+        if (!empty($id)){
+            return $id + ParentUser::FAMILY_CODE_START;
+        }
+        return '';
     }
 }
 

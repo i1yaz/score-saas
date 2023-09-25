@@ -97,9 +97,10 @@ class StudentTutoringPackageController extends AppBaseController
             $studentTutoringPackage->subjects()->sync($subjects);
             $this->studentTutoringPackageRepository->createInvoiceForPackage($studentTutoringPackage,$input);
             DB::commit();
-            if ($input['email_to_parent'] == 1) {
+            if ($input['email_to_parent'] == 1 && !empty($parentEmail->parent_email)) {
                 $parentEmail = Student::select(['parents.email as parent_email','students.id','students.parent_id'])->where('students.id',$input['student_id'])
                     ->join('parents', 'students.parent_id', '=', 'parents.id')->first();
+
                 Mail::to($parentEmail->parent_email)->send(new ParentInvoiceMailAfterStudentTutoringPackageCreation($studentTutoringPackage));
             }
             Flash::success('Student Tutoring Package saved successfully.');

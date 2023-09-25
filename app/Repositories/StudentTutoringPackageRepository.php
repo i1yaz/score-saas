@@ -67,7 +67,7 @@ class StudentTutoringPackageRepository extends BaseRepository
                 'invoice_package_types.name as invoice_package_type_name',
             ])
             ->join('students', 'student_tutoring_packages.student_id', 'students.id')
-            ->join('parents','students.parent_id','parents.id')
+            ->leftJoin('parents','students.parent_id','parents.id')
             ->join('tutoring_package_types', 'student_tutoring_packages.tutoring_package_type_id', 'tutoring_package_types.id')
             ->join('tutoring_locations', 'student_tutoring_packages.tutoring_location_id', 'tutoring_locations.id')
             ->join('invoices',function ($query){
