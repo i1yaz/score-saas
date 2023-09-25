@@ -53,10 +53,10 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor']], function () {
     Route::get('students', [StudentController::class, 'index'])->name('students.index')->middleware(['permission:student-index']);
     Route::get('students/create', [StudentController::class, 'create'])->name('students.create')->middleware(['permission:student-create']);
     Route::post('students', [StudentController::class, 'store'])->name('students.store')->middleware(['permission:student-create']);
-    Route::get('students/{parent}', [StudentController::class, 'show'])->name('students.show')->middleware(['permission:student-show']);
-    Route::get('students/{parent}/edit', [StudentController::class, 'edit'])->name('students.edit')->middleware(['permission:student-edit']);
-    Route::patch('students/{parent}', [StudentController::class, 'update'])->name('students.update')->middleware(['permission:student-edit']);
-    Route::delete('students/{parent}', [StudentController::class, 'destroy'])->name('students.destroy')->middleware(['permission:student-destroy']);
+    Route::get('students/{student}', [StudentController::class, 'show'])->name('students.show')->middleware(['permission:student-show']);
+    Route::get('students/{student}/edit', [StudentController::class, 'edit'])->name('students.edit')->middleware(['permission:student-edit']);
+    Route::patch('students/{student}', [StudentController::class, 'update'])->name('students.update')->middleware(['permission:student-edit']);
+    Route::delete('students/{student}', [StudentController::class, 'destroy'])->name('students.destroy')->middleware(['permission:student-destroy']);
     Route::get('student-parent-ajax', [StudentController::class, 'studentParentAjax'])->name('student-parent-ajax')->middleware(['permission:student-create']);
     Route::get('student-school-ajax', [StudentController::class, 'studentSchoolAjax'])->name('student-school-ajax')->middleware(['permission:student-create']);
     //School
