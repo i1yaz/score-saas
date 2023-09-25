@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\Invoice;
 use App\Models\InvoicePackageType;
 use App\Models\StudentTutoringPackage;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class StudentTutoringPackageRepository extends BaseRepository
@@ -34,7 +35,7 @@ class StudentTutoringPackageRepository extends BaseRepository
         return StudentTutoringPackage::class;
     }
 
-    public function create(array $input): StudentTutoringPackage
+    public function create(array $input): Model|StudentTutoringPackage
     {
         $input['auth_guard'] = Auth::guard()->name;
         $input['added_by'] = Auth::id();
@@ -52,23 +53,28 @@ class StudentTutoringPackageRepository extends BaseRepository
             ->select([
                 'student_tutoring_packages.*',
                 'students.email as student_email',
+                'parents.email as parent_email',
                 'tutoring_package_types.name as package_name',
                 'tutoring_package_types.hours as package_hours',
                 'tutoring_locations.name as location_name',
                 'invoices.id as invoice_id',
-                'invoices.id as invoiceable_type',
-                'invoices.id as due_date',
-                'invoices.id as general_description',
-                'invoices.id as detailed_description',
-                'invoices.paid_status as invoice_status'
+                'invoices.invoiceable_type as invoiceable_type',
+                'invoices.due_date as due_date',
+                'invoices.general_description as general_description',
+                'invoices.detailed_description as detailed_description',
+                'invoices.paid_status as invoice_status',
+                'invoices.created_at as invoice_created_at',
+                'invoice_package_types.name as invoice_package_type_name',
             ])
             ->join('students', 'student_tutoring_packages.student_id', 'students.id')
+            ->join('parents','students.parent_id','parents.id')
             ->join('tutoring_package_types', 'student_tutoring_packages.tutoring_package_type_id', 'tutoring_package_types.id')
             ->join('tutoring_locations', 'student_tutoring_packages.tutoring_location_id', 'tutoring_locations.id')
             ->join('invoices',function ($query){
                 $query->on('invoices.invoiceable_id', '=', 'student_tutoring_packages.id')
                     ->where('invoices.invoiceable_type', '=', StudentTutoringPackage::class);
             })
+            ->join('invoice_package_types', 'invoice_package_types.id', 'invoices.invoice_package_type_id')
             ->where('student_tutoring_packages.id', $id)
             ->first();
     }

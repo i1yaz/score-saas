@@ -1,5 +1,5 @@
 <div class="col-md-6">
-    <div class="card">
+    <div class="card card-primary">
         <div class="card-header">
             <h5>Package Details</h5>
         </div>
@@ -35,6 +35,18 @@
                     </td>
                 </tr>
                 <tr>
+                    <td> <strong> Notes</strong></td>
+                    <td>{{$studentTutoringPackage->notes}}</td>
+                </tr>
+                <tr>
+                    <td> <strong> Start Date</strong></td>
+                    <td>{{ formatDate($studentTutoringPackage->start_date) }}</td>
+                </tr>
+                <tr>
+                    <td> <strong> Primary Tutoring Location</strong></td>
+                    <td>{{ $studentTutoringPackage->location_name }}</td>
+                </tr>
+                <tr>
                     <td> <strong> Number of Hours</strong></td>
                     <td>{{$studentTutoringPackage->hours}}</td>
                 </tr>
@@ -61,27 +73,15 @@
                     <td> <strong> Final Price</strong></td>
                     <td><strong>{{getPriceFromHoursAndHourlyWithDiscount($studentTutoringPackage->hours, $studentTutoringPackage->hourly_rate, $studentTutoringPackage->discount, $studentTutoringPackage->discount_type)}}</strong></td>
                 </tr>
-                <tr>
-                    <td> <strong> Notes</strong></td>
-                    <td>{{$studentTutoringPackage->notes}}</td>
-                </tr>
-                <tr>
-                    <td> <strong> Start Date</strong></td>
-                    <td>{{ formatDate($studentTutoringPackage->start_date) }}</td>
-                </tr>
-                <tr>
-                    <td> <strong> Primary Tutoring Location</strong></td>
-                    <td>{{ $studentTutoringPackage->location_name }}</td>
-                </tr>
                 </tbody>
             </table>
         </div>
 
     </div>
 </div>
-@dd($studentTutoringPackage)
+
 <div class="col-md-6">
-    <div class="card">
+    <div class="card card-success">
         <div class="card-header">
             <h5>Invoice Details</h5>
         </div>
@@ -89,24 +89,48 @@
             <table class="table table-striped">
                 <tbody>
                 <tr>
-                    <td>1.</td>
-                    <td>Update software</td>
-                    <td>
-                        <div class="progress progress-xs">
-                            <div class="progress-bar progress-bar-danger" style="width: 55%"></div>
-                        </div>
-                    </td>
-                    <td><span class="badge bg-danger">55%</span></td>
+                    <td><strong> Invoice ID</strong></td>
+                    <td>{{getInvoiceCodeFromId($studentTutoringPackage->invoice_id)}}</td>
                 </tr>
                 <tr>
-                    <td>2.</td>
-                    <td>Clean database</td>
-                    <td>
-                        <div class="progress progress-xs">
-                            <div class="progress-bar bg-warning" style="width: 70%"></div>
-                        </div>
-                    </td>
-                    <td><span class="badge bg-warning">70%</span></td>
+                    <td><strong> Invoice For</strong></td>
+                    <td>{{$studentTutoringPackage->invoice_package_type_name}}</td>
+                </tr>
+                <tr>
+                    <td><strong> Invoice Date</strong></td>
+                    <td>{{formatDate($studentTutoringPackage->invoice_created_at)}}</td>
+                </tr>
+                <tr>
+                    <td><strong> Due Date</strong></td>
+                    <td>{{formatDate($studentTutoringPackage->due_date)}}</td>
+                </tr>
+                <tr>
+                    <td><strong> General Description</strong></td>
+                    <td>{{$studentTutoringPackage->general_description}}</td>
+                </tr>
+                <tr>
+                    <td><strong> Detailed Description</strong></td>
+                    <td>{{$studentTutoringPackage->detailed_description}}</td>
+                </tr>
+                <tr>
+                    <td><strong> Invoice For Student</strong></td>
+                    <td>{{$studentTutoringPackage->student_email}}</td>
+                </tr>
+                <tr>
+                    <td><strong> Invoice For Parent</strong></td>
+                    <td>{{$studentTutoringPackage->parent_email}}</td>
+                </tr>
+                <tr>
+                    <td><strong> Created By</strong></td>
+                    <td>{{formatDate($studentTutoringPackage->invoice_created_at)}}</td>
+                </tr>
+                <tr>
+                    <td><strong> Invoice Status</strong></td>
+                    <td>{!!getInvoiceStatusFromId($studentTutoringPackage->invoice_status)!!}</td>
+                </tr>
+                <tr>
+                    <td><strong> Invoice Total</strong></td>
+                    <td><strong>{{getPriceFromHoursAndHourlyWithDiscount($studentTutoringPackage->hourly_rate,$studentTutoringPackage->hours, $studentTutoringPackage->discount, $studentTutoringPackage->discount_type)}}</strong></td>
                 </tr>
                 </tbody>
             </table>
@@ -114,29 +138,30 @@
 
     </div>
 </div>
-<div class="col-md-6">
-    <div class="card">
-        <div class="card-header">
-            <h5>Tutor Payment Details</h5>
-        </div>
-        <div class="card-body p-0">
-            <table class="table table-striped">
-                <tbody>
-                <tr>
-                    <td>Hourly Rate</td>
-                    <td>{{$studentTutoringPackage->hourly_rate}}</td>
-                </tr>
-                <tr>
-                    <td>Total Charged Time</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Total Tutor Payment For Package</td>
-                    <td></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
 
-    </div>
-</div>
+{{--<div class="col-md-6">--}}
+{{--    <div class="card">--}}
+{{--        <div class="card-header">--}}
+{{--            <h5>Tutor Payment Details</h5>--}}
+{{--        </div>--}}
+{{--        <div class="card-body p-0">--}}
+{{--            <table class="table table-striped">--}}
+{{--                <tbody>--}}
+{{--                <tr>--}}
+{{--                    <td>Hourly Rate</td>--}}
+{{--                    <td>{{$studentTutoringPackage->hourly_rate}}</td>--}}
+{{--                </tr>--}}
+{{--                <tr>--}}
+{{--                    <td>Total Charged Time</td>--}}
+{{--                    <td></td>--}}
+{{--                </tr>--}}
+{{--                <tr>--}}
+{{--                    <td>Total Tutor Payment For Package</td>--}}
+{{--                    <td></td>--}}
+{{--                </tr>--}}
+{{--                </tbody>--}}
+{{--            </table>--}}
+{{--        </div>--}}
+
+{{--    </div>--}}
+{{--</div>--}}

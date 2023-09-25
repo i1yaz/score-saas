@@ -19,15 +19,8 @@
     </section>
 
     <div class="content px-3">
-        <div class="card card-primary">
-            <div class="card-header">
-                <h3 class="card-title">Student Tutoring Package Details</h3>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    @include('student_tutoring_packages.show_fields')
-                </div>
-            </div>
+        <div class="row">
+            @include('student_tutoring_packages.show_fields')
         </div>
     </div>
 @endsection
