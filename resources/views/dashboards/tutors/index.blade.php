@@ -75,8 +75,11 @@
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek,timeGridDay'
                 },
+                selectable:true,
+                selectHelper:true,
+                lazyFetching:true,
                 events: "{{route('fullcalender.fetch')}}",
-                eventClick: function (info) {
+                eventClick: function (start,end,allDays) {
                     info.jsEvent.preventDefault(); // don't let the browser navigate
                     if (info.event.url) {
                         window.open(info.event.url);

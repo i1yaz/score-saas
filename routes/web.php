@@ -5,6 +5,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\InvoicePackageTypeController;
 use App\Http\Controllers\ParentController;
 use App\Http\Controllers\SchoolController;
+use App\Http\Controllers\SessionController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentTutoringPackageController;
 use App\Http\Controllers\SubjectController;
@@ -119,7 +120,7 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor']], function () {
     Route::get('invoice-package-types/{invoice_package_type}/edit', [InvoicePackageTypeController::class, 'edit'])->name('invoice-package-types.edit')->middleware(['permission:invoice_package_type-edit']);
     Route::patch('invoice-package-types/{invoice_package_type}', [InvoicePackageTypeController::class, 'update'])->name('invoice-package-types.update')->middleware(['permission:invoice_package_type-edit']);
     Route::delete('invoice-package-types/{invoice_package_type}', [InvoicePackageTypeController::class, 'destroy'])->name('invoice-package-types.destroy')->middleware(['permission:invoice_package_type-destroy']);
-    //Invoice
+    //Invoices
     Route::get('invoices',[InvoiceController::class,'index'])->name('invoices.index')->middleware(['permission:invoice-index']);
     Route::get('invoices/create',[InvoiceController::class,'create'])->name('invoices.create')->middleware(['permission:invoice-create']);
     Route::post('invoices',[InvoiceController::class,'store'])->name('invoices.store')->middleware(['permission:invoice-create']);;
@@ -127,6 +128,10 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor']], function () {
     Route::get('invoices/{invoice}/edit',[InvoiceController::class,'edit'])->name('invoices.edit')->middleware(['permission:invoice-edit']);
     Route::patch('invoices/{invoice}',[InvoiceController::class,'update'])->name('invoices.update')->middleware(['permission:invoice-edit']);
     Route::delete('invoices/{invoice}',[InvoiceController::class,'destroy'])->name('invoices.destroy')->middleware(['permission:invoice-destroy']);
+    //Sessions
+    Route::get('sessions',[SessionController::class,'index'])->name('sessions.index')->middleware(['permission:session-index']);
+    Route::get('sessions/create',[SessionController::class,'create'])->name('sessions.create')->middleware(['permission:session-create']);
+    Route::post('sessions',[SessionController::class,'create'])->name('sessions.store')->middleware(['permission:session-create']);
 
 });
 

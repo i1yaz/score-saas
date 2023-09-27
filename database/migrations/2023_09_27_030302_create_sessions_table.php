@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\StudentTutoringPackage;
+use App\Models\TutoringLocation;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -8,12 +10,12 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('sessions', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('student_tutoring_package_id');
+            $table->bigIncrements('id');
+            $table->foreignIdFor(StudentTutoringPackage::class);
+            $table->foreignIdFor(TutoringLocation::class);
             $table->dateTime('scheduled_date');
             $table->dateTime('start_time');
             $table->dateTime('end_time');
-            $table->unsignedBigInteger('location_id');
             $table->string('pre_session_notes')->nullable();
             $table->unsignedSmallInteger('session_completion_code')->nullable();
             $table->integer('how_was_session')->nullable();
