@@ -20,9 +20,11 @@
     {!! Form::label('school_id', 'School:') !!}
     <div class="input-group">
         {!! Form::select('school_id', [], null, ['class' => 'form-control select2 ','id'=>'school-id']) !!}
+        @permission('school-create')
         <div class="input-group-append">
             <a class="input-group-text" href="#" data-toggle="modal" data-target="#add-school">Add School</a>
         </div>
+        @endpermission
     </div>
 </div>
 

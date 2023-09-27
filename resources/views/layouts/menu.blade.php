@@ -4,6 +4,14 @@
         <p>Home</p>
     </a>
 </li>
+@permission('tutor_dashboard-index')
+<li class="nav-item">
+    <a href="{{ route('tutor-dashboard.index') }}" class="nav-link {{ Request::is('tutor/dashboard') ? 'active' : '' }}">
+        <i class="nav-icon fas fa-home"></i>
+        <p>Tutor Dashboard</p>
+    </a>
+</li>
+@endpermission
 @if(in_array(Auth::id(),\App\Models\User::CAN_ACCESS_ACL) && Auth::user() instanceof \App\Models\User)
     <li class="nav-item {{Request::is('acl*')?'menu-is-opening menu-open active':''}}">
         <a href="#" class="nav-link {{Request::is('acl*')?'active':''}}">
