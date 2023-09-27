@@ -25,6 +25,9 @@ return new class extends Migration {
             $table->boolean('flag_session')->nullable();
             $table->boolean('home_work_completed')->nullable();
             $table->boolean('practice_test_for_homework')->nullable();
+            $table->boolean('status')->default(true);
+            $table->string('auth_guard');
+            $table->bigInteger('added_by');
             $table->timestamps();
         });
     }
