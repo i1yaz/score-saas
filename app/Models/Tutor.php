@@ -56,7 +56,7 @@ class Tutor extends Authenticatable implements LaratrustUser
         'email' => ['required', 'string', 'email', 'max:255', 'unique:students'],
         'picture' => ['sometimes', 'mimes:jpg,bmp,png,jpeg,JPG,BMP,PNG,JPEG', 'max:2048'],
         'resume' => ['sometimes', 'mimes:doc,docx,docm,pdf', 'max:2048'],
-        'hourly_rate' => ['sometimes', 'numeric', 'gt:0'],
+        'hourly_rate' => ['required', 'numeric', 'gt:0'],
     ];
 
     /**

@@ -12,7 +12,6 @@
     <div class="form-group col-sm-6">
         {!! Form::label('parent_id', 'Parent:') !!}
         {!! Form::select('parent_id', [], null, ['class' => 'form-control select2 ','id'=>'parent-id']) !!}
-
     </div>
 @endif
 <!-- School -->
