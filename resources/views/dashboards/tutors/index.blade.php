@@ -202,7 +202,7 @@
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                    right: 'dayGridMonth'
                 },
                 selectable:true,
                 selectHelper:true,
