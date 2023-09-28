@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Rules\StudentTutoringPackageHourlyRateRule;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class StudentTutoringPackage extends BaseModel
@@ -53,29 +54,6 @@ class StudentTutoringPackage extends BaseModel
         'tutor_hourly_rate' => 'integer',
     ];
 
-    public static array $rules = [
-        'student_id' => 'required',
-        'tutoring_package_type_id' => 'required',
-        'tutor_ids' => ['required', 'array', 'min:1'],
-        'subject_ids' => ['required', 'array', 'min:1'],
-        'tutoring_location_id' => 'required',
-        'internal_notes' => 'string',
-        'hours' => ['required', 'numeric', 'min:1'],
-        'hourly_rate' => ['required', 'numeric', 'min:1'],
-        'discount_type' => 'required',
-        'start_date' => 'required',
-        'tutor_hourly_rate' => ['sometimes', 'numeric', 'min:1'],
-    ];
-
-    public static array $rulesEdit = [
-        'subject_ids' => ['required', 'array', 'min:1'],
-        'internal_notes' => 'string',
-        'hours' => ['required', 'numeric', 'min:1'],
-        'hourly_rate' => ['required', 'numeric', 'min:1'],
-        'discount_type' => 'required',
-        'start_date' => 'required',
-        'tutor_hourly_rate' => ['sometimes', 'numeric', 'min:1'],
-    ];
 
     public static mixed $messages = [
         'tutor_ids.required' => 'Please select at least one tutor',
