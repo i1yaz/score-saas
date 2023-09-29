@@ -81,7 +81,7 @@
 
 
 @push('page_scripts')
-    <script src="{{asset('plugins/jquery/jquery.min.js')}}"></script>
+
     <script src="{{asset('plugins/jquery-ui/jquery-ui.min.js')}}"></script>
     <script type="text/javascript">
         $('#start_date').datepicker()

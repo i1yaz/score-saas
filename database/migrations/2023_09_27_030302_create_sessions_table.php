@@ -11,11 +11,11 @@ return new class extends Migration {
     {
         Schema::create('sessions', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->foreignIdFor(StudentTutoringPackage::class);
-            $table->foreignIdFor(TutoringLocation::class);
+            $table->foreignIdFor(StudentTutoringPackage::class)->constrained();
+            $table->foreignIdFor(TutoringLocation::class)->constrained();
             $table->dateTime('scheduled_date');
-            $table->dateTime('start_time');
-            $table->dateTime('end_time');
+            $table->time('start_time');
+            $table->time('end_time');
             $table->string('pre_session_notes')->nullable();
             $table->unsignedSmallInteger('session_completion_code')->nullable();
             $table->integer('how_was_session')->nullable();

@@ -57,7 +57,14 @@
             <div class="content-wrapper">
                 @yield('content')
             </div>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js" integrity="sha512-lzilC+JFd6YV8+vQRNRtU7DOqv5Sa9Ek53lXt/k91HZTJpytHS1L6l1mMKR9K6VVoDt4LiEXaa6XBrYk1YhGTQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+            <script>
+                $("input[type='submit']").on("click", function () {
+                    $(this).attr("disabled", "disabled");
+                    $(this).parents("form").submit();
+                });
+            </script>
             <!-- Main Footer -->
             <footer class="main-footer">
                 <div class="float-right d-none d-sm-block">

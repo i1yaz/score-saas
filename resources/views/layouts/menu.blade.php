@@ -94,7 +94,14 @@
     </a>
 </li>
 @endpermission
-
+@permission('session-index')
+<li class="nav-item">
+    <a href="{{ route('sessions.index') }}" class="nav-link {{ Request::is('session*') ? 'active' : '' }}">
+        <i class="nav-icon fas fa-user"></i>
+        <p>Sessions</p>
+    </a>
+</li>
+@endpermission
 @permission(['tutoring_package_type-index','subject-index','tutoring_location-index'])
 <li class="nav-item {{Request::is(['tutoring-package-types*','subjects*','tutoring-locations*'])?'menu-is-opening menu-open active':''}}">
     <a href="#" class="nav-link {{Request::is(['tutoring-package-types*','subjects*','tutoring-locations*'])?'active':''}}">

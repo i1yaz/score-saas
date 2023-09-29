@@ -4,27 +4,22 @@
     <link  rel="stylesheet" href="{{asset('plugins/datatables-buttons/css/buttons.bootstrap4.min.css')}}">
 @endpush
 <div class="card-body">
-    <div class="table-responsive dataTables_wrapper dt-bootstrap4">
-        <table class="table" id="student-tutoring-packages-table">
+    <div class="table-responsive  dataTables_wrapper dt-bootstrap4">
+        <table class="table" id="sessions-table">
             <thead>
             <tr>
-                <th>Package ID</th>
+                <th>Scheduled Date</th>
+                <th>Location</th>
                 <th>Student</th>
-                <th>Tutoring Package Type</th>
-                <th>Notes</th>
-                <th>Hours</th>
-                <th>Tutoring Location</th>
-                <th>Start Date</th>
+                <th>Completion Code</th>
+                <th>80% homework completed</th>
                 <th>Action</th>
             </tr>
-            </thead>
         </table>
     </div>
-
 </div>
 
 @push('page_scripts')
-
     <script src="{{asset('plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
     <script src="{{asset('plugins/datatables/jquery.dataTables.min.js')}}"></script>
     <script src="{{asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js')}}"></script>
@@ -35,24 +30,22 @@
     <script>
         $(document).ready(function() {
 
-            $('#student-tutoring-packages-table').DataTable({
+            $('#sessions-table').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ route('student-tutoring-packages.index') }}",
+                    url: "{{ route('sessions.index') }}",
                     dataType: "json",
                     data: function (d) {
                         d.search = $('input[type="search"]').val();
                     }
                 },
                 columns: [
-                    { data: 'package_id', name: 'package_id', orderable: true },
-                    { data: 'student', name: 'student', orderable: true },
-                    { data: 'tutoring_package_type', name: 'tutoring_package_type', orderable: false },
-                    { data: 'notes', name: 'notes', orderable: false },
-                    { data: 'hours', name: 'hours', orderable: true },
-                    { data: 'location', name: 'location', orderable: false },
-                    { data: 'start_date', name: 'start_date', orderable: true },
+                    { data: 'scheduled_date', name: 'package_id', orderable: false },
+                    { data: 'location', name: 'student', orderable: true },
+                    { data: 'student', name: 'tutoring_package_type', orderable: true },
+                    { data: 'completion_code', name: 'notes', orderable: false },
+                    { data: 'homework_completed_80', name: 'hours', orderable: false },
                     { data: 'action', name: 'action', orderable: false },
 
                 ],

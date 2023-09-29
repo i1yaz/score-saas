@@ -267,4 +267,29 @@ class StudentTutoringPackageController extends AppBaseController
         return response()->json($tutoringLocations->toArray());
 
     }
+
+    public function tutoringPackageAjax(Request $request)
+    {
+//        T3735 - Naomi Shapiro - Tutoring Started - 9.00
+        $name = trim($request->name);
+        $id = getOriginalStudentTutoringPackageIdFromCode($name);
+        $studentTutoringPackages = StudentTutoringPackage::select(['student_tutoring_packages.id as id','student_tutoring_packages.hours'])
+            ->selectRaw("CONCAT(students.first_name,' ',students.last_name) as name")
+            ->join('students', 'students.id', '=', 'student_tutoring_packages.student_id')
+            ->where('student_tutoring_packages.id', 'LIKE', "%{$id}%")
+            ->orWhere('students.first_name', 'LIKE', "%{$name}%")
+            ->orWhere('students.last_name', 'LIKE', "%{$name}%")
+            ->limit(5)
+            ->get();
+
+        $packages = [];
+        foreach ($studentTutoringPackages as $studentTutoringPackage) {
+            $data = [];
+            $data['id'] = $studentTutoringPackage->id;
+            $data['text'] = getStudentTutoringPackageCodeFromId($studentTutoringPackage->id).' - '.$studentTutoringPackage->name.' - '. $studentTutoringPackage->hours;
+            $packages[] = $data;
+        }
+        return response()->json($packages);
+    }
+
 }

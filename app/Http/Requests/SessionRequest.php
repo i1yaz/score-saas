@@ -11,9 +11,9 @@ class SessionRequest extends FormRequest
         return [
             'student_tutoring_package_id' => ['required', 'integer'],
             'scheduled_date' => ['required', 'date'],
-            'start_time' => ['required', 'date'],
-            'end_time' => ['required', 'date'],
-            'location_id' => ['required', 'integer'],
+            'start_time' => ['required'],
+            'end_time' => ['required'],
+            'tutoring_location_id' => ['required', 'integer'],
             'pre_session_notes' => ['nullable'],
             'session_completion_code' => ['nullable', 'integer'],
             'how_was_session' => ['nullable', 'integer'],

@@ -112,6 +112,8 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor']], function () {
     Route::get('student-email-ajax', [StudentTutoringPackageController::class, 'studentEmailAjax'])->name('student-email-ajax')->middleware(['permission:student_tutoring_package-create']);
     Route::get('tutor-email-ajax', [StudentTutoringPackageController::class, 'tutorEmailAjax'])->name('tutor-email-ajax')->middleware(['permission:student_tutoring_package-create']);
     Route::get('tutoring-location-ajax', [StudentTutoringPackageController::class, 'tutoringLocationAjax'])->name('tutoring-location-ajax')->middleware(['permission:student_tutoring_package-create']);
+    Route::get('tutoring-package-ajax', [StudentTutoringPackageController::class, 'tutoringPackageAjax'])->name('tutoring-package-ajax');
+    Route::get('location-ajax', [StudentTutoringPackageController::class, 'tutoringLocationAjax'])->name('location-ajax');//
     ///Invoice Package Types
     Route::get('invoice-package-types', [InvoicePackageTypeController::class, 'index'])->name('invoice-package-types.index')->middleware(['permission:invoice_package_type-index']);
     Route::get('invoice-package-types/create', [InvoicePackageTypeController::class, 'create'])->name('invoice-package-types.create')->middleware(['permission:invoice_package_type-create']);
@@ -131,7 +133,11 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor']], function () {
     //Sessions
     Route::get('sessions',[SessionController::class,'index'])->name('sessions.index')->middleware(['permission:session-index']);
     Route::get('sessions/create',[SessionController::class,'create'])->name('sessions.create')->middleware(['permission:session-create']);
-    Route::post('sessions',[SessionController::class,'create'])->name('sessions.store')->middleware(['permission:session-create']);
+    Route::post('sessions',[SessionController::class,'store'])->name('sessions.store')->middleware(['permission:session-create']);
+    Route::get('sessions/{session}',[SessionController::class,'show'])->name('sessions.show')->middleware(['permission:session-show']);
+    Route::get('sessions/{session}/edit',[SessionController::class,'edit'])->name('sessions.edit')->middleware(['permission:session-edit']);
+    Route::patch('sessions/{session}',[SessionController::class,'update'])->name('sessions.update')->middleware(['permission:session-edit']);
+    Route::delete('sessions/{session}',[SessionController::class,'destroy'])->name('sessions.destroy')->middleware(['permission:session-destroy']);
 
 });
 

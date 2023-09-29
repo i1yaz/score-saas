@@ -73,6 +73,18 @@ if (! function_exists('getStudentTutoringPackageCodeFromId')) {
         return StudentTutoringPackage::PREFIX_START.($id + StudentTutoringPackage::CODE_START);
     }
 }
+
+if (! function_exists('getOriginalStudentTutoringPackageIdFromCode')) {
+    function getOriginalStudentTutoringPackageIdFromCode($code): string
+    {
+        $number = str_replace(StudentTutoringPackage::PREFIX_START, '', $code);
+        if (is_numeric($number)){
+            return $number - StudentTutoringPackage::CODE_START;
+        }
+        return $number;
+    }
+}
+
 if (!function_exists('getInvoiceCodeFromId')){
     function getInvoiceCodeFromId($id): string
     {
@@ -228,5 +240,27 @@ if (!function_exists('booleanToYesNo')){
         if ($value==false || $value == 0){
             return  'No';
         }
+    }
+}
+
+if (!function_exists('getHexColors')){
+    function getHexColors($i): string
+    {
+        if ($i > 9) {
+            $i = $i % 10;
+        }
+        $colors = [
+            0 => '#0074D9', // Blue
+            1 => '#6F7378',  // Gray
+            2 => '#FF4136', // Red
+            3 => '#2ECC40', // Green
+            4 => '#FF851B', // Orange
+            5 => '#F012BE', // Purple
+            6 => '#39CCCC', // Teal
+            7 => '#01FF70', // Lime
+            8 => '#85144b', // Maroon
+            9 => '#FFDC00', // Yellow
+        ];
+        return $colors[$i];
     }
 }

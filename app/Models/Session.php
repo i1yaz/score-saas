@@ -24,11 +24,22 @@ class Session extends Model
         'flag_session',
         'home_work_completed',
         'practice_test_for_homework',
+        'tutoring_location_id',
+        'auth_guard',
+        'added_by'
     ];
 
     protected $casts = [
-        'scheduled_date' => 'datetime',
-        'start_time' => 'datetime',
-        'end_time' => 'datetime',
+
+    ];
+    const LIST_DATA_ID = 1;
+    const SESSION_COMPLETION_CODE = [
+        '1' => 'Completed',
+        '2' => 'Rescheduled',
+        '3' => 'Cancelled',
+        '4' => 'No Show',
+        '5' => 'Late',
+        '6' => 'Left Early',
+        '7' => 'Other'
     ];
 }
