@@ -192,6 +192,9 @@ if (!function_exists('cleanAmountWithCurrencyFormat')){
 if (!function_exists('formatDate')) {
     function formatDate($date): string
     {
+        if (empty($date)){
+            return '';
+        }
         return date('m/d/Y', strtotime($date));
     }
 }

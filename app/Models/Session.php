@@ -23,7 +23,6 @@ class Session extends Model
         'internal_notes',
         'flag_session',
         'home_work_completed',
-        'practice_test_for_homework',
         'tutoring_location_id',
         'auth_guard',
         'added_by'

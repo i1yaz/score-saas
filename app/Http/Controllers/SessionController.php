@@ -66,7 +66,6 @@ class SessionController extends Controller
     {
         $input = $request->all();
         $input['flag_session'] = isset($input['flag_session']) && $input['flag_session'] == 'yes';
-        $input['practice_test_for_homework'] = ($input['practice_test_for_homework']=='yes');
         $input['home_work_completed'] = ($input['home_work_completed']=='yes');
         $input['scheduled_date'] = date('Y-m-d',strtotime($input['scheduled_date']));
         $this->sessionRepository->create($input);

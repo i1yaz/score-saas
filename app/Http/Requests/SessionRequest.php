@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\SessionStartAndEndTimeRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SessionRequest extends FormRequest
@@ -11,8 +12,8 @@ class SessionRequest extends FormRequest
         return [
             'student_tutoring_package_id' => ['required', 'integer'],
             'scheduled_date' => ['required', 'date'],
-            'start_time' => ['required'],
-            'end_time' => ['required'],
+            'start_time' => ['required',new SessionStartAndEndTimeRule()],
+            'end_time' => ['required',new SessionStartAndEndTimeRule()],
             'tutoring_location_id' => ['required', 'integer'],
             'pre_session_notes' => ['nullable'],
             'session_completion_code' => ['nullable', 'integer'],

@@ -115,20 +115,6 @@
                 </div>
             </div>
         </div>
-        <div class="form-group col-sm-6">
-
-            {!! Form::label('practice_test_for_homework', 'Did you give a practice test for homework  ?') !!}
-            <div class="radio">
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="practice_test_for_homework" id="practice-test-for-homework-yes" value="yes" checked>
-                    <label class="form-check-label" for="practice_test_for_homework"><strong>  Yes </strong> </label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="practice_test_for_homework" id="practice-test-for-homework-no" value="no">
-                    <label class="form-check-label" for="practice-test-for-homework-no"><strong>  No</strong></label>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 @push('page_scripts')
