@@ -267,3 +267,21 @@ if (!function_exists('getHexColors')){
         return $colors[$i];
     }
 }
+if (!function_exists('getTutorHourlyRateForStudentTutoringPackage')){
+    function getTutorHourlyRateForStudentTutoringPackage(StudentTutoringPackage $studentTutoringPackage):string
+    {
+        if (empty($studentTutoringPackage->tutor_hourly_rate)){
+            $tutor = $studentTutoringPackage->tutors()->first();
+            $hourlyRate = $tutor->hourly_rate;
+        }else{
+            $hourlyRate = $studentTutoringPackage->tutor_hourly_rate;
+        }
+        return $hourlyRate;
+    }
+}
+if (!function_exists('getTotalChargedTimeOfTutorFromStudentTutoringPackage')){
+    function getTotalChargedTimeOfTutorFromStudentTutoringPackage(StudentTutoringPackage $studentTutoringPackage)
+    {
+
+    }
+}

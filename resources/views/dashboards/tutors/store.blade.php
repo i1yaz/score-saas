@@ -25,6 +25,16 @@
                         {!! Form::label('student_tutoring_package_id', 'Tutoring Package:') !!}
                         {!! Form::select('student_tutoring_package_id', [], null, ['class' => 'form-control select2 ','id'=>'student-tutoring-package-id']) !!}
                     </div>
+                    @role(['super-admin','admin'])
+                    <!-- Tutor Field -->
+                    <div class="form-group col-sm-12">
+                        {!! Form::label('tutor-id', 'Tutor:') !!}
+                        {!! Form::select('tutor_id', [],null, ['class' => 'form-control select2','id'=>'tutor-id']) !!}
+                    </div>
+                    @endrole
+
+
+                    {{--                    @include('sessions.includes.tutors_select2')--}}
                     <!-- Session Fields -->
                     <div class="form-group col-sm-12">
                         <div class="row" style="padding-left: 8px">

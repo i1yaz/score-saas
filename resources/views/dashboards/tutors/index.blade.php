@@ -209,5 +209,6 @@
             });
         });
     </script>
+    @include('sessions.includes.tutors_select2js')
 @endpush
 

@@ -4,6 +4,7 @@ namespace App\DataTables;
 
 use App\Models\ParentUser;
 use App\Models\Student;
+use App\Models\Tutor;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -17,6 +18,7 @@ class StudentsDataTable implements IDataTables
         ];
         $order = $columns[$order] ?? $order;
         $students = Student::query()->select(['id', 'parent_id', 'email', 'first_name', 'last_name', 'official_baseline_act_score', 'official_baseline_sat_score', 'status']);
+        $students = static::filterStudentsOfTutor($students);
         $students = static::getModelQueryBySearch($search, $students);
         $students = $students->offset($start)
             ->limit($limit)
@@ -29,6 +31,7 @@ class StudentsDataTable implements IDataTables
     public static function totalFilteredRecords(mixed $search): int
     {
         $students = Student::query()->select(['id', 'parent_id']);
+        $students = static::filterStudentsOfTutor($students);
         $students = static::getModelQueryBySearch($search, $students);
 
         return $students->count();
@@ -75,6 +78,7 @@ class StudentsDataTable implements IDataTables
     public static function totalRecords(): int
     {
         $students = Student::query()->select(['id']);
+        $students = static::filterStudentsOfTutor($students);
         if (Auth::user()->hasRole('parent') && Auth::user() instanceof ParentUser) {
             $students = $students->where('parent_id', Auth::id());
         }
@@ -83,5 +87,14 @@ class StudentsDataTable implements IDataTables
         }
 
         return $students->count();
+    }
+
+    public static function filterStudentsOfTutor($students){
+        if (Auth::user()->hasRole('tutor') && Auth::user() instanceof Tutor) {
+            $students = $students->whereHas('tutoringPackages.tutors',function ($q){
+                $q->where('tutor_id', Auth::id());
+            });
+        }
+        return $students;
     }
 }

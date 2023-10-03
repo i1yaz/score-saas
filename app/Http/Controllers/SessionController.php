@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Repositories\SessionRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Laracasts\Flash\Flash;
 
@@ -68,6 +69,12 @@ class SessionController extends Controller
         $input['flag_session'] = isset($input['flag_session']) && $input['flag_session'] == 'yes';
         $input['home_work_completed'] = ($input['home_work_completed']=='yes');
         $input['scheduled_date'] = date('Y-m-d',strtotime($input['scheduled_date']));
+        if (Auth::user()->hasRole(['tutor'])){
+            $input['tutor_id'] = Auth::user()->id;
+        }else{
+            $input['tutor_id'] = $input['tutor_id'];
+        }
+
         $this->sessionRepository->create($input);
         if ($input['flag_session']){
             $admins = User::whereHasRole(['super-admin'])->get(['email']);

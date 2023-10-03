@@ -74,6 +74,10 @@ class StudentTutoringPackage extends BaseModel
     {
         return $this->belongsToMany(Tutor::class);
     }
+    public function student(): BelongsToMany
+    {
+        return $this->belongsToMany(Student::class);
+    }
 
     /**
      *------------------------------------------------------------------

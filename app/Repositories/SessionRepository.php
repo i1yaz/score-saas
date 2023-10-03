@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Session;
+use App\Models\Tutor;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -41,8 +42,11 @@ class SessionRepository extends BaseRepository
             ->join('student_tutoring_packages','student_tutoring_packages.id','=','sessions.student_tutoring_package_id')
             ->join('students','students.id','=','student_tutoring_packages.student_id')
             ->where('sessions.scheduled_date','>=',$start)
-            ->where('sessions.scheduled_date','<=',$end)
-            ->get();
+            ->where('sessions.scheduled_date','<=',$end);
+        if (Auth::user()->hasRole('tutor') && Auth::user() instanceof Tutor) {
+            $sessions = $sessions->where('tutor_id', Auth::id());
+        }
+        $sessions = $sessions->get();
         $data = [];
         $i = 0;
         foreach ($sessions as $session){

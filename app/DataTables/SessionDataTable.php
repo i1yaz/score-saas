@@ -3,8 +3,10 @@
 namespace App\DataTables;
 
 use App\Models\Session;
+use App\Models\Tutor;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Auth;
 
 class SessionDataTable implements IDataTables
 {
@@ -72,12 +74,9 @@ class SessionDataTable implements IDataTables
                     ->orWhere('students.email', 'like', "%{$search}%");
             });
         }
-//        if (Auth::user()->hasRole('parent') && Auth::user() instanceof ParentUser) {
-//            $records = $records->where('parent_id', Auth::id());
-//        }
-//        if (Auth::user()->hasRole('student') && Auth::user() instanceof Student) {
-//            $records = $records->where('id', Auth::id());
-//        }
+        if (Auth::user()->hasRole('tutor') && Auth::user() instanceof Tutor) {
+            $records = $records->where('sessions.tutor_id', Auth::id());
+        }
 
         return $records;
     }
@@ -85,12 +84,10 @@ class SessionDataTable implements IDataTables
     public static function totalRecords(): int
     {
         $sessions = Session::query()->select(['id']);
-//        if (Auth::user()->hasRole('parent') && Auth::user() instanceof ParentUser) {
-//            $students = $students->where('parent_id', Auth::id());
-//        }
-//        if (Auth::user()->hasRole('student') && Auth::user() instanceof Student) {
-//            $students = $students->where('id', Auth::id());
-//        }
+        if (Auth::user()->hasRole('tutor') && Auth::user() instanceof Tutor) {
+            $sessions = $sessions->where('sessions.tutor_id', Auth::id());
+        }
+
 
         return $sessions->count();
     }

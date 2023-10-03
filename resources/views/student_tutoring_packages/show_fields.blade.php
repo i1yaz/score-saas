@@ -3,7 +3,6 @@
         <div class="card-header">
             <h5>Package Details</h5>
         </div>
-
         <div class="card-body p-0">
             <table class="table table-striped">
                 <tbody>
@@ -20,7 +19,7 @@
                     <td>
                         @if($studentTutoringPackage->tutors)
                             @foreach($studentTutoringPackage->tutors as $tutor)
-                                <span style="display: block">{{$tutor->fullName}}</span>
+                                <span style="display: block">{{$tutor->email}}</span>
                             @endforeach
                         @endif
                     </td>
@@ -77,7 +76,6 @@
                 </tbody>
             </table>
         </div>
-
     </div>
 </div>
 
@@ -140,29 +138,32 @@
     </div>
 </div>
 
-{{--<div class="col-md-6">--}}
-{{--    <div class="card">--}}
-{{--        <div class="card-header">--}}
-{{--            <h5>Tutor Payment Details</h5>--}}
-{{--        </div>--}}
-{{--        <div class="card-body p-0">--}}
-{{--            <table class="table table-striped">--}}
-{{--                <tbody>--}}
-{{--                <tr>--}}
-{{--                    <td>Hourly Rate</td>--}}
-{{--                    <td>{{$studentTutoringPackage->hourly_rate}}</td>--}}
-{{--                </tr>--}}
-{{--                <tr>--}}
-{{--                    <td>Total Charged Time</td>--}}
-{{--                    <td></td>--}}
-{{--                </tr>--}}
-{{--                <tr>--}}
-{{--                    <td>Total Tutor Payment For Package</td>--}}
-{{--                    <td></td>--}}
-{{--                </tr>--}}
-{{--                </tbody>--}}
-{{--            </table>--}}
-{{--        </div>--}}
+<div class="col-md-6">
+    <div class="card">
+        <div class="card-header">
+            <h5>Tutor Payment Details</h5>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-striped">
+                <tbody>
+                <tr>
+                    <td><strong>Tutor Hourly Rate</strong></td>
+                    <td>
+                        {{getTutorHourlyRateForStudentTutoringPackage($studentTutoringPackage)}}
+                    </td>
+                </tr>
 
-{{--    </div>--}}
-{{--</div>--}}
+                <tr>
+                    <td><strong>Total Charged Time</strong></td>
+{{--                    <td>{{getTotalChargedTimeOfTutorFromStudentTutoringPackage()}}</td>--}}
+                </tr>
+                <tr>
+                    <td><strong>Total Tutor Payment For Package</strong></td>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>

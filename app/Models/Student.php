@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laratrust\Contracts\LaratrustUser;
@@ -68,6 +69,10 @@ class Student extends Authenticatable implements LaratrustUser
     public function parentUser(): BelongsTo
     {
         return $this->belongsTo(ParentUser::class, 'parent_id', 'id');
+    }
+    public function tutoringPackages(): HasMany
+    {
+        return $this->hasMany(StudentTutoringPackage::class, 'student_id', 'id');
     }
 
     /**
