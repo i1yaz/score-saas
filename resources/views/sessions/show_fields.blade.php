@@ -25,7 +25,7 @@
 
 <div class="col-sm-6">
     {!! Form::label('session-completion-code', 'Session Completion Code:') !!}
-    <p>{{ \App\Models\Session::SESSION_COMPLETION_CODE[$session->session_completion_code??''] }}</p>
+    <p>{{ $session->completion_code }}</p>
 </div>
 
 <div class="col-sm-6">

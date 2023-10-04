@@ -35,15 +35,6 @@ class Session extends Model
 
     const CODE_START = 5000;
 
-    const LIST_DATA_ID = 1;
+    const LIST_DATA_LIST_ID = 1;
 
-    const SESSION_COMPLETION_CODE = [
-        '1' => 'Completed',
-        '2' => 'Rescheduled',
-        '3' => 'Cancelled',
-        '4' => 'No Show',
-        '5' => 'Late',
-        '6' => 'Left Early',
-        '7' => 'Other',
-    ];
 }

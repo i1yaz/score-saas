@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\DataTables\SessionDataTable;
 use App\Http\Requests\SessionRequest;
 use App\Mail\FlagSessionMail;
+use App\Models\ListData;
 use App\Models\Session;
 use App\Models\StudentTutoringPackageTutor;
 use App\Models\User;
 use App\Repositories\SessionRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Laracasts\Flash\Flash;
 
@@ -62,7 +64,13 @@ class SessionController extends Controller
     public function create()
     {
         //        $this->authorize('create', Session::class);
-        $completionCodes = Session::SESSION_COMPLETION_CODE;
+        $listData = Cache::remember('list_data_session_completion_codes', 60 * 60 * 24, function () {
+            return ListData::select(['id', 'name'])->where('list_id', Session::LIST_DATA_LIST_ID)->get();
+        });
+        $completionCodes = [];
+        foreach ($listData as $data){
+            $completionCodes[$data->id] = $data->name;
+        }
 
         return view('sessions.create', compact('completionCodes'));
     }
@@ -106,11 +114,16 @@ class SessionController extends Controller
                 'sessions.id as id', 'sessions.scheduled_date', 'sessions.start_time', 'sessions.end_time', 'tutoring_locations.name as tutoring_location_name',
                 'sessions.session_completion_code', 'sessions.pre_session_notes', 'sessions.student_parent_session_notes', 'sessions.homework', 'sessions.internal_notes',
                 'sessions.home_work_completed as percent_homework_completed_80',
+                'list_data.name as completion_code'
             ])
             ->selectRaw("CONCAT(students.first_name,' ',students.last_name) as student_name")
             ->leftJoin('student_tutoring_packages', 'student_tutoring_packages.id', '=', 'sessions.student_tutoring_package_id')
             ->leftJoin('students', 'students.id', '=', 'student_tutoring_packages.student_id')
             ->leftJoin('tutoring_locations', 'student_tutoring_packages.tutoring_location_id', '=', 'tutoring_locations.id')
+            ->leftJoin('list_data', function ($join){
+                $join->on('list_data.id', '=', 'sessions.session_completion_code')
+                    ->where('list_data.list_id', '=', Session::LIST_DATA_LIST_ID);
+            })
             ->where('sessions.id', $session)
             ->first();
         if (request()->ajax()) {
@@ -118,7 +131,7 @@ class SessionController extends Controller
             $session['scheduled_date'] = date('m/d/Y', strtotime($session['scheduled_date'] ?? ''));
             $session['start_time'] = date('H:i', strtotime($session['start_time'] ?? ''));
             $session['end_time'] = date('H:i', strtotime($session['end_time'] ?? ''));
-            $session['session_completion_code'] = Session::SESSION_COMPLETION_CODE[$session['session_completion_code'] ?? ''];
+            $session['session_completion_code'] = $session['completion_code'];
             $session['percent_homework_completed_80'] = booleanToYesNo($session['percent_homework_completed_80'] ?? '');
 
             return response()->json($session);
@@ -129,7 +142,13 @@ class SessionController extends Controller
 
     public function edit(Session $session)
     {
-        $completionCodes = Session::SESSION_COMPLETION_CODE;
+        $listData = Cache::remember('list_data_session_completion_codes', 60 * 60 * 24, function () {
+            return ListData::select(['id', 'name'])->where('list_id', Session::LIST_DATA_LIST_ID)->get();
+        });
+        $completionCodes = [];
+        foreach ($listData as $data){
+            $completionCodes[$data->id] = $data->name;
+        }
         $session->scheduled_date = date('m/d/Y', strtotime($session->scheduled_date ?? ''));
 
         return view('sessions.edit', compact('session', 'completionCodes'));

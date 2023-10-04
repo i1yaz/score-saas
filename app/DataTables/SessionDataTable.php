@@ -19,9 +19,14 @@ class SessionDataTable implements IDataTables
                 'sessions.start_time as start', 'sessions.end_time as end', 'sessions.id as id', 'sessions.start_time', 'sessions.end_time', 'sessions.scheduled_date',
                 'tutoring_locations.name as location_name', 'students.first_name as student_first_name', 'students.last_name as student_last_name', 'students.email as student_email',
                 'sessions.session_completion_code', 'sessions.home_work_completed',
+                'list_data.name as completion_code'
             ])
             ->leftJoin('student_tutoring_packages', 'student_tutoring_packages.id', '=', 'sessions.student_tutoring_package_id')
             ->leftJoin('tutoring_locations', 'tutoring_locations.id', '=', 'sessions.tutoring_location_id')
+            ->leftJoin('list_data', function ($join){
+                $join->on('list_data.id', '=', 'sessions.session_completion_code')
+                    ->where('list_data.list_id', '=', Session::LIST_DATA_LIST_ID);
+            })
             ->leftJoin('students', 'students.id', '=', 'student_tutoring_packages.student_id');
         $sessions = static::getModelQueryBySearch($search, $sessions);
         $sessions = $sessions->offset($start)
@@ -52,7 +57,7 @@ class SessionDataTable implements IDataTables
                 $nestedData['scheduled_date'] = "$date $start - $end";
                 $nestedData['location'] = $session->location_name;
                 $nestedData['student'] = $session->student_email;
-                $nestedData['completion_code'] = Session::SESSION_COMPLETION_CODE[$session->session_completion_code ?? ''];
+                $nestedData['completion_code'] = $session->completion_code ??'';
                 $nestedData['homework_completed_80'] = view('partials.status_badge', ['status' => $session->home_work_completed, 'text_success' => 'Yes', 'text_danger' => 'No'])->render();
                 $nestedData['action'] = view('sessions.actions', ['session' => $session])->render();
                 $data[] = $nestedData;
