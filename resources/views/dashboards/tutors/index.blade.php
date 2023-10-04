@@ -117,8 +117,6 @@
             });
             calendar.render();
         });
-
-
         $('#session-form').submit(function (e) {
             e.preventDefault();
             $.ajax({
@@ -144,9 +142,7 @@
                 }
             });
         });
-
         $(document).ready(function () {
-
             $("#location-id").select2({
                 theme: 'bootstrap4',
                 dropdownAutoWidth: true, width: 'auto',
@@ -177,7 +173,6 @@
                     return markup;
                 }
             });
-
             $("#student-tutoring-package-id").select2({
                 dropdownAutoWidth: true, width: 'auto',
                 dropdownParent: $('#session-store'),
@@ -211,6 +206,6 @@
             });
         });
     </script>
-    @include('sessions.includes.tutors_select2js')
+    @include('sessions.includes.tutors_select2js',['strict'=>true])
 @endpush
 

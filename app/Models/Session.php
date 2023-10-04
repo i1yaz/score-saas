@@ -28,7 +28,11 @@ class Session extends Model
         'auth_guard',
         'added_by',
     ];
-
+    public static $messages = [
+        'tutoring_location_id' => "Please select a tutoring location",
+        'tutor_id' => "Please select a tutor",
+        'student_tutoring_package_id' => "Please select a tutoring package",
+    ];
     protected $casts = [
 
     ];

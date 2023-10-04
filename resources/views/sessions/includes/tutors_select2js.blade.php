@@ -11,9 +11,23 @@
                 delay: 250,
                 data: function (params) {
                     return {
+                        strict:"{{$strict??false}}",
                         student_tutoring_package_id :$('#student-tutoring-package-id').val(),
                         email: params.term
                     };
+                },
+                error: function (xhr, status, error) {
+                    $("input[type='submit']").attr("disabled", false);
+                    if (xhr.status === 422) {
+                        $.each(xhr.responseJSON.errors, function (key, item) {
+                            toastr.error(item[0]);
+                        });
+                    } else if(xhr.status === 404){
+                        let response = xhr.responseJSON
+                        toastr.error(response.message);
+                    } else {
+                        toastr.error("something went wrong");
+                    }
                 },
                 processResults: function (data) {
                     return {

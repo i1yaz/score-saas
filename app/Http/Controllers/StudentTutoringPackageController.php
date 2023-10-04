@@ -16,8 +16,10 @@ use App\Repositories\StudentTutoringPackageRepository;
 use Flash;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
 
 class StudentTutoringPackageController extends AppBaseController
 {
@@ -268,10 +270,14 @@ class StudentTutoringPackageController extends AppBaseController
     {
         $email = trim($request->email);
         $student_tutoring_package_id = trim($request->student_tutoring_package_id);
+        $strict = (boolean) $request->strict;
+        if ($strict && empty($student_tutoring_package_id)){
+            throw ValidationException::withMessages(['student_tutoring_package_id' => 'Please Choose Tutoring Package']);
+        }
         $tutors = Tutor::active()
             ->select(['tutors.id as id', 'tutors.email as text'])
             ->where('tutors.email', 'LIKE', "%{$email}%");
-        if (! empty($student_tutoring_package_id)) {
+        if (!empty($student_tutoring_package_id)) {
             $tutors = $tutors->join('student_tutoring_package_tutor as stpt', 'stpt.tutor_id', '=', 'tutors.id')
                 ->where('stpt.student_tutoring_package_id', $student_tutoring_package_id);
         }
@@ -296,13 +302,19 @@ class StudentTutoringPackageController extends AppBaseController
 
     public function tutoringPackageAjax(Request $request)
     {
-        //        T3735 - Naomi Shapiro - Tutoring Started - 9.00
+
         $name = trim($request->name);
         $id = getOriginalStudentTutoringPackageIdFromCode($name);
         $studentTutoringPackages = StudentTutoringPackage::select(['student_tutoring_packages.id as id', 'student_tutoring_packages.hours'])
             ->selectRaw("CONCAT(students.first_name,' ',students.last_name) as name")
-            ->join('students', 'students.id', '=', 'student_tutoring_packages.student_id')
-            ->where('student_tutoring_packages.id', 'LIKE', "%{$id}%")
+            ->join('students', 'students.id', '=', 'student_tutoring_packages.student_id');
+        if(Auth::user()->hasRole(['tutor'])){
+            $studentTutoringPackages = $studentTutoringPackages->whereHas('tutors', function ($query) {
+                $query->where('tutors.id', Auth::user()->id);
+            });
+        }
+
+        $studentTutoringPackages = $studentTutoringPackages->where('student_tutoring_packages.id', 'LIKE', "%{$id}%")
             ->orWhere('students.first_name', 'LIKE', "%{$name}%")
             ->orWhere('students.last_name', 'LIKE', "%{$name}%")
             ->limit(5)
