@@ -16,7 +16,7 @@ class SessionDataTable implements IDataTables
         $order = $columns[$order] ?? $order;
         $sessions = Session::query()->select(
             [
-                'sessions.start_time as start', 'sessions.end_time as end', 'sessions.id as id', 'sessions.start_time', 'sessions.end_time', 'sessions.scheduled_date',
+                'sessions.id','sessions.start_time as start','sessions.tutoring_location_id' ,'sessions.end_time as end', 'sessions.id as id', 'sessions.start_time', 'sessions.end_time', 'sessions.scheduled_date',
                 'tutoring_locations.name as location_name', 'students.first_name as student_first_name', 'students.last_name as student_last_name', 'students.email as student_email',
                 'sessions.session_completion_code', 'sessions.home_work_completed',
                 'list_data.name as completion_code','student_tutoring_packages.id as student_tutoring_package_id'
@@ -40,7 +40,7 @@ class SessionDataTable implements IDataTables
     public static function totalFilteredRecords(mixed $search): int
     {
         $sessions = Session::query()->select(['id']);
-        $sessions = static::getModelQueryBySearch($search, $sessions);
+        $sessions = static::getModelQueryBySearch($search, $sessions,true);
 
         return $sessions->count();
     }
@@ -54,6 +54,7 @@ class SessionDataTable implements IDataTables
                 $date = date('m/d/Y', strtotime($session->scheduled_date ?? ''));
                 $start = date('H:i', strtotime($session->start ?? ''));
                 $end = date('H:i', strtotime($session->end ?? ''));
+                $nestedData['id'] = getSessionCodeFromId($session->id);
                 $nestedData['student_tutoring_package'] = getStudentTutoringPackageCodeFromId($session->student_tutoring_package_id);
                 $nestedData['scheduled_date'] = "$date $start - $end";
                 $nestedData['location'] = $session->location_name;
@@ -69,14 +70,13 @@ class SessionDataTable implements IDataTables
 
     }
 
-    public static function getModelQueryBySearch(mixed $search, Builder $records): Builder
+    public static function getModelQueryBySearch(mixed $search, Builder $records,$count=false): Builder
     {
-        if (! empty($search)) {
+        if (! empty($search) && !$count) {
             $records = $records->where(function ($q) use ($search) {
                 $q->where('tutoring_locations.name', 'like', "%{$search}%")
-                    ->orWhere('students.first_name.', 'like', "%{$search}%")
-                    ->orWhere('students.last_name.', 'like', "%{$search}%")
-                    ->orWhere('students.email', 'like', "%{$search}%");
+                    ->orWhere('sessions.id', 'like', "%{$search}%")
+                    ->orWhere('student_tutoring_package_id', 'like', "%{$search}%");
             });
         }
         if (Auth::user()->hasRole('tutor') && Auth::user() instanceof Tutor) {

@@ -8,6 +8,7 @@
         <table class="table" id="sessions-table">
             <thead>
             <tr>
+                <th>Session ID</th>
                 <th>Tutoring Package</th>
                 <th>Scheduled Date</th>
                 <th>Location</th>
@@ -42,12 +43,13 @@
                     }
                 },
                 columns: [
-                    { data: 'student_tutoring_package', name: 'student_tutoring_package', orderable: false },
-                    { data: 'scheduled_date', name: 'package_id', orderable: false },
-                    { data: 'location', name: 'student', orderable: true },
-                    { data: 'student', name: 'tutoring_package_type', orderable: true },
-                    { data: 'completion_code', name: 'notes', orderable: false },
-                    { data: 'homework_completed_80', name: 'hours', orderable: false },
+                    { data: 'id', name: 'id', orderable: true },
+                    { data: 'student_tutoring_package', name: 'student_tutoring_package', orderable: true },
+                    { data: 'scheduled_date', name: 'scheduled_date', orderable: false },
+                    { data: 'location', name: 'location', orderable: true },
+                    { data: 'student', name: 'student', orderable: true },
+                    { data: 'completion_code', name: 'completion_code', orderable: false },
+                    { data: 'homework_completed_80', name: 'homework_completed_80', orderable: false },
                     { data: 'action', name: 'action', orderable: false },
 
                 ],

@@ -103,9 +103,12 @@ class StudentTutoringPackageController extends AppBaseController
 
                 Mail::to($parentEmail->parent_email)->send(new ParentInvoiceMailAfterStudentTutoringPackageCreation($studentTutoringPackage));
             }
+            $redirectRoute = route('student-tutoring-packages.show', ['student_tutoring_package' => $studentTutoringPackage->id]);
+            if ($request->ajax()){
+                return response()->json(['success' => true, 'message' => 'Tutoring Package saved successfully.','redirect' => $redirectRoute]);
+            }
             Flash::success('Student Tutoring Package saved successfully.');
-
-            return redirect(route('student-tutoring-packages.show', ['student_tutoring_package' => $studentTutoringPackage->id]));
+            return redirect($redirectRoute);
         } catch (QueryException $queryException) {
             DB::rollBack();
             report($queryException);
@@ -138,9 +141,21 @@ class StudentTutoringPackageController extends AppBaseController
     public function edit($id)
     {
         $subjects = Subject::get(['id', 'name']);
-        $studentTutoringPackage = StudentTutoringPackage::with(['subjects'])->find($id);
+        $studentTutoringPackage = StudentTutoringPackage::query()
+            ->select(['student_tutoring_packages.*','students.email as student_email','tutoring_package_types.name as tutoring_package_type_name','tutoring_locations.name as tutoring_location_name'])
+            ->with(['subjects','tutors'])
+            ->join('students', 'students.id', '=', 'student_tutoring_packages.student_id')
+            ->join('tutoring_package_types', 'tutoring_package_types.id', '=', 'student_tutoring_packages.tutoring_package_type_id')
+            ->join('tutoring_locations', 'tutoring_locations.id', '=', 'student_tutoring_packages.tutoring_location_id')
+            ->find($id);
         $selectedSubjects = $studentTutoringPackage->subjects->pluck(['id'])->toArray();
-
+        $selectedStudent[$studentTutoringPackage->student_id] = $studentTutoringPackage->student_email;
+        $tutoringPackageType[$studentTutoringPackage->tutoring_package_type_id] = $studentTutoringPackage->tutoring_package_type_name;
+        $tutoringLocation[$studentTutoringPackage->tutoring_location_id] = $studentTutoringPackage->tutoring_location_name;
+        $selectedTutors = [];
+        foreach ($studentTutoringPackage->tutors as $tutor){
+            $selectedTutors[$tutor->id] = $tutor->email;
+        }
         if (empty($studentTutoringPackage)) {
             Flash::error('Student Tutoring Package not found');
 
@@ -149,6 +164,10 @@ class StudentTutoringPackageController extends AppBaseController
 
         return view('student_tutoring_packages.edit')->with('studentTutoringPackage', $studentTutoringPackage)
             ->with('selectedSubjects', $selectedSubjects)
+            ->with('selectedStudent', $selectedStudent)
+            ->with('tutoringPackageType', $tutoringPackageType)
+            ->with('tutoringLocation', $tutoringLocation)
+            ->with('selectedTutors', $selectedTutors)
             ->with('subjects', $subjects);
     }
 
@@ -181,10 +200,14 @@ class StudentTutoringPackageController extends AppBaseController
             }
 
             $studentTutoringPackage = $this->studentTutoringPackageRepository->update($input, $id);
+//            $this->studentTutoringPackageRepository->updateInvoiceForPackage($studentTutoringPackage, $input);
             DB::commit();
+            $redirectRoute = route('student-tutoring-packages.show', ['student_tutoring_package' => $studentTutoringPackage->id]);
+            if ($request->ajax()){
+                return response()->json(['success' => true, 'message' => 'Tutoring Package saved successfully.','redirect' => $redirectRoute]);
+            }
             Flash::success('Student Tutoring Package saved successfully.');
-
-            return view('student_tutoring_packages.show')->with('studentTutoringPackage', $studentTutoringPackage);
+            return redirect($redirectRoute);
         } catch (QueryException $queryException) {
             DB::rollBack();
             report($queryException);
@@ -193,9 +216,6 @@ class StudentTutoringPackageController extends AppBaseController
             return redirect(route('student-tutoring-packages.index'));
         }
 
-        Flash::success('Student Tutoring Package updated successfully.');
-
-        return redirect(route('student-tutoring-packages.index'));
     }
 
     /**

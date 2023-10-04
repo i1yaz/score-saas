@@ -4,27 +4,33 @@
     <link rel="stylesheet" href="{{asset('plugins/toastr/toastr.css')}}"/>
     <link rel="stylesheet" href="{{asset('plugins/jquery-ui/jquery-ui.min.css')}}">
 @endpush
+
 <!-- Student Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('student_id', 'Student:') !!}
-    {!! Form::select('student_id', [],null, ['class' => 'form-control','id'=>'student-id']) !!}
+    {!! Form::select('student_id',$selectedStudent??[],null, ['class' => 'form-control','id'=>'student-id']) !!}
 </div>
 
 <!-- Tutoring Package Type Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('tutoring_package_type_id', 'Tutoring Package Type:') !!}
-    {!! Form::select('tutoring_package_type_id', [],null, ['class' => 'form-control','id'=>'tutoring-package-type-id']) !!}
+    {!! Form::select('tutoring_package_type_id', $tutoringPackageType??[],null, ['class' => 'form-control','id'=>'tutoring-package-type-id']) !!}
 </div>
 
 <!-- Tutor Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('tutor-id', 'Tutor:') !!}
-    {!! Form::select('tutor_ids[]', [],null, ['class' => 'form-control','id'=>'tutor-id']) !!}
+    <select class="form-control" name="tutor_ids[]" multiple="multiple" id='tutor-id'>
+        @foreach ($selectedTutors??[] as $id => $selectedTutorEmail)
+            <option selected="selected"  value="{{$id}}" >{{$selectedTutorEmail}}</option>
+        @endforeach
+    </select>
+
 </div>
 <!-- Tutoring Location Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('tutoring_location_id', 'Tutoring Location:') !!}
-    {!! Form::select('tutoring_location_id', [],null, ['class' => 'form-control','id'=>'tutoring-location-id']) !!}
+    {!! Form::select('tutoring_location_id', $tutoringLocation??[],null, ['class' => 'form-control','id'=>'tutoring-location-id']) !!}
 </div>
 <!-- Notes Field -->
 <div class="form-group col-sm-6">
@@ -58,7 +64,7 @@
         <div class="input-group-append">
             <select class="form-control input-group-text" name="discount_type" id = 'discount-type'>
                 <option value="1" @if(isset($studentTutoringPackage) && $studentTutoringPackage->discount_type == \App\Models\StudentTutoringPackage::FLAT_DISCOUNT) selected @endif>Flat</option>
-                <option value="2" @if (isset($studentTutoringPackage) && $studentTutoringPackage->discount_type == \App\Models\StudentTutoringPackage::PERCENTAGE_DISCOUNT) selected @endif>%</option>
+                <option value="2" @if(isset($studentTutoringPackage) && $studentTutoringPackage->discount_type == \App\Models\StudentTutoringPackage::PERCENTAGE_DISCOUNT) selected @endif>%</option>
             </select>
         </div>
     </div>
@@ -69,17 +75,20 @@
     {!! Form::label('tutor_hourly_rate', 'Tutor Hourly Rate:') !!}
     {!! Form::number('tutor_hourly_rate', null, ['class' => 'form-control']) !!}
 </div>
+
 <!-- Start Date Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('start_date', 'Start Date:') !!}
-    {!! Form::text('start_date', null, ['class' => 'form-control date-input']) !!}
+    {!! Form::text('start_date', isset($studentTutoringPackage)? $studentTutoringPackage->start_date?->format('m/d/Y'):null, ['class' => 'form-control date-input']) !!}
 </div>
 <div class="form-group col-sm-12" id="all-subjects">
     @include('student_tutoring_packages.subjects')
 </div>
+@if(!isset($studentTutoringPackage))
 <div class="form-group col-sm-12">
     @include('student_tutoring_packages.invoice_details')
 </div>
+@endif
 <div class="modal fade" id="store-subject" style="display: none;" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -109,6 +118,7 @@
     <script src="{{asset('plugins/jquery-ui/jquery-ui.min.js')}}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script type="text/javascript">
+        toastr.options.closeDuration = 3000;
         $('.date-input').datepicker()
     </script>
     <script>
@@ -136,6 +146,38 @@
 
         });
         $(document).ready(function () {
+            // this is the id of the form
+            $("#student-tutoring-packages-form").submit(function(e) {
+
+                e.preventDefault(); // avoid to execute the actual submit of the form.
+
+                var form = $(this);
+                var actionUrl = form.attr('action');
+
+                $.ajax({
+                    type: "POST",
+                    url: actionUrl,
+                    data: form.serialize(), // serializes the form's elements.
+                    success: function(response)
+                    {
+                        toastr.success(response.message);
+                    },
+                    error: function (xhr, status, error) {
+                        $("input[type='submit']").attr("disabled", false);
+                        if (xhr.status === 422) {
+                            $.each(xhr.responseJSON.errors, function (key, item) {
+                                toastr.error(item[0]);
+                            });
+                        } else if(xhr.status === 404){
+                            let response = xhr.responseJSON
+                            toastr.error(response.message);
+                        } else {
+                            toastr.error("something went wrong");
+                        }
+                    }
+                });
+
+            });
             // Initialize Select2
             $("#tutoring-package-type-id").select2({
                 theme: 'bootstrap4',

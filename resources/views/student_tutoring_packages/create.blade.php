@@ -21,7 +21,7 @@
             <div class="card-header">
                 <h3 class="card-title">Create Student Tutoring Packages</h3>
             </div>
-            {!! Form::open(['route' => 'student-tutoring-packages.store']) !!}
+            {!! Form::open(['route' => 'student-tutoring-packages.store','id'=>'student-tutoring-packages-form']) !!}
 
             <div class="card-body">
 

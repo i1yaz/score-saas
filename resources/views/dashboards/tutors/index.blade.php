@@ -126,7 +126,6 @@
                 type: 'POST',
                 data: $(this).serialize(),
                 success: function (response) {
-                    console.log(response)
                     $('#session-store').modal('hide');
                     toastr.success(response.message);
                     calendar.refetchEvents()

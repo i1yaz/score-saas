@@ -31,6 +31,8 @@ class SessionController extends Controller
         }
         if ($request->ajax()) {
             $columns = [
+                'id',
+                'student_tutoring_package',
                 'scheduled_date',
                 'location',
                 'student',

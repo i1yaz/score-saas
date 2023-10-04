@@ -94,7 +94,7 @@ class StudentTutoringPackageRepository extends BaseRepository
 
     }
 
-    public function createInvoiceForPackage($studentTutoringPackage, $input = []): Invoice
+    public function updateInvoiceForPackage($studentTutoringPackage, $input = []): Invoice
     {
         $invoice = new Invoice();
         $invoice->invoice_package_type_id = 1;

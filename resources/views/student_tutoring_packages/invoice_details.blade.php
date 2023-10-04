@@ -24,11 +24,11 @@
 
         <div class="radio">
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="email_to_parent" id="send-email-to-parent-yes" value="1">
+                <input class="form-check-input" type="radio" name="email_to_parent" id="send-email-to-parent-yes" value="1" >
                 <label class="form-check-label" for="send-email-to-parent-yes"><strong>  YES</strong></label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="email_to_parent" id="send-email-to-parent-no" value="0">
+                <input class="form-check-input" type="radio" name="email_to_parent" id="send-email-to-parent-no" value="0" checked>
                 <label class="form-check-label" for="send-email-to-parent-no"><strong>  NO</strong></label>
             </div>
 

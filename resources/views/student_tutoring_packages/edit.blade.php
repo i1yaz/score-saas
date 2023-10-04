@@ -21,7 +21,7 @@
             <div class="card-header">
                 <h3 class="card-title">Edit Student Tutoring Package</h3>
             </div>
-            {!! Form::model($studentTutoringPackage, ['route' => ['student-tutoring-packages.update', $studentTutoringPackage->id], 'method' => 'patch']) !!}
+            {!! Form::model($studentTutoringPackage, ['route' => ['student-tutoring-packages.update', $studentTutoringPackage->id], 'method' => 'patch','id'=>'student-tutoring-packages-form']) !!}
 
             <div class="card-body">
                 <div class="row">

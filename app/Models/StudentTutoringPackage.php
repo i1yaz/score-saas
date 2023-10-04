@@ -55,6 +55,9 @@ class StudentTutoringPackage extends BaseModel
     ];
 
     public static mixed $messages = [
+        'student_id' => "Please select a student",
+        'tutoring_location_id' => "Please select a tutoring location",
+        'tutoring_package_type_id' => "Please select a tutoring package type",
         'tutor_ids.required' => 'Please select at least one tutor',
         'subject_ids.required' => 'Please select at least one subject',
     ];
