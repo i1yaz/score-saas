@@ -94,7 +94,7 @@
                             document.getElementById("session-location-text").innerHTML = response.tutoring_location_name;
                             document.getElementById("student-text").innerHTML = response.student_name;
                             document.getElementById('attended-sessions-manual-text').innerHTML = '';
-                            document.getElementById('total-session-time-charged-text').innerHTML = '';
+                            document.getElementById('total-session-time-charged-text').innerHTML = response.total_session_time_charged;
                             document.getElementById('session-completion-code-text').innerHTML = response.session_completion_code;
                             // document.getElementById('pre-session-note-text').innerHTML = response.pre_session_note;
                             document.getElementById('student-session-notes-text').innerHTML = response.student_parent_session_notes;

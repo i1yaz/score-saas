@@ -36,4 +36,5 @@ class Session extends Model
     const CODE_START = 5000;
 
     const LIST_DATA_LIST_ID = 1;
+    const PREFIX = 'SRN-';
 }

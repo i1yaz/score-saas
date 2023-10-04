@@ -59,14 +59,7 @@
     </a>
 </li>
 @endpermission
-@permission('school-index')
-<li class="nav-item">
-    <a href="{{ route('schools.index') }}" class="nav-link {{ Request::is('schools*') ? 'active' : '' }}">
-        <i class="nav-icon fas fa-school"></i>
-        <p>Schools</p>
-    </a>
-</li>
-@endpermission
+
 @permission('tutor-index')
 <li class="nav-item">
     <a href="{{ route('tutors.index') }}" class="nav-link {{ Request::is('tutors*') ? 'active' : '' }}">
@@ -112,8 +105,14 @@
         </p>
     </a>
     <ul class="nav nav-treeview">
+        @permission('school-index')
+        <li class="nav-item">
+            <a href="{{ route('schools.index') }}" class="nav-link {{ Request::is('schools*') ? 'active' : '' }}">
+                <p>Schools</p>
+            </a>
+        </li>
+        @endpermission
         @permission('tutoring_package_type-index')
-
         <li class="nav-item">
             <a href="{{ route('tutoring-package-types.index') }}" class="nav-link {{ Request::is('tutoring-package-types*') ? 'active' : '' }}">
                 <p>Tutoring Package Types</p>

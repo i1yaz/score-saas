@@ -127,12 +127,14 @@ class SessionController extends Controller
             ->where('sessions.id', $session)
             ->first();
         if (request()->ajax()) {
+            $totalSessionTimeCharged = getTotalChargedTimeOfSessionFromSessionInSeconds($session);
             $session = $session->toArray();
             $session['scheduled_date'] = date('m/d/Y', strtotime($session['scheduled_date'] ?? ''));
             $session['start_time'] = date('H:i', strtotime($session['start_time'] ?? ''));
             $session['end_time'] = date('H:i', strtotime($session['end_time'] ?? ''));
             $session['session_completion_code'] = $session['completion_code'];
             $session['percent_homework_completed_80'] = booleanToYesNo($session['percent_homework_completed_80'] ?? '');
+            $session['total_session_time_charged'] = formatTimeFromSeconds($totalSessionTimeCharged);
 
             return response()->json($session);
         }

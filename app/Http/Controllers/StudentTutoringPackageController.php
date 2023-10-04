@@ -122,6 +122,7 @@ class StudentTutoringPackageController extends AppBaseController
     public function show($id)
     {
         $studentTutoringPackage = $this->studentTutoringPackageRepository->show($id);
+
         if (empty($studentTutoringPackage)) {
             Flash::error('Student Tutoring Package not found');
 

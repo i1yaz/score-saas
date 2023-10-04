@@ -2,6 +2,7 @@
 
 use App\Models\Invoice;
 use App\Models\StudentTutoringPackage;
+use App\Models\Tutor;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -196,6 +197,16 @@ if (! function_exists('formatDate')) {
         return date('m/d/Y', strtotime($date));
     }
 }
+if (!function_exists('formatTime')){
+    function formatTime($time): string
+    {
+        if (empty($time)) {
+            return '';
+        }
+
+        return date('H:i', strtotime($time));
+    }
+}
 
 if (! function_exists('getInvoiceTypeFromClass')) {
     function getInvoiceTypeFromClass($type): string
@@ -268,11 +279,17 @@ if (! function_exists('getHexColors')) {
     }
 }
 if (! function_exists('getTutorHourlyRateForStudentTutoringPackage')) {
-    function getTutorHourlyRateForStudentTutoringPackage(StudentTutoringPackage $studentTutoringPackage): string
+    function getTutorHourlyRateForStudentTutoringPackage(StudentTutoringPackage $studentTutoringPackage, Tutor|int $tutor=null): string
     {
         if (empty($studentTutoringPackage->tutor_hourly_rate)) {
-            $tutor = $studentTutoringPackage->tutors()->first();
-            $hourlyRate = $tutor->hourly_rate;
+            if ($tutor){
+                if (!$tutor instanceof Tutor){
+                    $tutor = Tutor::find($tutor);
+                }
+                return $tutor->hourly_rate;
+            }
+            $firstTutor = $studentTutoringPackage->tutors()->first();
+            $hourlyRate = $firstTutor->hourly_rate;
         } else {
             $hourlyRate = $studentTutoringPackage->tutor_hourly_rate;
         }
@@ -280,22 +297,51 @@ if (! function_exists('getTutorHourlyRateForStudentTutoringPackage')) {
         return $hourlyRate;
     }
 }
-if (! function_exists('getTotalChargedTimeOfTutorFromStudentTutoringPackage')) {
-    function getTotalChargedTimeOfTutorFromStudentTutoringPackage(StudentTutoringPackage $studentTutoringPackage): float|int
+if (! function_exists('getTotalChargedTimeOfTutorFromStudentTutoringPackageInSeconds')) {
+    function getTotalChargedTimeOfTutorFromStudentTutoringPackageInSeconds(StudentTutoringPackage $studentTutoringPackage): float|int
     {
         $sessions = \App\Models\Session::where('student_tutoring_package_id', $studentTutoringPackage->id)->get(['start_time', 'end_time']);
         $totalChargedTime = 0;
         foreach ($sessions as $session) {
-            $totalChargedTime += (strtotime($session->end_time) - strtotime($session->start_time)) / 3600;
+            $totalChargedTime += (strtotime($session->end_time) - strtotime($session->start_time));
         }
 
         return $totalChargedTime;
     }
 }
+if (!function_exists('getTotalChargedTimeOfSessionFromSessionInSeconds')){
+    function getTotalChargedTimeOfSessionFromSessionInSeconds(\App\Models\Session $session): float|int
+    {
+        $totalChargedTime = 0;
+        $totalChargedTime += (strtotime($session->end_time) - strtotime($session->start_time)) ;
+
+        return $totalChargedTime;
+    }
+}
+if (!function_exists('getTotalChargedTimeInHoursSecondsMinutesFromSession')){
+    function getTotalChargedTimeInHoursSecondsMinutesFromSession(\App\Models\Session $session): string
+    {
+        $totalChargedTime = getTotalChargedTimeOfSessionFromSessionInSeconds($session);
+        return formatTimeFromSeconds($totalChargedTime);
+    }
+}
+if (!function_exists('formatTimeFromSeconds')){
+    function formatTimeFromSeconds($seconds): string
+    {
+        $hours = floor($seconds / 3600);
+        $minutes = floor(($seconds / 60) % 60);
+        $seconds = $seconds % 60;
+        if ($seconds==0){
+            return sprintf('%02dh:%02dm', $hours, $minutes);
+
+        }
+        return sprintf('%02dh:%02dm:%02ds', $hours, $minutes, $seconds);
+    }
+}
 if (! function_exists('getTotalTutorPaymentForStudentTutoringPackage')) {
     function getTotalTutorPaymentForStudentTutoringPackage(StudentTutoringPackage $studentTutoringPackage): string
     {
-        $totalChargedTime = getTotalChargedTimeOfTutorFromStudentTutoringPackage($studentTutoringPackage);
+        $totalChargedTime = getTotalChargedTimeOfTutorFromStudentTutoringPackageInSeconds($studentTutoringPackage);
         if (! empty($studentTutoringPackage->tutor_hourly_rate)) {
             $hourlyRate = getTutorHourlyRateForStudentTutoringPackage($studentTutoringPackage);
 
@@ -315,5 +361,20 @@ if (! function_exists('getTotalHours')) {
         $totalChargedTime += (strtotime($session->end_time) - strtotime($session->start_time)) / 3600;
 
         return $totalChargedTime;
+    }
+}
+if (!function_exists('getSessionCodeFromId')) {
+    function getSessionCodeFromId($id): string
+    {
+        return \App\Models\Session::PREFIX.($id);
+    }
+}
+if(!function_exists('getTotalTutorChargedAmountFromSession')) {
+    function getTotalTutorChargedAmountFromSession(\App\Models\Session $session,$studentTutoringPackage): string
+    {
+        $totalChargedTimeInSeconds = getTotalChargedTimeOfSessionFromSessionInSeconds($session);
+        $hourlyRate = getTutorHourlyRateForStudentTutoringPackage($studentTutoringPackage, $session->tutor_id);
+        $totalChargedTime = $totalChargedTimeInSeconds * ($hourlyRate / 3600);
+        return formatAmountWithCurrency($totalChargedTime);
     }
 }

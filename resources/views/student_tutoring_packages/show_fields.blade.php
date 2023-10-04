@@ -7,15 +7,15 @@
             <table class="table table-striped">
                 <tbody>
                 <tr>
-                    <td> <strong> Tutoring Package ID</strong></td>
+                    <td><strong> Tutoring Package ID</strong></td>
                     <td>{{getStudentTutoringPackageCodeFromId($studentTutoringPackage->id)}}</td>
                 </tr>
                 <tr>
-                    <td> <strong> Tutoring Package Type</strong></td>
+                    <td><strong> Tutoring Package Type</strong></td>
                     <td>{{$studentTutoringPackage->package_name}}</td>
                 </tr>
                 <tr>
-                    <td> <strong> Tutor</strong></td>
+                    <td><strong> Tutor</strong></td>
                     <td>
                         @if($studentTutoringPackage->tutors)
                             @foreach($studentTutoringPackage->tutors as $tutor)
@@ -25,7 +25,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td> <strong> Subjects</strong></td>
+                    <td><strong> Subjects</strong></td>
                     <td>
                         @if($studentTutoringPackage->subjects())
                             @foreach($studentTutoringPackage->subjects as $subject)
@@ -35,43 +35,45 @@
                     </td>
                 </tr>
                 <tr>
-                    <td> <strong> Notes</strong></td>
+                    <td><strong> Notes</strong></td>
                     <td>{{$studentTutoringPackage->notes}}</td>
                 </tr>
                 <tr>
-                    <td> <strong> Start Date</strong></td>
+                    <td><strong> Start Date</strong></td>
                     <td>{{ formatDate($studentTutoringPackage->start_date) }}</td>
                 </tr>
                 <tr>
-                    <td> <strong> Primary Tutoring Location</strong></td>
+                    <td><strong> Primary Tutoring Location</strong></td>
                     <td>{{ $studentTutoringPackage->location_name }}</td>
                 </tr>
                 <tr>
-                    <td> <strong> Number of Hours</strong></td>
+                    <td><strong> Number of Hours</strong></td>
                     <td>{{$studentTutoringPackage->hours}}</td>
                 </tr>
                 <tr>
-                    <td> <strong> Hourly Rate</strong></td>
+                    <td><strong> Hourly Rate</strong></td>
                     <td>{{formatAmountWithCurrency($studentTutoringPackage->hourly_rate)}}</td>
                 </tr>
                 <tr>
-                    <td> <strong>Total Price</strong></td>
+                    <td><strong>Total Price</strong></td>
                     <td>{{getPriceFromHoursAndHourlyWithoutDiscount($studentTutoringPackage->hourly_rate, $studentTutoringPackage->hours)}}</td>
                 </tr>
 
                 <tr>
-                    <td> <strong> Discounted Amount</strong></td>
+                    <td><strong> Discounted Amount</strong></td>
                     <td>{{getDiscountedAmount($studentTutoringPackage->hourly_rate,$studentTutoringPackage->hours, $studentTutoringPackage->discount, $studentTutoringPackage->discount_type)}}</td>
                 </tr>
                 @if($studentTutoringPackage->discount_type == \App\Models\StudentTutoringPackage::PERCENTAGE_DISCOUNT)
                     <tr>
-                        <td> <strong> Percentage Discount</strong></td>
+                        <td><strong> Percentage Discount</strong></td>
                         <td>{{$studentTutoringPackage->discount}}%</td>
                     </tr>
                 @endif
                 <tr>
-                    <td> <strong> Final Price</strong></td>
-                    <td><strong>{{getPriceFromHoursAndHourlyWithDiscount($studentTutoringPackage->hours, $studentTutoringPackage->hourly_rate, $studentTutoringPackage->discount, $studentTutoringPackage->discount_type)}}</strong></td>
+                    <td><strong> Final Price</strong></td>
+                    <td>
+                        <strong>{{getPriceFromHoursAndHourlyWithDiscount($studentTutoringPackage->hours, $studentTutoringPackage->hourly_rate, $studentTutoringPackage->discount, $studentTutoringPackage->discount_type)}}</strong>
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -129,7 +131,9 @@
                 </tr>
                 <tr>
                     <td><strong> Invoice Total</strong></td>
-                    <td><strong>{{getPriceFromHoursAndHourlyWithDiscount($studentTutoringPackage->hourly_rate,$studentTutoringPackage->hours, $studentTutoringPackage->discount, $studentTutoringPackage->discount_type)}}</strong></td>
+                    <td>
+                        <strong>{{getPriceFromHoursAndHourlyWithDiscount($studentTutoringPackage->hourly_rate,$studentTutoringPackage->hours, $studentTutoringPackage->discount, $studentTutoringPackage->discount_type)}}</strong>
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -155,7 +159,7 @@
 
                 <tr>
                     <td><strong>Total Charged Time</strong></td>
-                    <td>{{getTotalChargedTimeOfTutorFromStudentTutoringPackage($studentTutoringPackage)}}</td>
+                    <td>{{formatTimeFromSeconds(getTotalChargedTimeOfTutorFromStudentTutoringPackageInSeconds($studentTutoringPackage))}}</td>
                 </tr>
                 <tr>
                     <td><strong>Total Tutor Payment For Package</strong></td>
@@ -170,31 +174,57 @@
     </div>
 </div>
 
-<div class="col-sm-12">
-    <div class="card card-gray">
-        <div class="card-header">
-            <h5>Sessions</h5>
-        </div>
-        <div class="card-body p-0">
-            <table class="table table-striped">
-                <tbody>
-                @foreach($studentTutoringPackage->sessions as $session)
+@if($studentTutoringPackage->sessions->isNotEmpty())
+    <div class="col-sm-12">
+        <div class="card card-gray">
+            <div class="card-header">
+                <h5>Sessions</h5>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-striped" id="student-tutoring-packages-table">
+                    <thead>
                     <tr>
-                        <td><strong>Package ID</strong></td>
-                        <td>{{$session->id}}</td>
+                        <th>Session ID</th>
+                        <th>Session Date & Time</th>
+                        <th>Tutor</th>
+                        <th>Session Location</th>
+                        <th>Student/Parent Note</th>
+                        <th>Tutor Internal Note</th>
+                        <th>Session Completion Code</th>
+                        <th>Charged Lesson Time</th>
+                        <th>Charged Missed Time</th>
+                        <th>Total Session Time Charged</th>
+                        <th>Tutor $/hr</th>
+                        <th>Extra Location $</th>
+                        <th>Tutor $ for session</th>
                     </tr>
-                    <tr>
-                        <td><strong>Number of Hours</strong></td>
-                        <td>{{ getTotalHours($session)  }}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Time Charged</strong></td>
-                        <td>{{$session->id}}</td>
-                    </tr>
-                @endforeach
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                    @foreach($studentTutoringPackage->sessions as $session)
+                        <tr>
+                            <td>{{ getSessionCodeFromId($session->id) }}</td>
+                            <td>{{ formatDate($session->scheduled_date)  }} {{ formatTime($session->start_time)  }}
+                                -{{formatTime($session->end_time)}}</td>
+                            <td>
+                                <p>{{$session->tutor_email}}</p>
+                                <p>{{$session->tutor_name}}</p>
+                            </td>
+                            <td>{{ $studentTutoringPackage->location_name}}</td>
+                            <td>{{ $session->student_parent_session_notes}}</td>
+                            <td>{{ $session->internal_notes}}</td>
+                            <td>{{ $session->completion_code_name}}</td>
+                            <td>{{ getTotalChargedTimeInHoursSecondsMinutesFromSession($session)}}</td>
+                            <td></td>
+                            <td>{{ getTotalChargedTimeInHoursSecondsMinutesFromSession($session)}}</td>
+                            <td>{{ formatAmountWithCurrency(getTutorHourlyRateForStudentTutoringPackage($studentTutoringPackage,$session->tutor_id))}}</td>
+                            <td>{{ formatAmountWithCurrency(0)}}</td>
+                            <td>{{ getTotalTutorChargedAmountFromSession($session,$studentTutoringPackage)}}</td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
 
+        </div>
     </div>
-</div>
+@endif
