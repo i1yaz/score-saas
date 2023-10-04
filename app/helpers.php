@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\Invoice;
-use App\Models\ParentUser;
 use App\Models\StudentTutoringPackage;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
@@ -60,9 +59,10 @@ if (! function_exists('getRoleOfLoggedInUser')) {
 if (! function_exists('getFamilyCodeFromId')) {
     function getFamilyCodeFromId($id): string
     {
-        if (!empty($id)){
+        if (! empty($id)) {
             return $id;
         }
+
         return '';
     }
 }
@@ -81,11 +81,12 @@ if (! function_exists('getOriginalStudentTutoringPackageIdFromCode')) {
     }
 }
 
-if (!function_exists('getInvoiceCodeFromId')){
+if (! function_exists('getInvoiceCodeFromId')) {
     function getInvoiceCodeFromId($id): string
     {
         return Invoice::PREFIX_START.($id);
-    }}
+    }
+}
 
 if (! function_exists('storeFile')) {
     function storeFile(string $path, File|UploadedFile $file, string $name = null): string
@@ -178,24 +179,25 @@ if (! function_exists('formatAmountWithCurrency')) {
         return '$'.number_format($amount, 2, '.', '');
     }
 }
-if (!function_exists('cleanAmountWithCurrencyFormat')){
+if (! function_exists('cleanAmountWithCurrencyFormat')) {
     function cleanAmountWithCurrencyFormat(string $amount): string
     {
         return str_replace('$', '', $amount);
     }
 }
 
-if (!function_exists('formatDate')) {
+if (! function_exists('formatDate')) {
     function formatDate($date): string
     {
-        if (empty($date)){
+        if (empty($date)) {
             return '';
         }
+
         return date('m/d/Y', strtotime($date));
     }
 }
 
-if (!function_exists('getInvoiceTypeFromClass')){
+if (! function_exists('getInvoiceTypeFromClass')) {
     function getInvoiceTypeFromClass($type): string
     {
         if ($type == StudentTutoringPackage::class) {
@@ -203,11 +205,11 @@ if (!function_exists('getInvoiceTypeFromClass')){
         }
     }
 }
-if (!function_exists('getInvoiceStatusFromId')){
+if (! function_exists('getInvoiceStatusFromId')) {
     /**
      * Get the status of an invoice based on its ID.
      *
-     * @param int $status The ID of the invoice status.
+     * @param  int  $status The ID of the invoice status.
      * @return string The description of the invoice status.
      */
     function getInvoiceStatusFromId(int $status): string
@@ -224,25 +226,26 @@ if (!function_exists('getInvoiceStatusFromId')){
     }
 }
 
-if (!function_exists('getRemainingAmountFromTotalAndPaidAmount')) {
+if (! function_exists('getRemainingAmountFromTotalAndPaidAmount')) {
     function getRemainingAmountFromTotalAndPaidAmount(float $total, float $paid): string
     {
         return formatAmountWithCurrency($total - $paid);
     }
 }
 
-if (!function_exists('booleanToYesNo')){
-    function booleanToYesNo($value){
-        if ($value==true || $value == 1){
+if (! function_exists('booleanToYesNo')) {
+    function booleanToYesNo($value)
+    {
+        if ($value == true || $value == 1) {
             return 'Yes';
         }
-        if ($value==false || $value == 0){
-            return  'No';
+        if ($value == false || $value == 0) {
+            return 'No';
         }
     }
 }
 
-if (!function_exists('getHexColors')){
+if (! function_exists('getHexColors')) {
     function getHexColors($i): string
     {
         if ($i > 9) {
@@ -260,51 +263,57 @@ if (!function_exists('getHexColors')){
             8 => '#85144b', // Maroon
             9 => '#FFDC00', // Yellow
         ];
+
         return $colors[$i];
     }
 }
-if (!function_exists('getTutorHourlyRateForStudentTutoringPackage')){
-    function getTutorHourlyRateForStudentTutoringPackage(StudentTutoringPackage $studentTutoringPackage):string
+if (! function_exists('getTutorHourlyRateForStudentTutoringPackage')) {
+    function getTutorHourlyRateForStudentTutoringPackage(StudentTutoringPackage $studentTutoringPackage): string
     {
-        if (empty($studentTutoringPackage->tutor_hourly_rate)){
+        if (empty($studentTutoringPackage->tutor_hourly_rate)) {
             $tutor = $studentTutoringPackage->tutors()->first();
             $hourlyRate = $tutor->hourly_rate;
-        }else{
+        } else {
             $hourlyRate = $studentTutoringPackage->tutor_hourly_rate;
         }
+
         return $hourlyRate;
     }
 }
-if (!function_exists('getTotalChargedTimeOfTutorFromStudentTutoringPackage')){
+if (! function_exists('getTotalChargedTimeOfTutorFromStudentTutoringPackage')) {
     function getTotalChargedTimeOfTutorFromStudentTutoringPackage(StudentTutoringPackage $studentTutoringPackage): float|int
     {
-            $sessions = \App\Models\Session::where('student_tutoring_package_id',$studentTutoringPackage->id)->get(['start_time','end_time']);
-            $totalChargedTime = 0;
-            foreach ($sessions as $session){
-                $totalChargedTime += (strtotime($session->end_time) - strtotime($session->start_time))/3600;
-            }
-            return $totalChargedTime;
+        $sessions = \App\Models\Session::where('student_tutoring_package_id', $studentTutoringPackage->id)->get(['start_time', 'end_time']);
+        $totalChargedTime = 0;
+        foreach ($sessions as $session) {
+            $totalChargedTime += (strtotime($session->end_time) - strtotime($session->start_time)) / 3600;
+        }
+
+        return $totalChargedTime;
     }
 }
-if (!function_exists('getTotalTutorPaymentForStudentTutoringPackage')){
+if (! function_exists('getTotalTutorPaymentForStudentTutoringPackage')) {
     function getTotalTutorPaymentForStudentTutoringPackage(StudentTutoringPackage $studentTutoringPackage): string
     {
         $totalChargedTime = getTotalChargedTimeOfTutorFromStudentTutoringPackage($studentTutoringPackage);
-        if (!empty($studentTutoringPackage->tutor_hourly_rate)){
+        if (! empty($studentTutoringPackage->tutor_hourly_rate)) {
             $hourlyRate = getTutorHourlyRateForStudentTutoringPackage($studentTutoringPackage);
+
             return formatAmountWithCurrency($totalChargedTime * $hourlyRate);
         }
-        if ($hourlyRate = $studentTutoringPackage->tutors()->first()->hourly_rate??0){
+        if ($hourlyRate = $studentTutoringPackage->tutors()->first()->hourly_rate ?? 0) {
             return formatAmountWithCurrency($totalChargedTime * $hourlyRate);
         }
+
         return formatAmountWithCurrency(0);
     }
 }
-if (!function_exists('getTotalHours')){
+if (! function_exists('getTotalHours')) {
     function getTotalHours($session): float|int
     {
         $totalChargedTime = 0;
-        $totalChargedTime += (strtotime($session->end_time) - strtotime($session->start_time))/3600;
+        $totalChargedTime += (strtotime($session->end_time) - strtotime($session->start_time)) / 3600;
+
         return $totalChargedTime;
     }
 }

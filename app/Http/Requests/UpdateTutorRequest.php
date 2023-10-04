@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Tutor;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -26,7 +25,7 @@ class UpdateTutorRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('tutors','email')->ignore($this->email,'email')],
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('tutors', 'email')->ignore($this->email, 'email')],
             'picture' => ['sometimes', 'mimes:jpg,bmp,png,jpeg,JPG,BMP,PNG,JPEG', 'max:2048'],
             'resume' => ['sometimes', 'mimes:doc,docx,docm,pdf', 'max:2048'],
             'hourly_rate' => ['required', 'numeric', 'gt:0'],

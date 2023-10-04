@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class SessionPolicy
 {
     use HandlesAuthorization;
+
     public function before(\Illuminate\Foundation\Auth\User $user)
     {
         //['super-admin','admin','student','parent','tutor','proctor','client','developer']
@@ -18,6 +19,7 @@ class SessionPolicy
             return true;
         }
     }
+
     public function viewAny(User $user): bool
     {
         return true;

@@ -95,10 +95,10 @@ class StudentTutoringPackageController extends AppBaseController
             $studentTutoringPackage = $this->studentTutoringPackageRepository->create($input);
             $studentTutoringPackage->tutors()->sync($tutors);
             $studentTutoringPackage->subjects()->sync($subjects);
-            $this->studentTutoringPackageRepository->createInvoiceForPackage($studentTutoringPackage,$input);
+            $this->studentTutoringPackageRepository->createInvoiceForPackage($studentTutoringPackage, $input);
             DB::commit();
-            if ($input['email_to_parent'] == 1 && !empty($parentEmail->parent_email)) {
-                $parentEmail = Student::select(['parents.email as parent_email','students.id','students.parent_id'])->where('students.id',$input['student_id'])
+            if ($input['email_to_parent'] == 1 && ! empty($parentEmail->parent_email)) {
+                $parentEmail = Student::select(['parents.email as parent_email', 'students.id', 'students.parent_id'])->where('students.id', $input['student_id'])
                     ->join('parents', 'students.parent_id', '=', 'parents.id')->first();
 
                 Mail::to($parentEmail->parent_email)->send(new ParentInvoiceMailAfterStudentTutoringPackageCreation($studentTutoringPackage));
@@ -250,7 +250,7 @@ class StudentTutoringPackageController extends AppBaseController
         $tutors = Tutor::active()
             ->select(['tutors.id as id', 'tutors.email as text'])
             ->where('tutors.email', 'LIKE', "%{$email}%");
-        if (!empty($student_tutoring_package_id)) {
+        if (! empty($student_tutoring_package_id)) {
             $tutors = $tutors->join('student_tutoring_package_tutor as stpt', 'stpt.tutor_id', '=', 'tutors.id')
                 ->where('stpt.student_tutoring_package_id', $student_tutoring_package_id);
         }
@@ -275,10 +275,10 @@ class StudentTutoringPackageController extends AppBaseController
 
     public function tutoringPackageAjax(Request $request)
     {
-//        T3735 - Naomi Shapiro - Tutoring Started - 9.00
+        //        T3735 - Naomi Shapiro - Tutoring Started - 9.00
         $name = trim($request->name);
         $id = getOriginalStudentTutoringPackageIdFromCode($name);
-        $studentTutoringPackages = StudentTutoringPackage::select(['student_tutoring_packages.id as id','student_tutoring_packages.hours'])
+        $studentTutoringPackages = StudentTutoringPackage::select(['student_tutoring_packages.id as id', 'student_tutoring_packages.hours'])
             ->selectRaw("CONCAT(students.first_name,' ',students.last_name) as name")
             ->join('students', 'students.id', '=', 'student_tutoring_packages.student_id')
             ->where('student_tutoring_packages.id', 'LIKE', "%{$id}%")
@@ -291,10 +291,10 @@ class StudentTutoringPackageController extends AppBaseController
         foreach ($studentTutoringPackages as $studentTutoringPackage) {
             $data = [];
             $data['id'] = $studentTutoringPackage->id;
-            $data['text'] = getStudentTutoringPackageCodeFromId($studentTutoringPackage->id).' - '.$studentTutoringPackage->name.' - '. $studentTutoringPackage->hours;
+            $data['text'] = getStudentTutoringPackageCodeFromId($studentTutoringPackage->id).' - '.$studentTutoringPackage->name.' - '.$studentTutoringPackage->hours;
             $packages[] = $data;
         }
+
         return response()->json($packages);
     }
-
 }

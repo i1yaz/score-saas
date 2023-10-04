@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Models\Invoice;
-use App\Models\InvoicePackageType;
 use App\Models\StudentTutoringPackage;
 use App\Models\Tutor;
 use Illuminate\Database\Eloquent\Model;
@@ -51,9 +50,9 @@ class StudentTutoringPackageRepository extends BaseRepository
     {
         return StudentTutoringPackage::query()
             ->with(['tutors', 'subjects'])
-            ->with('sessions',function ($q){
-                if (Auth::user()->hasRole('tutor') && Auth::user() instanceof Tutor){
-                    $q->where('tutor_id',Auth::id());
+            ->with('sessions', function ($q) {
+                if (Auth::user()->hasRole('tutor') && Auth::user() instanceof Tutor) {
+                    $q->where('tutor_id', Auth::id());
                 }
             })
             ->select([
@@ -73,10 +72,10 @@ class StudentTutoringPackageRepository extends BaseRepository
                 'invoice_package_types.name as invoice_package_type_name',
             ])
             ->join('students', 'student_tutoring_packages.student_id', 'students.id')
-            ->leftJoin('parents','students.parent_id','parents.id')
+            ->leftJoin('parents', 'students.parent_id', 'parents.id')
             ->join('tutoring_package_types', 'student_tutoring_packages.tutoring_package_type_id', 'tutoring_package_types.id')
             ->join('tutoring_locations', 'student_tutoring_packages.tutoring_location_id', 'tutoring_locations.id')
-            ->join('invoices',function ($query){
+            ->join('invoices', function ($query) {
                 $query->on('invoices.invoiceable_id', '=', 'student_tutoring_packages.id')
                     ->where('invoices.invoiceable_type', '=', StudentTutoringPackage::class);
             })
@@ -85,7 +84,8 @@ class StudentTutoringPackageRepository extends BaseRepository
             ->first();
 
     }
-    public function createInvoiceForPackage($studentTutoringPackage,$input = []): Invoice
+
+    public function createInvoiceForPackage($studentTutoringPackage, $input = []): Invoice
     {
         $invoice = new Invoice();
         $invoice->invoice_package_type_id = 1;
@@ -100,6 +100,7 @@ class StudentTutoringPackageRepository extends BaseRepository
         $invoice->auth_guard = Auth::guard()->name;
         $invoice->added_by = Auth::id();
         $invoice->save();
+
         return $invoice;
     }
 }

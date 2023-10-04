@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
             'updated_at' => Carbon::now(),
         ]);
 
-        $invoicePackageType =[
+        $invoicePackageType = [
             [
                 'name' => 'Tutoring Package',
                 'created_at' => Carbon::now(),
@@ -52,7 +52,7 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Other',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
-            ]
+            ],
         ];
         InvoicePackageType::create($invoicePackageType);
     }

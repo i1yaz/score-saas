@@ -25,7 +25,7 @@ class UpdateInvoiceRequest extends FormRequest
     public function rules()
     {
         $rules = Invoice::$rules;
-        
+
         return $rules;
     }
 }

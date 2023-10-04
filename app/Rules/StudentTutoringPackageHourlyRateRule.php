@@ -14,14 +14,14 @@ class StudentTutoringPackageHourlyRateRule implements ValidationRule
             if (request()->tutor_hourly_rate == null) {
                 $fail('Tutor Hourly rate is required when more than one tutor is selected');
             }
-            if (!is_numeric(request()->tutor_hourly_rate)) {
+            if (! is_numeric(request()->tutor_hourly_rate)) {
                 $fail('Tutor Hourly rate must be numeric');
             }
             if (request()->tutor_hourly_rate < 1) {
                 $fail('Tutor Hourly rate must be greater than 0');
             }
-        }elseif ($tutors == 1 && !empty(request()->tutor_hourly_rate)) {
-            if (!is_numeric(request()->tutor_hourly_rate)) {
+        } elseif ($tutors == 1 && ! empty(request()->tutor_hourly_rate)) {
+            if (! is_numeric(request()->tutor_hourly_rate)) {
                 $fail('Tutor Hourly rate must be numeric');
             }
             if (request()->tutor_hourly_rate < 1) {

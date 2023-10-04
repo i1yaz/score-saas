@@ -7,11 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 class Invoice extends Model
 {
     public $table = 'invoices';
+
     public const DRAFT = 0;
+
     public const PENDING = 1;
+
     public const PARTIAL_PAYMENT = 2;
+
     public const PAID = 3;
+
     public const VOID = 4;
+
     const ID_START = 1000;
 
     const PREFIX_START = 'INV-';
@@ -30,7 +36,7 @@ class Invoice extends Model
         'paid_by_modal',
         'paid_by_id',
         'invoiceable_type',
-        'invoiceable_id'
+        'invoiceable_id',
     ];
 
     protected $casts = [
@@ -46,7 +52,7 @@ class Invoice extends Model
         'paid_by_modal' => 'string',
         'paid_by_id' => 'integer',
         'invoiceable_type' => 'string',
-        'invoiceable_id' => 'integer'
+        'invoiceable_id' => 'integer',
     ];
 
     public static array $rules = [

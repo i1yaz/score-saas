@@ -26,7 +26,7 @@ class CreateStudentTutoringPackageRequest extends FormRequest
     public function rules()
     {
 
-        return  [
+        return [
             'student_id' => ['required'],
             'tutoring_package_type_id' => ['required'],
             'tutor_ids' => ['required', 'array', 'min:1'],
@@ -37,7 +37,7 @@ class CreateStudentTutoringPackageRequest extends FormRequest
             'hourly_rate' => ['required', 'numeric', 'min:1'],
             'discount_type' => ['required'],
             'start_date' => ['required'],
-            'tutor_hourly_rate' => [ new StudentTutoringPackageHourlyRateRule]
+            'tutor_hourly_rate' => [new StudentTutoringPackageHourlyRateRule],
         ];
     }
 

@@ -5,14 +5,12 @@ namespace App\Http\Controllers;
 use App\DataTables\InvoiceDataTable;
 use App\Http\Requests\CreateInvoiceRequest;
 use App\Http\Requests\UpdateInvoiceRequest;
-use App\Http\Controllers\AppBaseController;
 use App\Repositories\InvoiceRepository;
-use Illuminate\Http\Request;
 use Flash;
+use Illuminate\Http\Request;
 
 class InvoiceController extends AppBaseController
 {
-    /** @var InvoiceRepository $invoiceRepository*/
     private InvoiceRepository $invoiceRepository;
 
     public function __construct(InvoiceRepository $invoiceRepo)
@@ -26,7 +24,7 @@ class InvoiceController extends AppBaseController
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $columns =  [
+            $columns = [
                 'invoice_id',
                 'invoice_status',
                 'invoice_type',
@@ -38,7 +36,7 @@ class InvoiceController extends AppBaseController
                 'amount_paid',
                 'amount_remaining',
                 'fully_paid_at',
-                'action'
+                'action',
             ];
             $limit = $request->input('length');
             $start = $request->input('start');
@@ -53,10 +51,12 @@ class InvoiceController extends AppBaseController
                 'draw' => intval($request->input('draw')),
                 'recordsTotal' => intval($totalData),
                 'recordsFiltered' => intval($totalFiltered),
-                'data' => $data
+                'data' => $data,
             ];
+
             return response()->json($json_data);
         }
+
         return view('invoices.index');
     }
 

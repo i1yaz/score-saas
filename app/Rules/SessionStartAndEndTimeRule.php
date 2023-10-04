@@ -21,16 +21,15 @@ class SessionStartAndEndTimeRule implements ValidationRule
         $startTime = Carbon::createFromFormat('m/d/Y H:i', "$scheduledDate $startTime");
         $endTime = Carbon::createFromFormat('m/d/Y H:i', "$scheduledDate $endTime");
         if ($attribute == 'start_time') {
-            if($startTime->isAfter($endTime)){
+            if ($startTime->isAfter($endTime)) {
                 $fail('Start time must be less than end time');
             }
         }
         if ($attribute == 'end_time') {
-            if($endTime->isBefore($startTime)){
+            if ($endTime->isBefore($startTime)) {
                 $fail('End time must be greater than start time');
             }
         }
-
 
     }
 }

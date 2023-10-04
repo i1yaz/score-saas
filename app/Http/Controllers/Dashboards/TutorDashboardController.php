@@ -10,7 +10,7 @@ class TutorDashboardController extends AppBaseController
     public function index()
     {
         $completionCodes = Session::SESSION_COMPLETION_CODE;
+
         return view('dashboards.tutors.index', compact('completionCodes'));
     }
-
 }

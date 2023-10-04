@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Models\ParentUser;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -25,8 +24,8 @@ class UpdateParentRequest extends FormRequest
      */
     public function rules()
     {
-        return  [
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('parents','email')->ignore($this->email,'email')],
+        return [
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('parents', 'email')->ignore($this->email, 'email')],
         ];
     }
 }

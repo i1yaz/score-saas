@@ -3,14 +3,12 @@
 namespace App\Http\Requests;
 
 use App\Rules\SessionStartAndEndTimeRule;
-use App\Rules\SessionTutorRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class SessionRequest extends FormRequest
 {
-
     public function rules(): array
     {
 
@@ -18,8 +16,8 @@ class SessionRequest extends FormRequest
             'tutor_id' => Rule::requiredIf(Auth::user()->hasRole(['super-admin', 'admin'])),
             'student_tutoring_package_id' => ['required', 'integer'],
             'scheduled_date' => ['required', 'date'],
-            'start_time' => ['required',new SessionStartAndEndTimeRule()],
-            'end_time' => ['required',new SessionStartAndEndTimeRule()],
+            'start_time' => ['required', new SessionStartAndEndTimeRule()],
+            'end_time' => ['required', new SessionStartAndEndTimeRule()],
             'tutoring_location_id' => ['required', 'integer'],
             'pre_session_notes' => ['nullable'],
             'session_completion_code' => ['nullable', 'integer'],

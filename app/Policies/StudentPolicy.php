@@ -23,7 +23,7 @@ class StudentPolicy
 
     public function viewAny(User $user): bool
     {
-        if (Auth::user()->hasRole(['student', 'parent','tutor'])) {
+        if (Auth::user()->hasRole(['student', 'parent', 'tutor'])) {
             return true;
         }
 
@@ -35,13 +35,13 @@ class StudentPolicy
     {
         if (Auth::user()->hasRole(['tutor'])) {
             if (Auth::user()->hasRole('tutor') && Auth::user() instanceof Tutor) {
-                $student = $student->whereHas('tutoringPackages.tutors',function ($q) use ($student){
-                    $q->where('tutor_id', Auth::id())->where('students.id',$student->student_id);
+                $student = $student->whereHas('tutoringPackages.tutors', function ($q) use ($student) {
+                    $q->where('tutor_id', Auth::id())->where('students.id', $student->student_id);
                 });
             }
-            if($student->first()){
+            if ($student->first()) {
                 return true;
-            };
+            }
         }
         if (Auth::user()->hasRole(['student', 'parent'])) {
             return $user->id == $student->id || $user->id == $student->parent_id;

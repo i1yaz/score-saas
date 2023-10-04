@@ -70,6 +70,7 @@ class Student extends Authenticatable implements LaratrustUser
     {
         return $this->belongsTo(ParentUser::class, 'parent_id', 'id');
     }
+
     public function tutoringPackages(): HasMany
     {
         return $this->hasMany(StudentTutoringPackage::class, 'student_id', 'id');

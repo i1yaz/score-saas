@@ -117,18 +117,19 @@ class StudentController extends AppBaseController
     /**
      * Display the specified Student.
      */
-    public function show( $student)
+    public function show($student)
     {
-        $student = Student::select(['students.id as student_id','students.email as student_email','students.first_name as first_name',
-            'students.last_name as last_name','students.status as status', 'parents.email as parent_email','schools.name as school_name',
-            'students.testing_accommodation','students.testing_accommodation_nature','students.official_baseline_act_score','students.official_baseline_sat_score',
-            'students.test_anxiety_challenge','students.created_at as student_created_at'
-            ])
-            ->where('students.id',$student)
+        $student = Student::select(['students.id as student_id', 'students.email as student_email', 'students.first_name as first_name',
+            'students.last_name as last_name', 'students.status as status', 'parents.email as parent_email', 'schools.name as school_name',
+            'students.testing_accommodation', 'students.testing_accommodation_nature', 'students.official_baseline_act_score', 'students.official_baseline_sat_score',
+            'students.test_anxiety_challenge', 'students.created_at as student_created_at',
+        ])
+            ->where('students.id', $student)
             ->leftJoin('parents', 'students.parent_id', '=', 'parents.id')
-            ->leftJoin('schools','students.school_id', '=', 'schools.id')
+            ->leftJoin('schools', 'students.school_id', '=', 'schools.id')
             ->first();
         $this->authorize('view', $student);
+
         return view('students.show')->with('student', $student);
     }
 

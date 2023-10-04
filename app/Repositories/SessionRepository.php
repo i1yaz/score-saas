@@ -30,6 +30,7 @@ class SessionRepository extends BaseRepository
         $input['added_by'] = Auth::id();
         $model = $this->model->newInstance($input);
         $model->save();
+
         return $model;
     }
 
@@ -37,28 +38,27 @@ class SessionRepository extends BaseRepository
     {
         $start = $request->start;
         $end = $request->end;
-        $sessions = Session::select(['sessions.scheduled_date as start','sessions.scheduled_date as end','sessions.id as id','sessions.start_time','sessions.end_time','sessions.scheduled_date'])
+        $sessions = Session::select(['sessions.scheduled_date as start', 'sessions.scheduled_date as end', 'sessions.id as id', 'sessions.start_time', 'sessions.end_time', 'sessions.scheduled_date'])
             ->selectRaw("CONCAT(students.first_name,' ',students.last_name) as title")
-            ->join('student_tutoring_packages','student_tutoring_packages.id','=','sessions.student_tutoring_package_id')
-            ->join('students','students.id','=','student_tutoring_packages.student_id')
-            ->where('sessions.scheduled_date','>=',$start)
-            ->where('sessions.scheduled_date','<=',$end);
+            ->join('student_tutoring_packages', 'student_tutoring_packages.id', '=', 'sessions.student_tutoring_package_id')
+            ->join('students', 'students.id', '=', 'student_tutoring_packages.student_id')
+            ->where('sessions.scheduled_date', '>=', $start)
+            ->where('sessions.scheduled_date', '<=', $end);
         if (Auth::user()->hasRole('tutor') && Auth::user() instanceof Tutor) {
             $sessions = $sessions->where('tutor_id', Auth::id());
         }
         $sessions = $sessions->get();
         $data = [];
         $i = 0;
-        foreach ($sessions as $session){
-            $start_time = date('H:i',strtotime($session->start_time??''));
-            $start_Date = date('Y-m-d',strtotime($session->scheduled_date));
+        foreach ($sessions as $session) {
+            $start_time = date('H:i', strtotime($session->start_time ?? ''));
+            $start_Date = date('Y-m-d', strtotime($session->scheduled_date));
             $scheduleDateTime = Carbon::createFromFormat('Y-m-d H:i', $start_Date.' '.$start_time);
             $tickMark = '';
-            if ($scheduleDateTime->isPast())
-            {
-                $tickMark = "✓";
+            if ($scheduleDateTime->isPast()) {
+                $tickMark = '✓';
             }
-            $start_time =  date('H:i',strtotime($session->start_time??''));
+            $start_time = date('H:i', strtotime($session->start_time ?? ''));
             $title = $session->title;
             $session['color'] = getHexColors($i);
             $session['allDay'] = true;
@@ -66,6 +66,7 @@ class SessionRepository extends BaseRepository
             $data[] = $session;
             $i++;
         }
+
         return $data;
     }
 }

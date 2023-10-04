@@ -26,14 +26,17 @@ class Session extends Model
         'home_work_completed',
         'tutoring_location_id',
         'auth_guard',
-        'added_by'
+        'added_by',
     ];
 
     protected $casts = [
 
     ];
+
     const CODE_START = 5000;
+
     const LIST_DATA_ID = 1;
+
     const SESSION_COMPLETION_CODE = [
         '1' => 'Completed',
         '2' => 'Rescheduled',
@@ -41,6 +44,6 @@ class Session extends Model
         '4' => 'No Show',
         '5' => 'Late',
         '6' => 'Left Early',
-        '7' => 'Other'
+        '7' => 'Other',
     ];
 }

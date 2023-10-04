@@ -89,12 +89,14 @@ class StudentsDataTable implements IDataTables
         return $students->count();
     }
 
-    public static function filterStudentsOfTutor($students){
+    public static function filterStudentsOfTutor($students)
+    {
         if (Auth::user()->hasRole('tutor') && Auth::user() instanceof Tutor) {
-            $students = $students->whereHas('tutoringPackages.tutors',function ($q){
+            $students = $students->whereHas('tutoringPackages.tutors', function ($q) {
                 $q->where('tutor_id', Auth::id());
             });
         }
+
         return $students;
     }
 }
