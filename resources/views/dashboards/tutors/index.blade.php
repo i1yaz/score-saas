@@ -136,6 +136,9 @@
                         $.each(xhr.responseJSON.errors, function (key, item) {
                             toastr.error(item[0]);
                         });
+                    } else if(xhr.status === 404){
+                        let response = xhr.responseJSON
+                        toastr.error(response.message);
                     } else {
                         toastr.error("something went wrong");
                     }

@@ -6,6 +6,7 @@ use App\DataTables\SessionDataTable;
 use App\Http\Requests\SessionRequest;
 use App\Mail\FlagSessionMail;
 use App\Models\Session;
+use App\Models\StudentTutoringPackageTutor;
 use App\Models\User;
 use App\Repositories\SessionRepository;
 use Illuminate\Http\Request;
@@ -73,9 +74,13 @@ class SessionController extends Controller
         $input['home_work_completed'] = ($input['home_work_completed'] == 'yes');
         $input['scheduled_date'] = date('Y-m-d', strtotime($input['scheduled_date']));
         if (Auth::user()->hasRole(['tutor'])) {
-            $input['tutor_id'] = Auth::user()->id;
-        } else {
-            $input['tutor_id'] = $input['tutor_id'];
+            $studentTutoringPackageId = $input['student_tutoring_package_id'];
+           $studentTutoringPackageTutor  = StudentTutoringPackageTutor::where(['tutor_id' => Auth::user()->id,'student_tutoring_package_id' => $studentTutoringPackageId])->first();
+           if (Auth::user()->hasRole(['tutor']) && $studentTutoringPackageTutor){
+               $input['tutor_id'] = Auth::user()->id;
+           }else{
+               return response()->json(['success' => false, 'message' => 'You are not allowed to create session for this student.'],404);
+           }
         }
 
         $this->sessionRepository->create($input);
