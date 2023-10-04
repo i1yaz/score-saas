@@ -68,7 +68,7 @@ class SessionController extends Controller
             return ListData::select(['id', 'name'])->where('list_id', Session::LIST_DATA_LIST_ID)->get();
         });
         $completionCodes = [];
-        foreach ($listData as $data){
+        foreach ($listData as $data) {
             $completionCodes[$data->id] = $data->name;
         }
 
@@ -83,12 +83,12 @@ class SessionController extends Controller
         $input['scheduled_date'] = date('Y-m-d', strtotime($input['scheduled_date']));
         if (Auth::user()->hasRole(['tutor'])) {
             $studentTutoringPackageId = $input['student_tutoring_package_id'];
-           $studentTutoringPackageTutor  = StudentTutoringPackageTutor::where(['tutor_id' => Auth::user()->id,'student_tutoring_package_id' => $studentTutoringPackageId])->first();
-           if (Auth::user()->hasRole(['tutor']) && $studentTutoringPackageTutor){
-               $input['tutor_id'] = Auth::user()->id;
-           }else{
-               return response()->json(['success' => false, 'message' => 'You are not allowed to create session for this student.'],404);
-           }
+            $studentTutoringPackageTutor = StudentTutoringPackageTutor::where(['tutor_id' => Auth::user()->id, 'student_tutoring_package_id' => $studentTutoringPackageId])->first();
+            if (Auth::user()->hasRole(['tutor']) && $studentTutoringPackageTutor) {
+                $input['tutor_id'] = Auth::user()->id;
+            } else {
+                return response()->json(['success' => false, 'message' => 'You are not allowed to create session for this student.'], 404);
+            }
         }
 
         $this->sessionRepository->create($input);
@@ -114,13 +114,13 @@ class SessionController extends Controller
                 'sessions.id as id', 'sessions.scheduled_date', 'sessions.start_time', 'sessions.end_time', 'tutoring_locations.name as tutoring_location_name',
                 'sessions.session_completion_code', 'sessions.pre_session_notes', 'sessions.student_parent_session_notes', 'sessions.homework', 'sessions.internal_notes',
                 'sessions.home_work_completed as percent_homework_completed_80',
-                'list_data.name as completion_code'
+                'list_data.name as completion_code',
             ])
             ->selectRaw("CONCAT(students.first_name,' ',students.last_name) as student_name")
             ->leftJoin('student_tutoring_packages', 'student_tutoring_packages.id', '=', 'sessions.student_tutoring_package_id')
             ->leftJoin('students', 'students.id', '=', 'student_tutoring_packages.student_id')
             ->leftJoin('tutoring_locations', 'student_tutoring_packages.tutoring_location_id', '=', 'tutoring_locations.id')
-            ->leftJoin('list_data', function ($join){
+            ->leftJoin('list_data', function ($join) {
                 $join->on('list_data.id', '=', 'sessions.session_completion_code')
                     ->where('list_data.list_id', '=', Session::LIST_DATA_LIST_ID);
             })
@@ -146,7 +146,7 @@ class SessionController extends Controller
             return ListData::select(['id', 'name'])->where('list_id', Session::LIST_DATA_LIST_ID)->get();
         });
         $completionCodes = [];
-        foreach ($listData as $data){
+        foreach ($listData as $data) {
             $completionCodes[$data->id] = $data->name;
         }
         $session->scheduled_date = date('m/d/Y', strtotime($session->scheduled_date ?? ''));

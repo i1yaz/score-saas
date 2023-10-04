@@ -15,7 +15,7 @@ class TutorDashboardController extends AppBaseController
             return ListData::select(['id', 'name'])->where('list_id', Session::LIST_DATA_LIST_ID)->get();
         });
         $completionCodes = [];
-        foreach ($listData as $data){
+        foreach ($listData as $data) {
             $completionCodes[$data->id] = $data->name;
         }
 

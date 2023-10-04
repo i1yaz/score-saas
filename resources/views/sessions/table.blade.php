@@ -8,6 +8,7 @@
         <table class="table" id="sessions-table">
             <thead>
             <tr>
+                <th>Tutoring Package</th>
                 <th>Scheduled Date</th>
                 <th>Location</th>
                 <th>Student</th>
@@ -41,6 +42,7 @@
                     }
                 },
                 columns: [
+                    { data: 'student_tutoring_package', name: 'student_tutoring_package', orderable: false },
                     { data: 'scheduled_date', name: 'package_id', orderable: false },
                     { data: 'location', name: 'student', orderable: true },
                     { data: 'student', name: 'tutoring_package_type', orderable: true },

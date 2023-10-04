@@ -19,11 +19,11 @@ class SessionDataTable implements IDataTables
                 'sessions.start_time as start', 'sessions.end_time as end', 'sessions.id as id', 'sessions.start_time', 'sessions.end_time', 'sessions.scheduled_date',
                 'tutoring_locations.name as location_name', 'students.first_name as student_first_name', 'students.last_name as student_last_name', 'students.email as student_email',
                 'sessions.session_completion_code', 'sessions.home_work_completed',
-                'list_data.name as completion_code'
+                'list_data.name as completion_code','student_tutoring_packages.id as student_tutoring_package_id'
             ])
             ->leftJoin('student_tutoring_packages', 'student_tutoring_packages.id', '=', 'sessions.student_tutoring_package_id')
             ->leftJoin('tutoring_locations', 'tutoring_locations.id', '=', 'sessions.tutoring_location_id')
-            ->leftJoin('list_data', function ($join){
+            ->leftJoin('list_data', function ($join) {
                 $join->on('list_data.id', '=', 'sessions.session_completion_code')
                     ->where('list_data.list_id', '=', Session::LIST_DATA_LIST_ID);
             })
@@ -54,11 +54,12 @@ class SessionDataTable implements IDataTables
                 $date = date('m/d/Y', strtotime($session->scheduled_date ?? ''));
                 $start = date('H:i', strtotime($session->start ?? ''));
                 $end = date('H:i', strtotime($session->end ?? ''));
+                $nestedData['student_tutoring_package'] = getStudentTutoringPackageCodeFromId($session->student_tutoring_package_id);
                 $nestedData['scheduled_date'] = "$date $start - $end";
                 $nestedData['location'] = $session->location_name;
                 $nestedData['student'] = $session->student_email;
-                $nestedData['completion_code'] = $session->completion_code ??'';
-                $nestedData['homework_completed_80'] = view('partials.status_badge', ['status' => $session->home_work_completed, 'text_success' => 'Yes', 'text_danger' => 'No'])->render();
+                $nestedData['completion_code'] = $session->completion_code ?? '';
+                $nestedData['homework_completed_80'] = view('partials.status_badge', ['status' => $session->home_work_completed, 'text_success' => 'Completed', 'text_danger' => 'Not Completed'])->render();
                 $nestedData['action'] = view('sessions.actions', ['session' => $session])->render();
                 $data[] = $nestedData;
             }

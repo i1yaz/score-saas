@@ -45,6 +45,6 @@
 
 <div class="col-sm-6">
     {!! Form::label('percent-homework-completed', '80% Homework Completed:') !!}
-    <p>{{ $session->percent_homework_completed_80 }}</p>
+    <p>@include('partials.status_badge',['status' => $session->percent_homework_completed_80, 'text_success' => 'Completed', 'text_danger' => 'Not Completed'])</p>
 </div>
 
