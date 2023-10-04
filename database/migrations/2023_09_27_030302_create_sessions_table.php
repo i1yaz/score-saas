@@ -10,7 +10,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('sessions', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->bigIncrements('id')->startingValue(\App\Models\Session::CODE_START);
             $table->foreignIdFor(StudentTutoringPackage::class)->constrained();
             $table->foreignIdFor(TutoringLocation::class)->constrained();
             $table->dateTime('scheduled_date');

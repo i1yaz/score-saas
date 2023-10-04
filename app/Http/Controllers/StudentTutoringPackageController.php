@@ -122,7 +122,6 @@ class StudentTutoringPackageController extends AppBaseController
     public function show($id)
     {
         $studentTutoringPackage = $this->studentTutoringPackageRepository->show($id);
-
         if (empty($studentTutoringPackage)) {
             Flash::error('Student Tutoring Package not found');
 
@@ -247,10 +246,16 @@ class StudentTutoringPackageController extends AppBaseController
     public function tutorEmailAjax(Request $request)
     {
         $email = trim($request->email);
+        $student_tutoring_package_id = trim($request->student_tutoring_package_id);
         $tutors = Tutor::active()
             ->select(['tutors.id as id', 'tutors.email as text'])
-            ->where('tutors.email', 'LIKE', "%{$email}%")
-            ->limit(5)
+            ->where('tutors.email', 'LIKE', "%{$email}%");
+        if (!empty($student_tutoring_package_id)) {
+            $tutors = $tutors->join('student_tutoring_package_tutor as stpt', 'stpt.tutor_id', '=', 'tutors.id')
+                ->where('stpt.student_tutoring_package_id', $student_tutoring_package_id);
+        }
+
+        $tutors = $tutors->limit(5)
             ->get();
 
         return response()->json($tutors->toArray());

@@ -11,6 +11,7 @@
                 delay: 250,
                 data: function (params) {
                     return {
+                        student_tutoring_package_id :$('#student-tutoring-package-id').val(),
                         email: params.term
                     };
                 },

@@ -166,6 +166,7 @@ class StudentController extends AppBaseController
         $input['testing_accommodation'] = $input['testing_accommodation'] == 'yes';
         $input['email_known'] = $input['email_known'] == 'yes';
         $input['status'] = $input['status'] == 'yes';
+        $input = array_filter($input);
         $this->studentRepository->update($input, $id);
         Flash::success('Student updated successfully.');
 

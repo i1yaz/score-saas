@@ -53,7 +53,7 @@ class Tutor extends Authenticatable implements LaratrustUser
     ];
 
     public static array $rules = [
-        'email' => ['required', 'string', 'email', 'max:255', 'unique:students'],
+        'email' => ['required', 'string', 'email', 'max:255', 'unique:tutors'],
         'picture' => ['sometimes', 'mimes:jpg,bmp,png,jpeg,JPG,BMP,PNG,JPEG', 'max:2048'],
         'resume' => ['sometimes', 'mimes:doc,docx,docm,pdf', 'max:2048'],
         'hourly_rate' => ['required', 'numeric', 'gt:0'],

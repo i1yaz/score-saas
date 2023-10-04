@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\Invoice;
 use App\Models\InvoicePackageType;
 use App\Models\StudentTutoringPackage;
+use App\Models\Tutor;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
@@ -50,6 +51,11 @@ class StudentTutoringPackageRepository extends BaseRepository
     {
         return StudentTutoringPackage::query()
             ->with(['tutors', 'subjects'])
+            ->with('sessions',function ($q){
+                if (Auth::user()->hasRole('tutor') && Auth::user() instanceof Tutor){
+                    $q->where('tutor_id',Auth::id());
+                }
+            })
             ->select([
                 'student_tutoring_packages.*',
                 'students.email as student_email',
@@ -77,6 +83,7 @@ class StudentTutoringPackageRepository extends BaseRepository
             ->join('invoice_package_types', 'invoice_package_types.id', 'invoices.invoice_package_type_id')
             ->where('student_tutoring_packages.id', $id)
             ->first();
+
     }
     public function createInvoiceForPackage($studentTutoringPackage,$input = []): Invoice
     {

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Rules\StudentTutoringPackageHourlyRateRule;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class StudentTutoringPackage extends BaseModel
 {
@@ -77,6 +78,10 @@ class StudentTutoringPackage extends BaseModel
     public function student(): BelongsToMany
     {
         return $this->belongsToMany(Student::class);
+    }
+    public function sessions(): HasMany
+    {
+        return $this->hasMany(Session::class,'student_tutoring_package_id','id');
     }
 
     /**

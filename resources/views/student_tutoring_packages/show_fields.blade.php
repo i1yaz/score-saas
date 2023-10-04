@@ -139,7 +139,7 @@
 </div>
 
 <div class="col-md-6">
-    <div class="card">
+    <div class="card card-cyan">
         <div class="card-header">
             <h5>Tutor Payment Details</h5>
         </div>
@@ -155,12 +155,43 @@
 
                 <tr>
                     <td><strong>Total Charged Time</strong></td>
-{{--                    <td>{{getTotalChargedTimeOfTutorFromStudentTutoringPackage()}}</td>--}}
+                    <td>{{getTotalChargedTimeOfTutorFromStudentTutoringPackage($studentTutoringPackage)}}</td>
                 </tr>
                 <tr>
                     <td><strong>Total Tutor Payment For Package</strong></td>
-                    <td></td>
+                    <td>
+                        {{getTotalTutorPaymentForStudentTutoringPackage($studentTutoringPackage)}}
+                    </td>
                 </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<div class="col-sm-12">
+    <div class="card card-gray">
+        <div class="card-header">
+            <h5>Sessions</h5>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-striped">
+                <tbody>
+                @foreach($studentTutoringPackage->sessions as $session)
+                    <tr>
+                        <td><strong>Package ID</strong></td>
+                        <td>{{$session->id}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Number of Hours</strong></td>
+                        <td>{{ getTotalHours($session)  }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Time Charged</strong></td>
+                        <td>{{$session->id}}</td>
+                    </tr>
+                @endforeach
                 </tbody>
             </table>
         </div>

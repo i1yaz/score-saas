@@ -61,7 +61,7 @@ if (! function_exists('getFamilyCodeFromId')) {
     function getFamilyCodeFromId($id): string
     {
         if (!empty($id)){
-            return $id + ParentUser::FAMILY_CODE_START;
+            return $id;
         }
         return '';
     }
@@ -70,25 +70,21 @@ if (! function_exists('getFamilyCodeFromId')) {
 if (! function_exists('getStudentTutoringPackageCodeFromId')) {
     function getStudentTutoringPackageCodeFromId($id): string
     {
-        return StudentTutoringPackage::PREFIX_START.($id + StudentTutoringPackage::CODE_START);
+        return StudentTutoringPackage::PREFIX_START.($id);
     }
 }
 
 if (! function_exists('getOriginalStudentTutoringPackageIdFromCode')) {
     function getOriginalStudentTutoringPackageIdFromCode($code): string
     {
-        $number = str_replace(StudentTutoringPackage::PREFIX_START, '', $code);
-        if (is_numeric($number)){
-            return $number - StudentTutoringPackage::CODE_START;
-        }
-        return $number;
+        return str_replace(StudentTutoringPackage::PREFIX_START, '', $code);
     }
 }
 
 if (!function_exists('getInvoiceCodeFromId')){
     function getInvoiceCodeFromId($id): string
     {
-        return Invoice::PREFIX_START.($id + Invoice::ID_START);
+        return Invoice::PREFIX_START.($id);
     }}
 
 if (! function_exists('storeFile')) {
@@ -280,8 +276,35 @@ if (!function_exists('getTutorHourlyRateForStudentTutoringPackage')){
     }
 }
 if (!function_exists('getTotalChargedTimeOfTutorFromStudentTutoringPackage')){
-    function getTotalChargedTimeOfTutorFromStudentTutoringPackage(StudentTutoringPackage $studentTutoringPackage)
+    function getTotalChargedTimeOfTutorFromStudentTutoringPackage(StudentTutoringPackage $studentTutoringPackage): float|int
     {
-
+            $sessions = \App\Models\Session::where('student_tutoring_package_id',$studentTutoringPackage->id)->get(['start_time','end_time']);
+            $totalChargedTime = 0;
+            foreach ($sessions as $session){
+                $totalChargedTime += (strtotime($session->end_time) - strtotime($session->start_time))/3600;
+            }
+            return $totalChargedTime;
+    }
+}
+if (!function_exists('getTotalTutorPaymentForStudentTutoringPackage')){
+    function getTotalTutorPaymentForStudentTutoringPackage(StudentTutoringPackage $studentTutoringPackage): string
+    {
+        $totalChargedTime = getTotalChargedTimeOfTutorFromStudentTutoringPackage($studentTutoringPackage);
+        if (!empty($studentTutoringPackage->tutor_hourly_rate)){
+            $hourlyRate = getTutorHourlyRateForStudentTutoringPackage($studentTutoringPackage);
+            return formatAmountWithCurrency($totalChargedTime * $hourlyRate);
+        }
+        if ($hourlyRate = $studentTutoringPackage->tutors()->first()->hourly_rate??0){
+            return formatAmountWithCurrency($totalChargedTime * $hourlyRate);
+        }
+        return formatAmountWithCurrency(0);
+    }
+}
+if (!function_exists('getTotalHours')){
+    function getTotalHours($session): float|int
+    {
+        $totalChargedTime = 0;
+        $totalChargedTime += (strtotime($session->end_time) - strtotime($session->start_time))/3600;
+        return $totalChargedTime;
     }
 }

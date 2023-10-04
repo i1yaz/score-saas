@@ -76,7 +76,7 @@
 <!-- Status Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('status', 'Status:') !!}
-    {!! Form::select('status', ['yes' =>'YES','no'=>'NO'],booleanSelect($student->status??null), ['class' => 'form-control custom-select'])  !!}
+    {!! Form::select('status', ['yes' =>'YES','no'=>'NO'],booleanSelect($tutor->status??null), ['class' => 'form-control custom-select'])  !!}
 </div>
 
 

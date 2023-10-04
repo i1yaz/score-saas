@@ -32,6 +32,7 @@ class Session extends Model
     protected $casts = [
 
     ];
+    const CODE_START = 5000;
     const LIST_DATA_ID = 1;
     const SESSION_COMPLETION_CODE = [
         '1' => 'Completed',

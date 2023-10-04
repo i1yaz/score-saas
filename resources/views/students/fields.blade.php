@@ -119,6 +119,8 @@
 </div>
 @push('page_scripts')
     <script src="{{asset("plugins/toastr/toastr.min.js")}}"></script>
+    <script src="{{asset('plugins/jquery-ui/jquery-ui.min.js')}}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         $("#store-school").click(function(){
             $.post("{{route('schools.store')}}",

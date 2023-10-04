@@ -16,7 +16,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('invoices', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->bigIncrements('id')->startingValue(Invoice::ID_START);
             $table->foreignIdFor(InvoicePackageType::class)->comment('This is the invoice package type it looks like the type of package like Tutoring Package or Monthly Invoice etc')->constrained();
             $table->timestamp('due_date')->nullable();
             $table->timestamp('fully_paid_at')->nullable();
