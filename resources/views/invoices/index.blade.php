@@ -7,7 +7,7 @@
                 <div class="col-sm-6">
                     <h1></h1>
                 </div>
-                @permission('invoice-create')
+                @permission('invoice-create-false')
                 <div class="col-sm-6">
                     <a class="btn btn-primary float-right"
                        href="{{ route('invoices.create') }}">

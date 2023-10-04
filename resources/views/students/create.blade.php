@@ -22,7 +22,7 @@
                 <h3 class="card-title">Create Students</h3>
             </div>
 
-            {!! Form::open(['route' => 'students.store']) !!}
+            {!! Form::open(['route' => 'students.store','id'=>'students-form']) !!}
 
             <div class="card-body">
 

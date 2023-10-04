@@ -161,6 +161,7 @@
                     success: function(response)
                     {
                         toastr.success(response.message);
+                        window.location = response.redirectTo
                     },
                     error: function (xhr, status, error) {
                         $("input[type='submit']").attr("disabled", false);

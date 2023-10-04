@@ -61,6 +61,9 @@ class Student extends Authenticatable implements LaratrustUser
         'parent_id' => ['sometimes'],
     ];
 
+    public static $messages = [
+        'school_id' => 'The school field is required.',
+    ];
     /**
      *------------------------------------------------------------------
      * Relationships

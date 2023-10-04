@@ -105,7 +105,7 @@ class StudentTutoringPackageController extends AppBaseController
             }
             $redirectRoute = route('student-tutoring-packages.show', ['student_tutoring_package' => $studentTutoringPackage->id]);
             if ($request->ajax()){
-                return response()->json(['success' => true, 'message' => 'Tutoring Package saved successfully.','redirect' => $redirectRoute]);
+                return response()->json(['success' => true, 'message' => 'Tutoring Package saved successfully.','redirectTo' => $redirectRoute]);
             }
             Flash::success('Student Tutoring Package saved successfully.');
             return redirect($redirectRoute);
@@ -204,7 +204,7 @@ class StudentTutoringPackageController extends AppBaseController
             DB::commit();
             $redirectRoute = route('student-tutoring-packages.show', ['student_tutoring_package' => $studentTutoringPackage->id]);
             if ($request->ajax()){
-                return response()->json(['success' => true, 'message' => 'Tutoring Package saved successfully.','redirect' => $redirectRoute]);
+                return response()->json(['success' => true, 'message' => 'Tutoring Package saved successfully.','redirectTo' => $redirectRoute]);
             }
             Flash::success('Student Tutoring Package saved successfully.');
             return redirect($redirectRoute);

@@ -101,8 +101,10 @@ class StudentController extends AppBaseController
             DB::commit();
             $input['password'] = App::environment(['production']) ? $passwordString : 'abcd1234';
             Mail::to($user)->send(new StudentRegistrationMail($input));
+            if ($request->ajax()){
+                return response()->json(['success' => true, 'message' => 'Student saved successfully.','redirectTo' => route('students.index')]);
+            }
             Flash::success('Student saved successfully.');
-
             return redirect(route('students.index'));
         } catch (QueryException $queryException) {
             DB::rollBack();
@@ -138,15 +140,28 @@ class StudentController extends AppBaseController
      */
     public function edit($id)
     {
-        $student = $this->studentRepository->find($id);
-
+        $student = Student::query()
+            ->select(
+                [
+                    'students.*','parents.id as parent_id','parents.email as parent_email',
+                    'schools.id as school_id','schools.name as school_name'
+                ]
+            )
+            ->leftJoin('parents', 'students.parent_id', '=', 'parents.id')
+            ->join('schools', 'students.school_id', '=', 'schools.id')
+            ->find($id);
+        $selectedParent[$student->parent_id] = $student->parent_email;
+        $selectedSchool[$student->school_id] = $student->school_name;
         if (empty($student)) {
             Flash::error('Student not found');
 
             return redirect(route('students.index'));
         }
 
-        return view('students.edit')->with('student', $student);
+        return view('students.edit')
+            ->with('student', $student)
+            ->with('selectedSchool', $selectedSchool)
+            ->with('selectedParent', $selectedParent);
     }
 
     /**
@@ -169,8 +184,10 @@ class StudentController extends AppBaseController
         $input['status'] = $input['status'] == 'yes';
         $input = array_filter($input);
         $this->studentRepository->update($input, $id);
+        if ($request->ajax()){
+            return response()->json(['success' => true, 'message' => 'Student saved successfully.','redirectTo' => route('students.index')]);
+        }
         Flash::success('Student updated successfully.');
-
         return redirect(route('students.index'));
     }
 

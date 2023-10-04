@@ -22,7 +22,7 @@
                 <h3 class="card-title">Edit Student</h3>
             </div>
 
-            {!! Form::model($student, ['route' => ['students.update', $student->id], 'method' => 'patch']) !!}
+            {!! Form::model($student, ['route' => ['students.update', $student->id,'id'=>'students-form'], 'method' => 'patch']) !!}
 
             <div class="card-body">
                 <div class="row">

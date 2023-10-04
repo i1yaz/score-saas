@@ -11,14 +11,14 @@
 @else
     <div class="form-group col-sm-6">
         {!! Form::label('parent_id', 'Parent:') !!}
-        {!! Form::select('parent_id', [], null, ['class' => 'form-control select2 ','id'=>'parent-id']) !!}
+        {!! Form::select('parent_id', $selectedParent??[], null, ['class' => 'form-control select2 ','id'=>'parent-id']) !!}
     </div>
 @endif
 <!-- School -->
 <div class="form-group col-sm-6">
     {!! Form::label('school_id', 'School:') !!}
     <div class="input-group">
-        {!! Form::select('school_id', [], null, ['class' => 'form-control select2 ','id'=>'school-id']) !!}
+        {!! Form::select('school_id', $selectedSchool??[], null, ['class' => 'form-control select2 ','id'=>'school-id']) !!}
         @permission('school-create')
         <div class="input-group-append">
             <a class="input-group-text" href="#" data-toggle="modal" data-target="#add-school">Add School</a>
@@ -138,6 +138,38 @@
                 });
         });
         $(document).ready(function () {
+            $("#students-form").submit(function(e) {
+
+                e.preventDefault(); // avoid to execute the actual submit of the form.
+
+                var form = $(this);
+                var actionUrl = form.attr('action');
+
+                $.ajax({
+                    type: "POST",
+                    url: actionUrl,
+                    data: form.serialize(), // serializes the form's elements.
+                    success: function(response)
+                    {
+                        toastr.success(response.message);
+                        window.location = response.redirectTo
+                    },
+                    error: function (xhr, status, error) {
+                        $("input[type='submit']").attr("disabled", false);
+                        if (xhr.status === 422) {
+                            $.each(xhr.responseJSON.errors, function (key, item) {
+                                toastr.error(item[0]);
+                            });
+                        } else if(xhr.status === 404){
+                            let response = xhr.responseJSON
+                            toastr.error(response.message);
+                        } else {
+                            toastr.error("something went wrong");
+                        }
+                    }
+                });
+
+            });
             // Initialize Select2
             $("#parent-id").select2({
                 theme: 'bootstrap4',
