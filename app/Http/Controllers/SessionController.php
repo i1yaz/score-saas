@@ -35,6 +35,7 @@ class SessionController extends Controller
                 'student_tutoring_package',
                 'scheduled_date',
                 'location',
+                'tutor',
                 'student',
                 'completion_code',
                 'homework_completed_80',
@@ -110,13 +111,13 @@ class SessionController extends Controller
 
     public function show($session)
     {
-        //        $this->authorize('view', $session);
+
         $session = Session::select(
             [
                 'sessions.id as id', 'sessions.scheduled_date', 'sessions.start_time', 'sessions.end_time', 'tutoring_locations.name as tutoring_location_name',
                 'sessions.session_completion_code', 'sessions.pre_session_notes', 'sessions.student_parent_session_notes', 'sessions.homework', 'sessions.internal_notes',
                 'sessions.home_work_completed as percent_homework_completed_80',
-                'list_data.name as completion_code',
+                'list_data.name as completion_code','sessions.tutor_id'
             ])
             ->selectRaw("CONCAT(students.first_name,' ',students.last_name) as student_name")
             ->leftJoin('student_tutoring_packages', 'student_tutoring_packages.id', '=', 'sessions.student_tutoring_package_id')
@@ -128,6 +129,8 @@ class SessionController extends Controller
             })
             ->where('sessions.id', $session)
             ->first();
+
+        $this->authorize('view', $session);
         if (request()->ajax()) {
             $totalSessionTimeCharged = getTotalChargedTimeOfSessionFromSessionInSeconds($session);
             $session = $session->toArray();
@@ -146,6 +149,7 @@ class SessionController extends Controller
 
     public function edit(Session $session)
     {
+        $this->authorize('update', $session);
         $listData = Cache::remember('list_data_session_completion_codes', 60 * 60 * 24, function () {
             return ListData::select(['id', 'name'])->where('list_id', Session::LIST_DATA_LIST_ID)->get();
         });
@@ -167,11 +171,11 @@ class SessionController extends Controller
         return $session;
     }
 
-    public function destroy(Session $session)
+    public function destroy($session)
     {
         $this->authorize('delete', $session);
 
-        $session->delete();
+        $this->sessionRepository->toggleStatus($session);
 
         return response()->json();
     }

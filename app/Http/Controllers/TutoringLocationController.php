@@ -117,7 +117,7 @@ class TutoringLocationController extends AppBaseController
             return redirect(route('tutoring-locations.index'));
         }
 
-        $this->tutoringLocationRepository->delete($id);
+        $this->tutoringLocationRepository->toggleStatus($id);
 
         Flash::success('Tutoring Location deleted successfully.');
 

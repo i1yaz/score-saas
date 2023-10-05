@@ -178,7 +178,7 @@ class TutorController extends AppBaseController
 
             return redirect(route('tutors.index'));
         }
-        $this->tutorRepository->delete($id);
+        $this->tutorRepository->toggleStatus($id);
         Flash::success('Tutor deleted successfully.');
 
         return redirect(route('tutors.index'));

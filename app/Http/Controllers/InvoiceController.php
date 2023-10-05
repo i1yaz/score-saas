@@ -149,7 +149,7 @@ class InvoiceController extends AppBaseController
             return redirect(route('invoices.index'));
         }
 
-        $this->invoiceRepository->delete($id);
+        $this->invoiceRepository->toggleStatus($id);
 
         Flash::success('Invoice deleted successfully.');
 

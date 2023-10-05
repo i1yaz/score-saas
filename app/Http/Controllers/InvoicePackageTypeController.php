@@ -118,7 +118,7 @@ class InvoicePackageTypeController extends AppBaseController
             return redirect(route('invoice-package-types.index'));
         }
 
-        $this->invoicePackageTypeRepository->delete($id);
+        $this->invoicePackageTypeRepository->toggleStatus($id);
 
         Flash::success('Invoice Package Type deleted successfully.');
 

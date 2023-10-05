@@ -206,7 +206,7 @@ class StudentController extends AppBaseController
             return redirect(route('students.index'));
         }
 
-        $this->studentRepository->delete($id);
+        $this->studentRepository->toggleStatus($id);
 
         Flash::success('Student deleted successfully.');
 

@@ -118,7 +118,7 @@ class TutoringPackageTypeController extends AppBaseController
             return redirect(route('tutoring-package-types.index'));
         }
 
-        $this->tutoringPackageTypeRepository->delete($id);
+        $this->tutoringPackageTypeRepository->toggleStatus($id);
 
         Flash::success('Tutoring Package Type deleted successfully.');
 

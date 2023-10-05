@@ -124,7 +124,7 @@ class SubjectController extends AppBaseController
             return redirect(route('subjects.index'));
         }
 
-        $this->subjectRepository->delete($id);
+        $this->subjectRepository->toggleStatus($id);
 
         Flash::success('Subject deleted successfully.');
 

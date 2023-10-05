@@ -3,7 +3,8 @@
 namespace App\Policies;
 
 use App\Models\Session;
-use App\Models\User;
+use App\Models\Tutor;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,7 +29,11 @@ class SessionPolicy
 
     public function view(User $user, Session $session): bool
     {
-        return true;
+
+        if ($user->hasRole(['tutor']) && $user instanceof Tutor) {
+            return $user->id === $session->tutor_id;
+        }
+        return false;
 
     }
 
@@ -40,13 +45,19 @@ class SessionPolicy
 
     public function update(User $user, Session $session): bool
     {
-        return true;
+        if ($user->hasRole(['tutor']) && $user instanceof Tutor) {
+            return $user->id === $session->tutor_id;
+        }
+        return false;
 
     }
 
     public function delete(User $user, Session $session): bool
     {
-        return true;
+        if ($user->hasRole(['tutor']) && $user instanceof Tutor) {
+            return $user->id === $session->tutor_id;
+        }
+        return false;
 
     }
 

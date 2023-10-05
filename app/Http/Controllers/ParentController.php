@@ -168,7 +168,7 @@ class ParentController extends AppBaseController
             return redirect(route('parents.index'));
         }
 
-        $this->parentRepository->delete($id);
+        $this->parentRepository->toggleStatus($id);
 
         Flash::success('Parent deleted successfully.');
 

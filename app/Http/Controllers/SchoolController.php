@@ -122,7 +122,7 @@ class SchoolController extends AppBaseController
 
             return redirect(route('schools.index'));
         }
-        $this->schoolRepository->delete($id);
+        $this->schoolRepository->toggleStatus($id);
         Flash::success('School deleted successfully.');
 
         return redirect(route('schools.index'));

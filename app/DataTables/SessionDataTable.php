@@ -19,7 +19,8 @@ class SessionDataTable implements IDataTables
                 'sessions.id','sessions.start_time as start','sessions.tutoring_location_id' ,'sessions.end_time as end', 'sessions.id as id', 'sessions.start_time', 'sessions.end_time', 'sessions.scheduled_date',
                 'tutoring_locations.name as location_name', 'students.first_name as student_first_name', 'students.last_name as student_last_name', 'students.email as student_email',
                 'sessions.session_completion_code', 'sessions.home_work_completed',
-                'list_data.name as completion_code','student_tutoring_packages.id as student_tutoring_package_id'
+                'list_data.name as completion_code','student_tutoring_packages.id as student_tutoring_package_id',
+                'tutors.email as tutor_email'
             ])
             ->leftJoin('student_tutoring_packages', 'student_tutoring_packages.id', '=', 'sessions.student_tutoring_package_id')
             ->leftJoin('tutoring_locations', 'tutoring_locations.id', '=', 'sessions.tutoring_location_id')
@@ -27,6 +28,7 @@ class SessionDataTable implements IDataTables
                 $join->on('list_data.id', '=', 'sessions.session_completion_code')
                     ->where('list_data.list_id', '=', Session::LIST_DATA_LIST_ID);
             })
+            ->leftJoin('tutors', 'tutors.id', '=', 'sessions.tutor_id')
             ->leftJoin('students', 'students.id', '=', 'student_tutoring_packages.student_id');
         $sessions = static::getModelQueryBySearch($search, $sessions);
         $sessions = $sessions->offset($start)
@@ -58,6 +60,7 @@ class SessionDataTable implements IDataTables
                 $nestedData['student_tutoring_package'] = getStudentTutoringPackageCodeFromId($session->student_tutoring_package_id);
                 $nestedData['scheduled_date'] = "$date $start - $end";
                 $nestedData['location'] = $session->location_name;
+                $nestedData['tutor'] = $session->tutor_email;
                 $nestedData['student'] = $session->student_email;
                 $nestedData['completion_code'] = $session->completion_code ?? '';
                 $nestedData['homework_completed_80'] = view('partials.status_badge', ['status' => $session->home_work_completed, 'text_success' => 'Completed', 'text_danger' => 'Not Completed'])->render();

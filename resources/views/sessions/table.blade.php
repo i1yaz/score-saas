@@ -12,6 +12,7 @@
                 <th>Tutoring Package</th>
                 <th>Scheduled Date</th>
                 <th>Location</th>
+                <th>Tutor</th>
                 <th>Student</th>
                 <th>Completion Code</th>
                 <th>80% homework completed</th>
@@ -47,6 +48,7 @@
                     { data: 'student_tutoring_package', name: 'student_tutoring_package', orderable: true },
                     { data: 'scheduled_date', name: 'scheduled_date', orderable: false },
                     { data: 'location', name: 'location', orderable: true },
+                    { data: 'tutor', name: 'student', orderable: true },
                     { data: 'student', name: 'student', orderable: true },
                     { data: 'completion_code', name: 'completion_code', orderable: false },
                     { data: 'homework_completed_80', name: 'homework_completed_80', orderable: false },

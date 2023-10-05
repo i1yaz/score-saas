@@ -235,7 +235,7 @@ class StudentTutoringPackageController extends AppBaseController
             return redirect(route('student-tutoring-packages.index'));
         }
 
-        $this->studentTutoringPackageRepository->delete($id);
+        $this->studentTutoringPackageRepository->toggleStatus($id);
 
         Flash::success('Student Tutoring Package deleted successfully.');
 

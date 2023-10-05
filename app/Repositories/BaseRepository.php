@@ -13,6 +13,7 @@ abstract class BaseRepository
      * @var Model
      */
     protected $model;
+    private bool $status;
 
     /**
      * @throws \Exception
@@ -149,5 +150,13 @@ abstract class BaseRepository
         $model = $query->findOrFail($id);
 
         return $model->delete();
+    }
+
+    public function toggleStatus(int $id)
+    {
+        $query = $this->model->newQuery();
+        $model = $query->findOrFail($id);
+        $model->status = ! $model->status;
+        return $model->save();
     }
 }
