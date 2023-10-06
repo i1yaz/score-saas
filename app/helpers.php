@@ -341,14 +341,15 @@ if (!function_exists('formatTimeFromSeconds')){
 if (! function_exists('getTotalTutorPaymentForStudentTutoringPackage')) {
     function getTotalTutorPaymentForStudentTutoringPackage(StudentTutoringPackage $studentTutoringPackage): string
     {
-        $totalChargedTime = getTotalChargedTimeOfTutorFromStudentTutoringPackageInSeconds($studentTutoringPackage);
+        $totalChargedTimeInSeconds = getTotalChargedTimeOfTutorFromStudentTutoringPackageInSeconds($studentTutoringPackage);
         if (! empty($studentTutoringPackage->tutor_hourly_rate)) {
             $hourlyRate = getTutorHourlyRateForStudentTutoringPackage($studentTutoringPackage);
+            $hourlyRateInSeconds = $hourlyRate / 3600;
 
-            return formatAmountWithCurrency($totalChargedTime * $hourlyRate);
+            return formatAmountWithCurrency($totalChargedTimeInSeconds * $hourlyRateInSeconds);
         }
-        if ($hourlyRate = $studentTutoringPackage->tutors()->first()->hourly_rate ?? 0) {
-            return formatAmountWithCurrency($totalChargedTime * $hourlyRate);
+        if ($hourlyRateInSeconds = ($studentTutoringPackage->tutors()->first()->hourly_rate/3600) ?? 0) {
+            return formatAmountWithCurrency($totalChargedTimeInSeconds * $hourlyRateInSeconds);
         }
 
         return formatAmountWithCurrency(0);
