@@ -6,6 +6,7 @@ use App\Models\ParentUser;
 use App\Models\School;
 use App\Models\Student;
 use App\Models\Tutor;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -22,10 +23,13 @@ class HomeController extends Controller
     /**
      * Show the application dashboard.
      *
-     * @return \Illuminate\Contracts\Support\Renderable
+     * @return mixed
      */
     public function index()
     {
+        if (Auth::user()->hasRole('tutor')) {
+            return redirect()->route('tutor-dashboard.index');
+        }
         $students = Student::query()->selectRaw(
             'SUM(CASE WHEN `status` = 1 THEN 1 ELSE 0 END) AS active_students,
                        SUM(CASE WHEN `status` = 0 THEN 1 ELSE 0 END) AS inactive_students'

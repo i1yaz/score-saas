@@ -114,11 +114,9 @@ class SchoolController extends AppBaseController
      */
     public function destroy($id)
     {
-        $school = School::with(['studentsEnrolled' => function ($query) {
-            $query->first();
-        }])->findOrFail($id);
-        if ($school->studentsEnrolled->isNotEmpty()) {
-            Flash::error('There are students enrolled in this school');
+        $school = School::findOrFail($id);
+        if (!$school) {
+            Flash::error('No record found');
 
             return redirect(route('schools.index'));
         }

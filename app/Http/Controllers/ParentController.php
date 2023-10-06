@@ -159,11 +159,9 @@ class ParentController extends AppBaseController
      */
     public function destroy($id)
     {
-        $children = ParentUser::with(['family' => function ($query) {
-            $query->first();
-        }])->findOrFail($id);
-        if ($children->family->isNotEmpty()) {
-            Flash::error('This parent have children in student section.');
+        $parent = ParentUser::findOrFail($id);
+        if (!$parent) {
+            Flash::error('No record found.');
 
             return redirect(route('parents.index'));
         }

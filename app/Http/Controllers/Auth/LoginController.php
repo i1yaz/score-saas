@@ -23,12 +23,6 @@ class LoginController extends Controller
 
     use AuthenticatesUsers;
 
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
-    protected $redirectTo = RouteServiceProvider::HOME;
 
     /**
      * Create a new controller instance.
@@ -133,4 +127,5 @@ class LoginController extends Controller
 
         return $this->sendFailedLoginResponse($request);
     }
+
 }

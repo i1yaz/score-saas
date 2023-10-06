@@ -5,6 +5,7 @@
             <tr>
                 <th>Name</th>
                 <th>Address</th>
+                <th>Status</th>
                 <th colspan="3">Action</th>
             </tr>
             </thead>
@@ -13,6 +14,7 @@
                 <tr>
                     <td>{{ $school->name }}</td>
                     <td>{{ $school->address }}</td>
+                    <td>@include('partials.status_badge',['status' => $school->status,'text_success'=>'Active','text_danger' => 'Inactive'])</td>
                     <td  style="width: 120px">
                         {!! Form::open(['route' => ['schools.destroy', $school->id], 'method' => 'delete']) !!}
                         <div class='btn-group'>

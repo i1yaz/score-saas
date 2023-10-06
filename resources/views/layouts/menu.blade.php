@@ -1,9 +1,11 @@
+@permission('super_admin-dashboard')
 <li class="nav-item">
     <a href="{{ route('home') }}" class="nav-link {{ Request::is('home') ? 'active' : '' }}">
         <i class="nav-icon fas fa-home"></i>
         <p>Home</p>
     </a>
 </li>
+@endpermission
 @permission('tutor_dashboard-index')
 <li class="nav-item">
     <a href="{{ route('tutor-dashboard.index') }}" class="nav-link {{ Request::is('tutor/dashboard') ? 'active' : '' }}">
