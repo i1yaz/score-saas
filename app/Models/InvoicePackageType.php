@@ -10,6 +10,9 @@ class InvoicePackageType extends Model
 
     public $fillable = [
         'name',
+        'status',
+        'added_by',
+        'auth_guard',
     ];
 
     protected $casts = [

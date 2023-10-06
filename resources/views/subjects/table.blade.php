@@ -4,6 +4,7 @@
             <thead>
             <tr>
                 <th>Name</th>
+                <th>Status</th>
                 <th colspan="3">Action</th>
             </tr>
             </thead>
@@ -11,23 +12,24 @@
             @foreach($subjects as $subject)
                 <tr>
                     <td>{{ $subject->name }}</td>
+                    <td>@include('partials.status_badge',['status' => $subject->status,'text_success' => 'Active','text_danger' => 'Inactive'])</td>
                     <td  style="width: 120px">
                         {!! Form::open(['route' => ['subjects.destroy', $subject->id], 'method' => 'delete']) !!}
                         <div class='btn-group'>
                             @permission('subject-show')
                             <a href="{{ route('subjects.show', [$subject->id]) }}"
-                               class='btn btn-default btn-xs'>
+                               class='btn btn-default btn-sm'>
                                 <i class="far fa-eye"></i>
                             </a>
                             @endpermission
                             @permission('subject-edit')
                             <a href="{{ route('subjects.edit', [$subject->id]) }}"
-                               class='btn btn-default btn-xs'>
+                               class='btn btn-default btn-sm'>
                                 <i class="far fa-edit"></i>
                             </a>
                             @endpermission
                             @permission('subject-destroy')
-                            {!! Form::button('<i class="far fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
+                            {!! Form::button('<i class="far fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-sm', 'onclick' => "return confirm('Are you sure?')"]) !!}
                             @endpermission
                         </div>
                         {!! Form::close() !!}

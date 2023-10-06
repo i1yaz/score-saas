@@ -4,6 +4,7 @@
             <thead>
             <tr>
                 <th>Name</th>
+                <th>Status</th>
                 <th colspan="3">Action</th>
             </tr>
             </thead>
@@ -11,23 +12,24 @@
             @foreach($tutoringLocations as $tutoringLocation)
                 <tr>
                     <td>{{ $tutoringLocation->name }}</td>
+                    <td>@include('partials.status_badge',['status' => $tutoringLocation->status,'text_success' => 'Active','text_danger' => 'Inactive'])</td>
                     <td  style="width: 120px">
                         {!! Form::open(['route' => ['tutoring-locations.destroy', $tutoringLocation->id], 'method' => 'delete']) !!}
                         <div class='btn-group'>
                             @permission('tutoring_location-show')
                             <a href="{{ route('tutoring-locations.show', [$tutoringLocation->id]) }}"
-                               class='btn btn-default btn-xs'>
+                               class='btn btn-default btn-sm'>
                                 <i class="far fa-eye"></i>
                             </a>
                             @endpermission
                             @permission('tutoring_location-edit')
                             <a href="{{ route('tutoring-locations.edit', [$tutoringLocation->id]) }}"
-                               class='btn btn-default btn-xs'>
+                               class='btn btn-default btn-sm'>
                                 <i class="far fa-edit"></i>
                             </a>
                             @endpermission
                             @permission('tutoring_location-destroy')
-                            {!! Form::button('<i class="far fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
+                            {!! Form::button('<i class="far fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-sm', 'onclick' => "return confirm('Are you sure?')"]) !!}
                             @endpermission
                         </div>
                         {!! Form::close() !!}

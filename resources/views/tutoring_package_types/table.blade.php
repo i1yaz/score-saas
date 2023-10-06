@@ -5,6 +5,7 @@
             <tr>
                 <th>Name</th>
                 <th>Hours</th>
+                <th>Status</th>
                 <th colspan="3">Action</th>
             </tr>
             </thead>
@@ -13,6 +14,7 @@
                 <tr>
                     <td>{{ $tutoringPackageType->name }}</td>
                     <td>{{ $tutoringPackageType->hours }}</td>
+                    <td>@include('partials.status_badge',['status' => $tutoringPackageType->status,'text_success' => 'Active','text_danger' => 'Inactive'])</td>
                     <td  style="width: 120px">
                         {!! Form::open(['route' => ['tutoring-package-types.destroy', $tutoringPackageType->id], 'method' => 'delete']) !!}
                         <div class='btn-group'>
