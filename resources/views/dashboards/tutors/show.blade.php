@@ -5,16 +5,6 @@
                 <h4 class="modal-title">Tutoring Session Details</h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
-            {{--            Attended Session Timer Manual Entry--}}
-            {{--            Total Session Time Charged--}}
-            {{--            Session Completion Code--}}
-            {{--            Pre Session Note--}}
-            {{--            Student/Parent Session Note--}}
-            {{--            Reviewed Math section.--}}
-            {{--            Tutor Internal Note--}}
-            {{--            80% homework completed?--}}
-            {{--            Homework--}}
-
             <!-- Modal body -->
             <div class="modal-body">
                 <table class="table table-striped">
@@ -66,11 +56,7 @@
                     </tr>
                     </tbody>
                 </table>
-
             </div>
-
-
         </div>
     </div>
-
 </div>

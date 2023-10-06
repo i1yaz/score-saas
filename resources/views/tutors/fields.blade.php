@@ -1,6 +1,4 @@
-@push('page_css')
-    <link rel="stylesheet" href="{{asset('plugins/jquery-ui/jquery-ui.min.css')}}">
-@endpush
+
 <!-- First Name Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('first_name', 'First Name:') !!}
@@ -79,11 +77,3 @@
     {!! Form::select('status', ['yes' =>'YES','no'=>'NO'],booleanSelect($tutor->status??null), ['class' => 'form-control custom-select'])  !!}
 </div>
 
-
-@push('page_scripts')
-
-    <script src="{{asset('plugins/jquery-ui/jquery-ui.min.js')}}"></script>
-    <script type="text/javascript">
-        $('#start_date').datepicker()
-    </script>
-@endpush

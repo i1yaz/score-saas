@@ -1,11 +1,6 @@
 <h5 class="mb-4">Invoice Detail</h5>
 
 <div class="row">
-{{--    <!-- Invoice Date Field -->--}}
-{{--    <div class="form-group col-sm-6">--}}
-{{--        {!! Form::label('invoice_date', 'Invoice Date:') !!}--}}
-{{--        {!! Form::text('invoice_date', null, ['class' => 'form-control date-input']) !!}--}}
-{{--    </div>--}}
     <!-- Due Date Field -->
     <div class="form-group col-sm-6">
         {!! Form::label('due_date', 'Due Date:') !!}

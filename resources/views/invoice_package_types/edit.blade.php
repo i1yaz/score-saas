@@ -20,7 +20,7 @@
         <div class="card card-primary">
             <div class="card-header">
                 <h3 class="card-title">                        Edit Invoice Package Type
-</h3>
+                </h3>
             </div>
 
             {!! Form::model($invoicePackageType, ['route' => ['invoice-package-types.update', $invoicePackageType->id], 'method' => 'patch']) !!}

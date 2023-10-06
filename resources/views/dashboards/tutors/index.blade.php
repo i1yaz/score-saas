@@ -1,18 +1,11 @@
 @extends('layouts.app')
 @push('page_css')
-    <link rel="stylesheet" href="{{asset('plugins/fullcalendar/main.min.css')}}">
     <style>
         .feedback-emojis{
             width: 30px;
             height: 30px;
         }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="{{asset('css/select2-bootstrap4.min.css')}}">
-    <link rel="stylesheet" href="{{asset('plugins/toastr/toastr.css')}}"/>
-    <link rel="stylesheet" href="{{asset('plugins/jquery-ui/jquery-ui.min.css')}}">
-
-
 @endpush
 @section('content')
 <section class="content-header">
@@ -50,15 +43,7 @@
 </div>
 @endsection
 @push('page_scripts')
-    <script src="{{asset("plugins/toastr/toastr.min.js")}}"></script>
-    <script src="{{asset('plugins/fullcalendar/main.min.js')}}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="{{asset('plugins/bootstrap/js/bootstrap.min.js')}}"></script>
-    <script src="{{asset('plugins/jquery-ui/jquery-ui.min.js')}}"></script>
 
-    <script type="text/javascript">
-        $('.date-input').datepicker()
-    </script>
     <script>
         const calendarEl = document.getElementById('session-calendar');
         let calendar;

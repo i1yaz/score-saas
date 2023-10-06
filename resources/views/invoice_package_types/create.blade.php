@@ -19,8 +19,9 @@
 
         <div class="card card-primary">
             <div class="card-header">
-                <h3 class="card-title">                    Create Invoice Package Types
-</h3>
+                <h3 class="card-title">
+                    Create Invoice Package Types
+                </h3>
             </div>
             {!! Form::open(['route' => 'invoice-package-types.store']) !!}
 
@@ -28,17 +29,16 @@
 
                 <div class="row">
                     @include('invoice_package_types.fields')
+
                 </div>
 
+                <div class="card-footer">
+                    {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
+                    <a href="{{ route('invoice-package-types.index') }}" class="btn btn-default"> Cancel </a>
+                </div>
+
+                {!! Form::close() !!}
+
             </div>
-
-            <div class="card-footer">
-                {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
-                <a href="{{ route('invoice-package-types.index') }}" class="btn btn-default"> Cancel </a>
-            </div>
-
-            {!! Form::close() !!}
-
         </div>
-    </div>
 @endsection

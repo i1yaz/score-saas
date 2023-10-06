@@ -1,5 +1,14 @@
 <x-laravel-ui-adminlte::adminlte-layout>
-
+    @push('third_party_stylesheets')
+        <link rel="stylesheet" href="{{asset('plugins/fullcalendar/main.min.css')}}">
+        <link rel="stylesheet" href="{{asset('plugins/jquery-ui/jquery-ui.min.css')}}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="{{asset('css/select2-bootstrap4.min.css')}}">
+        <link rel="stylesheet" href="{{asset('plugins/toastr/toastr.css')}}"/>
+        <link rel="stylesheet" href="{{asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css')}}">
+        <link rel="stylesheet" href="{{asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
+        <link rel="stylesheet" href="{{asset('plugins/datatables-buttons/css/buttons.bootstrap4.min.css')}}">
+    @endpush
     <body class="hold-transition sidebar-mini layout-fixed">
         <div class="wrapper">
             <!-- Main Header -->
@@ -57,14 +66,38 @@
             <div class="content-wrapper">
                 @yield('content')
             </div>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js" integrity="sha512-lzilC+JFd6YV8+vQRNRtU7DOqv5Sa9Ek53lXt/k91HZTJpytHS1L6l1mMKR9K6VVoDt4LiEXaa6XBrYk1YhGTQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            @push('third_party_scripts')
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js" integrity="sha512-lzilC+JFd6YV8+vQRNRtU7DOqv5Sa9Ek53lXt/k91HZTJpytHS1L6l1mMKR9K6VVoDt4LiEXaa6XBrYk1YhGTQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+                <script src="{{asset("plugins/toastr/toastr.min.js")}}"></script>
+                <script src="{{asset('plugins/fullcalendar/main.min.js')}}"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+                <script src="{{asset('plugins/bootstrap/js/bootstrap.min.js')}}"></script>
+                <script src="{{asset('plugins/jquery-ui/jquery-ui.min.js')}}"></script>
+                <script src="{{asset('plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+                <script src="{{asset('plugins/datatables/jquery.dataTables.min.js')}}"></script>
+                <script src="{{asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js')}}"></script>
+                <script src="{{asset('plugins/datatables-responsive/js/dataTables.responsive.min.js')}}"></script>
+                <script src="{{asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js')}}"></script>
+                <script src="{{asset('plugins/datatables-buttons/js/dataTables.buttons.min.js')}}"></script>
+                <script src="{{asset('plugins/datatables-buttons/js/buttons.bootstrap4.min.js')}}"></script>
+                {{--    <script src="../../plugins/jszip/jszip.min.js"></script>--}}
+                {{--    <script src="../../plugins/pdfmake/pdfmake.min.js"></script>--}}
+                {{--    <script src="../../plugins/pdfmake/vfs_fonts.js"></script>--}}
+                {{--    <script src="../../plugins/datatables-buttons/js/buttons.html5.min.js"></script>--}}
+                {{--    <script src="../../plugins/datatables-buttons/js/buttons.print.min.js"></script>--}}
+                {{--    <script src="../../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>--}}
 
-            <script>
-                $("input[type='submit']").on("click", function () {
-                    $(this).attr("disabled", "disabled");
-                    $(this).parents("form").submit();
-                });
-            </script>
+                <script type="text/javascript">
+                    toastr.options.closeDuration = 3000;
+                    $('#start_date').datepicker()
+                    $('.date-input').datepicker()
+                    $("input[type='submit']").on("click", function () {
+                        $(this).attr("disabled", "disabled");
+                        $(this).parents("form").submit();
+                    });
+                </script>
+            @endpush
+
             <!-- Main Footer -->
             <footer class="main-footer">
                 <div class="float-right d-none d-sm-block">
