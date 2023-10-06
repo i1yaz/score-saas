@@ -45,6 +45,7 @@ class StudentTutoringPackageController extends AppBaseController
                 'hours',
                 'location',
                 'start_date',
+                'status',
                 'action',
             ];
             $limit = $request->input('length');
@@ -291,7 +292,7 @@ class StudentTutoringPackageController extends AppBaseController
     public function tutoringLocationAjax(Request $request)
     {
         $name = trim($request->name);
-        $tutoringLocations = TutoringLocation::select(['tutoring_locations.id as id', 'tutoring_locations.name as text'])
+        $tutoringLocations = TutoringLocation::active()->select(['tutoring_locations.id as id', 'tutoring_locations.name as text'])
             ->where('tutoring_locations.name', 'LIKE', "%{$name}%")
             ->limit(5)
             ->get();
@@ -305,7 +306,7 @@ class StudentTutoringPackageController extends AppBaseController
 
         $name = trim($request->name);
         $id = getOriginalStudentTutoringPackageIdFromCode($name);
-        $studentTutoringPackages = StudentTutoringPackage::select(['student_tutoring_packages.id as id', 'student_tutoring_packages.hours'])
+        $studentTutoringPackages = StudentTutoringPackage::select(['student_tutoring_packages.id as id', 'student_tutoring_packages.hours','student_tutoring_packages.status'])
             ->selectRaw("CONCAT(students.first_name,' ',students.last_name) as name")
             ->join('students', 'students.id', '=', 'student_tutoring_packages.student_id');
         if(Auth::user()->hasRole(['tutor'])){
@@ -314,9 +315,15 @@ class StudentTutoringPackageController extends AppBaseController
             });
         }
 
-        $studentTutoringPackages = $studentTutoringPackages->where('student_tutoring_packages.id', 'LIKE', "%{$id}%")
-            ->orWhere('students.first_name', 'LIKE', "%{$name}%")
-            ->orWhere('students.last_name', 'LIKE', "%{$name}%")
+        $studentTutoringPackages = $studentTutoringPackages
+            ->where(function ($q) use ($id, $name){
+                $q->where('student_tutoring_packages.id', 'LIKE', "%{$id}%")
+                    ->orWhere('students.first_name', 'LIKE', "%{$name}%")
+                    ->orWhere('students.last_name', 'LIKE', "%{$name}%");
+            })
+            ->where(function ($q){
+                $q->where('student_tutoring_packages.status',  true);
+            })
             ->limit(5)
             ->get();
 

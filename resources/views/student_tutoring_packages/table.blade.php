@@ -15,6 +15,7 @@
                 <th>Hours</th>
                 <th>Tutoring Location</th>
                 <th>Start Date</th>
+                <th>Status</th>
                 <th>Action</th>
             </tr>
             </thead>
@@ -53,6 +54,7 @@
                     { data: 'hours', name: 'hours', orderable: true },
                     { data: 'location', name: 'location', orderable: false },
                     { data: 'start_date', name: 'start_date', orderable: true },
+                    { data: 'status', name: 'start_date', orderable: false },
                     { data: 'action', name: 'action', orderable: false },
 
                 ],
