@@ -1,3 +1,8 @@
+<style>
+    .flex-child {
+        flex: 1 0 0;
+    }
+</style>
 <div class="modal fade" id="session-store" role="dialog" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -33,25 +38,22 @@
                     </div>
                     @endrole
 
-
-                    {{--                    @include('sessions.includes.tutors_select2')--}}
                     <!-- Session Fields -->
                     <div class="form-group col-sm-12">
                         <div class="row" style="padding-left: 8px">
-                            <div class="form-group">
+                            <div class="form-group flex-child">
                                 {!! Form::label('scheduled_date', 'Session Date:') !!}
                                 {!! Form::text('scheduled_date', null, ['class' => 'form-control date-input col-sm-11']) !!}
                             </div>
-                            <div class="form-group">
+                            <div class="form-group flex-child">
                                 {!! Form::label('start_time', 'Start Time:') !!}
                                 {!! Form::time('start_time', null, ['class' => 'form-control  col-sm-11','type'=>'time']) !!}
                             </div>
-                            <div class="form-group">
+                            <div class="form-group flex-child">
                                 {!! Form::label('end_time', 'End Time:') !!}
                                 {!! Form::time('end_time', null, ['class' => 'form-control col-sm-11','type'=>'time']) !!}
                             </div>
                         </div>
-
                     </div>
 
                     <div class="form-group col-sm-12">
@@ -65,6 +67,34 @@
                                 {!! Form::label('session_completion_code', 'Session Completion Code:') !!}
                                 {!! Form::select('session_completion_code', $completionCodes, null, ['class' => 'form-control ','id'=>'session-completion-code']) !!}
                             </div>
+                            <div class="form-group col-sm-12">
+                                <div class="row" style="padding-left: 8px">
+
+                                    <div class="form-group flex-child">
+                                        {!! Form::label('attended_start_time', 'Attended Session start time') !!}
+                                        {!! Form::time('attended_start_time', null, ['class' => 'form-control  col-sm-11','type'=>'time']) !!}
+                                    </div>
+                                    <div class="form-group flex-child">
+                                        {!! Form::label('attended_end_time', 'Attended Session end time ') !!}
+                                        {!! Form::time('attended_end_time', null, ['class' => 'form-control col-sm-11','type'=>'time']) !!}
+                                    </div>
+
+                                    <div class="form-group flex-child">
+                                        {!! Form::label('charge_for_missed_time','Charge for missed time') !!}
+                                        {!! Form::select('charge_for_missed_time',[1=>'No',2=>'Yes'],null, ['class' => 'form-control col-sm-11','id'=>'session-completion-code']) !!}
+                                    </div>
+
+                                    <div class="form-group flex-child">
+                                        {!! Form::label('charge_missed_start_time', 'Missed Session start time') !!}
+                                        {!! Form::time('charge_missed_start_time', null, ['class' => 'form-control  col-sm-11','type'=>'time']) !!}
+                                    </div>
+                                    <div class="form-group flex-child">
+                                        {!! Form::label('charge_missed_end_time', 'Missed Session end time') !!}
+                                        {!! Form::time('charge_missed_end_time', null, ['class' => 'form-control col-sm-11','type'=>'time']) !!}
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="form-group col-sm-12">
                                 {!! Form::label('completion_code', 'How was your session ? (The student will not see this):') !!}
                                 <div class="radio">

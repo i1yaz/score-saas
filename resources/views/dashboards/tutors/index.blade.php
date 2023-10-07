@@ -190,6 +190,10 @@
                 }
             });
         });
+        $('#session-completion-code').on('change',function (e){
+            console.log()
+        })
+
     </script>
     @include('sessions.includes.tutors_select2js',['strict'=>true])
 @endpush
