@@ -93,7 +93,7 @@ class SessionController extends Controller
                 return response()->json(['success' => false, 'message' => 'You are not allowed to create session for this student.'], 404);
             }
         }
-
+        dd($input);
         $this->sessionRepository->create($input);
         if ($input['flag_session']) {
             $admins = User::whereHasRole(['super-admin'])->get(['email']);

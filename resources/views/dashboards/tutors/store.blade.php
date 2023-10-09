@@ -65,30 +65,29 @@
                             <!-- Completion Code -->
                             <div class="form-group col-sm-6">
                                 {!! Form::label('session_completion_code', 'Session Completion Code:') !!}
-                                {!! Form::select('session_completion_code', $completionCodes, null, ['class' => 'form-control ','id'=>'session-completion-code']) !!}
+                                {!! Form::select('session_completion_code', $completionCodes, null, ['class' => 'form-control ','id'=>"session-completion-code",'onchange'=>'sessionCompletionCode()']) !!}
                             </div>
                             <div class="form-group col-sm-12">
                                 <div class="row" style="padding-left: 8px">
 
-                                    <div class="form-group flex-child">
+                                    <div class="form-group flex-child d-none attended-session-time">
                                         {!! Form::label('attended_start_time', 'Attended Session start time') !!}
-                                        {!! Form::time('attended_start_time', null, ['class' => 'form-control  col-sm-11','type'=>'time']) !!}
+                                        {!! Form::time('attended_start_time', null, ['class' => 'form-control col-sm-11','type'=>'time']) !!}
                                     </div>
-                                    <div class="form-group flex-child">
+                                    <div class="form-group flex-child d-none attended-session-time">
                                         {!! Form::label('attended_end_time', 'Attended Session end time ') !!}
                                         {!! Form::time('attended_end_time', null, ['class' => 'form-control col-sm-11','type'=>'time']) !!}
                                     </div>
-
-                                    <div class="form-group flex-child">
+                                    <div class="form-group flex-child d-none attended-session-time">
                                         {!! Form::label('charge_for_missed_time','Charge for missed time') !!}
-                                        {!! Form::select('charge_for_missed_time',[1=>'No',2=>'Yes'],null, ['class' => 'form-control col-sm-11','id'=>'session-completion-code']) !!}
+                                        {!! Form::select('charge_for_missed_time',[1=>'No',2=>'Yes'],null, ['class' => 'form-control col-sm-11','id'=>'charge-missed-time', 'onChange'=>'chargeMissedTime()']) !!}
                                     </div>
 
-                                    <div class="form-group flex-child">
+                                    <div class="form-group flex-child d-none missed-session-time">
                                         {!! Form::label('charge_missed_start_time', 'Missed Session start time') !!}
                                         {!! Form::time('charge_missed_start_time', null, ['class' => 'form-control  col-sm-11','type'=>'time']) !!}
                                     </div>
-                                    <div class="form-group flex-child">
+                                    <div class="form-group flex-child d-none missed-session-time">
                                         {!! Form::label('charge_missed_end_time', 'Missed Session end time') !!}
                                         {!! Form::time('charge_missed_end_time', null, ['class' => 'form-control col-sm-11','type'=>'time']) !!}
                                     </div>
@@ -160,3 +159,33 @@
         </div>
     </div>
 </div>
+@push('page_scripts')
+    <script>
+
+        function sessionCompletionCode(){
+            let sessionCompletionCode = parseInt($('#session-completion-code').val())
+            let chargeMissedTime = parseInt($('#charge-missed-time').val())
+            if(sessionCompletionCode ===2){
+                $('.attended-session-time').removeClass('d-none')
+                if(chargeMissedTime===2){
+                    $('.missed-session-time').removeClass('d-none')
+                }else{
+                    $('.missed-session-time').addClass('d-none')
+                }
+            }else{
+                $('.attended-session-time').addClass('d-none')
+                $('.missed-session-time').addClass('d-none')
+            }
+        }
+        function chargeMissedTime(){
+            let chargeMissedTime = parseInt($('#charge-missed-time').val())
+
+            if(chargeMissedTime===2){
+                $('.missed-session-time').removeClass('d-none')
+            }else{
+                $('.missed-session-time').addClass('d-none')
+            }
+        }
+
+    </script>
+@endpush

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Session;
+use App\Rules\PartialCompletionCodeRule;
 use App\Rules\SessionStartAndEndTimeRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -29,6 +30,10 @@ class SessionRequest extends FormRequest
             'flag_session' => ['nullable'],
             'home_work_completed' => ['nullable'],
             'practice_test_for_homework' => ['nullable'],
+            'attended_start_time' => [new PartialCompletionCodeRule()],
+            'attended_end_time' => [new PartialCompletionCodeRule()],
+            'charge_missed_start_time' => [new PartialCompletionCodeRule()],
+            'charge_missed_end_time' => [new PartialCompletionCodeRule()],
         ];
     }
 

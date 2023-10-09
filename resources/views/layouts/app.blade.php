@@ -80,7 +80,7 @@
                 <script src="{{asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js')}}"></script>
                 <script src="{{asset('plugins/datatables-buttons/js/dataTables.buttons.min.js')}}"></script>
                 <script src="{{asset('plugins/datatables-buttons/js/buttons.bootstrap4.min.js')}}"></script>
-                <script defer src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.1/cdn.min.js" integrity="sha512-qxuuYirD/2PiyVS9pjdPbm8Uixg0uq1jywNIP8gsmoYpSs7J7nTHTTFvCW2mMYPQPRaTaIxOlXJJc8S+B7OBvw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+{{--                <script defer src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.1/cdn.min.js" integrity="sha512-qxuuYirD/2PiyVS9pjdPbm8Uixg0uq1jywNIP8gsmoYpSs7J7nTHTTFvCW2mMYPQPRaTaIxOlXJJc8S+B7OBvw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>--}}
                 {{--    <script src="../../plugins/jszip/jszip.min.js"></script>--}}
                 {{--    <script src="../../plugins/pdfmake/pdfmake.min.js"></script>--}}
                 {{--    <script src="../../plugins/pdfmake/vfs_fonts.js"></script>--}}
