@@ -10,6 +10,7 @@ use App\Models\Session;
 use App\Models\StudentTutoringPackageTutor;
 use App\Models\User;
 use App\Repositories\SessionRepository;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -93,7 +94,16 @@ class SessionController extends Controller
                 return response()->json(['success' => false, 'message' => 'You are not allowed to create session for this student.'], 404);
             }
         }
-        dd($input);
+        if (isset($input['session_completion_code']) && (integer) $input['session_completion_code']===Session::PARTIAL_COMPLETION_CODE){
+            if (isset($input['charge_for_missed_time'] ) &&  (integer)  $input['charge_for_missed_time'] == Session::PARTIAL_COMPLETION_CODE){
+                $input['charge_missed_time'] = true;
+            }
+        }else{
+            $input['charge_missed_time'] = false;
+            if(isset($input['attended_start_time'])) unset($input['attended_start_time']);
+            if(isset($input['attended_end_time'])) unset($input['attended_end_time']);
+        }
+
         $this->sessionRepository->create($input);
         if ($input['flag_session']) {
             $admins = User::whereHasRole(['super-admin'])->get(['email']);

@@ -9,6 +9,9 @@ class Session extends Model
 {
     use HasFactory;
 
+    const VOID_COMPLETION_CODE = 5;
+    const CANCELED_COMPLETION_CODE = 4;
+    const PARTIAL_COMPLETION_CODE = 2;
     protected $fillable = [
         'student_tutoring_package_id',
         'scheduled_date',
@@ -27,6 +30,9 @@ class Session extends Model
         'tutoring_location_id',
         'auth_guard',
         'added_by',
+        'attended_start_time',
+        'attended_end_time',
+        'charge_missed_time',
     ];
     public static $messages = [
         'tutoring_location_id' => "Please select a tutoring location",

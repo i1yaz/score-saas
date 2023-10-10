@@ -32,8 +32,6 @@ class SessionRequest extends FormRequest
             'practice_test_for_homework' => ['nullable'],
             'attended_start_time' => [new PartialCompletionCodeRule()],
             'attended_end_time' => [new PartialCompletionCodeRule()],
-            'charge_missed_start_time' => [new PartialCompletionCodeRule()],
-            'charge_missed_end_time' => [new PartialCompletionCodeRule()],
         ];
     }
 

@@ -153,7 +153,7 @@
                 <tr>
                     <td><strong>Tutor Hourly Rate</strong></td>
                     <td>
-                        {{getTutorHourlyRateForStudentTutoringPackage($studentTutoringPackage)}}
+                        {{ formatAmountWithCurrency(getTutorHourlyRateForStudentTutoringPackage($studentTutoringPackage))}}
                     </td>
                 </tr>
 
@@ -213,8 +213,8 @@
                             <td>{{ $session->student_parent_session_notes}}</td>
                             <td>{{ $session->internal_notes}}</td>
                             <td>{{ $session->completion_code_name}}</td>
-                            <td>{{ getTotalChargedTimeInHoursSecondsMinutesFromSession($session)}}</td>
-                            <td></td>
+                            <td>{{ formatTimeFromSeconds(getTotalChargedSessionTimeFromSessionInSeconds($session))}}</td>
+                            <td>{{ formatTimeFromSeconds(getTotalChargedMissedSessionTimeFromSessionInSeconds($session))}} </td>
                             <td>{{ getTotalChargedTimeInHoursSecondsMinutesFromSession($session)}}</td>
                             <td>{{ formatAmountWithCurrency(getTutorHourlyRateForStudentTutoringPackage($studentTutoringPackage,$session->tutor_id))}}</td>
                             <td>{{ formatAmountWithCurrency(0)}}</td>

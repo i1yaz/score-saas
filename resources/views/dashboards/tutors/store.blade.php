@@ -83,14 +83,14 @@
                                         {!! Form::select('charge_for_missed_time',[1=>'No',2=>'Yes'],null, ['class' => 'form-control col-sm-11','id'=>'charge-missed-time', 'onChange'=>'chargeMissedTime()']) !!}
                                     </div>
 
-                                    <div class="form-group flex-child d-none missed-session-time">
-                                        {!! Form::label('charge_missed_start_time', 'Missed Session start time') !!}
-                                        {!! Form::time('charge_missed_start_time', null, ['class' => 'form-control  col-sm-11','type'=>'time']) !!}
-                                    </div>
-                                    <div class="form-group flex-child d-none missed-session-time">
-                                        {!! Form::label('charge_missed_end_time', 'Missed Session end time') !!}
-                                        {!! Form::time('charge_missed_end_time', null, ['class' => 'form-control col-sm-11','type'=>'time']) !!}
-                                    </div>
+{{--                                    <div class="form-group flex-child d-none missed-session-time">--}}
+{{--                                        {!! Form::label('charge_missed_start_time', 'Missed Session start time') !!}--}}
+{{--                                        {!! Form::time('charge_missed_start_time', null, ['class' => 'form-control  col-sm-11','type'=>'time']) !!}--}}
+{{--                                    </div>--}}
+{{--                                    <div class="form-group flex-child d-none missed-session-time">--}}
+{{--                                        {!! Form::label('charge_missed_end_time', 'Missed Session end time') !!}--}}
+{{--                                        {!! Form::time('charge_missed_end_time', null, ['class' => 'form-control col-sm-11','type'=>'time']) !!}--}}
+{{--                                    </div>--}}
                                 </div>
                             </div>
 

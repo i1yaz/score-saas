@@ -3,6 +3,7 @@
 use App\Models\Invoice;
 use App\Models\StudentTutoringPackage;
 use App\Models\Tutor;
+use Carbon\Carbon;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -300,29 +301,42 @@ if (! function_exists('getTutorHourlyRateForStudentTutoringPackage')) {
 if (! function_exists('getTotalChargedTimeOfTutorFromStudentTutoringPackageInSeconds')) {
     function getTotalChargedTimeOfTutorFromStudentTutoringPackageInSeconds(StudentTutoringPackage $studentTutoringPackage): float|int
     {
-        $sessions = \App\Models\Session::where('student_tutoring_package_id', $studentTutoringPackage->id)->get(['start_time', 'end_time']);
+        $sessions = \App\Models\Session::where('student_tutoring_package_id', $studentTutoringPackage->id)->get();
         $totalChargedTime = 0;
-        foreach ($sessions as $session) {
-            $totalChargedTime += (strtotime($session->end_time) - strtotime($session->start_time));
-        }
+        foreach ($sessions as $session){
+            $totalChargedTime += getTotalChargedTimeInSecondsFromSession($session);
 
+        }
         return $totalChargedTime;
     }
 }
 if (!function_exists('getTotalChargedTimeOfSessionFromSessionInSeconds')){
     function getTotalChargedTimeOfSessionFromSessionInSeconds(\App\Models\Session $session): float|int
     {
+        if ($session->session_completion_code === \App\Models\Session::VOID_COMPLETION_CODE || $session->session_completion_code === \App\Models\Session::CANCELED_COMPLETION_CODE){
+            return 0;
+        }
         $totalChargedTime = 0;
-        $totalChargedTime += (strtotime($session->end_time) - strtotime($session->start_time)) ;
+        $totalChargedTime += (strtotime($session->end_time) - strtotime($session->start_time));
+        if ($session->session_completion_code === \App\Models\Session::PARTIAL_COMPLETION_CODE && (integer) $session->charge_missed_time === 2){
+            $totalChargedTime += chargeSessionMissedTimeInSeconds($session,$totalChargedTime);
 
+        }
         return $totalChargedTime;
     }
 }
 if (!function_exists('getTotalChargedTimeInHoursSecondsMinutesFromSession')){
     function getTotalChargedTimeInHoursSecondsMinutesFromSession(\App\Models\Session $session): string
     {
-        $totalChargedTime = getTotalChargedTimeOfSessionFromSessionInSeconds($session);
-        return formatTimeFromSeconds($totalChargedTime);
+        return formatTimeFromSeconds(getTotalChargedTimeInSecondsFromSession($session));
+    }
+}
+if(!function_exists('getTotalChargedTimeInSecondsFromSession')){
+    function getTotalChargedTimeInSecondsFromSession(\App\Models\Session $session): float|int
+    {
+        $totalChargedSessionTime = getTotalChargedSessionTimeFromSessionInSeconds($session);
+        $totalChargedMissedTime = getTotalChargedMissedSessionTimeFromSessionInSeconds($session);
+        return $totalChargedSessionTime + $totalChargedMissedTime;
     }
 }
 if (!function_exists('formatTimeFromSeconds')){
@@ -373,9 +387,57 @@ if (!function_exists('getSessionCodeFromId')) {
 if(!function_exists('getTotalTutorChargedAmountFromSession')) {
     function getTotalTutorChargedAmountFromSession(\App\Models\Session $session,$studentTutoringPackage): string
     {
-        $totalChargedTimeInSeconds = getTotalChargedTimeOfSessionFromSessionInSeconds($session);
+        $totalChargedTimeInSeconds = getTotalChargedTimeInSecondsFromSession($session);
         $hourlyRate = getTutorHourlyRateForStudentTutoringPackage($studentTutoringPackage, $session->tutor_id);
         $totalChargedTime = $totalChargedTimeInSeconds * ($hourlyRate / 3600);
         return formatAmountWithCurrency($totalChargedTime);
+    }
+}
+if (!function_exists('chargeSessionMissedTimeInSeconds')){
+    function chargeSessionMissedTimeInSeconds(\App\Models\Session $session,int $totalChargedTime=0): int
+    {
+        $totalMissedTime = 0;
+        if ((integer)$session->session_completion_code === 2 && (boolean) $session->charge_missed_time === true){
+            $scheduledDate = Carbon::createFromFormat('Y-m-d H:i:s', $session->scheduled_date)->format('m/d/Y');
+            $sessionStart =  $session->start_time;
+            $sessionEnd =  $session->end_time;
+
+            $sessionStart = Carbon::createFromFormat('m/d/Y H:i:s', "$scheduledDate $sessionStart");
+            $sessionEnd = Carbon::createFromFormat('m/d/Y H:i:s', "$scheduledDate $sessionEnd");
+
+            $attendedStartTime = $session->attended_start_time;
+            $attendedEndTime = $session->attended_end_time;
+
+            $attendedStartTime = Carbon::createFromFormat('m/d/Y H:i:s', "$scheduledDate $attendedStartTime");
+            $attendedEndTime = Carbon::createFromFormat('m/d/Y H:i:s', "$scheduledDate $attendedEndTime");
+            // Calculate missed time
+            $missedStart = $sessionStart->diffInSeconds($attendedStartTime);
+            $missedEnd = $sessionEnd->diffInSeconds($attendedEndTime);
+
+            // Calculate total missed time
+            $totalMissedTime = $missedStart + $missedEnd;
+            $totalMissedTime = $totalMissedTime - $totalChargedTime;
+        }
+        return $totalMissedTime;
+    }
+}
+if (!function_exists('getTotalChargedSessionTimeFromSessionInSeconds')){
+    function getTotalChargedSessionTimeFromSessionInSeconds(\App\Models\Session $session): float|int
+    {
+        if ($session->session_completion_code !== \App\Models\Session::PARTIAL_COMPLETION_CODE){
+            return getTotalChargedTimeOfSessionFromSessionInSeconds($session);
+        }
+        $totalChargedTime = 0;
+        $totalChargedTime += (strtotime($session->attended_end_time) - strtotime($session->attended_start_time));
+        return  $totalChargedTime;
+    }
+}
+if (!function_exists('getTotalChargedMissedSessionTimeFromSessionInSeconds')){
+    function getTotalChargedMissedSessionTimeFromSessionInSeconds(\App\Models\Session $session): int
+    {
+        if ($session->session_completion_code !== \App\Models\Session::PARTIAL_COMPLETION_CODE){
+            return 0;
+        }
+        return chargeSessionMissedTimeInSeconds($session);
     }
 }
