@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\DataTables\SessionDataTable;
-use App\Http\Requests\SessionRequest;
+use App\Http\Requests\CreateSessionRequest;
+use App\Http\Requests\UpdateSessionRequest;
 use App\Mail\FlagSessionMail;
 use App\Models\ListData;
 use App\Models\Session;
@@ -79,7 +80,7 @@ class SessionController extends Controller
         return view('sessions.create', compact('completionCodes'));
     }
 
-    public function store(SessionRequest $request)
+    public function store(CreateSessionRequest $request)
     {
         $input = $request->all();
         $input['flag_session'] = isset($input['flag_session']) && $input['flag_session'] == 'yes';
@@ -157,8 +158,15 @@ class SessionController extends Controller
         return view('sessions.show', compact('session'));
     }
 
-    public function edit(Session $session)
+    public function edit($session)
     {
+        $session = Session::select(['sessions.*','tutoring_locations.name as tutoring_location_name','student_tutoring_packages.hours as package_hours'])
+            ->selectRaw("CONCAT(students.first_name,' ',students.last_name) as student_name")
+            ->join('student_tutoring_packages', 'student_tutoring_packages.id', '=', 'sessions.student_tutoring_package_id')
+            ->join('tutoring_locations', 'student_tutoring_packages.tutoring_location_id', '=', 'tutoring_locations.id')
+            ->join('students', 'students.id', '=', 'student_tutoring_packages.student_id')
+            ->where('sessions.id', $session)
+            ->firstOrFail();
         $this->authorize('update', $session);
         $listData = Cache::remember('list_data_session_completion_codes', 60 * 60 * 24, function () {
             return ListData::select(['id', 'name'])->where('list_id', Session::LIST_DATA_LIST_ID)->get();
@@ -169,16 +177,44 @@ class SessionController extends Controller
         }
         $session->scheduled_date = date('m/d/Y', strtotime($session->scheduled_date ?? ''));
 
-        return view('sessions.edit', compact('session', 'completionCodes'));
+        $selectedTutoringPackage = [
+            $session->student_tutoring_package_id  =>getStudentTutoringPackageCodeFromId($session->tutoring_location_name).' - '.$session->student_name.' - '.$session->package_hours,
+
+        ];
+        $selectedLocation = [
+            $session->tutoring_location_id => $session->tutoring_location_name,
+        ];
+        return view('sessions.edit', compact('session', 'completionCodes','selectedTutoringPackage','selectedLocation'));
     }
 
-    public function update(SessionRequest $request, Session $session)
+    public function update(UpdateSessionRequest $request, Session $session)
     {
         $this->authorize('update', $session);
+        $input = $request->all();
+        $input['flag_session'] = isset($input['flag_session']) && $input['flag_session'] == 'yes';
+        $input['home_work_completed'] = ($input['home_work_completed'] == 'yes');
+        $input['scheduled_date'] = date('Y-m-d', strtotime($input['scheduled_date']));
+        if (Auth::user()->hasRole(['tutor'])) {
+            $studentTutoringPackageId = $input['student_tutoring_package_id'];
+            $studentTutoringPackageTutor = StudentTutoringPackageTutor::where(['tutor_id' => Auth::user()->id, 'student_tutoring_package_id' => $studentTutoringPackageId])->first();
+            if (Auth::user()->hasRole(['tutor']) && $studentTutoringPackageTutor) {
+                $input['tutor_id'] = Auth::user()->id;
+            } else {
+                return response()->json(['success' => false, 'message' => 'You are not allowed to create session for this student.'], 404);
+            }
+        }
+        if (isset($input['session_completion_code']) && (integer) $input['session_completion_code']===Session::PARTIAL_COMPLETION_CODE){
+            if (isset($input['charge_for_missed_time'] ) &&  (integer)  $input['charge_for_missed_time'] == Session::PARTIAL_COMPLETION_CODE){
+                $input['charge_missed_time'] = true;
+            }
+        }else{
+            $input['charge_missed_time'] = false;
+            $input['attended_start_time'] = null;
+            $input['attended_end_time'] = null;
+        }
+        $session->update($input);
 
-        $session->update($request->validated());
-
-        return $session;
+        return view('sessions.index');
     }
 
     public function destroy($session)

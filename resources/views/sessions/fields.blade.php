@@ -19,7 +19,7 @@
 </div>
 <div class="form-group col-sm-6">
     {!! Form::label('student_tutoring_package_id', 'Tutoring Package:') !!}
-    {!! Form::select('student_tutoring_package_id', [], null, ['class' => 'form-control select2','id'=>'student-tutoring-package-id']) !!}
+    {!! Form::select('student_tutoring_package_id',  $selectedTutoringPackage??[], null, ['class' => 'form-control select2','id'=>'student-tutoring-package-id']) !!}
 </div>
 <!-- Session Fields -->
 <div class="form-group col-sm-6">
@@ -44,12 +44,31 @@
     <div class="row">
         <div class="form-group col-sm-6">
             {!! Form::label('tutoring_location_id', 'Location:') !!}
-            {!! Form::select('tutoring_location_id', [], null, ['class' => 'form-control select2 ','id'=>'location-id']) !!}
+            {!! Form::select('tutoring_location_id', $selectedLocation??[], null, ['class' => 'form-control select2 ','id'=>'location-id']) !!}
         </div>
         <!-- Completion Code -->
         <div class="form-group col-sm-6">
             {!! Form::label('session_completion_code', 'Session Completion Code:') !!}
-            {!! Form::select('session_completion_code', $completionCodes, null, ['class' => 'form-control ','id'=>'session-completion-code']) !!}
+            {!! Form::select('session_completion_code', $completionCodes, null, ['class' => 'form-control ','id'=>'session-completion-code','onchange'=>'sessionCompletionCode()']) !!}
+        </div>
+
+        <div class="form-group col-sm-12">
+            <div class="row" style="padding-left: 8px">
+
+                <div class="form-group flex-child @if(!(isset($session) && $session->session_completion_code===\App\Models\Session::PARTIAL_COMPLETION_CODE)) d-none @endif  attended-session-time">
+                    {!! Form::label('attended_start_time', 'Attended Session start time') !!}
+                    {!! Form::time('attended_start_time', null, ['class' => 'form-control col-sm-11','type'=>'time']) !!}
+                </div>
+                <div class="form-group flex-child @if(!(isset($session) && $session->session_completion_code===\App\Models\Session::PARTIAL_COMPLETION_CODE)) d-none @endif attended-session-time">
+                    {!! Form::label('attended_end_time', 'Attended Session end time ') !!}
+                    {!! Form::time('attended_end_time', null, ['class' => 'form-control col-sm-11','type'=>'time']) !!}
+                </div>
+                <div class="form-group flex-child @if(!(isset($session) && $session->session_completion_code===\App\Models\Session::PARTIAL_COMPLETION_CODE)) d-none @endif attended-session-time">
+                    {!! Form::label('charge_for_missed_time','Charge for missed time') !!}
+                    {!! Form::select('charge_for_missed_time',[1=>'No',2=>'Yes'],null, ['class' => 'form-control col-sm-11','id'=>'charge-missed-time', 'onChange'=>'chargeMissedTime()']) !!}
+                </div>
+
+            </div>
         </div>
         <div class="form-group col-sm-12">
             {!! Form::label('completion_code', 'How was your session ? (The student will not see this):') !!}
@@ -113,7 +132,6 @@
 @push('page_scripts')
     <script>
         $(document).ready(function () {
-
             $("#location-id").select2({
                 theme: 'bootstrap4',
                 dropdownAutoWidth: true, width: 'auto',
@@ -176,5 +194,18 @@
                 }
             });
         });
+
+
+        function sessionCompletionCode(){
+            console.log('ok')
+            let sessionCompletionCode = parseInt($('#session-completion-code').val())
+            console.log(sessionCompletionCode)
+            if(sessionCompletionCode ===2){
+                $('.attended-session-time').removeClass('d-none')
+            }else{
+                $('.attended-session-time').addClass('d-none')
+            }
+        }
+
     </script>
 @endpush

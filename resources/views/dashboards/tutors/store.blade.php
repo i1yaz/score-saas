@@ -161,31 +161,13 @@
 </div>
 @push('page_scripts')
     <script>
-
         function sessionCompletionCode(){
             let sessionCompletionCode = parseInt($('#session-completion-code').val())
-            let chargeMissedTime = parseInt($('#charge-missed-time').val())
             if(sessionCompletionCode ===2){
                 $('.attended-session-time').removeClass('d-none')
-                if(chargeMissedTime===2){
-                    $('.missed-session-time').removeClass('d-none')
-                }else{
-                    $('.missed-session-time').addClass('d-none')
-                }
             }else{
                 $('.attended-session-time').addClass('d-none')
-                $('.missed-session-time').addClass('d-none')
             }
         }
-        function chargeMissedTime(){
-            let chargeMissedTime = parseInt($('#charge-missed-time').val())
-
-            if(chargeMissedTime===2){
-                $('.missed-session-time').removeClass('d-none')
-            }else{
-                $('.missed-session-time').addClass('d-none')
-            }
-        }
-
     </script>
 @endpush

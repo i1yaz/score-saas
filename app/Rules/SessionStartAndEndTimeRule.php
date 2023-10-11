@@ -16,8 +16,9 @@ class SessionStartAndEndTimeRule implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         $scheduledDate = request()->scheduled_date;
-        $startTime = request()->start_time;
-        $endTime = request()->end_time;
+        $startTime = date('H:i', strtotime(request()->start_time));
+        $endTime = date('H:i', strtotime(request()->end_time));
+
         $startTime = Carbon::createFromFormat('m/d/Y H:i', "$scheduledDate $startTime");
         $endTime = Carbon::createFromFormat('m/d/Y H:i', "$scheduledDate $endTime");
         if ($attribute == 'start_time') {

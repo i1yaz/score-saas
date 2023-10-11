@@ -16,13 +16,13 @@ class PartialCompletionCodeRule implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         $scheduledDate = request()->scheduled_date;
-        $startTime = request()->start_time;
-        $endTime = request()->end_time;
+        $startTime = date('H:i', strtotime(request()->start_time));
+        $endTime = date('H:i', strtotime(request()->end_time));
         $startTime = Carbon::createFromFormat('m/d/Y H:i', "$scheduledDate $startTime");
         $endTime = Carbon::createFromFormat('m/d/Y H:i', "$scheduledDate $endTime");
 
-        $attendedStartTime = request()->attended_start_time;
-        $attendedEndTime = request()->attended_end_time;
+        $attendedStartTime = date('H:i', strtotime(request()->attended_start_time));
+        $attendedEndTime = date('H:i', strtotime(request()->attended_end_time));
         if (empty($attendedStartTime)){
             $fail('Attended start time is required');
         }
