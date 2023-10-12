@@ -98,7 +98,7 @@ class StudentTutoringPackageController extends AppBaseController
             $studentTutoringPackage = $this->studentTutoringPackageRepository->create($input);
             $studentTutoringPackage->tutors()->sync($tutors);
             $studentTutoringPackage->subjects()->sync($subjects);
-            $this->studentTutoringPackageRepository->createInvoiceForPackage($studentTutoringPackage, $input);
+            $this->studentTutoringPackageRepository->createOrUpdateInvoiceForPackage($studentTutoringPackage, $input);
             DB::commit();
             if ($input['email_to_parent'] == 1 && ! empty($parentEmail->parent_email)) {
                 $parentEmail = Student::select(['parents.email as parent_email', 'students.id', 'students.parent_id'])->where('students.id', $input['student_id'])
@@ -203,7 +203,7 @@ class StudentTutoringPackageController extends AppBaseController
             }
 
             $studentTutoringPackage = $this->studentTutoringPackageRepository->update($input, $id);
-//            $this->studentTutoringPackageRepository->updateInvoiceForPackage($studentTutoringPackage, $input);
+            $this->studentTutoringPackageRepository->createOrUpdateInvoiceForPackage($studentTutoringPackage, $input);
             DB::commit();
             $redirectRoute = route('student-tutoring-packages.show', ['student_tutoring_package' => $studentTutoringPackage->id]);
             if ($request->ajax()){

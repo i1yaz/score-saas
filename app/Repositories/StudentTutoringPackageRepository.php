@@ -94,9 +94,14 @@ class StudentTutoringPackageRepository extends BaseRepository
 
     }
 
-    public function updateInvoiceForPackage($studentTutoringPackage, $input = []): Invoice
+    public function createOrUpdateInvoiceForPackage($studentTutoringPackage, $input = []): Invoice
     {
-        $invoice = new Invoice();
+        $invoice = Invoice::where('invoiceable_type', StudentTutoringPackage::class)
+            ->where('invoiceable_id', $studentTutoringPackage->id)
+            ->first();
+        if (!$invoice){
+            $invoice = new Invoice();
+        }
         $invoice->invoice_package_type_id = 1;
         $invoice->due_date = $studentTutoringPackage->start_date;
         $invoice->general_description = $input['general_description'] ?? null;

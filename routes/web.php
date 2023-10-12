@@ -140,3 +140,5 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor']], function () {
     Route::delete('sessions/{session}', [SessionController::class, 'destroy'])->name('sessions.destroy')->middleware(['permission:session-destroy']);
 
 });
+
+Route::resource('monthly-invoice-packages', App\Http\Controllers\MonthlyInvoicePackageController::class);
