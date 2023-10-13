@@ -23,7 +23,7 @@
 </h3>
             </div>
 
-            {!! Form::model($monthlyInvoicePackage, ['route' => ['monthly-invoice-packages.update', $monthlyInvoicePackage->id], 'method' => 'patch']) !!}
+            {!! Form::model($monthlyInvoicePackage, ['route' => ['monthly-invoice-packages.update', $monthlyInvoicePackage->id], 'method' => 'patch','id'=>'monthly-invoice-package-form']) !!}
 
             <div class="card-body">
                 <div class="row">

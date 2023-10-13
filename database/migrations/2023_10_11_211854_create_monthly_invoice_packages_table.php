@@ -16,12 +16,12 @@ return new class extends Migration
     public function up()
     {
         Schema::create('monthly_invoice_packages', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id')->startingValue(\App\Models\MonthlyInvoicePackage::CODE_START);
             $table->foreignIdFor(Student::class)->constrained();
             $table->foreignIdFor(TutoringLocation::class)->constrained();
-            $table->string('notes');
-            $table->string('internal_notes');
-            $table->date('start_date');
+            $table->string('notes')->nullable();
+            $table->string('internal_notes')->nullable();
+            $table->date('start_date')->nullable();
             $table->decimal('hourly_rate');
             $table->decimal('tutor_hourly_rate');
             $table->boolean('status')->default(true);

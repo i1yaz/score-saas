@@ -24,6 +24,14 @@ class CreateMonthlyInvoicePackageRequest extends FormRequest
      */
     public function rules()
     {
-        return MonthlyInvoicePackage::$rules;
+        $rules = MonthlyInvoicePackage::$rules;
+        $rules['subject_ids'] = ['required','exists:subjects,id'];
+        $rules['tutor_ids'] = ['required','exists:tutors,id'];
+        return $rules;
+    }
+
+    public function messages()
+    {
+        return MonthlyInvoicePackage::$messages;
     }
 }

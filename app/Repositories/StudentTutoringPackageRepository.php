@@ -94,27 +94,4 @@ class StudentTutoringPackageRepository extends BaseRepository
 
     }
 
-    public function createOrUpdateInvoiceForPackage($studentTutoringPackage, $input = []): Invoice
-    {
-        $invoice = Invoice::where('invoiceable_type', StudentTutoringPackage::class)
-            ->where('invoiceable_id', $studentTutoringPackage->id)
-            ->first();
-        if (!$invoice){
-            $invoice = new Invoice();
-        }
-        $invoice->invoice_package_type_id = 1;
-        $invoice->due_date = $studentTutoringPackage->start_date;
-        $invoice->general_description = $input['general_description'] ?? null;
-        $invoice->detailed_description = $input['detailed_description'] ?? null;
-        $invoice->email_to_parent = $input['email_to_parent'] ?? false;
-        $invoice->amount_paid = 0;
-        $invoice->paid_status = Invoice::PENDING;
-        $invoice->invoiceable_type = StudentTutoringPackage::class;
-        $invoice->invoiceable_id = $studentTutoringPackage->id;
-        $invoice->auth_guard = Auth::guard()->name;
-        $invoice->added_by = Auth::id();
-        $invoice->save();
-
-        return $invoice;
-    }
 }

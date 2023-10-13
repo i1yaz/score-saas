@@ -4,6 +4,7 @@ use App\Models\Invoice;
 use App\Models\StudentTutoringPackage;
 use App\Models\Tutor;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -439,5 +440,11 @@ if (!function_exists('getTotalChargedMissedSessionTimeFromSessionInSeconds')){
             return 0;
         }
         return chargeSessionMissedTimeInSeconds($session);
+    }
+}
+if (!function_exists('isInputRequired')){
+    function isInputRequired(Model $model,$input): void
+    {
+
     }
 }

@@ -78,9 +78,9 @@
     @include('student_tutoring_packages.subjects')
 </div>
 @if(!isset($studentTutoringPackage))
-<div class="form-group col-sm-12">
-    @include('student_tutoring_packages.invoice_details')
-</div>
+    <div class="form-group col-sm-12">
+        @include('student_tutoring_packages.invoice_details')
+    </div>
 @endif
 <div class="modal fade" id="store-subject" style="display: none;" aria-hidden="true">
     <div class="modal-dialog">
@@ -168,6 +168,7 @@
             });
             // Initialize Select2
             $("#tutoring-package-type-id").select2({
+                dropdownAutoWidth: true, width: 'auto',
                 theme: 'bootstrap4',
                 minimumInputLength: 2,
                 ajax: {
@@ -204,6 +205,7 @@
 
             });
             $("#student-id").select2({
+                dropdownAutoWidth: true, width: 'auto',
                 theme: 'bootstrap4',
                 minimumInputLength: 3,
                 ajax: {
@@ -234,6 +236,7 @@
             });
 
             $("#tutor-id").select2({
+                dropdownAutoWidth: true, width: 'auto',
                 theme: 'bootstrap4',
                 minimumInputLength: 3,
                 multiple: true,
@@ -265,6 +268,7 @@
             });
 
             $("#tutoring-location-id").select2({
+                dropdownAutoWidth: true, width: 'auto',
                 theme: 'bootstrap4',
                 minimumInputLength: 3,
                 ajax: {

@@ -4,19 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateMonthlyInvoicePackageRequest;
 use App\Http\Requests\UpdateMonthlyInvoicePackageRequest;
-use App\Http\Controllers\AppBaseController;
+use App\Models\Subject;
+use App\Repositories\InvoiceRepository;
 use App\Repositories\MonthlyInvoicePackageRepository;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Flash;
+use Illuminate\Support\Facades\DB;
 
 class MonthlyInvoicePackageController extends AppBaseController
 {
     /** @var MonthlyInvoicePackageRepository $monthlyInvoicePackageRepository*/
-    private $monthlyInvoicePackageRepository;
+    private MonthlyInvoicePackageRepository $monthlyInvoicePackageRepository;
+    private InvoiceRepository $invoiceRepository;
 
-    public function __construct(MonthlyInvoicePackageRepository $monthlyInvoicePackageRepo)
+    public function __construct(MonthlyInvoicePackageRepository $monthlyInvoicePackageRepo, InvoiceRepository $invoiceRepository)
     {
         $this->monthlyInvoicePackageRepository = $monthlyInvoicePackageRepo;
+        $this->invoiceRepository = $invoiceRepository;
     }
 
     /**
@@ -35,7 +40,8 @@ class MonthlyInvoicePackageController extends AppBaseController
      */
     public function create()
     {
-        return view('monthly_invoice_packages.create');
+        $subjects = Subject::get(['id', 'name']);
+        return view('monthly_invoice_packages.create', compact('subjects'));
     }
 
     /**
@@ -43,9 +49,34 @@ class MonthlyInvoicePackageController extends AppBaseController
      */
     public function store(CreateMonthlyInvoicePackageRequest $request)
     {
-        $input = $request->all();
 
-        $monthlyInvoicePackage = $this->monthlyInvoicePackageRepository->create($input);
+        DB::beginTransaction();
+        try {
+            $input = $request->all();
+            $tutors = $input['tutor_ids'];
+            $subjects = $input['subject_ids'];
+            unset($input['tutor_ids'],$input['subject_ids']);
+
+            $monthlyInvoicePackage = $this->monthlyInvoicePackageRepository->create($input);
+            $monthlyInvoicePackage->tutors()->sync($tutors);
+            $monthlyInvoicePackage->subjects()->sync($subjects);
+            $this->invoiceRepository->createOrUpdateInvoiceForPackage($monthlyInvoicePackage, $input);
+
+            DB::commit();
+
+        }catch (QueryException $queryException) {
+            DB::rollBack();
+            report($queryException);
+            \Laracasts\Flash\Flash::error('something went wrong');
+
+            return redirect(route('monthly-invoice-packages.index'));
+        }catch (\Exception $exception) {
+            DB::rollBack();
+            report($exception);
+            \Laracasts\Flash\Flash::error('something went wrong');
+
+            return redirect(route('monthly-invoice-packages.index'));
+        }
 
         Flash::success('Monthly Invoice Package saved successfully.');
 

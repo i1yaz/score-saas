@@ -22,7 +22,7 @@
                 <h3 class="card-title">                    Create Monthly Invoice Packages
 </h3>
             </div>
-            {!! Form::open(['route' => 'monthly-invoice-packages.store']) !!}
+            {!! Form::open(['route' => 'monthly-invoice-packages.store','id'=>'monthly-invoice-package-form']) !!}
 
             <div class="card-body">
 

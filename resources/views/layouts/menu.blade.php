@@ -150,7 +150,7 @@
 <li class="nav-item">
     <a href="{{ route('monthly-invoice-packages.index') }}" class="nav-link {{ Request::is('monthly-invoice-packages*') ? 'active' : '' }}">
         <i class="nav-icon fas fa-home"></i>
-        <p>Monthly Invoice Packages</p>
+        <p style="white-space: nowrap;">Monthly Invoice Packages</p>
     </a>
 </li>
 @endpermission

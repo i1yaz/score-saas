@@ -8,6 +8,13 @@
         <link rel="stylesheet" href="{{asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css')}}">
         <link rel="stylesheet" href="{{asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
         <link rel="stylesheet" href="{{asset('plugins/datatables-buttons/css/buttons.bootstrap4.min.css')}}">
+        <style>
+            .required:after{
+                content:'(*)';
+                color:red;
+                padding-left:5px;
+            }
+        </style>
     @endpush
     <body class="hold-transition sidebar-mini layout-fixed">
         <div class="wrapper">
@@ -92,7 +99,7 @@
                     toastr.options.closeDuration = 3000;
                     $('#start_date').datepicker()
                     $('.date-input').datepicker()
-                    $("input[type='submit']").on("click", function () {
+                    $("input[type='submit']").on("click", function (e) {
                         $(this).attr("disabled", "disabled");
                         $(this).parents("form").submit();
                     });

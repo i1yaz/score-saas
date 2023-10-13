@@ -12,6 +12,7 @@ use App\Models\Subject;
 use App\Models\Tutor;
 use App\Models\TutoringLocation;
 use App\Models\TutoringPackageType;
+use App\Repositories\InvoiceRepository;
 use App\Repositories\StudentTutoringPackageRepository;
 use Flash;
 use Illuminate\Database\QueryException;
@@ -24,11 +25,14 @@ use Illuminate\Validation\ValidationException;
 class StudentTutoringPackageController extends AppBaseController
 {
     private StudentTutoringPackageRepository $studentTutoringPackageRepository;
+    private InvoiceRepository $invoiceRepository;
 
-    public function __construct(StudentTutoringPackageRepository $studentTutoringPackageRepo)
+    public function __construct(StudentTutoringPackageRepository $studentTutoringPackageRepo,InvoiceRepository $invoiceRepository)
     {
         $this->studentTutoringPackageRepository = $studentTutoringPackageRepo;
+        $this->invoiceRepository = $invoiceRepository;
     }
+
 
     /**
      * Display a listing of the StudentTutoringPackage.
@@ -98,7 +102,7 @@ class StudentTutoringPackageController extends AppBaseController
             $studentTutoringPackage = $this->studentTutoringPackageRepository->create($input);
             $studentTutoringPackage->tutors()->sync($tutors);
             $studentTutoringPackage->subjects()->sync($subjects);
-            $this->studentTutoringPackageRepository->createOrUpdateInvoiceForPackage($studentTutoringPackage, $input);
+            $this->invoiceRepository->createOrUpdateInvoiceForPackage($studentTutoringPackage, $input);
             DB::commit();
             if ($input['email_to_parent'] == 1 && ! empty($parentEmail->parent_email)) {
                 $parentEmail = Student::select(['parents.email as parent_email', 'students.id', 'students.parent_id'])->where('students.id', $input['student_id'])
@@ -118,6 +122,12 @@ class StudentTutoringPackageController extends AppBaseController
             \Laracasts\Flash\Flash::error('something went wrong');
 
             return redirect(route('student-tutoring-packages.index'));
+        }catch (\Exception $exception) {
+            DB::rollBack();
+            report($exception);
+            \Laracasts\Flash\Flash::error('something went wrong');
+
+            return redirect(route('monthly-invoice-packages.index'));
         }
 
     }
@@ -203,7 +213,7 @@ class StudentTutoringPackageController extends AppBaseController
             }
 
             $studentTutoringPackage = $this->studentTutoringPackageRepository->update($input, $id);
-            $this->studentTutoringPackageRepository->createOrUpdateInvoiceForPackage($studentTutoringPackage, $input);
+            $this->invoiceRepository->createOrUpdateInvoiceForPackage($studentTutoringPackage, $input);
             DB::commit();
             $redirectRoute = route('student-tutoring-packages.show', ['student_tutoring_package' => $studentTutoringPackage->id]);
             if ($request->ajax()){
@@ -214,6 +224,12 @@ class StudentTutoringPackageController extends AppBaseController
         } catch (QueryException $queryException) {
             DB::rollBack();
             report($queryException);
+            \Laracasts\Flash\Flash::error('something went wrong');
+
+            return redirect(route('student-tutoring-packages.index'));
+        }catch (\Exception $exception) {
+            DB::rollBack();
+            report($exception);
             \Laracasts\Flash\Flash::error('something went wrong');
 
             return redirect(route('student-tutoring-packages.index'));
