@@ -27,8 +27,8 @@
                         </p>
                     </div>
                     <div class="form-group col-sm-12">
-                        {!! Form::label('student_tutoring_package_id', 'Tutoring Package:') !!}
-                        {!! Form::select('student_tutoring_package_id', [], null, ['class' => 'form-control select2 ','id'=>'student-tutoring-package-id']) !!}
+                        {!! Form::label('tutoring_package_id', 'Tutoring Package:') !!}
+                        {!! Form::select('tutoring_package_id', [], null, ['class' => 'form-control select2 ','id'=>'tutoring-package-id']) !!}
                     </div>
                     @role(['super-admin','admin'])
                     <!-- Tutor Field -->
@@ -82,15 +82,6 @@
                                         {!! Form::label('charge_for_missed_time','Charge for missed time') !!}
                                         {!! Form::select('charge_for_missed_time',[1=>'No',2=>'Yes'],null, ['class' => 'form-control col-sm-11','id'=>'charge-missed-time', 'onChange'=>'chargeMissedTime()']) !!}
                                     </div>
-
-{{--                                    <div class="form-group flex-child d-none missed-session-time">--}}
-{{--                                        {!! Form::label('charge_missed_start_time', 'Missed Session start time') !!}--}}
-{{--                                        {!! Form::time('charge_missed_start_time', null, ['class' => 'form-control  col-sm-11','type'=>'time']) !!}--}}
-{{--                                    </div>--}}
-{{--                                    <div class="form-group flex-child d-none missed-session-time">--}}
-{{--                                        {!! Form::label('charge_missed_end_time', 'Missed Session end time') !!}--}}
-{{--                                        {!! Form::time('charge_missed_end_time', null, ['class' => 'form-control col-sm-11','type'=>'time']) !!}--}}
-{{--                                    </div>--}}
                                 </div>
                             </div>
 

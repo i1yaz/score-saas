@@ -6,6 +6,7 @@ use App\DataTables\StudentTutoringPackageDataTable;
 use App\Http\Requests\CreateStudentTutoringPackageRequest;
 use App\Http\Requests\UpdateStudentTutoringPackageRequest;
 use App\Mail\ParentInvoiceMailAfterStudentTutoringPackageCreation;
+use App\Models\MonthlyInvoicePackage;
 use App\Models\Student;
 use App\Models\StudentTutoringPackage;
 use App\Models\Subject;
@@ -20,6 +21,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class StudentTutoringPackageController extends AppBaseController
@@ -286,17 +288,23 @@ class StudentTutoringPackageController extends AppBaseController
     public function tutorEmailAjax(Request $request)
     {
         $email = trim($request->email);
-        $student_tutoring_package_id = trim($request->student_tutoring_package_id);
+        $tutoring_package_id = trim($request->tutoring_package_id);
         $strict = (boolean) $request->strict;
-        if ($strict && empty($student_tutoring_package_id)){
-            throw ValidationException::withMessages(['student_tutoring_package_id' => 'Please Choose Tutoring Package']);
+        if ($strict && empty($tutoring_package_id)){
+            throw ValidationException::withMessages(['tutoring_package_id' => 'Please Choose Tutoring Package']);
         }
         $tutors = Tutor::active()
             ->select(['tutors.id as id', 'tutors.email as text'])
             ->where('tutors.email', 'LIKE', "%{$email}%");
-        if (!empty($student_tutoring_package_id)) {
+        if (!empty($tutoring_package_id) && Str::startsWith($tutoring_package_id,StudentTutoringPackage::PREFIX_START)) {
+            $tutoring_package_id = getOriginalPackageIdFromCode($tutoring_package_id);
             $tutors = $tutors->join('student_tutoring_package_tutor as stpt', 'stpt.tutor_id', '=', 'tutors.id')
-                ->where('stpt.student_tutoring_package_id', $student_tutoring_package_id);
+                ->where('stpt.student_tutoring_package_id', $tutoring_package_id);
+        }
+        if (!empty($tutoring_package_id) && Str::startsWith($tutoring_package_id,MonthlyInvoicePackage::PREFIX_START)) {
+            $tutoring_package_id = getOriginalPackageIdFromCode($tutoring_package_id);
+            $tutors = $tutors->join('monthly_invoice_package_tutor as mipt', 'mipt.tutor_id', '=', 'tutors.id')
+                ->where('mipt.monthly_invoice_package_id', $tutoring_package_id);
         }
 
         $tutors = $tutors->limit(5)
@@ -317,40 +325,4 @@ class StudentTutoringPackageController extends AppBaseController
 
     }
 
-    public function tutoringPackageAjax(Request $request)
-    {
-
-        $name = trim($request->name);
-        $id = getOriginalStudentTutoringPackageIdFromCode($name);
-        $studentTutoringPackages = StudentTutoringPackage::select(['student_tutoring_packages.id as id', 'student_tutoring_packages.hours','student_tutoring_packages.status'])
-            ->selectRaw("CONCAT(students.first_name,' ',students.last_name) as name")
-            ->join('students', 'students.id', '=', 'student_tutoring_packages.student_id');
-        if(Auth::user()->hasRole(['tutor'])){
-            $studentTutoringPackages = $studentTutoringPackages->whereHas('tutors', function ($query) {
-                $query->where('tutors.id', Auth::user()->id);
-            });
-        }
-
-        $studentTutoringPackages = $studentTutoringPackages
-            ->where(function ($q) use ($id, $name){
-                $q->where('student_tutoring_packages.id', 'LIKE', "%{$id}%")
-                    ->orWhere('students.first_name', 'LIKE', "%{$name}%")
-                    ->orWhere('students.last_name', 'LIKE', "%{$name}%");
-            })
-            ->where(function ($q){
-                $q->where('student_tutoring_packages.status',  true);
-            })
-            ->limit(5)
-            ->get();
-
-        $packages = [];
-        foreach ($studentTutoringPackages as $studentTutoringPackage) {
-            $data = [];
-            $data['id'] = $studentTutoringPackage->id;
-            $data['text'] = getStudentTutoringPackageCodeFromId($studentTutoringPackage->id).' - '.$studentTutoringPackage->name.' - '.$studentTutoringPackage->hours;
-            $packages[] = $data;
-        }
-
-        return response()->json($packages);
-    }
 }

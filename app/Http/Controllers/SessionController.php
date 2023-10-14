@@ -7,7 +7,10 @@ use App\Http\Requests\CreateSessionRequest;
 use App\Http\Requests\UpdateSessionRequest;
 use App\Mail\FlagSessionMail;
 use App\Models\ListData;
+use App\Models\MonthlyInvoicePackage;
+use App\Models\MonthlyInvoicePackageTutor;
 use App\Models\Session;
+use App\Models\StudentTutoringPackage;
 use App\Models\StudentTutoringPackageTutor;
 use App\Models\User;
 use App\Repositories\SessionRepository;
@@ -16,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Laracasts\Flash\Flash;
 
 class SessionController extends Controller
@@ -31,6 +35,7 @@ class SessionController extends Controller
 
             return response()->json($events);
         }
+
         if ($request->ajax()) {
             $columns = [
                 'id',
@@ -86,14 +91,28 @@ class SessionController extends Controller
         $input['flag_session'] = isset($input['flag_session']) && $input['flag_session'] == 'yes';
         $input['home_work_completed'] = ($input['home_work_completed'] == 'yes');
         $input['scheduled_date'] = date('Y-m-d', strtotime($input['scheduled_date']));
+        $tutoringPackageId = $input['tutoring_package_id'];
         if (Auth::user()->hasRole(['tutor'])) {
-            $studentTutoringPackageId = $input['student_tutoring_package_id'];
-            $studentTutoringPackageTutor = StudentTutoringPackageTutor::where(['tutor_id' => Auth::user()->id, 'student_tutoring_package_id' => $studentTutoringPackageId])->first();
-            if (Auth::user()->hasRole(['tutor']) && $studentTutoringPackageTutor) {
+            if (Str::startsWith( $input['tutoring_package_id'],StudentTutoringPackage::PREFIX_START)) {
+                $tutoringPackageTutor = StudentTutoringPackageTutor::where(['tutor_id' => Auth::user()->id, 'student_tutoring_package_id' => $tutoringPackageId])->first();
+            }
+            if (Str::startsWith( $input['tutoring_package_id'],MonthlyInvoicePackage::PREFIX_START)) {
+                $tutoringPackageTutor = MonthlyInvoicePackageTutor::where(['tutor_id' => Auth::user()->id, 'student_tutoring_package_id' => $tutoringPackageId])->first();
+            }
+
+            if (Auth::user()->hasRole(['tutor']) && !empty($tutoringPackageTutor)) {
                 $input['tutor_id'] = Auth::user()->id;
             } else {
                 return response()->json(['success' => false, 'message' => 'You are not allowed to create session for this student.'], 404);
             }
+        }
+
+        if (Str::startsWith( $input['tutoring_package_id'],StudentTutoringPackage::PREFIX_START)) {
+            $input['student_tutoring_package_id'] = getOriginalStudentTutoringPackageIdFromCode($input['tutoring_package_id']);
+
+        }
+        if (Str::startsWith( $input['tutoring_package_id'],MonthlyInvoicePackage::PREFIX_START)) {
+            $input['monthly_invoice_package_id'] = getOriginalMonthlyInvoicePackageIdFromCode($input['tutoring_package_id']);
         }
         if (isset($input['session_completion_code']) && (integer) $input['session_completion_code']===Session::PARTIAL_COMPLETION_CODE){
             if (isset($input['charge_for_missed_time'] ) &&  (integer)  $input['charge_for_missed_time'] == Session::PARTIAL_COMPLETION_CODE){
@@ -194,14 +213,27 @@ class SessionController extends Controller
         $input['flag_session'] = isset($input['flag_session']) && $input['flag_session'] == 'yes';
         $input['home_work_completed'] = ($input['home_work_completed'] == 'yes');
         $input['scheduled_date'] = date('Y-m-d', strtotime($input['scheduled_date']));
+        $tutoringPackageId = $input['tutoring_package_id'];
         if (Auth::user()->hasRole(['tutor'])) {
-            $studentTutoringPackageId = $input['student_tutoring_package_id'];
-            $studentTutoringPackageTutor = StudentTutoringPackageTutor::where(['tutor_id' => Auth::user()->id, 'student_tutoring_package_id' => $studentTutoringPackageId])->first();
-            if (Auth::user()->hasRole(['tutor']) && $studentTutoringPackageTutor) {
+            if (Str::startsWith( $input['tutoring_package_id'],StudentTutoringPackage::PREFIX_START)) {
+                $tutoringPackageTutor = StudentTutoringPackageTutor::where(['tutor_id' => Auth::user()->id, 'student_tutoring_package_id' => $tutoringPackageId])->first();
+            }
+            if (Str::startsWith( $input['tutoring_package_id'],MonthlyInvoicePackage::PREFIX_START)) {
+                $tutoringPackageTutor = MonthlyInvoicePackageTutor::where(['tutor_id' => Auth::user()->id, 'student_tutoring_package_id' => $tutoringPackageId])->first();
+            }
+
+            if (Auth::user()->hasRole(['tutor']) && !empty($tutoringPackageTutor)) {
                 $input['tutor_id'] = Auth::user()->id;
             } else {
                 return response()->json(['success' => false, 'message' => 'You are not allowed to create session for this student.'], 404);
             }
+        }
+        if (Str::startsWith( $input['tutoring_package_id'],StudentTutoringPackage::PREFIX_START)) {
+            $input['student_tutoring_package_id '] = getPackageCodeFromId($input['tutoring_package_id']);
+
+        }
+        if (Str::startsWith( $input['tutoring_package_id'],MonthlyInvoicePackage::PREFIX_START)) {
+            $input['monthly_invoice_package_id  '] = getPackageCodeFromId($input['tutoring_package_id']);
         }
         if (isset($input['session_completion_code']) && (integer) $input['session_completion_code']===Session::PARTIAL_COMPLETION_CODE){
             if (isset($input['charge_for_missed_time'] ) &&  (integer)  $input['charge_for_missed_time'] == Session::PARTIAL_COMPLETION_CODE){

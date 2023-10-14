@@ -158,7 +158,7 @@
                     return markup;
                 }
             });
-            $("#student-tutoring-package-id").select2({
+            $("#tutoring-package-id").select2({
                 dropdownAutoWidth: true, width: 'auto',
                 dropdownParent: $('#session-store'),
                 theme: 'bootstrap4',

@@ -39,14 +39,18 @@ class SessionRepository extends BaseRepository
         $start = $request->start;
         $end = $request->end;
         $sessions = Session::select(['sessions.scheduled_date as start', 'sessions.scheduled_date as end', 'sessions.id as id', 'sessions.start_time', 'sessions.end_time', 'sessions.scheduled_date'])
-            ->selectRaw("CONCAT(students.first_name,' ',students.last_name) as title")
-            ->join('student_tutoring_packages', 'student_tutoring_packages.id', '=', 'sessions.student_tutoring_package_id')
-            ->join('students', 'students.id', '=', 'student_tutoring_packages.student_id')
+            ->selectRaw("CONCAT(s1.first_name,' ',s1.last_name) as title")
+            ->selectRaw("CONCAT(s2.first_name,' ',s2.last_name) as title")
+            ->leftJoin('student_tutoring_packages', 'student_tutoring_packages.id', '=', 'sessions.student_tutoring_package_id')
+            ->leftJoin('monthly_invoice_packages', 'monthly_invoice_packages.id', '=', 'sessions.monthly_invoice_package_id')
+            ->leftJoin('students as s1', 's1.id', '=', 'student_tutoring_packages.student_id')
+            ->leftJoin('students as s2', 's2.id', '=', 'monthly_invoice_packages.student_id')
             ->where('sessions.scheduled_date', '>=', $start)
             ->where('sessions.scheduled_date', '<=', $end);
         if (Auth::user()->hasRole('tutor') && Auth::user() instanceof Tutor) {
             $sessions = $sessions->where('tutor_id', Auth::id());
         }
+
         $sessions = $sessions->get();
         $data = [];
         $i = 0;

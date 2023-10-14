@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\InvoicePackageTypeController;
 use App\Http\Controllers\MonthlyInvoicePackageController;
+use App\Http\Controllers\PackageController;
 use App\Http\Controllers\ParentController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\SessionController;
@@ -113,8 +114,10 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor']], function () {
     Route::get('student-email-ajax', [StudentTutoringPackageController::class, 'studentEmailAjax'])->name('student-email-ajax')->middleware(['permission:student_tutoring_package-create']);
     Route::get('tutor-email-ajax', [StudentTutoringPackageController::class, 'tutorEmailAjax'])->name('tutor-email-ajax')->middleware(['permission:student_tutoring_package-create']);
     Route::get('tutoring-location-ajax', [StudentTutoringPackageController::class, 'tutoringLocationAjax'])->name('tutoring-location-ajax')->middleware(['permission:student_tutoring_package-create']);
-    Route::get('tutoring-package-ajax', [StudentTutoringPackageController::class, 'tutoringPackageAjax'])->name('tutoring-package-ajax');
     Route::get('location-ajax', [StudentTutoringPackageController::class, 'tutoringLocationAjax'])->name('location-ajax'); //
+    //Package Controller
+    Route::get('tutoring-package-ajax', [PackageController::class, 'tutoringPackageAjax'])->name('tutoring-package-ajax');
+
     ///Invoice Package Types
     Route::get('invoice-package-types', [InvoicePackageTypeController::class, 'index'])->name('invoice-package-types.index')->middleware(['permission:invoice_package_type-index']);
     Route::get('invoice-package-types/create', [InvoicePackageTypeController::class, 'create'])->name('invoice-package-types.create')->middleware(['permission:invoice_package_type-create']);

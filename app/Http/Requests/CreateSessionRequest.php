@@ -16,7 +16,7 @@ class CreateSessionRequest extends FormRequest
 
         return [
             'tutor_id' => Rule::requiredIf(Auth::user()->hasRole(['super-admin', 'admin'])),
-            'student_tutoring_package_id' => ['required', 'integer'],
+            'tutoring_package_id' => ['required'],
             'scheduled_date' => ['required', 'date'],
             'start_time' => ['required', new SessionStartAndEndTimeRule()],
             'end_time' => ['required', new SessionStartAndEndTimeRule()],

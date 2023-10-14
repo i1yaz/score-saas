@@ -19,10 +19,11 @@ class SessionDataTable implements IDataTables
                 'sessions.id','sessions.start_time as start','sessions.tutoring_location_id' ,'sessions.end_time as end', 'sessions.id as id', 'sessions.start_time', 'sessions.end_time', 'sessions.scheduled_date',
                 'tutoring_locations.name as location_name', 'students.first_name as student_first_name', 'students.last_name as student_last_name', 'students.email as student_email',
                 'sessions.session_completion_code', 'sessions.home_work_completed',
-                'list_data.name as completion_code','student_tutoring_packages.id as student_tutoring_package_id',
+                'list_data.name as completion_code','student_tutoring_packages.id as student_tutoring_package_id','monthly_invoice_packages.id as monthly_invoice_package_id',
                 'tutors.email as tutor_email'
             ])
             ->leftJoin('student_tutoring_packages', 'student_tutoring_packages.id', '=', 'sessions.student_tutoring_package_id')
+            ->leftJoin('monthly_invoice_packages', 'monthly_invoice_packages.id', '=', 'sessions.monthly_invoice_package_id')
             ->leftJoin('tutoring_locations', 'tutoring_locations.id', '=', 'sessions.tutoring_location_id')
             ->leftJoin('list_data', function ($join) {
                 $join->on('list_data.id', '=', 'sessions.session_completion_code')

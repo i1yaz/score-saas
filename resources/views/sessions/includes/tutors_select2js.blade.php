@@ -12,7 +12,7 @@
                 data: function (params) {
                     return {
                         strict:"{{$strict??false}}",
-                        student_tutoring_package_id :$('#student-tutoring-package-id').val(),
+                        tutoring_package_id :$('#tutoring-package-id').val(),
                         email: params.term
                     };
                 },

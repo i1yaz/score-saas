@@ -19,7 +19,7 @@
 </div>
 <div class="form-group col-sm-6">
     {!! Form::label('student_tutoring_package_id', 'Tutoring Package:') !!}
-    {!! Form::select('student_tutoring_package_id',  $selectedTutoringPackage??[], null, ['class' => 'form-control select2','id'=>'student-tutoring-package-id']) !!}
+    {!! Form::select('student_tutoring_package_id',  $selectedTutoringPackage??[], null, ['class' => 'form-control select2','id'=>'tutoring-package-id']) !!}
 </div>
 <!-- Session Fields -->
 <div class="form-group col-sm-6">
@@ -163,7 +163,7 @@
                 }
             });
 
-            $("#student-tutoring-package-id").select2({
+            $("#tutoring-package-id").select2({
                 dropdownAutoWidth: true, width: 'auto',
                 theme: 'bootstrap4',
                 minimumInputLength: 3,

@@ -14,6 +14,7 @@ class Session extends Model
     const PARTIAL_COMPLETION_CODE = 2;
     protected $fillable = [
         'student_tutoring_package_id',
+        'monthly_invoice_package_id',
         'scheduled_date',
         'start_time',
         'end_time',

@@ -84,6 +84,42 @@ if (! function_exists('getOriginalStudentTutoringPackageIdFromCode')) {
         return str_replace(StudentTutoringPackage::PREFIX_START, '', $code);
     }
 }
+if (! function_exists('getOriginalMonthlyInvoicePackageIdFromCode')) {
+    function getOriginalMonthlyInvoicePackageIdFromCode($code): string
+    {
+        return str_replace(MonthlyInvoicePackage::PREFIX_START, '', $code);
+    }
+}
+if (! function_exists('getOriginalPackageIdFromCode')) {
+    function getOriginalPackageIdFromCode($code): string
+    {
+        return str_replace([StudentTutoringPackage::PREFIX_START,MonthlyInvoicePackage::PREFIX_START], '', $code);
+    }
+}
+if (!function_exists('getPackageCodeFromId')){
+    function getPackageCodeFromId(Model $model): string
+    {
+        if ($model instanceof StudentTutoringPackage){
+            return getStudentTutoringPackageCodeFromId($model->id);
+        }
+        if ($model instanceof MonthlyInvoicePackage){
+            return getMonthlyInvoicePackageCodeFromId($model->id);
+        }
+        return '';
+    }
+}
+if (!function_exists('getPackageIdFromCode')){
+    function getPackageIdFromCode($code): string
+    {
+        if (str_contains($code,StudentTutoringPackage::PREFIX_START)){
+            return getOriginalStudentTutoringPackageIdFromCode($code);
+        }
+        if (str_contains($code,MonthlyInvoicePackage::PREFIX_START)){
+            return getOriginalPackageIdFromCode($code);
+        }
+        return '';
+    }
+}
 
 if (! function_exists('getInvoiceCodeFromId')) {
     function getInvoiceCodeFromId($id): string
