@@ -68,6 +68,11 @@ class Tutor extends Authenticatable implements LaratrustUser
     {
         return $this->belongsToMany(StudentTutoringPackage::class);
     }
+    public function monthlyInvoicePackages(): BelongsToMany
+    {
+        return $this->belongsToMany(MonthlyInvoicePackage::class);
+    }
+
 
     /**
      *------------------------------------------------------------------

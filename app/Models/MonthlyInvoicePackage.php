@@ -18,7 +18,9 @@ class MonthlyInvoicePackage extends Model
         'start_date',
         'hourly_rate',
         'tutor_hourly_rate',
-        'tutoring_location_id'
+        'tutoring_location_id',
+        'added_by',
+        'auth_guard',
     ];
 
     protected $casts = [
@@ -27,8 +29,6 @@ class MonthlyInvoicePackage extends Model
         'notes' => 'string',
         'internal_notes' => 'string',
         'start_date' => 'date',
-        'hourly_rate' => 'integer',
-        'tutor_hourly_rate' => 'integer',
         'tutoring_location_id' => 'integer'
     ];
 
@@ -81,6 +81,6 @@ class MonthlyInvoicePackage extends Model
 
     public function sessions(): HasMany
     {
-        return $this->hasMany(Session::class, 'monthly_invoice_package_id ', 'id');
+        return $this->hasMany(Session::class, 'monthly_invoice_package_id', 'id');
     }
 }

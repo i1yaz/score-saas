@@ -45,13 +45,10 @@ class StudentTutoringPackage extends BaseModel
         'tutor_id' => 'integer',
         'notes' => 'string',
         'internal_notes' => 'string',
-        'hours' => 'integer',
-        'hourly_rate' => 'integer',
         'tutoring_location_id' => 'integer',
         'discount' => 'integer',
         'discount_type' => 'integer',
         'start_date' => 'date',
-        'tutor_hourly_rate' => 'integer',
     ];
 
     public static mixed $messages = [

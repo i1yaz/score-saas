@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\InvoicePackageTypeController;
+use App\Http\Controllers\MonthlyInvoicePackageController;
 use App\Http\Controllers\ParentController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\SessionController;
@@ -138,7 +139,12 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor']], function () {
     Route::get('sessions/{session}/edit', [SessionController::class, 'edit'])->name('sessions.edit')->middleware(['permission:session-edit']);
     Route::patch('sessions/{session}', [SessionController::class, 'update'])->name('sessions.update')->middleware(['permission:session-edit']);
     Route::delete('sessions/{session}', [SessionController::class, 'destroy'])->name('sessions.destroy')->middleware(['permission:session-destroy']);
-
+    // Monthly Invoice Packages
+    Route::get('monthly-invoice-packages', [MonthlyInvoicePackageController::class, 'index'])->name('monthly-invoice-packages.index')->middleware(['permission:monthly_invoice_package-index']);
+    Route::get('monthly-invoice-packages/create', [MonthlyInvoicePackageController::class, 'create'])->name('monthly-invoice-packages.create')->middleware(['permission:monthly_invoice_package-create']);
+    Route::post('monthly-invoice-packages', [MonthlyInvoicePackageController::class, 'store'])->name('monthly-invoice-packages.store')->middleware(['permission:monthly_invoice_package-create']);
+    Route::get('monthly-invoice-packages/{monthly_invoice_package}', [MonthlyInvoicePackageController::class, 'show'])->name('monthly-invoice-packages.show')->middleware(['permission:monthly_invoice_package-show']);
+    Route::get('monthly-invoice-packages/{monthly_invoice_package}/edit', [MonthlyInvoicePackageController::class, 'edit'])->name('monthly-invoice-packages.edit')->middleware(['permission:monthly_invoice_package-edit']);
+    Route::patch('monthly-invoice-packages/{monthly_invoice_package}', [MonthlyInvoicePackageController::class, 'update'])->name('monthly-invoice-packages.update')->middleware(['permission:monthly_invoice_package-edit']);
+    Route::delete('monthly-invoice-packages/{monthly_invoice_package}', [MonthlyInvoicePackageController::class, 'destroy'])->name('monthly-invoice-packages.destroy')->middleware(['permission:monthly_invoice_package-destroy']);
 });
-
-Route::resource('monthly-invoice-packages', App\Http\Controllers\MonthlyInvoicePackageController::class);

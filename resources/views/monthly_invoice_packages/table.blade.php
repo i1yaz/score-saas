@@ -8,7 +8,7 @@
                 <th>Internal Notes</th>
                 <th>Start Date</th>
                 <th>Hourly Rate</th>
-                <th>Tutor Houlry Rate</th>
+                <th>Tutor Hourly Rate</th>
                 <th>Tutoring Location Id</th>
                 <th colspan="3">Action</th>
             </tr>
@@ -28,18 +28,18 @@
                         <div class='btn-group'>
                             @permission('monthly_invoice_package-show')
                             <a href="{{ route('monthly-invoice-packages.show', [$monthlyInvoicePackage->id]) }}"
-                               class='btn btn-default btn-xs'>
+                               class='btn btn-default btn-sm'>
                                 <i class="far fa-eye"></i>
                             </a>
                             @endpermission
                             @permission('monthly_invoice_package-edit')
                             <a href="{{ route('monthly-invoice-packages.edit', [$monthlyInvoicePackage->id]) }}"
-                               class='btn btn-default btn-xs'>
+                               class='btn btn-default btn-sm'>
                                 <i class="far fa-edit"></i>
                             </a>
                             @endpermission
                             @permission('monthly_invoice_package-destroy')
-                            {!! Form::button('<i class="far fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
+                            {!! Form::button('<i class="far fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-sm', 'onclick' => "return confirm('Are you sure?')"]) !!}
                             @endpermission
                         </div>
                         {!! Form::close() !!}

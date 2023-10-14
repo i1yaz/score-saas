@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateMonthlyInvoicePackageRequest;
 use App\Http\Requests\UpdateMonthlyInvoicePackageRequest;
+use App\Mail\ParentInvoiceMailAfterMonthlyInvoicePackageCreationMail;
+use App\Mail\ParentInvoiceMailAfterStudentTutoringPackageCreation;
+use App\Models\Student;
 use App\Models\Subject;
 use App\Repositories\InvoiceRepository;
 use App\Repositories\MonthlyInvoicePackageRepository;
@@ -11,6 +14,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Flash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class MonthlyInvoicePackageController extends AppBaseController
 {
@@ -56,14 +60,23 @@ class MonthlyInvoicePackageController extends AppBaseController
             $tutors = $input['tutor_ids'];
             $subjects = $input['subject_ids'];
             unset($input['tutor_ids'],$input['subject_ids']);
-
             $monthlyInvoicePackage = $this->monthlyInvoicePackageRepository->create($input);
             $monthlyInvoicePackage->tutors()->sync($tutors);
             $monthlyInvoicePackage->subjects()->sync($subjects);
-            $this->invoiceRepository->createOrUpdateInvoiceForPackage($monthlyInvoicePackage, $input);
-
+            $this->invoiceRepository->createOrUpdateInvoiceForMonthlyPackage($monthlyInvoicePackage, $input);
             DB::commit();
+            if ($input['email_to_parent'] == 1) {
+                $parentEmail = Student::select(['parents.email as parent_email', 'students.id', 'students.parent_id'])->where('students.id', $input['student_id'])
+                    ->join('parents', 'students.parent_id', '=', 'parents.id')->first();
 
+                Mail::to($parentEmail->parent_email)->send(new ParentInvoiceMailAfterMonthlyInvoicePackageCreationMail($monthlyInvoicePackage));
+            }
+            $redirectRoute = route('monthly-invoice-packages.show', ['monthly_invoice_package' => $monthlyInvoicePackage->id]);
+            if ($request->ajax()){
+                return response()->json(['success' => true, 'message' => 'Monthly Invoice Package saved successfully.','redirectTo' => $redirectRoute]);
+            }
+            Flash::success('Monthly Invoice Package saved successfully.');
+            return redirect($redirectRoute);
         }catch (QueryException $queryException) {
             DB::rollBack();
             report($queryException);
@@ -78,9 +91,6 @@ class MonthlyInvoicePackageController extends AppBaseController
             return redirect(route('monthly-invoice-packages.index'));
         }
 
-        Flash::success('Monthly Invoice Package saved successfully.');
-
-        return redirect(route('monthlyInvoicePackages.index'));
     }
 
     /**
@@ -88,7 +98,7 @@ class MonthlyInvoicePackageController extends AppBaseController
      */
     public function show($id)
     {
-        $monthlyInvoicePackage = $this->monthlyInvoicePackageRepository->find($id);
+        $monthlyInvoicePackage = $this->monthlyInvoicePackageRepository->show($id);
 
         if (empty($monthlyInvoicePackage)) {
             Flash::error('Monthly Invoice Package not found');

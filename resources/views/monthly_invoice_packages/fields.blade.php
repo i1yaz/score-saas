@@ -34,8 +34,6 @@
     {!! Form::textarea('internal_notes', null, ['class' => 'form-control']) !!}
 </div>
 
-
-
 <!-- Hourly Rate Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('hourly_rate', 'Hourly Rate:',['class'=> 'required']) !!}
@@ -50,9 +48,60 @@
 <div class="form-group col-sm-12" id="all-subjects">
     @include('student_tutoring_packages.subjects')
 </div>
+@if(!isset($studentTutoringPackage))
+    <div class="form-group col-sm-12">
+        @include('student_tutoring_packages.invoice_details')
+    </div>
+@endif
+<div class="modal fade" id="store-subject" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Add Subject</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Name Field -->
+                <div class="form-group col-sm-12">
+                    {!! Form::label('name', 'Name:') !!}
+                    {!! Form::text('name', null, ['class' => 'form-control','id'=>'subject-name']) !!}
+                </div>
 
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" id="dismiss-subject-modal" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="store-subject-button">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
 @push('page_scripts')
     <script>
+        $("#store-subject-button").click(function(){
+            let subject = $("#subject-name").val();
+            if(subject.trim()) {
+                $.post("{{route('subjects.store')}}",
+                    {
+                        _token: "{{csrf_token()}}",
+                        name: subject,
+                        monthly_tutoring_package_id:{{$monthlyInvoicePackage->id??0}}
+                    },
+                    function(data, status){
+                        toastr.success(data.success)
+                        $('#dismiss-subject-modal').trigger('click');
+                        $('#all-subjects').empty()
+                        $('#all-subjects').append(data.html)
+                    })
+                    .fail(function() {
+                        toastr.error("something went wrong!")
+                    });
+            }else {
+                toastr.error('Name can not be empty')
+            }
+
+        });
         $('#monthly-invoice-package-form').submit(function (e) {
             e.preventDefault();
             $.ajax({
@@ -60,8 +109,10 @@
                 type: $(this).attr('method'),
                 data: $(this).serialize(),
                 success: function (response) {
+                    console.log(response)
                     toastr.success(response.message);
                     $("input[type='submit']").attr("disabled", false);
+                    window.location = response.redirectTo
                 },
                 error: function (xhr, status, error) {
                     if (xhr.status === 422) {

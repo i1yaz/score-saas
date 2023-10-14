@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateSubjectRequest;
 use App\Http\Requests\UpdateSubjectRequest;
+use App\Models\MonthlyInvoicePackage;
 use App\Models\StudentTutoringPackage;
 use App\Repositories\SubjectRepository;
 use Illuminate\Http\Request;
@@ -46,8 +47,17 @@ class SubjectController extends AppBaseController
 
         $this->subjectRepository->create($input);
         if ($request->ajax()) {
-            $studentTutoringPackage = StudentTutoringPackage::with(['subjects'])->where('id', $input['student_tutoring_package_id'])->first(['id']);
-            $subjects = $studentTutoringPackage->subjects->pluck(['id'])->toArray();
+            $subjects=[];
+            if (!empty($input['student_tutoring_package_id'])){
+                $tutoringPackage = StudentTutoringPackage::with(['subjects'])->where('id', $input['student_tutoring_package_id'])->first(['id']);
+            }
+            if (!empty($input['monthly_tutoring_package_id'])){
+                $tutoringPackage = MonthlyInvoicePackage::with(['subjects'])->where('id', $input['monthly_tutoring_package_id'])->first(['id']);
+            }
+            if (!empty($tutoringPackage))
+            {
+                $subjects = $tutoringPackage->subjects->pluck(['id'])->toArray();
+            }
             $subjectsRenderedView = view('student_tutoring_packages.subjects', ['subjects' => $this->subjectRepository->all(), 'selectedSubjects' => $subjects])->render();
 
             return response()->json(['success' => 'Subject added successfully.', 'html' => $subjectsRenderedView]);

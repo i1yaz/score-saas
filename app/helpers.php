@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Invoice;
+use App\Models\MonthlyInvoicePackage;
 use App\Models\StudentTutoringPackage;
 use App\Models\Tutor;
 use Carbon\Carbon;
@@ -88,6 +89,12 @@ if (! function_exists('getInvoiceCodeFromId')) {
     function getInvoiceCodeFromId($id): string
     {
         return Invoice::PREFIX_START.($id);
+    }
+}
+if (!function_exists('getMonthlyInvoicePackageCodeFromId')){
+    function getMonthlyInvoicePackageCodeFromId(int $id): string
+    {
+        return MonthlyInvoicePackage::PREFIX_START.($id);
     }
 }
 
