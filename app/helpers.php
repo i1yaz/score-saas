@@ -272,6 +272,9 @@ if (! function_exists('getInvoiceTypeFromClass')) {
         if ($type == StudentTutoringPackage::class) {
             return 'Tutoring Package';
         }
+        if ($type == MonthlyInvoicePackage::class) {
+            return 'Monthly Invoice Package';
+        }
     }
 }
 if (! function_exists('getInvoiceStatusFromId')) {

@@ -112,7 +112,7 @@ class InvoiceRepository extends BaseRepository
         $invoice->email_to_parent = $input['email_to_parent'] ?? false;
         $invoice->amount_paid = 0;
         $invoice->paid_status = Invoice::DRAFT;
-        $invoice->invoiceable_type = StudentTutoringPackage::class;
+        $invoice->invoiceable_type = MonthlyInvoicePackage::class;
         $invoice->invoiceable_id = $monthlyInvoicePackage->id;
         $invoice->auth_guard = Auth::guard()->name;
         $invoice->added_by = Auth::id();

@@ -32,9 +32,7 @@ class InvoiceController extends AppBaseController
                 'parent',
                 'created_at',
                 'due_date',
-                'invoice_total',
                 'amount_paid',
-                'amount_remaining',
                 'fully_paid_at',
                 'action',
             ];

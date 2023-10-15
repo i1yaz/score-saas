@@ -10,9 +10,7 @@
                 <th>Parent</th>
                 <th>Created At</th>
                 <th>Due Date</th>
-                <th>Invoice Total</th>
                 <th>Amount Paid</th>
-                <th>Amount Remaining</th>
                 <th>Fully Paid At</th>
                 <th>Action</th>
             </tr>
@@ -43,9 +41,7 @@
                     { data: 'parent', name: 'parent', orderable: true },
                     { data: 'created_at', name: 'created_at', orderable: true },
                     { data: 'due_date', name: 'due_date', orderable: true },
-                    { data: 'invoice_total', name: 'invoice_total', orderable: true },
                     { data: 'amount_paid', name: 'amount_paid', orderable: true },
-                    { data: 'amount_remaining', name: 'amount_remaining', orderable: true },
                     { data: 'fully_paid_at', name: 'fully_paid_at', orderable: true },
                     { data: 'action', name: 'action', orderable: false },
                 ],
