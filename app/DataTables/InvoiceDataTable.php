@@ -36,6 +36,8 @@ class InvoiceDataTable implements IDataTables
                 'invoices.due_date',
                 'invoices.fully_paid_at',
                 'invoices.amount_paid',
+                'invoices.invoiceable_id',
+                'invoices.invoiceable_type'
 
             ])
             ->leftJoin('student_tutoring_packages', function ($q) {
@@ -87,6 +89,7 @@ class InvoiceDataTable implements IDataTables
         if (! empty($records)) {
             foreach ($records as $invoice) {
                 $nestedData['invoice_id'] = getInvoiceCodeFromId($invoice->invoice_id);
+                $nestedData['package'] = getPackageCodeFromModelAndId($invoice->invoiceable_type,$invoice->invoiceable_id);
                 $nestedData['invoice_status'] = getInvoiceStatusFromId($invoice->invoice_status);
                 $nestedData['invoice_type'] = getInvoiceTypeFromClass($invoice->invoiceable_type);
                 $nestedData['student'] = $invoice->student_email??$invoice->student_email_s2;

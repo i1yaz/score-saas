@@ -109,14 +109,42 @@ if (!function_exists('getPackageCodeFromId')){
         return '';
     }
 }
+if (!function_exists('getPackageCodeFromModelAndId')){
+    function getPackageCodeFromModelAndId($type,$id): string
+    {
+        if ($type === StudentTutoringPackage::class){
+            return getStudentTutoringPackageCodeFromId($id);
+        }
+        if ($type === MonthlyInvoicePackage::class){
+            return getMonthlyInvoicePackageCodeFromId($id);
+        }
+        return '';
+
+    }
+}
 if (!function_exists('getPackageCodeFromModel')){
     function getPackageCodeFromModel(Model $model): string
     {
+
         if ($model instanceof StudentTutoringPackage){
             return getStudentTutoringPackageCodeFromId($model->id);
         }
         if ($model instanceof MonthlyInvoicePackage){
             return getMonthlyInvoicePackageCodeFromId($model->id);
+        }
+        return '';
+    }
+}
+if (!function_exists('getPackageCodeFromTypeAndId')){
+    function getPackageCodeFromTypeAndId(string $type,int $id): string
+    {
+
+        $type = strtolower($type);
+        if ($type =='s'){
+            return getStudentTutoringPackageCodeFromId($id);
+        }
+        if ($type =='m'){
+            return getMonthlyInvoicePackageCodeFromId($id);
         }
         return '';
     }

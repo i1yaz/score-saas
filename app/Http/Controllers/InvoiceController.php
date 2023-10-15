@@ -26,6 +26,7 @@ class InvoiceController extends AppBaseController
         if ($request->ajax()) {
             $columns = [
                 'invoice_id',
+                'package',
                 'invoice_status',
                 'invoice_type',
                 'student',

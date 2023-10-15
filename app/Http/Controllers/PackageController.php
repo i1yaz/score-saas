@@ -15,8 +15,13 @@ class PackageController extends Controller
         $name = trim($request->name);
         $id = getOriginalPackageIdFromCode($name);
 
-        $studentTutoringPackages = StudentTutoringPackage::select(['student_tutoring_packages.id as id', 'student_tutoring_packages.status'])
+        $studentTutoringPackages = StudentTutoringPackage::select(
+            [
+                'student_tutoring_packages.id as id',
+                'student_tutoring_packages.status'
+            ])
             ->selectRaw("CONCAT(students.first_name,' ',students.last_name) as name")
+            ->selectRaw("'s' as type")
             ->join('students', 'students.id', '=', 'student_tutoring_packages.student_id');
         if(Auth::user()->hasRole(['tutor'])){
             $studentTutoringPackages = $studentTutoringPackages->whereHas('tutors', function ($query) {
@@ -37,6 +42,7 @@ class PackageController extends Controller
 
         $monthlyInvoicePackages = MonthlyInvoicePackage::select(['monthly_invoice_packages.id as id','monthly_invoice_packages.status'])
             ->selectRaw("CONCAT(students.first_name,' ',students.last_name) as name")
+            ->selectRaw("'m' as type")
             ->join('students', 'students.id', '=', 'monthly_invoice_packages.student_id');
         if(Auth::user()->hasRole(['tutor'])){
             $monthlyInvoicePackages = $monthlyInvoicePackages->whereHas('tutors', function ($query) {
@@ -60,8 +66,8 @@ class PackageController extends Controller
         $packages = [];
         foreach ($allPackages as $package) {
             $data = [];
-            $data['id'] = getPackageCodeFromModel($package);
-            $data['text'] = getPackageCodeFromModel($package).' - '.$package->name;
+            $data['id'] = getPackageCodeFromTypeAndId($package->type,$package->id);
+            $data['text'] = getPackageCodeFromTypeAndId($package->type,$package->id).' - '.$package->name;
             $packages[] = $data;
         }
         return response()->json($packages);

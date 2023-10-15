@@ -4,6 +4,7 @@
             <thead>
             <tr>
                 <th>Invoice ID</th>
+                <th>Package</th>
                 <th>Invoice Status</th>
                 <th>Invoice Type</th>
                 <th>Student</th>
@@ -35,6 +36,7 @@
                 },
                 columns: [
                     { data: 'invoice_id', name: 'invoice_id', orderable: true },
+                    { data: 'package', name: 'package', orderable: false },
                     { data: 'invoice_status', name: 'invoice_status', orderable: true },
                     { data: 'invoice_type', name: 'invoice_type', orderable: true },
                     { data: 'student', name: 'student', orderable: true },
