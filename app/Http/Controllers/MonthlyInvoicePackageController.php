@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\MonthlyInvoicePackageDataTable;
+use App\DataTables\StudentTutoringPackageDataTable;
 use App\Http\Requests\CreateMonthlyInvoicePackageRequest;
 use App\Http\Requests\UpdateMonthlyInvoicePackageRequest;
 use App\Mail\ParentInvoiceMailAfterMonthlyInvoicePackageCreationMail;
@@ -33,10 +35,38 @@ class MonthlyInvoicePackageController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $monthlyInvoicePackages = $this->monthlyInvoicePackageRepository->paginate(10);
+        if ($request->ajax()) {
+            $columns = [
+                'package_id',
+                'student',
+                'notes',
+                'internal_notes',
+                'start_date',
+                'tutoring_location_id',
+                'status',
+                'action',
+            ];
+            $limit = $request->input('length');
+            $start = $request->input('start');
+            $order = $columns[$request->input('order.0.column')];
+            $dir = $request->input('order.0.dir');
+            $search = $request->input('search');
+            $totalData = MonthlyInvoicePackageDataTable::totalRecords();
+            $studentTutoringPackages = MonthlyInvoicePackageDataTable::sortAndFilterRecords($search, $start, $limit, $order, $dir);
+            $totalFiltered = MonthlyInvoicePackageDataTable::totalFilteredRecords($search);
+            $data = MonthlyInvoicePackageDataTable::populateRecords($studentTutoringPackages);
+            $json_data = [
+                'draw' => intval($request->input('draw')),
+                'recordsTotal' => intval($totalData),
+                'recordsFiltered' => intval($totalFiltered),
+                'data' => $data,
+            ];
 
-        return view('monthly_invoice_packages.index')
-            ->with('monthlyInvoicePackages', $monthlyInvoicePackages);
+            return response()->json($json_data);
+
+        }
+
+        return view('monthly_invoice_packages.index');
     }
 
     /**
