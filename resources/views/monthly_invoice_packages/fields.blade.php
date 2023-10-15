@@ -10,7 +10,7 @@
 </div>
 <!-- Tutor Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('tutor-id', 'Tutor:') !!}
+    {!! Form::label('tutor-id', 'Tutor:',['class'=> 'required']) !!}
     <select class="form-control" name="tutor_ids[]" multiple="multiple" id='tutor-id'>
         @foreach ($selectedTutors??[] as $id => $selectedTutorEmail)
             <option selected="selected"  value="{{$id}}" >{{$selectedTutorEmail}}</option>
@@ -45,8 +45,55 @@
     {!! Form::label('tutor_hourly_rate', 'Tutor Hourly Rate:',['class'=> 'required']) !!}
     {!! Form::text('tutor_hourly_rate', null, ['class' => 'form-control']) !!}
 </div>
+<!-- Discount Type Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('discount_type', 'Discount:') !!}
+    <div class="input-group">
+        {!!  Form::number('discount', null, ['class' => 'form-control'])  !!}
+        <div class="input-group-append">
+            <select class="form-control input-group-text" name="discount_type" id = 'discount-type'>
+                <option value="1" @if(isset($studentTutoringPackage) && $studentTutoringPackage->discount_type == \App\Models\StudentTutoringPackage::FLAT_DISCOUNT) selected @endif>Flat</option>
+                <option value="2" @if(isset($studentTutoringPackage) && $studentTutoringPackage->discount_type == \App\Models\StudentTutoringPackage::PERCENTAGE_DISCOUNT) selected @endif>%</option>
+            </select>
+        </div>
+    </div>
+</div>
+
 <div class="form-group col-sm-12" id="all-subjects">
     @include('student_tutoring_packages.subjects')
+</div>
+
+
+<div class="form-group col-sm-6">
+    {!! Form::label('is_score_guaranteed', 'Is this a score guarantee invoice?') !!}
+    <small class="text-danger">If yes, invoice will automatically be set to paid.</small>
+    <div class="radio">
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="is_score_guaranteed" id="is-score-guaranteed-yes" value="yes" >
+            <label class="form-check-label" for="is-score-guaranteed-yes"><strong>  YES</strong></label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="is_score_guaranteed" id="is-score-guaranteed-no" value="no" checked>
+            <label class="form-check-label" for="is-score-guaranteed-no"><strong>  NO</strong></label>
+        </div>
+
+    </div>
+</div>
+
+<div class="form-group col-sm-6">
+    {!! Form::label('is_free', 'Is this a score guarantee invoice?') !!}
+    <small  class="text-danger">If yes, invoice will automatically be set to paid.</small>
+    <div class="radio">
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="is_free" id="is-free-yes" value="yes" >
+            <label class="form-check-label" for="is-free-yes"><strong>  YES</strong></label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="is_free" id="is-free-no" value="no" checked>
+            <label class="form-check-label" for="is-free-no"><strong>  NO</strong></label>
+        </div>
+
+    </div>
 </div>
 @if(!isset($studentTutoringPackage))
     <div class="form-group col-sm-12">

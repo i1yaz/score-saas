@@ -1,4 +1,4 @@
-<h5 class="mb-4">Subjects</h5>
+<h5 class="mb-4 required">Subjects</h5>
 @permission('subject-create')
 <a href="#" class="btn btn-primary mb-4" data-toggle="modal" data-target="#store-subject">+ Subject</a>
 @endpermission

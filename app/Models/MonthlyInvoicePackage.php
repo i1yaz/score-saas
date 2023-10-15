@@ -11,6 +11,9 @@ class MonthlyInvoicePackage extends Model
     public $table = 'monthly_invoice_packages';
     const CODE_START = 4000;
     const PREFIX_START = 'M';
+    const FLAT_DISCOUNT = 1;
+
+    const PERCENTAGE_DISCOUNT = 2;
     public $fillable = [
         'student_id',
         'notes',
@@ -19,6 +22,10 @@ class MonthlyInvoicePackage extends Model
         'hourly_rate',
         'tutor_hourly_rate',
         'tutoring_location_id',
+        'discount',
+        'discount_type',
+        'is_free',
+        'is_score_guaranteed',
         'added_by',
         'auth_guard',
     ];

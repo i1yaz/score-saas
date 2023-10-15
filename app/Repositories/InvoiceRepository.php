@@ -112,6 +112,10 @@ class InvoiceRepository extends BaseRepository
         $invoice->email_to_parent = $input['email_to_parent'] ?? false;
         $invoice->amount_paid = 0;
         $invoice->paid_status = Invoice::DRAFT;
+        if ($input['is_score_guaranteed'] || $input['is_free']){
+            $invoice->paid_status = Invoice::PAID;
+            $invoice->fully_paid_at = Carbon::now();
+        }
         $invoice->invoiceable_type = MonthlyInvoicePackage::class;
         $invoice->invoiceable_id = $monthlyInvoicePackage->id;
         $invoice->auth_guard = Auth::guard()->name;

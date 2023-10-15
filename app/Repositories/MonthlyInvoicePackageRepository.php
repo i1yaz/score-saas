@@ -58,7 +58,6 @@ class MonthlyInvoicePackageRepository extends BaseRepository
                 if (Auth::user()->hasRole('tutor') && Auth::user() instanceof Tutor) {
                     $q->where('tutor_id', Auth::id());
                 }
-
             })
             ->select([
                 'monthly_invoice_packages.*',
@@ -79,7 +78,7 @@ class MonthlyInvoicePackageRepository extends BaseRepository
             ->join('tutoring_locations', 'monthly_invoice_packages.tutoring_location_id', 'tutoring_locations.id')
             ->join('invoices', function ($query) {
                 $query->on('invoices.invoiceable_id', '=', 'monthly_invoice_packages.id')
-                    ->where('invoices.invoiceable_type', '=', StudentTutoringPackage::class);
+                    ->where('invoices.invoiceable_type', '=', MonthlyInvoicePackage::class);
             })
             ->join('invoice_package_types', 'invoice_package_types.id', 'invoices.invoice_package_type_id')
             ->where('monthly_invoice_packages.id', $id)

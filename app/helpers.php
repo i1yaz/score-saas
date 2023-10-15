@@ -316,6 +316,18 @@ if (! function_exists('booleanToYesNo')) {
         }
     }
 }
+if(!function_exists('yesNoToBoolean')){
+    function yesNoToBoolean($value)
+    {
+        $value = strtolower($value);
+        if ($value == 'yes') {
+            return true;
+        }
+        if ($value == 'no') {
+            return false;
+        }
+    }
+}
 
 if (! function_exists('getHexColors')) {
     function getHexColors($i): string

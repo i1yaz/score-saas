@@ -89,6 +89,9 @@ class MonthlyInvoicePackageController extends AppBaseController
         DB::beginTransaction();
         try {
             $input = $request->all();
+            unset($input['name']);
+            $input['is_score_guaranteed'] = yesNoToBoolean($input['is_score_guaranteed']);
+            $input['is_free'] = yesNoToBoolean($input['is_free']);
             $tutors = $input['tutor_ids'];
             $subjects = $input['subject_ids'];
             unset($input['tutor_ids'],$input['subject_ids']);

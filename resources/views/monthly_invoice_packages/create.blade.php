@@ -20,7 +20,7 @@
         <div class="card card-primary">
             <div class="card-header">
                 <h3 class="card-title">                    Create Monthly Invoice Packages
-</h3>
+                </h3>
             </div>
             {!! Form::open(['route' => 'monthly-invoice-packages.store','id'=>'monthly-invoice-package-form']) !!}
 
@@ -29,7 +29,6 @@
                 <div class="row">
                     @include('monthly_invoice_packages.fields')
                 </div>
-
             </div>
 
             <div class="card-footer">
