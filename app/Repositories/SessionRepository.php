@@ -44,7 +44,9 @@ class SessionRepository extends BaseRepository
             'sessions.id as id',
             'sessions.start_time',
             'sessions.end_time',
-            'sessions.scheduled_date'
+            'sessions.scheduled_date',
+            'sessions.monthly_invoice_package_id',
+            'sessions.student_tutoring_package_id',
         ])
             ->selectRaw("CONCAT(s1.first_name,' ',s1.last_name) as title")
             ->selectRaw("CONCAT(s2.first_name,' ',s2.last_name) as title_s2")
@@ -71,9 +73,10 @@ class SessionRepository extends BaseRepository
             }
             $start_time = date('H:i', strtotime($session->start_time ?? ''));
             $title = $session->title??$session->title_s2;
+            $packagePrefix = $session->monthly_invoice_package_id ? 'M' : ($session->student_tutoring_package_id ? 'T' : '');
             $session['color'] = getHexColors($i);
             $session['allDay'] = true;
-            $session['title'] = "{$start_time} {$tickMark} {$title} ";
+            $session['title'] = "{$packagePrefix} {$start_time} {$tickMark} {$title} ";
             $data[] = $session;
             $i++;
         }
