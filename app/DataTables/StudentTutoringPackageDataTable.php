@@ -18,9 +18,16 @@ class StudentTutoringPackageDataTable implements IDataTables
         ];
         $order = $columns[$order] ?? $order;
         $studentTutoringPackages = StudentTutoringPackage::query()
-            ->select(['student_tutoring_packages.id', 'students.email as student', 'tutoring_package_types.name as package', 'tutoring_locations.name as location',
-                'student_tutoring_packages.notes as notes', 'student_tutoring_packages.hours as hours','student_tutoring_packages.status as status',
-                'student_tutoring_packages.start_date as start_date'])
+            ->select([
+                'student_tutoring_packages.id',
+                'students.email as student',
+                'tutoring_package_types.name as package',
+                'tutoring_locations.name as location',
+                'student_tutoring_packages.notes as notes',
+                'student_tutoring_packages.hours as hours',
+                'student_tutoring_packages.status as status',
+                'student_tutoring_packages.start_date as start_date'
+            ])
             ->selectRaw('(SELECT COUNT(id) FROM sessions WHERE sessions.student_tutoring_package_id  = student_tutoring_packages.id) as sessions_count')
             ->join('students', 'student_tutoring_packages.student_id', 'students.id')
             ->join('tutoring_package_types', 'student_tutoring_packages.tutoring_package_type_id', 'tutoring_package_types.id')
