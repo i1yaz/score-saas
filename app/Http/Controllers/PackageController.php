@@ -60,8 +60,8 @@ class PackageController extends Controller
         $packages = [];
         foreach ($allPackages as $package) {
             $data = [];
-            $data['id'] = getPackageCodeFromId($package);
-            $data['text'] = getPackageCodeFromId($package).' - '.$package->name;
+            $data['id'] = getPackageCodeFromModel($package);
+            $data['text'] = getPackageCodeFromModel($package).' - '.$package->name;
             $packages[] = $data;
         }
         return response()->json($packages);

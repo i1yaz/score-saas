@@ -98,7 +98,19 @@ if (! function_exists('getOriginalPackageIdFromCode')) {
     }
 }
 if (!function_exists('getPackageCodeFromId')){
-    function getPackageCodeFromId(Model $model): string
+    function getPackageCodeFromId(int $studentTutoringPackageId=null,int $monthlyInvoicePackage=null): string
+    {
+        if (!empty($studentTutoringPackageId)){
+            return getStudentTutoringPackageCodeFromId($studentTutoringPackageId);
+        }
+        if (!empty($monthlyInvoicePackage)){
+            return getMonthlyInvoicePackageCodeFromId($monthlyInvoicePackage);
+        }
+        return '';
+    }
+}
+if (!function_exists('getPackageCodeFromModel')){
+    function getPackageCodeFromModel(Model $model): string
     {
         if ($model instanceof StudentTutoringPackage){
             return getStudentTutoringPackageCodeFromId($model->id);

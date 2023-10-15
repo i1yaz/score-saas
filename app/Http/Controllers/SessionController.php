@@ -39,7 +39,7 @@ class SessionController extends Controller
         if ($request->ajax()) {
             $columns = [
                 'id',
-                'student_tutoring_package',
+                'tutoring_package',
                 'scheduled_date',
                 'location',
                 'tutor',
@@ -229,11 +229,11 @@ class SessionController extends Controller
             }
         }
         if (Str::startsWith( $input['tutoring_package_id'],StudentTutoringPackage::PREFIX_START)) {
-            $input['student_tutoring_package_id '] = getPackageCodeFromId($input['tutoring_package_id']);
+            $input['student_tutoring_package_id '] = getPackageCodeFromModel($input['tutoring_package_id']);
 
         }
         if (Str::startsWith( $input['tutoring_package_id'],MonthlyInvoicePackage::PREFIX_START)) {
-            $input['monthly_invoice_package_id  '] = getPackageCodeFromId($input['tutoring_package_id']);
+            $input['monthly_invoice_package_id  '] = getPackageCodeFromModel($input['tutoring_package_id']);
         }
         if (isset($input['session_completion_code']) && (integer) $input['session_completion_code']===Session::PARTIAL_COMPLETION_CODE){
             if (isset($input['charge_for_missed_time'] ) &&  (integer)  $input['charge_for_missed_time'] == Session::PARTIAL_COMPLETION_CODE){

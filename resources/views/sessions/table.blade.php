@@ -35,7 +35,7 @@
                 },
                 columns: [
                     { data: 'id', name: 'id', orderable: true },
-                    { data: 'student_tutoring_package', name: 'student_tutoring_package', orderable: true },
+                    { data: 'tutoring_package', name: 'tutoring_package', orderable: true },
                     { data: 'scheduled_date', name: 'scheduled_date', orderable: false },
                     { data: 'location', name: 'location', orderable: true },
                     { data: 'tutor', name: 'student', orderable: true },
