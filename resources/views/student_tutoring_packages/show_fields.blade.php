@@ -159,7 +159,7 @@
 
                 <tr>
                     <td><strong>Total Charged Time</strong></td>
-                    <td>{{formatTimeFromSeconds(getTotalChargedTimeOfTutorFromStudentTutoringPackageInSeconds($studentTutoringPackage))}}</td>
+                    <td>{{formatTimeFromSeconds(getTotalChargedTimeFromStudentTutoringPackageInSeconds($studentTutoringPackage))}}</td>
                 </tr>
                 <tr>
                     <td><strong>Total Tutor Payment For Package</strong></td>

@@ -49,7 +49,7 @@
                 <tr>
                     <td><strong> Invoice Total</strong></td>
                     <td>
-                        <strong></strong>
+                        <strong>{{getTotalInvoicePriceFromMonthlyInvoicePackage($monthlyInvoicePackage)}}</strong>
                     </td>
                 </tr>
                 </tbody>
@@ -70,18 +70,18 @@
                 <tr>
                     <td><strong>Tutor Hourly Rate</strong></td>
                     <td>
-
+                        {{ formatAmountWithCurrency(getTutorHourlyRateForMonthlyInvoicePackage($monthlyInvoicePackage))}}
                     </td>
                 </tr>
 
                 <tr>
                     <td><strong>Total Charged Time</strong></td>
-                    <td></td>
+                    <td>{{formatTimeFromSeconds(getTotalChargedTimeFromMonthlyInvoicePackageInSeconds($monthlyInvoicePackage))}}</td>
                 </tr>
                 <tr>
                     <td><strong>Total Tutor Payment For Package</strong></td>
                     <td>
-
+                        {{getTotalTutorPaymentForMonthlyInvoicePackage($monthlyInvoicePackage)}}
                     </td>
                 </tr>
                 </tbody>
@@ -133,7 +133,7 @@
                             <td>{{ formatTimeFromSeconds(getTotalChargedSessionTimeFromSessionInSeconds($session))}}</td>
                             <td>{{ formatTimeFromSeconds(getTotalChargedMissedSessionTimeFromSessionInSeconds($session))}} </td>
                             <td>{{ getTotalChargedTimeInHoursSecondsMinutesFromSession($session)}}</td>
-                            <td>{{ formatAmountWithCurrency(getTutorHourlyRateForStudentTutoringPackage($monthlyInvoicePackage,$session->tutor_id))}}</td>
+                            <td>{{ formatAmountWithCurrency(getTutorHourlyRateForMonthlyInvoicePackage($monthlyInvoicePackage,$session->tutor_id))}}</td>
                             <td>{{ formatAmountWithCurrency(0)}}</td>
                             <td>{{ getTotalTutorChargedAmountFromSession($session,$monthlyInvoicePackage)}}</td>
                         </tr>

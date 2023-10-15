@@ -2,6 +2,7 @@
 
 use App\Models\Invoice;
 use App\Models\MonthlyInvoicePackage;
+use App\Models\MonthlyInvoicePackageTutor;
 use App\Models\StudentTutoringPackage;
 use App\Models\Tutor;
 use Carbon\Carbon;
@@ -342,8 +343,27 @@ if (! function_exists('getTutorHourlyRateForStudentTutoringPackage')) {
         return $hourlyRate;
     }
 }
-if (! function_exists('getTotalChargedTimeOfTutorFromStudentTutoringPackageInSeconds')) {
-    function getTotalChargedTimeOfTutorFromStudentTutoringPackageInSeconds(StudentTutoringPackage $studentTutoringPackage): float|int
+if (! function_exists('getTutorHourlyRateForMonthlyInvoicePackage')) {
+    function getTutorHourlyRateForMonthlyInvoicePackage(MonthlyInvoicePackage $monthlyInvoicePackage, Tutor|int $tutor=null): string
+    {
+        if (empty($monthlyInvoicePackage->tutor_hourly_rate)) {
+            if ($tutor){
+                if (!$tutor instanceof Tutor){
+                    $tutor = Tutor::find($tutor);
+                }
+                return $tutor->hourly_rate;
+            }
+            $firstTutor = $monthlyInvoicePackage->tutors()->first();
+            $hourlyRate = $firstTutor->hourly_rate;
+        } else {
+            $hourlyRate = $monthlyInvoicePackage->tutor_hourly_rate;
+        }
+
+        return $hourlyRate;
+    }
+}
+if (! function_exists('getTotalChargedTimeFromStudentTutoringPackageInSeconds')) {
+    function getTotalChargedTimeFromStudentTutoringPackageInSeconds(StudentTutoringPackage $studentTutoringPackage): float|int
     {
         $sessions = \App\Models\Session::where('student_tutoring_package_id', $studentTutoringPackage->id)->get();
         $totalChargedTime = 0;
@@ -352,6 +372,27 @@ if (! function_exists('getTotalChargedTimeOfTutorFromStudentTutoringPackageInSec
 
         }
         return $totalChargedTime;
+    }
+}
+if (!function_exists('getTotalChargedTimeFromMonthlyInvoicePackageInSeconds')){
+    function getTotalChargedTimeFromMonthlyInvoicePackageInSeconds(MonthlyInvoicePackage $monthlyInvoicePackage): float|int
+    {
+        $sessions = \App\Models\Session::where('monthly_invoice_package_id', $monthlyInvoicePackage->id)->get();
+        $totalChargedTime = 0;
+        foreach ($sessions as $session){
+            $totalChargedTime += getTotalChargedTimeInSecondsFromSession($session);
+
+        }
+        return $totalChargedTime;
+    }
+}
+if (!function_exists('getTotalInvoicePriceFromMonthlyInvoicePackage')){
+    function getTotalInvoicePriceFromMonthlyInvoicePackage(MonthlyInvoicePackage $monthlyInvoicePackage): string
+    {
+        $totalChargedTime = getTotalChargedTimeFromMonthlyInvoicePackageInSeconds($monthlyInvoicePackage);
+        $hourlyRate = $monthlyInvoicePackage->hourly_rate;
+        $totalChargedTime = $totalChargedTime * ($hourlyRate / 3600);
+        return formatAmountWithCurrency($totalChargedTime);
     }
 }
 if (!function_exists('getTotalChargedTimeOfSessionFromSessionInSeconds')){
@@ -399,7 +440,7 @@ if (!function_exists('formatTimeFromSeconds')){
 if (! function_exists('getTotalTutorPaymentForStudentTutoringPackage')) {
     function getTotalTutorPaymentForStudentTutoringPackage(StudentTutoringPackage $studentTutoringPackage): string
     {
-        $totalChargedTimeInSeconds = getTotalChargedTimeOfTutorFromStudentTutoringPackageInSeconds($studentTutoringPackage);
+        $totalChargedTimeInSeconds = getTotalChargedTimeFromStudentTutoringPackageInSeconds($studentTutoringPackage);
         if (! empty($studentTutoringPackage->tutor_hourly_rate)) {
             $hourlyRate = getTutorHourlyRateForStudentTutoringPackage($studentTutoringPackage);
             $hourlyRateInSeconds = $hourlyRate / 3600;
@@ -411,6 +452,18 @@ if (! function_exists('getTotalTutorPaymentForStudentTutoringPackage')) {
         }
 
         return formatAmountWithCurrency(0);
+    }
+}
+if (!function_exists('getTotalTutorPaymentForMonthlyInvoicePackage')){
+    function getTotalTutorPaymentForMonthlyInvoicePackage(MonthlyInvoicePackage $monthlyInvoicePackage)
+    {
+        $totalChargedTimeInSeconds = getTotalChargedTimeFromMonthlyInvoicePackageInSeconds($monthlyInvoicePackage);
+        if (! empty($monthlyInvoicePackage->tutor_hourly_rate)) {
+            $hourlyRate = getTutorHourlyRateForMonthlyInvoicePackage($monthlyInvoicePackage);
+            $hourlyRateInSeconds = $hourlyRate / 3600;
+
+            return formatAmountWithCurrency($totalChargedTimeInSeconds * $hourlyRateInSeconds);
+        }
     }
 }
 if (! function_exists('getTotalHours')) {
@@ -429,10 +482,16 @@ if (!function_exists('getSessionCodeFromId')) {
     }
 }
 if(!function_exists('getTotalTutorChargedAmountFromSession')) {
-    function getTotalTutorChargedAmountFromSession(\App\Models\Session $session,$studentTutoringPackage): string
+    function getTotalTutorChargedAmountFromSession(\App\Models\Session $session,$package): string
     {
         $totalChargedTimeInSeconds = getTotalChargedTimeInSecondsFromSession($session);
-        $hourlyRate = getTutorHourlyRateForStudentTutoringPackage($studentTutoringPackage, $session->tutor_id);
+        if ($package instanceof StudentTutoringPackage){
+            $hourlyRate = getTutorHourlyRateForStudentTutoringPackage($package, $session->tutor_id);
+        }
+        if ($package instanceof MonthlyInvoicePackage){
+            $hourlyRate = getTutorHourlyRateForMonthlyInvoicePackage($package, $session->tutor_id);
+        }
+
         $totalChargedTime = $totalChargedTimeInSeconds * ($hourlyRate / 3600);
         return formatAmountWithCurrency($totalChargedTime);
     }
@@ -489,5 +548,12 @@ if (!function_exists('isInputRequired')){
     function isInputRequired(Model $model,$input): void
     {
 
+    }
+}
+if (!function_exists('getPriceFromMonthlyInvoicePackage')){
+    function getPriceFromMonthlyInvoicePackage(MonthlyInvoicePackage $monthlyInvoicePackage)
+    {
+        \App\Models\Session::select(['id','monthly_invoice_package_id','start_time','end_time','scheduled_date','session_completion_code','attended_start_time','attended_end_time','charge_missed_time'])
+            ->where('monthly_invoice_package_id',$monthlyInvoicePackage->id)->get();
     }
 }
