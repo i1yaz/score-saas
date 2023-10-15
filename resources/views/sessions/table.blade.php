@@ -36,12 +36,12 @@
                 columns: [
                     { data: 'id', name: 'id', orderable: true },
                     { data: 'tutoring_package', name: 'tutoring_package', orderable: true },
-                    { data: 'scheduled_date', name: 'scheduled_date', orderable: false },
+                    { data: 'scheduled_date', name: 'scheduled_date', orderable: true },
                     { data: 'location', name: 'location', orderable: true },
                     { data: 'tutor', name: 'student', orderable: true },
                     { data: 'student', name: 'student', orderable: true },
-                    { data: 'completion_code', name: 'completion_code', orderable: false },
-                    { data: 'homework_completed_80', name: 'homework_completed_80', orderable: false },
+                    { data: 'completion_code', name: 'completion_code', orderable: true },
+                    { data: 'homework_completed_80', name: 'homework_completed_80', orderable: true },
                     { data: 'action', name: 'action', orderable: false },
 
                 ],

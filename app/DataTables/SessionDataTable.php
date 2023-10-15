@@ -12,7 +12,15 @@ class SessionDataTable implements IDataTables
 {
     public static function sortAndFilterRecords(mixed $search, mixed $start, mixed $limit, string $order, mixed $dir): Collection|array
     {
-
+        $columns = [
+            'location' => 'location_name',
+            'tutoring_package' => 'student_tutoring_package_id,monthly_invoice_package_id',
+            'scheduled_date' => 'scheduled_date',
+            'tutor' => 'tutor_email',
+            'student' => 'student_email,student_email_s2',
+            'completion_code' => 'completion_code',
+            'homework_completed_80' => 'home_work_completed',
+        ];
         $order = $columns[$order] ?? $order;
         $sessions = Session::query()->select(
             [
@@ -45,8 +53,11 @@ class SessionDataTable implements IDataTables
             ->leftJoin('students as s2', 's2.id', '=', 'monthly_invoice_packages.student_id');
         $sessions = static::getModelQueryBySearch($search, $sessions);
         $sessions = $sessions->offset($start)
-            ->limit($limit)
-            ->orderBy($order, $dir);
+            ->limit($limit);
+        $columns = explode(',', $order);
+        foreach ($columns as $column){
+            $sessions = $sessions->orderBy($column, $dir);
+        }
 
         return $sessions->get();
 
