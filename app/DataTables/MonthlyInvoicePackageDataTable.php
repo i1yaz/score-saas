@@ -18,6 +18,7 @@ class MonthlyInvoicePackageDataTable implements IDataTables
     {
         $columns = [
             'package_id' => 'id',
+            'total_sessions' => 'sessions_count',
         ];
         $order = $columns[$order] ?? $order;
         $monthlyInvoicePackage = MonthlyInvoicePackage::query()
