@@ -64,12 +64,18 @@ class InvoiceDataTable implements IDataTables
         $invoices = Invoice::query()->select(
             [
                 'invoices.id as invoice_id',
+
             ])
             ->leftJoin('student_tutoring_packages', function ($q) {
                 $q->on('invoices.invoiceable_id', '=', 'student_tutoring_packages.id')->where('invoices.invoiceable_type', '=', StudentTutoringPackage::class);
             })
-            ->leftJoin('students', 'student_tutoring_packages.student_id', '=', 'students.id')
-            ->leftJoin('parents', 'students.parent_id', '=', 'parents.id');
+            ->leftJoin('monthly_invoice_packages', function ($q) {
+                $q->on('invoices.invoiceable_id', '=', 'monthly_invoice_packages.id')->where('invoices.invoiceable_type', '=', MonthlyInvoicePackage::class);
+            })
+            ->leftJoin('students as s1', 'student_tutoring_packages.student_id', '=', 's1.id')
+            ->leftJoin('students as s2', 'monthly_invoice_packages.student_id', '=', 's2.id')
+            ->leftJoin('parents as p1', 's1.parent_id', '=', 'p1.id')
+            ->leftJoin('parents as p2', 's2.parent_id', '=', 'p2.id');
         $invoices = static::getModelQueryBySearch($search, $invoices);
 
         return $invoices->count();
@@ -108,11 +114,18 @@ class InvoiceDataTable implements IDataTables
         }
 
         if (Auth::user()->hasRole('parent') && Auth::user() instanceof ParentUser) {
-            $records = $records->where('parent_id', Auth::id());
+            $records = $records->where(function ($q){
+                $q->where('s1.parent_id', Auth::id())
+                    ->orWhere('s2.parent_id', Auth::id());
+            });
         }
         if (Auth::user()->hasRole('student') && Auth::user() instanceof Student) {
-            $records = $records->where('student_id', Auth::id())
-                ->WhereRaw('CASE WHEN students.parent_id IS NULL THEN true ELSE false END');
+            $records = $records->where(function ($q){
+                $q->where('student_tutoring_packages.student_id', Auth::id())
+                    ->orWhere('monthly_invoice_packages.student_id', Auth::id())
+                    ->WhereRaw('(CASE WHEN s1.parent_id IS NULL THEN true ELSE false END OR CASE WHEN s2.parent_id IS NULL THEN true ELSE false END)');
+            });
+
         }
 
         return $records;
