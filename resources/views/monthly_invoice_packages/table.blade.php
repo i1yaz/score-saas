@@ -9,6 +9,7 @@
                 <th>Internal Notes</th>
                 <th>Start Date</th>
                 <th>Tutoring Location</th>
+                <th>Total Sessions</th>
                 <th>Action</th>
             </tr>
             </thead>
@@ -38,6 +39,7 @@
                     { data: 'internal_notes', name: 'internal_notes', orderable: true },
                     { data: 'start_date', name: 'start_date', orderable: true },
                     { data: 'tutoring_location_id', name: 'tutoring_location_id', orderable: true },
+                    { data: 'total_sessions', name: 'tutoring_location_id', orderable: true },
                     { data: 'action', name: 'action', orderable: false },
                 ],
                 order: [[0, 'desc']]

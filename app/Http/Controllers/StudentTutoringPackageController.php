@@ -51,6 +51,7 @@ class StudentTutoringPackageController extends AppBaseController
                 'hours',
                 'location',
                 'start_date',
+                'sessions_count',
                 'status',
                 'action',
             ];

@@ -8,6 +8,7 @@ use App\Http\Requests\CreateMonthlyInvoicePackageRequest;
 use App\Http\Requests\UpdateMonthlyInvoicePackageRequest;
 use App\Mail\ParentInvoiceMailAfterMonthlyInvoicePackageCreationMail;
 use App\Mail\ParentInvoiceMailAfterStudentTutoringPackageCreation;
+use App\Models\MonthlyInvoicePackage;
 use App\Models\Student;
 use App\Models\Subject;
 use App\Repositories\InvoiceRepository;
@@ -43,6 +44,7 @@ class MonthlyInvoicePackageController extends AppBaseController
                 'internal_notes',
                 'start_date',
                 'tutoring_location_id',
+                'total_sessions',
                 'status',
                 'action',
             ];

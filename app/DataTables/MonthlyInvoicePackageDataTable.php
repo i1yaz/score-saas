@@ -21,9 +21,16 @@ class MonthlyInvoicePackageDataTable implements IDataTables
         ];
         $order = $columns[$order] ?? $order;
         $monthlyInvoicePackage = MonthlyInvoicePackage::query()
-            ->select(['monthly_invoice_packages.id', 'students.email as student', 'tutoring_locations.name as location','monthly_invoice_packages.internal_notes as internal_notes',
-                'monthly_invoice_packages.notes as notes','monthly_invoice_packages.status as status',
-                'monthly_invoice_packages.start_date as start_date'])
+            ->select([
+                'monthly_invoice_packages.id',
+                'monthly_invoice_packages.internal_notes as internal_notes',
+                'monthly_invoice_packages.status as status',
+                'monthly_invoice_packages.notes as notes',
+                'monthly_invoice_packages.start_date as start_date',
+                'students.email as student',
+                'tutoring_locations.name as location'
+            ])
+            ->selectRaw('(SELECT COUNT(id) FROM sessions WHERE sessions.monthly_invoice_package_id = monthly_invoice_packages.id) as sessions_count')
             ->join('students', 'monthly_invoice_packages.student_id', 'students.id')
             ->join('tutoring_locations', 'monthly_invoice_packages.tutoring_location_id', 'tutoring_locations.id');
         $monthlyInvoicePackage = static::getModelQueryBySearch($search, $monthlyInvoicePackage);
@@ -53,6 +60,7 @@ class MonthlyInvoicePackageDataTable implements IDataTables
                 $nestedData['internal_notes'] = $monthlyInvoicePackage->internal_notes;
                 $nestedData['start_date'] = Carbon::parse($monthlyInvoicePackage->start_date)->format('j F,Y');
                 $nestedData['tutoring_location_id'] = $monthlyInvoicePackage->location;
+                $nestedData['total_sessions'] = $monthlyInvoicePackage->sessions_count;
                 $nestedData['status'] = view('partials.status_badge', ['status' => $monthlyInvoicePackage->status,'text_success' => 'Active','text_danger' => 'Inactive'])->render();
                 $nestedData['action'] = view('monthly_invoice_packages.actions', ['monthlyInvoicePackage' => $monthlyInvoicePackage])->render();
                 $data[] = $nestedData;

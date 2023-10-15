@@ -9,7 +9,7 @@
 @permission('tutor_dashboard-index')
 <li class="nav-item">
     <a href="{{ route('tutor-dashboard.index') }}" class="nav-link {{ Request::is('tutor/dashboard') ? 'active' : '' }}">
-        <i class="nav-icon fas fa-home"></i>
+        <i class="nav-icon fas fa-tachometer-alt"></i>
         <p>Tutor Dashboard</p>
     </a>
 </li>
