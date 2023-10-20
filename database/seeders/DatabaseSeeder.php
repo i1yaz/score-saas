@@ -27,33 +27,45 @@ class DatabaseSeeder extends Seeder
             'updated_at' => Carbon::now(),
         ]);
 
-        $invoicePackageType = [
+        InvoicePackageType::create(
             [
                 'name' => 'Tutoring Package',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
-            ],
+                'auth_guard' => 'web',
+                'added_by' => 1
+            ]);
+        InvoicePackageType::create(
             [
                 'name' => 'Monthly Invoice Tutoring',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
-            ],
+                'auth_guard' => 'web',
+                'added_by' => 1
+            ]);
+        InvoicePackageType::create(
             [
                 'name' => 'Mock Test',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
-            ],
+                'auth_guard' => 'web',
+                'added_by' => 1
+            ]);
+        InvoicePackageType::create(
             [
                 'name' => 'At Home Sessions',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
-            ],
+                'auth_guard' => 'web',
+                'added_by' => 1
+            ]);
+        InvoicePackageType::create(
             [
                 'name' => 'Other',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
-            ],
-        ];
-        InvoicePackageType::create($invoicePackageType);
+                'auth_guard' => 'web',
+                'added_by' => 1
+            ]);
     }
 }

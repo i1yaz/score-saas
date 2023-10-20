@@ -2,10 +2,14 @@
 
 namespace Database\Factories;
 
+use App\Models\ParentUser;
+use App\Models\School;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class StudentFactory extends Factory
 {
@@ -14,21 +18,26 @@ class StudentFactory extends Factory
     public function definition(): array
     {
         return [
-            'school_id' => $this->faker->randomNumber(),
+            'school_id' => School::factory(['status'=>true]),
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
-            'email_known' => $this->faker->unique()->safeEmail(),
-            'testing_accommodation' => $this->faker->boolean(),
+            'email' => $this->faker->safeEmail(),
+            'email_verified_at' => Carbon::now(),
+            'password' => Hash::make('abcd1234'),
+            'remember_token' => Str::random(10),
+            'email_known' => $this->faker->boolean,
+            'testing_accommodation' => $this->faker->boolean,
             'testing_accommodation_nature' => $this->faker->word(),
-            'official_baseline_act_score' => $this->faker->word(),
-            'official_baseline_sat_score' => $this->faker->word(),
+            'official_baseline_act_score' => $this->faker->numberBetween(100,500),
+            'official_baseline_sat_score' => $this->faker->numberBetween(100,500),
             'test_anxiety_challenge' => $this->faker->boolean(),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
-            'parent_id' => $this->faker->randomNumber(),
+            'parent_id' => ParentUser::factory(['status'=>true]),
             'status' => $this->faker->boolean(),
-            'added_by' => $this->faker->randomNumber(),
-            'user_id' => User::factory(),
+            'auth_guard' => 'web',
+            'added_by' => 1
         ];
     }
 }
+
