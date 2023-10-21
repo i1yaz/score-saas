@@ -18,7 +18,8 @@ class StudentFactory extends Factory
     public function definition(): array
     {
         return [
-            'school_id' => School::factory(['status'=>true]),
+            'school_id' => School::factory(),
+            'parent_id' => ParentUser::factory(),
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
             'email' => $this->faker->safeEmail(),
@@ -33,7 +34,6 @@ class StudentFactory extends Factory
             'test_anxiety_challenge' => $this->faker->boolean(),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
-            'parent_id' => ParentUser::factory(['status'=>true]),
             'status' => $this->faker->boolean(),
             'auth_guard' => 'web',
             'added_by' => 1

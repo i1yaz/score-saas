@@ -22,7 +22,6 @@ class ParentUserFactory extends Factory
             'password' => Hash::make("abcd1234"),
             'email_verified_at' => Carbon::now(),
             'remember_token' => Str::random(10),
-            'status' => $this->faker->boolean(),
             'phone' => $this->faker->phoneNumber(),
             'address' => $this->faker->address(),
             'address2' => $this->faker->address(),

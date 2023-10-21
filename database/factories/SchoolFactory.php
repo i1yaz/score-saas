@@ -13,9 +13,8 @@ class SchoolFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->words(2),
+            'name' => $this->faker->word,
             'address' => $this->faker->address,
-            'status' => $this->faker->boolean,
             'auth_guard' => 'web',
             'added_by' => 1,
             'created_at' => Carbon::now(),
