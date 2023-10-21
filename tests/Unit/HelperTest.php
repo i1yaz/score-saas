@@ -5,6 +5,7 @@ use App\Models\MonthlyInvoicePackage;
 use App\Models\ParentUser;
 use App\Models\Student;
 use App\Models\StudentTutoringPackage;
+use App\Models\Tutor;
 use Database\Seeders\DatabaseSeeder;
 
 it('return yes or no string',function (){
@@ -197,4 +198,62 @@ it('calculate Price From Hours And Hourly Rate With percentage Discount',functio
     expect($price)->toEqual($discountedPrice);
     $discountedPrice = getDiscountedAmount($hourlyRate,$hours,$discount,StudentTutoringPackage::PERCENTAGE_DISCOUNT);
     expect($discountedPrice)->toEqual(formatAmountWithCurrency(((130.6875/100)*10.15)));
+});
+it('return Yes No string from value',function (){
+
+    $response = booleanToYesNo(true);
+    expect($response)->toEqual('Yes');
+    $response = booleanToYesNo('true');
+    expect($response)->toEqual('Yes');
+    $response = booleanToYesNo(1);
+    expect($response)->toEqual('Yes');
+    $response = booleanToYesNo('1');
+    expect($response)->toEqual('Yes');
+    $response = booleanToYesNo(false);
+    expect($response)->toEqual('No');
+    $response = booleanToYesNo('false');
+    expect($response)->toEqual('No');
+    $response = booleanToYesNo(0);
+    expect($response)->toEqual('No');
+    $response = booleanToYesNo('0');
+    expect($response)->toEqual('No');
+});
+
+it('return boolean from yes no string',function (){
+    $response = yesNoToBoolean('Yes');
+    expect($response)->toEqual(true);
+    $response = yesNoToBoolean('yes');
+    expect($response)->toEqual(true);
+    $response = yesNoToBoolean('No');
+    expect($response)->toEqual(false);
+    $response = yesNoToBoolean('no');
+    expect($response)->toEqual(false);
+});
+it('return Tutor Hourly Rate For Student Tutoring Package',function (){
+    $studentTutoringPackage = StudentTutoringPackage::factory(['tutor_hourly_rate'=>null])->create();
+    $tutor = Tutor::factory()->create();
+    $studentTutoringPackage->tutors()->sync($tutor->id);
+    $tutorHourlyRate = getTutorHourlyRateForStudentTutoringPackage($studentTutoringPackage);
+    expect($tutorHourlyRate)->toEqual($tutor->hourly_rate);
+
+    $studentTutoringPackage = StudentTutoringPackage::factory(['tutor_hourly_rate'=>50])->create();
+    $tutor1 = Tutor::factory()->create();
+    $studentTutoringPackage->tutors()->sync($tutor1->id);
+    $tutorHourlyRate = getTutorHourlyRateForStudentTutoringPackage($studentTutoringPackage);
+    expect($tutorHourlyRate)->toEqual(50);
+
+    $studentTutoringPackage = StudentTutoringPackage::factory(['tutor_hourly_rate'=>50])->create();
+    $studentTutoringPackage->tutors()->sync([$tutor->id,$tutor1->id]);
+    $tutorHourlyRate = getTutorHourlyRateForStudentTutoringPackage($studentTutoringPackage);
+    expect($tutorHourlyRate)->toEqual(50);
+
+});
+it('return Tutor Hourly Rate For Monthly Invoice Package',function (){
+    $monthlyInvoicePackage = MonthlyInvoicePackage::factory(['tutor_hourly_rate'=>40])->create();
+    $tutor = Tutor::factory()->create();
+    $monthlyInvoicePackage->tutors()->sync($tutor->id);
+    $tutorHourlyRate = getTutorHourlyRateForMonthlyInvoicePackage($monthlyInvoicePackage,$tutor);
+    expect($tutorHourlyRate)->toEqual(40);
+    $tutorHourlyRate = getTutorHourlyRateForMonthlyInvoicePackage($monthlyInvoicePackage,$tutor->id);
+    expect($tutorHourlyRate)->toEqual(40);
 });

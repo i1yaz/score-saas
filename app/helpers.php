@@ -336,10 +336,11 @@ if (! function_exists('getRemainingAmountFromTotalAndPaidAmount')) {
 if (! function_exists('booleanToYesNo')) {
     function booleanToYesNo($value)
     {
-        if ($value == true || $value == 1) {
+        $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+        if ($value === true) {
             return 'Yes';
         }
-        if ($value == false || $value == 0) {
+        if ($value === false) {
             return 'No';
         }
     }
