@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class StudentTutoringPackage extends BaseModel
 {
+    use HasFactory;
     const FLAT_DISCOUNT = 1;
 
     const PERCENTAGE_DISCOUNT = 2;

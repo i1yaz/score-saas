@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MonthlyInvoicePackage extends Model
 {
+    use HasFactory;
     public $table = 'monthly_invoice_packages';
     const CODE_START = 4000;
     const PREFIX_START = 'M';

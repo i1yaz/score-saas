@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\InvoicePackageType;
+use App\Models\ListData;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -17,6 +18,12 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
 
+        $this->call([
+            InvoicePackageTypeSeeder::class,
+            ListDataSeeder::class,
+            InvoicePackageSeeder::class,
+        ]);
+
         \App\Models\User::create([
             'first_name' => 'Super',
             'last_name' => 'Admin',
@@ -26,46 +33,5 @@ class DatabaseSeeder extends Seeder
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
-
-        InvoicePackageType::create(
-            [
-                'name' => 'Tutoring Package',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-                'auth_guard' => 'web',
-                'added_by' => 1
-            ]);
-        InvoicePackageType::create(
-            [
-                'name' => 'Monthly Invoice Tutoring',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-                'auth_guard' => 'web',
-                'added_by' => 1
-            ]);
-        InvoicePackageType::create(
-            [
-                'name' => 'Mock Test',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-                'auth_guard' => 'web',
-                'added_by' => 1
-            ]);
-        InvoicePackageType::create(
-            [
-                'name' => 'At Home Sessions',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-                'auth_guard' => 'web',
-                'added_by' => 1
-            ]);
-        InvoicePackageType::create(
-            [
-                'name' => 'Other',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-                'auth_guard' => 'web',
-                'added_by' => 1
-            ]);
     }
 }
