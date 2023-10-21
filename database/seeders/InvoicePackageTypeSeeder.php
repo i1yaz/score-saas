@@ -15,45 +15,42 @@ class InvoicePackageTypeSeeder extends Seeder
     public function run(): void
     {
 
-        InvoicePackageType::create(
+        InvoicePackageType::insert([
             [
                 'name' => 'Tutoring Package',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
                 'auth_guard' => 'web',
                 'added_by' => 1
-            ]);
-        InvoicePackageType::create(
+            ],
             [
                 'name' => 'Monthly Invoice Tutoring',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
                 'auth_guard' => 'web',
                 'added_by' => 1
-            ]);
-        InvoicePackageType::create(
+            ],
             [
                 'name' => 'Mock Test',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
                 'auth_guard' => 'web',
                 'added_by' => 1
-            ]);
-        InvoicePackageType::create(
+            ],
             [
                 'name' => 'At Home Sessions',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
                 'auth_guard' => 'web',
                 'added_by' => 1
-            ]);
-        InvoicePackageType::create(
+            ],
             [
                 'name' => 'Other',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
                 'auth_guard' => 'web',
                 'added_by' => 1
-            ]);
+            ]
+        ]);
     }
 }

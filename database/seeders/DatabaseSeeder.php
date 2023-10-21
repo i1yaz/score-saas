@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\InvoicePackageType;
 use App\Models\ListData;
+use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
 use Carbon\Carbon;
@@ -22,6 +23,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             RoleSeeder::class,
+            PermissionSeeder::class,
             InvoicePackageTypeSeeder::class,
             ListDataSeeder::class,
             InvoicePackageSeeder::class,

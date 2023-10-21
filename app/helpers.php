@@ -110,7 +110,7 @@ if (!function_exists('getPackageCodeFromId')){
     }
 }
 if (!function_exists('getPackageCodeFromModelAndId')){
-    function getPackageCodeFromModelAndId($type,$id): string
+    function getPackageCodeFromModelAndId(string $type,$id): string
     {
         if ($type === StudentTutoringPackage::class){
             return getStudentTutoringPackageCodeFromId($id);
