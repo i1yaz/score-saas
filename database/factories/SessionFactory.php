@@ -18,7 +18,6 @@ class SessionFactory extends Factory
     {
         return [
             'student_tutoring_package_id' => StudentTutoringPackage::factory(),
-
             'tutor_id' => Tutor::factory(),
             'tutoring_location_id' => TutoringLocation::factory(),
             'scheduled_date' => Carbon::yesterday()->toDateString(),
