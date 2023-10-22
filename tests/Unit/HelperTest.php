@@ -6,6 +6,8 @@ use App\Models\ParentUser;
 use App\Models\Student;
 use App\Models\StudentTutoringPackage;
 use App\Models\Tutor;
+use App\Models\TutoringLocation;
+use Carbon\Carbon;
 use Database\Seeders\DatabaseSeeder;
 
 it('return yes or no string',function (){
@@ -256,4 +258,118 @@ it('return Tutor Hourly Rate For Monthly Invoice Package',function (){
     expect($tutorHourlyRate)->toEqual(40);
     $tutorHourlyRate = getTutorHourlyRateForMonthlyInvoicePackage($monthlyInvoicePackage,$tutor->id);
     expect($tutorHourlyRate)->toEqual(40);
+});
+it('return Total Charged Time From Student Tutoring Package In Seconds',function (){
+    $student = Student::factory()->create();
+    $studentTutoringPackage = StudentTutoringPackage::factory([
+        'student_id' => $student->id,
+    ])->create();
+    $tutor = Tutor::factory()->create();
+    $studentTutoringPackage->tutors()->sync($tutor->id);
+    \App\Models\Session::factory([
+        'student_tutoring_package_id' => $studentTutoringPackage->id,
+        'monthly_invoice_package_id' => null,
+        'tutor_id' => $tutor->id,
+        'scheduled_date' => Carbon::yesterday()->toDateTimeString(),
+        'start_time' => Carbon::yesterday()->setTime(14,0,0)->format('H:i'),
+        'end_time' => Carbon::yesterday()->setTime(15,0,0)->format('H:i'),
+        'session_completion_code' => 1,
+    ])->create();
+    $time = getTotalChargedTimeFromStudentTutoringPackageInSeconds($studentTutoringPackage);
+    expect($time)->toEqual(3600);
+
+});
+it('return Total Charged Time From Monthly Invoice Package In Seconds', function () {
+    $student = Student::factory()->create();
+    $monthlyInvoicePackage = MonthlyInvoicePackage::factory([
+        'student_id' => $student->id,
+        'hourly_rate' => 40,
+    ])->create();
+    $tutor = Tutor::factory()->create();
+    $monthlyInvoicePackage->tutors()->sync($tutor->id);
+    \App\Models\Session::factory([
+        'student_tutoring_package_id' => null,
+        'monthly_invoice_package_id' => $monthlyInvoicePackage->id,
+        'tutor_id' => $tutor->id,
+        'scheduled_date' => Carbon::yesterday()->toDateTimeString(),
+        'start_time' => Carbon::yesterday()->setTime(14,0,0)->format('H:i'),
+        'end_time' => Carbon::yesterday()->setTime(15,0,0)->format('H:i'),
+        'session_completion_code' => 1,
+    ])->create();
+    $time = getTotalChargedTimeFromMonthlyInvoicePackageInSeconds($monthlyInvoicePackage);
+    expect($time)->toEqual(3600);
+    $price = getTotalInvoicePriceFromMonthlyInvoicePackage($monthlyInvoicePackage);
+    expect($price)->toEqual(formatAmountWithCurrency(40));
+});
+
+it('return Total Charged Time Of Session From Session In Seconds from Normal session', function () {
+    $student = Student::factory()->create();
+    $studentTutoringPackage = StudentTutoringPackage::factory([
+        'student_id' => $student->id,
+        'hourly_rate' => 40,
+    ])->create();
+    $tutor = Tutor::factory()->create();
+    $studentTutoringPackage->tutors()->sync($tutor->id);
+    $session = \App\Models\Session::factory([
+        'student_tutoring_package_id' => null,
+        'monthly_invoice_package_id' => $studentTutoringPackage->id,
+        'tutor_id' => $tutor->id,
+        'scheduled_date' => Carbon::yesterday()->toDateTimeString(),
+        'start_time' => Carbon::yesterday()->setTime(14,0,0)->format('H:i'),
+        'end_time' => Carbon::yesterday()->setTime(15,0,0)->format('H:i'),
+        'session_completion_code' => 1,
+    ])->create();
+    $chargedTime = getTotalChargedTimeOfSessionFromSessionInSeconds($session);
+    expect($chargedTime)->toEqual(3600);
+});
+
+it('return total missed time From partial session in seconds', function () {
+    $student = Student::factory()->create();
+    $studentTutoringPackage = StudentTutoringPackage::factory([
+        'student_id' => $student->id,
+        'hourly_rate' => 40,
+    ])->create();
+    $tutor = Tutor::factory()->create();
+    $studentTutoringPackage->tutors()->sync($tutor->id);
+    $tutoringLocation = TutoringLocation::factory()->create();
+    $session = \App\Models\Session::factory([
+        'student_tutoring_package_id' => $studentTutoringPackage->id,
+        'monthly_invoice_package_id' => NULL,
+        'tutor_id' => $tutor->id,
+        'scheduled_date' => Carbon::yesterday()->toDateTimeString(),
+        'start_time' => Carbon::yesterday()->setTime(14,0)->format('H:i:s'),
+        'end_time' => Carbon::yesterday()->setTime(15,0,0)->format('H:i:s'),
+        'session_completion_code' => 2,
+        'charge_missed_time' => true,
+        'tutoring_location_id' => $tutoringLocation->id,
+        'attended_start_time' => Carbon::yesterday()->setTime(14,10)->format('H:i:s'),
+        'attended_end_time' => Carbon::yesterday()->setTime(14,30)->format('H:i:s'),
+    ])->create();
+    $missedTime = getTotalChargedTimeOfSessionFromSessionInSeconds($session);
+    expect($missedTime)->toEqual(2400);
+});
+it('return total charged time Of Session From Session In Seconds from Partial session with missed time not charged', function () {
+    $student = Student::factory()->create();
+    $studentTutoringPackage = StudentTutoringPackage::factory([
+        'student_id' => $student->id,
+        'hourly_rate' => 40,
+    ])->create();
+    $tutor = Tutor::factory()->create();
+    $studentTutoringPackage->tutors()->sync($tutor->id);
+    $tutoringLocation = TutoringLocation::factory()->create();
+    $session = \App\Models\Session::factory([
+        'student_tutoring_package_id' => $studentTutoringPackage->id,
+        'monthly_invoice_package_id' => NULL,
+        'tutor_id' => $tutor->id,
+        'scheduled_date' => Carbon::yesterday()->toDateTimeString(),
+        'start_time' => Carbon::yesterday()->setTime(14,0)->format('H:i:s'),
+        'end_time' => Carbon::yesterday()->setTime(15,0,0)->format('H:i:s'),
+        'session_completion_code' => 2,
+        'charge_missed_time' => false,
+        'tutoring_location_id' => $tutoringLocation->id,
+        'attended_start_time' => Carbon::yesterday()->setTime(14,10)->format('H:i:s'),
+        'attended_end_time' => Carbon::yesterday()->setTime(14,30)->format('H:i:s'),
+    ])->create();
+    $chargedTime = getTotalChargedTimeOfSessionFromSessionInSeconds($session);
+    expect($chargedTime)->toEqual(3600);
 });
