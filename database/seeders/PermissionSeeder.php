@@ -497,7 +497,7 @@ class PermissionSeeder extends Seeder
                 'name' => 'tutor_dashboard-index',
                 'display_name' => 'Tutor Dashboard',
                 'description' => 'Tutor Dashboard',
-                'resource' => 'Tutor Dashboard',
+                'resource' => 'Others',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ],
@@ -586,6 +586,14 @@ class PermissionSeeder extends Seeder
                 'display_name' => 'Monthly Invoice Package Destroy',
                 'description' => 'Delete Monthly Invoice Package',
                 'resource' => 'Monthly Invoice Package',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'non_package_invoice-create',
+                'display_name' => 'Non-Package Invoice Create',
+                'description' => 'Non package invoice create',
+                'resource' => 'Others',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ],

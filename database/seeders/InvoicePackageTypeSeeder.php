@@ -45,6 +45,13 @@ class InvoicePackageTypeSeeder extends Seeder
                 'added_by' => 1
             ],
             [
+                'name' => 'Non Package Invoice',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+                'auth_guard' => 'web',
+                'added_by' => 1
+            ],
+            [
                 'name' => 'Other',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),

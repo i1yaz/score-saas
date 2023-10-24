@@ -7,7 +7,7 @@
                 <div class="col-sm-6">
                     <h1></h1>
                 </div>
-                @permission('non-package-invoice-create')
+                @permission('non_package_invoice-create')
                 <div class="col-sm-6">
                     <a class="btn btn-primary float-right"
                        href="{{ route('invoices.create') }}">
