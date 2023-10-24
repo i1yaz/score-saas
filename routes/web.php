@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\InvoicePackageTypeController;
 use App\Http\Controllers\MonthlyInvoicePackageController;
@@ -150,4 +151,8 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor']], function () {
     Route::get('monthly-invoice-packages/{monthly_invoice_package}/edit', [MonthlyInvoicePackageController::class, 'edit'])->name('monthly-invoice-packages.edit')->middleware(['permission:monthly_invoice_package-edit']);
     Route::patch('monthly-invoice-packages/{monthly_invoice_package}', [MonthlyInvoicePackageController::class, 'update'])->name('monthly-invoice-packages.update')->middleware(['permission:monthly_invoice_package-edit']);
     Route::delete('monthly-invoice-packages/{monthly_invoice_package}', [MonthlyInvoicePackageController::class, 'destroy'])->name('monthly-invoice-packages.destroy')->middleware(['permission:monthly_invoice_package-destroy']);
+    //Clients
+    Route::get('clients', [ClientController::class, 'index'])->name('clients.index')->middleware(['permission:client-index']);
+    Route::post('clients', [ClientController::class, 'store'])->name('clients.store')->middleware(['permission:client-create']);
+
 });

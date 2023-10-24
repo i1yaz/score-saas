@@ -597,6 +597,46 @@ class PermissionSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ],
+            [
+                'name' => 'client-index',
+                'display_name' => 'Session Index',
+                'description' => 'Session Index',
+                'resource' => 'Session',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'client-create',
+                'display_name' => 'Client Create',
+                'description' => 'Client Create',
+                'resource' => 'Client',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'client-show',
+                'display_name' => 'Client Show',
+                'description' => 'Client Show',
+                'resource' => 'Client',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'client-edit',
+                'display_name' => 'Client Edit',
+                'description' => 'Client Edit',
+                'resource' => 'Client',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'client-destroy',
+                'display_name' => 'Client Destroy',
+                'description' => 'Client Destroy',
+                'resource' => 'Client',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
         ]);
     }
 }

@@ -12,6 +12,7 @@ return new class extends Migration {
             $table->string('first_name');
             $table->string('last_name')->nullable();
             $table->string('email');
+            $table->string('address')->nullable();
             $table->timestamps();
         });
     }

@@ -16,9 +16,13 @@ class ClientController extends Controller
 
     public function store(ClientRequest $request)
     {
-        $this->authorize('create', Client::class);
-
-        return Client::create($request->validated());
+        $client = Client::create($request->validated());
+        if ($request->ajax()){
+            return response()->json([
+                'success' => true,
+                'message' => 'Client created successfully'
+            ]);
+        }
     }
 
     public function show(Client $client)
