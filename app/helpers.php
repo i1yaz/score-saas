@@ -110,7 +110,7 @@ if (!function_exists('getPackageCodeFromId')){
     }
 }
 if (!function_exists('getPackageCodeFromModelAndId')){
-    function getPackageCodeFromModelAndId($type,$id): string
+    function getPackageCodeFromModelAndId(string $type,$id): string
     {
         if ($type === StudentTutoringPackage::class){
             return getStudentTutoringPackageCodeFromId($id);
@@ -336,10 +336,11 @@ if (! function_exists('getRemainingAmountFromTotalAndPaidAmount')) {
 if (! function_exists('booleanToYesNo')) {
     function booleanToYesNo($value)
     {
-        if ($value == true || $value == 1) {
+        $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+        if ($value === true) {
             return 'Yes';
         }
-        if ($value == false || $value == 0) {
+        if ($value === false) {
             return 'No';
         }
     }
@@ -458,7 +459,7 @@ if (!function_exists('getTotalChargedTimeOfSessionFromSessionInSeconds')){
         }
         $totalChargedTime = 0;
         $totalChargedTime += (strtotime($session->end_time) - strtotime($session->start_time));
-        if ($session->session_completion_code === \App\Models\Session::PARTIAL_COMPLETION_CODE && (integer) $session->charge_missed_time === 2){
+        if ($session->session_completion_code === \App\Models\Session::PARTIAL_COMPLETION_CODE && filter_var($session->charge_missed_time,FILTER_VALIDATE_BOOLEAN) === true){
             $totalChargedTime += chargeSessionMissedTimeInSeconds($session,$totalChargedTime);
 
         }
@@ -555,7 +556,8 @@ if (!function_exists('chargeSessionMissedTimeInSeconds')){
     function chargeSessionMissedTimeInSeconds(\App\Models\Session $session,int $totalChargedTime=0): int
     {
         $totalMissedTime = 0;
-        if ((integer)$session->session_completion_code === 2 && (boolean) $session->charge_missed_time === true){
+        if ((integer)$session->session_completion_code === 2 && filter_var($session->charge_missed_time,FILTER_VALIDATE_BOOLEAN) === true){
+
             $scheduledDate = Carbon::createFromFormat('Y-m-d H:i:s', $session->scheduled_date)->format('m/d/Y');
             $sessionStart =  $session->start_time;
             $sessionEnd =  $session->end_time;

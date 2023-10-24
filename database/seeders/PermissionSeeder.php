@@ -1,0 +1,594 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Permission;
+use Carbon\Carbon;
+use Illuminate\Database\Seeder;
+
+
+
+class PermissionSeeder extends Seeder
+{
+    public function run()
+    {
+        Permission::insert([
+            [
+                'name' => 'parent-index',
+                'display_name' => 'Parent Index',
+                'description' => 'Show all parents',
+                'resource' => 'Parent',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'parent-create',
+                'display_name' => 'Parent Create',
+                'description' => 'Create or add a new parent',
+                'resource' => 'Parent',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'parent-edit',
+                'display_name' => 'Parent Edit',
+                'description' => 'Edit parent Details',
+                'resource' => 'Parent',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'parent-show',
+                'display_name' => 'Parent Show',
+                'description' => 'Show parent detail',
+                'resource' => 'Parent',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'parent-destroy',
+                'display_name' => 'Parent Destroy',
+                'description' => 'Delete parent',
+                'resource' => 'Parent',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'student-index',
+                'display_name' => 'Student Index',
+                'description' => 'Show all students',
+                'resource' => 'Student',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'student-create',
+                'display_name' => 'Student Create',
+                'description' => 'Create or add a new student',
+                'resource' => 'Student',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'student-edit',
+                'display_name' => 'Student Edit',
+                'description' => 'Student Edit',
+                'resource' => 'Student',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'student-show',
+                'display_name' => 'Student Show',
+                'description' => 'Show student detail',
+                'resource' => 'Student',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'student-destroy',
+                'display_name' => 'Student Destroy',
+                'description' => 'Delete student',
+                'resource' => 'Student',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'school-index',
+                'display_name' => 'School Index',
+                'description' => 'Show all schools',
+                'resource' => 'School',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'school-create',
+                'display_name' => 'School Create',
+                'description' => 'Create or add a new school',
+                'resource' => 'School',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'school-edit',
+                'display_name' => 'School Edit',
+                'description' => 'Edit school detail',
+                'resource' => 'School',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'school-show',
+                'display_name' => 'School Show',
+                'description' => 'Show school detail',
+                'resource' => 'School',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'school-destroy',
+                'display_name' => 'School Destroy',
+                'description' => 'Delete school',
+                'resource' => 'School',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'tutor-index',
+                'display_name' => 'Tutor Index',
+                'description' => 'Tutor Index',
+                'resource' => 'Tutor',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'tutor-create',
+                'display_name' => 'Tutor Create',
+                'description' => 'Create or add a new tutor',
+                'resource' => 'Tutor',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'tutor-edit',
+                'display_name' => 'Tutor Edit',
+                'description' => 'Edit tutor detail',
+                'resource' => 'Tutor',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'tutor-show',
+                'display_name' => 'Tutor Show',
+                'description' => 'Show tutor detail',
+                'resource' => 'Tutor',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'tutor-destroy',
+                'display_name' => 'Tutor Destroy',
+                'description' => 'Delete tutor',
+                'resource' => 'Tutor',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'proctor-index',
+                'display_name' => 'Proctor Index',
+                'description' => 'Show all proctors',
+                'resource' => 'Proctor',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'proctor-create',
+                'display_name' => 'Proctor Create',
+                'description' => 'Create or add a new proctor',
+                'resource' => 'Proctor',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'proctor-edit',
+                'display_name' => 'Proctor Edit',
+                'description' => 'Edit proctor detail',
+                'resource' => 'Proctor',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'proctor-show',
+                'display_name' => 'Proctor Show',
+                'description' => 'Show proctor detail',
+                'resource' => 'Proctor',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'proctor-destroy',
+                'display_name' => 'Proctor Destroy',
+                'description' => 'Delete proctor',
+                'resource' => 'Proctor',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'student_tutoring_package-index',
+                'display_name' => 'Student Tutoring Package Index',
+                'description' => 'Show all packages',
+                'resource' => 'Student Tutoring Package',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'student_tutoring_package-create',
+                'display_name' => 'Student Tutoring Package Create',
+                'description' => 'Create or add a new package',
+                'resource' => 'Student Tutoring Package',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'student_tutoring_package-edit',
+                'display_name' => 'Student Tutoring Package Edit',
+                'description' => 'Edit package detail',
+                'resource' => 'Student Tutoring Package',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'student_tutoring_package-show',
+                'display_name' => 'Student Tutoring Package Show',
+                'description' => 'Show package detail',
+                'resource' => 'Student Tutoring Package',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'student_tutoring_package-destroy',
+                'display_name' => 'Student Tutoring Package Destroy',
+                'description' => 'Delete package',
+                'resource' => 'Student Tutoring Package',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'subject-index',
+                'display_name' => 'Subject Index',
+                'description' => 'Show all subjects',
+                'resource' => 'Subject',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'subject-create',
+                'display_name' => 'Subject Create',
+                'description' => 'Create or add a new subject',
+                'resource' => 'Subject',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'subject-edit',
+                'display_name' => 'Subject Edit',
+                'description' => 'Edit subject detail',
+                'resource' => 'Subject',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'subject-show',
+                'display_name' => 'Subject Show',
+                'description' => 'Show subject detail',
+                'resource' => 'Subject',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'subject-destroy',
+                'display_name' => 'Subject Destroy',
+                'description' => 'Delete subject',
+                'resource' => 'Subject',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'tutoring_location-index',
+                'display_name' => 'Tutoring Location Index',
+                'description' => 'Show all tutoring locations',
+                'resource' => 'Tutoring Location',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'tutoring_location-create',
+                'display_name' => 'Tutoring Location Create',
+                'description' => 'Create or add a new tutoring location',
+                'resource' => 'Tutoring Location',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'tutoring_location-edit',
+                'display_name' => 'Tutoring Location Edit',
+                'description' => 'Edit tutoring location detail',
+                'resource' => 'Tutoring Location',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'tutoring_location-show',
+                'display_name' => 'Tutoring Location Show',
+                'description' => 'Show tutoring location detail',
+                'resource' => 'Tutoring Location',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'tutoring_location-destroy',
+                'display_name' => 'Tutoring Location Destroy',
+                'description' => 'Delete tutoring location',
+                'resource' => 'Tutoring Location',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'tutoring_package_type-index',
+                'display_name' => 'Tutoring Package Type Index',
+                'description' => 'Show all tutoring package types',
+                'resource' => 'Tutoring Package Type',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'tutoring_package_type-create',
+                'display_name' => 'Tutoring Package Type Create',
+                'description' => 'Create or add a new package type',
+                'resource' => 'Tutoring Package Type',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'tutoring_package_type-edit',
+                'display_name' => 'Tutoring Package Type Edit',
+                'description' => 'Edit tutoring package type detail',
+                'resource' => 'Tutoring Package Type',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'tutoring_package_type-show',
+                'display_name' => 'Tutoring Package Type Show',
+                'description' => 'Show tutoring package type detail',
+                'resource' => 'Tutoring Package Type',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'tutoring_package_type-destroy',
+                'display_name' => 'Tutoring Package Type Destroy',
+                'description' => 'Delete tutoring package type',
+                'resource' => 'Tutoring Package Type',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'package_type-index',
+                'display_name' => 'Package Type Index',
+                'description' => 'Show all package types',
+                'resource' => 'Package Type',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'package_type-create',
+                'display_name' => 'Package Type Create',
+                'description' => 'Create or add a new package type',
+                'resource' => 'Package Type',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'package_type-edit',
+                'display_name' => 'Package Type Edit',
+                'description' => 'Edit package type detail',
+                'resource' => 'Package Type',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'package_type-show',
+                'display_name' => 'Package Type Show',
+                'description' => 'Show package type detail',
+                'resource' => 'Package Type',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'package_type-destroy',
+                'display_name' => 'Package Type Destroy',
+                'description' => 'Delete package type',
+                'resource' => 'Package Type',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'invoice_package_type-index',
+                'display_name' => 'Invoice Package Type Index',
+                'description' => 'Show all package types',
+                'resource' => 'Invoice Package Type',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'invoice_package_type-create',
+                'display_name' => 'Invoice Package Type Create',
+                'description' => 'Create or add a new invoice package type',
+                'resource' => 'Invoice Package Type',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'invoice_package_type-edit',
+                'display_name' => 'Invoice Package Type Edit',
+                'description' => 'Edit invoice package type detail',
+                'resource' => 'Invoice Package Type',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'invoice_package_type-show',
+                'display_name' => 'Invoice Package Type Show',
+                'description' => 'Show invoice package type detail',
+                'resource' => 'Invoice Package Type',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'invoice_package_type-destroy',
+                'display_name' => 'Invoice Package Type Destroy',
+                'description' => 'Delete invoice package type',
+                'resource' => 'Invoice Package Type',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'invoice-index',
+                'display_name' => 'Invoice Index',
+                'description' => 'Show all invoices',
+                'resource' => 'Invoice',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'invoice-create',
+                'display_name' => 'Invoice Create',
+                'description' => 'Create or add a new invoice',
+                'resource' => 'Invoice',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'invoice-edit',
+                'display_name' => 'Invoice Edit',
+                'description' => 'Edit invoice detail',
+                'resource' => 'Invoice',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'invoice-show',
+                'display_name' => 'Invoice Show',
+                'description' => 'Show invoice detail',
+                'resource' => 'Invoice',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'invoice-destroy',
+                'display_name' => 'Invoice Destroy',
+                'description' => 'Delete invoice',
+                'resource' => 'Invoice',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'tutor_dashboard-index',
+                'display_name' => 'Tutor Dashboard',
+                'description' => 'Tutor Dashboard',
+                'resource' => 'Tutor Dashboard',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'session-index',
+                'display_name' => 'Session Index',
+                'description' => 'Session Index',
+                'resource' => 'Session',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'session-create',
+                'display_name' => 'Session Create',
+                'description' => 'Session Create',
+                'resource' => 'Session',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'session-show',
+                'display_name' => 'Session Show',
+                'description' => 'Session Show',
+                'resource' => 'Session',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'session-edit',
+                'display_name' => 'Session Edit',
+                'description' => 'Session Edit',
+                'resource' => 'Session',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'session-destroy',
+                'display_name' => 'Session Destroy',
+                'description' => 'Session Destroy',
+                'resource' => 'Session',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'super_admin-dashboard',
+                'display_name' => 'Super Admin Dashboard',
+                'description' => 'Super Admin Dashboard',
+                'resource' => 'Super Admin Dashboard',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'monthly_invoice_package-index',
+                'display_name' => 'Monthly Invoice Package Index',
+                'description' => 'Show all Monthly Invoice Packages',
+                'resource' => 'Monthly Invoice Package',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'monthly_invoice_package-create',
+                'display_name' => 'Monthly Invoice Package Create',
+                'description' => 'Create or add a new Monthly Invoice Package',
+                'resource' => 'Monthly Invoice Package',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'monthly_invoice_package-edit',
+                'display_name' => 'Monthly Invoice Package Edit',
+                'description' => 'Edit Monthly Invoice Package detail',
+                'resource' => 'Monthly Invoice Package',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'monthly_invoice_package-show',
+                'display_name' => 'Monthly Invoice Package Show',
+                'description' => 'Show Monthly Invoice Package detail',
+                'resource' => 'Monthly Invoice Package',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'monthly_invoice_package-destroy',
+                'display_name' => 'Monthly Invoice Package Destroy',
+                'description' => 'Delete Monthly Invoice Package',
+                'resource' => 'Monthly Invoice Package',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+        ]);
+    }
+}
