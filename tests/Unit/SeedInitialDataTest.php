@@ -5,7 +5,7 @@ use Database\Seeders\DatabaseSeeder;
 
 it('has invoice packages seeded',function (){
     $this->seed(DatabaseSeeder::class);
-    expect(InvoicePackageType::count())->toBe(5);
+    expect(InvoicePackageType::count())->toBe(6);
 });
 it('has completion codes seeded',function (){
     $this->seed(DatabaseSeeder::class);

@@ -263,7 +263,22 @@ if (! function_exists('formatAmountWithCurrency')) {
      */
     function formatAmountWithCurrency(float $amount, $decimals = 2): string
     {
-        return '$'.number_format($amount, 2, '.', '');
+        return getCurrencySymbol().number_format($amount, 2, '.', '');
+    }
+}
+
+if (! function_exists('getCurrencySymbol')) {
+
+    function getCurrencySymbol(): mixed
+    {
+        return '$';
+//        static $currencySymbol;
+//        /** @var Setting $currencySymbol */
+//        if (empty($currencySymbol)) {
+//            $currencySymbol = Currency::where('id', getSettingValue('current_currency'))->pluck('icon')->first();
+//        }
+//
+//        return $currencySymbol;
     }
 }
 if (! function_exists('cleanAmountWithCurrencyFormat')) {
