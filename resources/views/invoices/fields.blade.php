@@ -34,8 +34,8 @@
 </div>
 <div class="form-group col-sm-12">
     <div class="mb-0">
-        <div class="col-12 text-end mb-lg-10 mb-6">
-            <button type="button" class="btn btn-primary text-start" id="addItem">
+        <div class="col-12 text-end mb-lg-10 mb-6 ">
+            <button type="button" class="btn btn-primary text-start float-right" id="addItem">
                 {{ __('messages.invoice.add') }}</button>
         </div>
         <div class="table-responsive">
@@ -54,23 +54,18 @@
                 <tbody class="invoice-item-container">
                 <tr class="tax-tr">
                     <td class="text-center item-number align-center">1</td>
-                    <td class="table__item-desc w-25">
-                        {{ Form::select('product_id[]', [], null, ['class' => 'form-control product', 'required', 'placeholder' => __('messages.flash.select_product_or_enter_free_text'), 'data-control' => 'select2']) }}
+                    <td class="w-25">
+                        {!! Form::select('product_id', $clients??[] ,null, ['class' => 'form-control','id'=>'product-id']) !!}
                     </td>
-                    <td class="table__qty">
+                    <td style="width: 10% !important;">
                         {{ Form::number('quantity[]', null, ['class' => 'form-control qty ', 'required', 'type' => 'number', 'min' => '0', 'step' => '.01', 'oninput' => "validity.valid||(value=value.replace(/[e\+\-]/gi,''))"]) }}
                     </td>
-                    <td>
+                    <td style="width: 10% !important;">
                         {{ Form::number('price[]', null, ['class' => 'form-control price-input price ', 'oninput' => "validity.valid||(value=value.replace(/[e\+\-]/gi,''))", 'min' => '0', 'value' => '0', 'step' => '.01', 'pattern' => "^\d*(\.\d{0,2})?$", 'required', 'onKeyPress' => 'if(this.value.length==8) return false;']) }}
                     </td>
-                    <td>
-                        <select name="tax[]" class='form-control  tax' data-control='select2'
-                                multiple="multiple">
-{{--                            @foreach ($taxes as $tax)--}}
-{{--                                <option value="{{ $tax->value }}" data-id="{{ $tax->id }}"--}}
-{{--                                    {{ $defaultTax == $tax->id ? 'selected' : '' }}>{{ $tax->name }}</option>--}}
-{{--                            @endforeach--}}
-                        </select>
+                    <td class="w-25">
+                        {!! Form::select('tax_id[]', $taxes??[] ,null, ['class' => 'form-control','id'=>'tax-id']) !!}
+
                     </td>
                     <td class="text-end item-total pt-8 text-nowrap">
                         <span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>0.00
@@ -78,36 +73,36 @@
                     <td class="text-end">
                         <button type="button" title="Delete"
                                 class="btn btn-icon fs-3 text-danger btn-active-color-danger delete-invoice-item">
-                            <i class="fa-solid fa-trash"></i>
+                            <i class="far fa-trash-alt"></i>
                         </button>
                     </td>
                 </tr>
                 </tbody>
             </table>
         </div>
+
         <div class="row">
-            <div class="col-lg-7 col-sm-12 mt-2 mt-lg-0 align-right-for-full-screen">
-                <div class="mb-2 col-xl-5 col-lg-8 col-sm-12 float-right">
-                    {{ Form::label('discount', __('messages.invoice.discount') . ':', ['class' => 'form-label mb-1']) }}
-                    <div class="input-group">
-                        {{ Form::number('discount', 0, ['id' => 'discount', 'class' => 'form-control ', 'oninput' => "validity.valid||(value=value.replace(/[e\+\-]/gi,''))", 'min' => '0', 'value' => '0', 'step' => '.01', 'pattern' => "^\d*(\.\d{0,2})?$"]) }}
-                        <div class="input-group-append" style="width: 210px !important;">
-                            {{ Form::select('discount_type',[], 0, ['class' => 'form-select io-select2 discount-type', 'id' => 'discountType', 'data-control' => 'select2']) }}
+            <div class="col-sm-6 mt-2 mt-lg-0 align-right-for-full-screen">
+                <div class="row">
+                    <div class="form-group col-sm-12 float-right">
+                        {!! Form::label('discount_type', 'Discount:') !!}
+                        <div class="input-group">
+                            {!!  Form::number('discount', null, ['class' => 'form-control'])  !!}
+                            <div class="input-group-append">
+                                <select class="form-control input-group-text" name="discount_type" id = 'discount-type'>
+                                    <option value="1" @if(isset($studentTutoringPackage) && $studentTutoringPackage->discount_type == \App\Models\StudentTutoringPackage::FLAT_DISCOUNT) selected @endif>Flat</option>
+                                    <option value="2" @if(isset($studentTutoringPackage) && $studentTutoringPackage->discount_type == \App\Models\StudentTutoringPackage::PERCENTAGE_DISCOUNT) selected @endif>%</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="mb-2 col-xl-5 col-lg-8 col-sm-12 float-right">
-                    {{ Form::label('tax2', __('messages.invoice.tax') . ':', ['class' => 'form-label mb-1']) }}
-                    <select name="taxes[]" class='form-select io-select2 fw-bold invoice-taxes' data-control='select2'
-                            multiple="multiple">
-{{--                        @foreach ($taxes as $tax)--}}
-{{--                            <option value="{{ $tax->id }}" data-tax="{{ $tax->value }}">{{ $tax->name }}--}}
-{{--                            </option>--}}
-{{--                        @endforeach--}}
-                    </select>
+                    <div class="form-group col-sm-12 float-right">
+                        {{ Form::label('tax2', __('messages.invoice.tax') . ':', ['class' => 'form-label mb-1']) }}
+                        {!! Form::select('tax2_id[]', $taxes??[] ,null, ['class' => 'form-control','id'=>'tax2-id']) !!}
+                    </div>
                 </div>
             </div>
-            <div class="col-xxl-3 col-lg-5 col-md-6 ms-md-auto mt-4 mb-lg-10 mb-6">
+            <div class="col-sm-6 ms-md-auto mt-4 mb-lg-10 mb-6">
                 <div class="border-top">
                     <table class="table table-borderless box-shadow-none mb-0 mt-5">
                         <tbody>
@@ -148,24 +143,7 @@
                 </div>
             </div>
         </div>
-{{--        <div class="row justify-content-left mt-lg-2 mt-0">--}}
-{{--            <div class="col-lg-12 col-md-12 col-sm-12 end justify-content-left mb-sm-0 mb-5">--}}
-{{--                <button type="button" class="btn btn-primary note" id="addNote"><i class="fas fa-plus"></i>--}}
-{{--                    {{ __('messages.invoice.add_note_term') }}</button>--}}
-{{--                <button type="button" class="btn btn-danger note" id="removeNote"><i class="fas fa-minus"></i>--}}
-{{--                    {{ __('messages.invoice.remove_note_term') }}</button>--}}
-{{--            </div>--}}
-{{--            <div class="col-lg-6 mb-0 mb-sm-5 mt-0 mt-sm-5" id="noteAdd">--}}
-{{--                {{ Form::label('note', __('messages.invoice.note') . ':', ['class' => 'form-label fs-6 mb-3']) }}--}}
-{{--                {{ Form::textarea('note', null, ['class' => 'form-control', 'id' => 'note', 'rows' => '5']) }}--}}
-{{--            </div>--}}
-{{--            <div class="col-lg-6 mb-5 mt-5" id="termRemove">--}}
-{{--                {{ Form::label('term', __('messages.invoice.terms') . ':', ['class' => 'form-label fs-6 mb-3']) }}--}}
-{{--                {{ Form::textarea('term', null, ['class' => 'form-control', 'id' => 'term', 'rows' => '5']) }}--}}
-{{--            </div>--}}
-{{--        </div>--}}
     </div>
-
 </div>
 
 <div class="modal fade" id="add-client" style="display: none;" aria-hidden="true">
@@ -282,7 +260,36 @@
                 },
                 cache: true
             },
-            placeholder: "Please type tutor email",
+            placeholder: "Please type client email",
+            escapeMarkup: function (markup) {
+                return markup;
+            }
+        });
+        $("#tax-id").select2({
+            dropdownAutoWidth: true, width: 'auto',
+            theme: 'bootstrap4',
+            minimumInputLength: 3,
+            multiple: true,
+            placeholder: "Please select tax type",
+            escapeMarkup: function (markup) {
+                return markup;
+            }
+        });
+        $("#tax2-id").select2({
+            dropdownAutoWidth: true, width: 'auto',
+            theme: 'bootstrap4',
+            minimumInputLength: 3,
+            multiple: true,
+            placeholder: "Please select tax type",
+            escapeMarkup: function (markup) {
+                return markup;
+            }
+        });
+        $("#product-id").select2({
+            dropdownAutoWidth: true, width: 'auto',
+            theme: 'bootstrap4',
+            minimumInputLength: 3,
+            placeholder: "Please type item",
             escapeMarkup: function (markup) {
                 return markup;
             }
