@@ -52,10 +52,10 @@
                 </tr>
                 </thead>
                 <tbody class="invoice-item-container">
-                <tr class="item-tr" id="item-{{$key}}">
+                <tr class="item-tr" id="item-1">
                     <td class="text-center item-number align-center">1</td>
                     <td class="w-25">
-                        <select name="item_id[]" class='form-control items' data-control='select2' id='item-id' multiple="multiple">
+                        <select name="item_id[]" class='form-control items' data-control='select2' id='item-id-1' multiple="multiple">
                             @foreach ($items as $item)
                                 <option value="{{ $item->id }}" data-tax="{{ $item->price }}">{{ $item->name }}
                                 </option>
@@ -69,7 +69,7 @@
                         {{ Form::number('price[]', null, ['class' => 'form-control price-input price ', 'oninput' => "validity.valid||(value=value.replace(/[e\+\-]/gi,''))", 'min' => '0', 'value' => '0', 'step' => '.01', 'pattern' => "^\d*(\.\d{0,2})?$", 'required', 'onKeyPress' => 'if(this.value.length==8) return false;']) }}
                     </td>
                     <td class="w-25">
-                        <select name="tax_id[]" class='form-control taxes' data-control='select2' id='tax-id' multiple="multiple">
+                        <select name="tax_id[]" class='form-control taxes' data-control='select2' id='tax-id-0' multiple="multiple">
                             @foreach ($taxes as $tax)
                                 <option value="{{ $tax->id }}" data-tax="{{ $tax->value }}">{{ $tax->name }}
                                 </option>
@@ -315,12 +315,25 @@
                 {
                     toastr.success(response.message);
                     $(`.item-tr:last`).after(response);
-                    $(`#${type}-sp-currency-${nextId}`).select2()
-                    $(`#${type}-sp-servicefee-type-${nextId}`).select2()
-                    stopSpinner(`${type}`,`${type}-loading`)
+                    $(`#item-id-${nextId}`).select2({
+                        dropdownAutoWidth: true, width: 'auto',
+                        theme: 'bootstrap4',
+                        minimumInputLength: 3,
+                        placeholder: "Please type item",
+                        escapeMarkup: function (markup) {
+                            return markup;
+                        }
+                    })
+                    $(`#tax-id-${nextId}`).select2({
+                        dropdownAutoWidth: true, width: 'auto',
+                        theme: 'bootstrap4',
+                        multiple: true,
+                        placeholder: "Please select tax type",
+
+                    })
+
                 },
                 error: function (xhr, status, error) {
-                    $("input[type='submit']").attr("disabled", false);
                     if (xhr.status === 422) {
                         $.each(xhr.responseJSON.errors, function (key, item) {
                             toastr.error(item[0]);
@@ -333,8 +346,6 @@
                     }
                 }
             });
-
-
         })
     </script>
 @endpush

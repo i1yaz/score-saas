@@ -1,7 +1,7 @@
-<tr class="tax-tr">
+<tr class="item-tr" id="item-{{$id}}">
     <td class="text-center item-number align-center">1</td>
     <td class="w-25">
-        <select name="item_id[]" class='form-control items' data-control='select2' id='item-id' multiple="multiple">
+        <select name="item_id[]" class='form-control items' data-control='select2' id="item-id-{{$id}}" multiple="multiple">
             @foreach ($items as $item)
                 <option value="{{ $item->id }}" data-tax="{{ $item->price }}">{{ $item->name }}
                 </option>
@@ -15,7 +15,7 @@
         {{ Form::number('price[]', null, ['class' => 'form-control price-input price ', 'oninput' => "validity.valid||(value=value.replace(/[e\+\-]/gi,''))", 'min' => '0', 'value' => '0', 'step' => '.01', 'pattern' => "^\d*(\.\d{0,2})?$", 'required', 'onKeyPress' => 'if(this.value.length==8) return false;']) }}
     </td>
     <td class="w-25">
-        <select name="tax_id[]" class='form-control taxes' data-control='select2' id='tax-id' multiple="multiple">
+        <select name="tax_id[]" class='form-control taxes' data-control='select2' id="tax-id-{{$id}}" multiple="multiple">
             @foreach ($taxes as $tax)
                 <option value="{{ $tax->id }}" data-tax="{{ $tax->value }}">{{ $tax->name }}
                 </option>
@@ -27,7 +27,7 @@
     </td>
     <td class="text-end">
         <button type="button" title="Delete"
-                class="btn btn-icon fs-3 text-danger btn-active-color-danger delete-invoice-item">
+                class="btn btn-icon fs-3 text-danger btn-active-color-danger" id="delete-item-{{$id}}">
             <i class="far fa-trash-alt"></i>
         </button>
     </td>
