@@ -71,20 +71,20 @@ return [
         'copy_invoice_url' => 'Copy Invoice URL'
     ],
 
-    'product' => [
-        'add_product' => 'Add Product',
-        'edit_product' => 'Edit Product',
+    'item' => [
+        'add_item' => 'Add Item',
+        'edit_item' => 'Edit Item',
         'image' => 'Image',
         'name' => 'Name',
-        'code' => 'Product Code',
+        'code' => 'Item Code',
         'category' => 'Category',
         'price' => 'Price',
         'unit_price' => 'Unit Price',
         'description' => 'Description',
-        'product' => 'Product',
+        'item' => 'Item',
         'updated_at' => 'Updated At',
-        'product_name' => 'Product Name',
-        'product_details' => 'Product Details',
+        'item_name' => 'Item Name',
+        'item_details' => 'Item Details',
     ],
     'common' => [
         'save' => 'Save',

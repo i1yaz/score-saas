@@ -4,6 +4,7 @@ use App\Models\Invoice;
 use App\Models\MonthlyInvoicePackage;
 use App\Models\MonthlyInvoicePackageTutor;
 use App\Models\StudentTutoringPackage;
+use App\Models\Tax;
 use App\Models\Tutor;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -627,5 +628,12 @@ if (!function_exists('getPriceFromMonthlyInvoicePackage')){
     {
         \App\Models\Session::select(['id','monthly_invoice_package_id','start_time','end_time','scheduled_date','session_completion_code','attended_start_time','attended_end_time','charge_missed_time'])
             ->where('monthly_invoice_package_id',$monthlyInvoicePackage->id)->get();
+    }
+}
+if (!function_exists('addLineItem')){
+    function addLineItem(): string
+    {
+        $taxes = Tax::select(['id','name','value'])->get();
+        return view('taxes.line-item',['taxes' => $taxes])->render();
     }
 }

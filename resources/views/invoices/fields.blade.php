@@ -35,7 +35,7 @@
 <div class="form-group col-sm-12">
     <div class="mb-0">
         <div class="col-12 text-end mb-lg-10 mb-6 ">
-            <button type="button" class="btn btn-primary text-start float-right" id="addItem">
+            <button type="button" class="btn btn-primary text-start float-right" id="add-item">
                 {{ __('messages.invoice.add') }}</button>
         </div>
         <div class="table-responsive">
@@ -43,19 +43,24 @@
                 <thead>
                 <tr class="border-bottom fs-7 fw-bolder text-gray-700 text-uppercase">
                     <th scope="col">#</th>
-                    <th scope="col" class="required">{{ __('messages.product.product') }}</th>
+                    <th scope="col" class="required">{{ __('messages.item.item') }}</th>
                     <th scope="col" class="required">{{ __('messages.invoice.qty') }}</th>
-                    <th scope="col" class="required">{{ __('messages.product.unit_price') }}</th>
+                    <th scope="col" class="required">{{ __('messages.item.unit_price') }}</th>
                     <th scope="col">{{ __('messages.invoice.tax') }}</th>
                     <th scope="col" class="required">{{ __('messages.invoice.amount') }}</th>
                     <th scope="col" class="text-end">{{ __('messages.common.action') }}</th>
                 </tr>
                 </thead>
                 <tbody class="invoice-item-container">
-                <tr class="tax-tr">
+                <tr class="item-tr" id="item-{{$key}}">
                     <td class="text-center item-number align-center">1</td>
                     <td class="w-25">
-                        {!! Form::select('product_id', $clients??[] ,null, ['class' => 'form-control','id'=>'product-id']) !!}
+                        <select name="item_id[]" class='form-control items' data-control='select2' id='item-id' multiple="multiple">
+                            @foreach ($items as $item)
+                                <option value="{{ $item->id }}" data-tax="{{ $item->price }}">{{ $item->name }}
+                                </option>
+                            @endforeach
+                        </select>
                     </td>
                     <td style="width: 10% !important;">
                         {{ Form::number('quantity[]', null, ['class' => 'form-control qty ', 'required', 'type' => 'number', 'min' => '0', 'step' => '.01', 'oninput' => "validity.valid||(value=value.replace(/[e\+\-]/gi,''))"]) }}
@@ -64,7 +69,7 @@
                         {{ Form::number('price[]', null, ['class' => 'form-control price-input price ', 'oninput' => "validity.valid||(value=value.replace(/[e\+\-]/gi,''))", 'min' => '0', 'value' => '0', 'step' => '.01', 'pattern' => "^\d*(\.\d{0,2})?$", 'required', 'onKeyPress' => 'if(this.value.length==8) return false;']) }}
                     </td>
                     <td class="w-25">
-                        <select name="tax_id[]" class='form-control' data-control='select2' id='tax-id' multiple="multiple">
+                        <select name="tax_id[]" class='form-control taxes' data-control='select2' id='tax-id' multiple="multiple">
                             @foreach ($taxes as $tax)
                                 <option value="{{ $tax->id }}" data-tax="{{ $tax->value }}">{{ $tax->name }}
                                 </option>
@@ -76,7 +81,7 @@
                     </td>
                     <td class="text-end">
                         <button type="button" title="Delete"
-                                class="btn btn-icon fs-3 text-danger btn-active-color-danger delete-invoice-item">
+                                class="btn btn-icon fs-3 text-danger btn-active-color-danger" id="delete-item-1">
                             <i class="far fa-trash-alt"></i>
                         </button>
                     </td>
@@ -102,7 +107,7 @@
                     </div>
                     <div class="form-group col-sm-12 float-right">
                         {{ Form::label('tax2', __('messages.invoice.tax') . ':', ['class' => 'form-label mb-1']) }}
-                        <select name="tax2_id[]" class='form-control' data-control='select2' id='tax2-id' multiple="multiple">
+                        <select name="tax2_id[]" class='form-control taxes' data-control='select2' id='tax2-id' multiple="multiple">
                             @foreach ($taxes as $tax)
                                 <option value="{{ $tax->id }}" data-tax="{{ $tax->value }}">{{ $tax->name }}
                                 </option>
@@ -274,21 +279,15 @@
                 return markup;
             }
         });
-        $("#tax-id").select2({
+        $(".taxes").select2({
             dropdownAutoWidth: true, width: 'auto',
             theme: 'bootstrap4',
             multiple: true,
             placeholder: "Please select tax type",
 
         });
-        $("#tax2-id").select2({
-            dropdownAutoWidth: true, width: 'auto',
-            theme: 'bootstrap4',
-            multiple: true,
-            placeholder: "Please select tax type",
 
-        });
-        $("#product-id").select2({
+        $("#item-id").select2({
             dropdownAutoWidth: true, width: 'auto',
             theme: 'bootstrap4',
             minimumInputLength: 3,
@@ -297,5 +296,45 @@
                 return markup;
             }
         });
+        $('#add-item').on('click',function (){
+
+            let lastId = $(`.item-tr:last`).attr("id");
+            let splitId = lastId.split("-");
+            console.log(splitId)
+            let nextId = Number(splitId[1]) + 1;
+
+            let data = {
+                'nextId':nextId,
+            }
+
+            $.ajax({
+                type: "get",
+                url: {{route('getNewLineItem')}},
+                data: data,
+                success: function(response)
+                {
+                    toastr.success(response.message);
+                    $(`.item-tr:last`).after(response);
+                    $(`#${type}-sp-currency-${nextId}`).select2()
+                    $(`#${type}-sp-servicefee-type-${nextId}`).select2()
+                    stopSpinner(`${type}`,`${type}-loading`)
+                },
+                error: function (xhr, status, error) {
+                    $("input[type='submit']").attr("disabled", false);
+                    if (xhr.status === 422) {
+                        $.each(xhr.responseJSON.errors, function (key, item) {
+                            toastr.error(item[0]);
+                        });
+                    } else if(xhr.status === 404){
+                        let response = xhr.responseJSON
+                        toastr.error(response.message);
+                    } else {
+                        toastr.error("something went wrong");
+                    }
+                }
+            });
+
+
+        })
     </script>
 @endpush
