@@ -156,3 +156,5 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor']], function () {
     Route::post('clients', [ClientController::class, 'store'])->name('clients.store')->middleware(['permission:client-create']);
 
 });
+
+Route::resource('taxes', App\Http\Controllers\TaxController::class);

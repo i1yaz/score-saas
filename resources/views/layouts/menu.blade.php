@@ -142,6 +142,13 @@
             </a>
         </li>
         @endpermission
+        @permission('tax-index')
+        <li class="nav-item">
+            <a href="{{ route('taxes.index') }}" class="nav-link {{ Request::is('taxes*') ? 'active' : '' }}">
+                <p>Taxes</p>
+            </a>
+        </li>
+        @endpermission
     </ul>
 </li>
 @endpermission

@@ -64,8 +64,14 @@
                         {{ Form::number('price[]', null, ['class' => 'form-control price-input price ', 'oninput' => "validity.valid||(value=value.replace(/[e\+\-]/gi,''))", 'min' => '0', 'value' => '0', 'step' => '.01', 'pattern' => "^\d*(\.\d{0,2})?$", 'required', 'onKeyPress' => 'if(this.value.length==8) return false;']) }}
                     </td>
                     <td class="w-25">
-                        {!! Form::select('tax_id[]', $taxes??[] ,null, ['class' => 'form-control','id'=>'tax-id']) !!}
-
+                        {!! Form::select('tax_id[]', $taxes??[] ,null, ['class' => 'form-control',]) !!}
+                        <select name="tax_id[]" class='form-control' data-control='select2' id='tax-id'
+                                multiple="multiple">
+                            @foreach ($taxes as $tax)
+                                <option value="{{ $tax->id }}" data-tax="{{ $tax->value }}">{{ $tax->name }}
+                                </option>
+                            @endforeach
+                        </select>
                     </td>
                     <td class="text-end item-total pt-8 text-nowrap">
                         <span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>0.00

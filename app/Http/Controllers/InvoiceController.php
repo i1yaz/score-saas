@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\DataTables\InvoiceDataTable;
 use App\Http\Requests\CreateInvoiceRequest;
 use App\Http\Requests\UpdateInvoiceRequest;
+use App\Models\Tax;
 use App\Repositories\InvoiceRepository;
 use Flash;
 use Illuminate\Http\Request;
@@ -64,7 +65,8 @@ class InvoiceController extends AppBaseController
      */
     public function create()
     {
-        return view('invoices.create');
+        $taxes = Tax::select(['id','name','value'])->get();
+        return view('invoices.create',['taxes'=>$taxes]);
     }
 
     /**

@@ -637,6 +637,47 @@ class PermissionSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ],
+            //Taxes
+            [
+                'name' => 'tax-index',
+                'display_name' => 'Tax Index',
+                'description' => 'Tax Index',
+                'resource' => 'Tax',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'tax-create',
+                'display_name' => 'Tax Create',
+                'description' => 'Tax Create',
+                'resource' => 'Tax',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'tax-show',
+                'display_name' => 'Tax Show',
+                'description' => 'Tax Show',
+                'resource' => 'Tax',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'tax-edit',
+                'display_name' => 'Tax Edit',
+                'description' => 'Tax Edit',
+                'resource' => 'Tax',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'tax-destroy',
+                'display_name' => 'Tax Destroy',
+                'description' => 'Tax Destroy',
+                'resource' => 'Tax',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
         ]);
     }
 }
