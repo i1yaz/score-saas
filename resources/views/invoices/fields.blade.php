@@ -64,9 +64,7 @@
                         {{ Form::number('price[]', null, ['class' => 'form-control price-input price ', 'oninput' => "validity.valid||(value=value.replace(/[e\+\-]/gi,''))", 'min' => '0', 'value' => '0', 'step' => '.01', 'pattern' => "^\d*(\.\d{0,2})?$", 'required', 'onKeyPress' => 'if(this.value.length==8) return false;']) }}
                     </td>
                     <td class="w-25">
-                        {!! Form::select('tax_id[]', $taxes??[] ,null, ['class' => 'form-control',]) !!}
-                        <select name="tax_id[]" class='form-control' data-control='select2' id='tax-id'
-                                multiple="multiple">
+                        <select name="tax_id[]" class='form-control' data-control='select2' id='tax-id' multiple="multiple">
                             @foreach ($taxes as $tax)
                                 <option value="{{ $tax->id }}" data-tax="{{ $tax->value }}">{{ $tax->name }}
                                 </option>
@@ -96,15 +94,20 @@
                             {!!  Form::number('discount', null, ['class' => 'form-control'])  !!}
                             <div class="input-group-append">
                                 <select class="form-control input-group-text" name="discount_type" id = 'discount-type'>
-                                    <option value="1" @if(isset($studentTutoringPackage) && $studentTutoringPackage->discount_type == \App\Models\StudentTutoringPackage::FLAT_DISCOUNT) selected @endif>Flat</option>
-                                    <option value="2" @if(isset($studentTutoringPackage) && $studentTutoringPackage->discount_type == \App\Models\StudentTutoringPackage::PERCENTAGE_DISCOUNT) selected @endif>%</option>
+                                    <option value="1" @if(isset($studentTutoringPackage) && $studentTutoringPackage->discount_type == \App\Models\Tax::FLAT_DISCOUNT) selected @endif>Flat</option>
+                                    <option value="2" @if(isset($studentTutoringPackage) && $studentTutoringPackage->discount_type == \App\Models\Tax::PERCENTAGE_DISCOUNT) selected @endif>%</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="form-group col-sm-12 float-right">
                         {{ Form::label('tax2', __('messages.invoice.tax') . ':', ['class' => 'form-label mb-1']) }}
-                        {!! Form::select('tax2_id[]', $taxes??[] ,null, ['class' => 'form-control','id'=>'tax2-id']) !!}
+                        <select name="tax2_id[]" class='form-control' data-control='select2' id='tax2-id' multiple="multiple">
+                            @foreach ($taxes as $tax)
+                                <option value="{{ $tax->id }}" data-tax="{{ $tax->value }}">{{ $tax->name }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
             </div>
@@ -274,22 +277,16 @@
         $("#tax-id").select2({
             dropdownAutoWidth: true, width: 'auto',
             theme: 'bootstrap4',
-            minimumInputLength: 3,
             multiple: true,
             placeholder: "Please select tax type",
-            escapeMarkup: function (markup) {
-                return markup;
-            }
+
         });
         $("#tax2-id").select2({
             dropdownAutoWidth: true, width: 'auto',
             theme: 'bootstrap4',
-            minimumInputLength: 3,
             multiple: true,
             placeholder: "Please select tax type",
-            escapeMarkup: function (markup) {
-                return markup;
-            }
+
         });
         $("#product-id").select2({
             dropdownAutoWidth: true, width: 'auto',

@@ -18,10 +18,12 @@ class Tax extends Model
         'name' => 'string',
         'value' => 'decimal:2'
     ];
+    const FLAT_DISCOUNT = 1;
 
+    const PERCENTAGE_DISCOUNT = 2;
     public static array $rules = [
-        
+
     ];
 
-    
+
 }
