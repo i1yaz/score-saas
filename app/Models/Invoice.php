@@ -58,7 +58,8 @@ class Invoice extends Model
     ];
 
     public static array $rules = [
-
+        'client_id' => 'required',
+        'due_date' => 'required',
     ];
 
     /**

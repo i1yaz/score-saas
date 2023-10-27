@@ -77,7 +77,7 @@ class InvoiceController extends AppBaseController
     public function store(CreateInvoiceRequest $request)
     {
         $input = $request->all();
-
+        dd($input);
         $invoice = $this->invoiceRepository->create($input);
 
         Flash::success('Invoice saved successfully.');

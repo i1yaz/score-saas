@@ -165,7 +165,6 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor']], function () {
     Route::get('taxes/{tax}/edit', [TaxController::class, 'edit'])->name('taxes.edit')->middleware(['permission:tax-edit']);
     Route::patch('taxes/{tax}', [TaxController::class, 'update'])->name('taxes.update')->middleware(['permission:tax-edit']);
     Route::delete('taxes/{tax}', [TaxController::class, 'destroy'])->name('taxes.destroy')->middleware(['permission:tax-destroy']);
-    Route::get('get-new-line-item', [TaxController::class, 'getNewLineItem'])->name('get-new-line-item');
 
     //LineItems
     Route::get('line-items', [LineItemController::class, 'index'])->name('line-items.index')->middleware(['permission:line_item-index']);
@@ -175,6 +174,7 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor']], function () {
     Route::get('line-items/{line_item}/edit', [LineItemController::class, 'edit'])->name('line-items.edit')->middleware(['permission:line_item-edit']);
     Route::patch('line-items/{line_item}', [LineItemController::class, 'update'])->name('line-items.update')->middleware(['permission:line_item-edit']);
     Route::delete('line-items/{line_item}', [LineItemController::class, 'destroy'])->name('line-items.destroy')->middleware(['permission:line_item-destroy']);
+    Route::get('get-new-line-item', [LineItemController::class, 'getNewLineItem'])->name('get-new-line-item');
 
 
 });

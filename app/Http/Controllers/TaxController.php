@@ -138,14 +138,5 @@ class TaxController extends AppBaseController
 
         return redirect(route('taxes.index'));
     }
-    public function getNewLineItem(Request $request){
-        $nextId = $request->nextId;
-        $taxes = Tax::active()->select(['id','name','value'])->get();
-        $items = LineItem::active()->select(['id','name','price'])->get();
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Line Item added',
-            'html' => view('taxes.line-item',['taxes' => $taxes,'items' => $items,'id' => $nextId])->render()
-        ]);
-    }
+
 }

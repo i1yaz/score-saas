@@ -56,7 +56,7 @@
                 <tr class="item-tr" id="item-1">
                     <td class="text-center item-number align-center">1</td>
                     <td class="w-25">
-                        <select name="item_id[]" class='form-control items' data-control='select2' id='item-id-1'>
+                        <select name="item_id[1]" class='form-control items' data-control='select2' id='item-id-1'>
                             <option >Select Line Item</option>
                             @foreach ($items as $item)
                                 <option value="{{ $item->id }}" data-price="{{ $item->price }}">{{ $item->name }}
@@ -65,13 +65,13 @@
                         </select>
                     </td>
                     <td style="width: 10% !important;">
-                        {{ Form::number('quantity[]', null, ['class' => 'form-control qty', 'required','id'=>'item-quantity-1' ,'type' => 'number', 'min' => '0', 'step' => '.01', 'oninput' => "validity.valid||(value=value.replace(/[e\+\-]/gi,''))"]) }}
+                        {{ Form::number('quantity[1]', null, ['class' => 'form-control qty', 'required','id'=>'item-quantity-1' ,'type' => 'number', 'min' => '0', 'step' => '.01', 'oninput' => "validity.valid||(value=value.replace(/[e\+\-]/gi,''))"]) }}
                     </td>
                     <td style="width: 10% !important;">
-                        {{ Form::number('price[]', null, ['class' => 'form-control price-input price ','id'=>'item-price-1' , 'oninput' => "validity.valid||(value=value.replace(/[e\+\-]/gi,''))", 'min' => '0', 'value' => '0', 'step' => '.01', 'pattern' => "^\d*(\.\d{0,2})?$", 'required', 'onKeyPress' => 'if(this.value.length==8) return false;']) }}
+                        {{ Form::number('price[1]', null, ['class' => 'form-control price-input price ','id'=>'item-price-1' , 'oninput' => "validity.valid||(value=value.replace(/[e\+\-]/gi,''))", 'min' => '0', 'value' => '0', 'step' => '.01', 'pattern' => "^\d*(\.\d{0,2})?$", 'required', 'onKeyPress' => 'if(this.value.length==8) return false;']) }}
                     </td>
                     <td class="w-25">
-                        <select name="tax_id[]" class='form-control taxes' data-control='select2' id='tax-id-1' multiple="multiple">
+                        <select name="tax_id[][1]" class='form-control taxes' data-control='select2' id='tax-id-1' multiple="multiple">
                             @foreach ($taxes as $tax)
                                 <option value="{{ $tax->id }}" data-tax="{{ $tax->value }}">{{ $tax->name }}
                                 </option>
@@ -97,7 +97,7 @@
                     <div class="form-group col-sm-12 float-right">
                         {!! Form::label('discount_type', 'Discount:') !!}
                         <div class="input-group">
-                            {!!  Form::number('discount', null, ['class' => 'form-control'])  !!}
+                            {!!  Form::number('discount', null, ['class' => 'form-control','id'=>'discount'])  !!}
                             <div class="input-group-append">
                                 <select class="form-control input-group-text" name="discount_type" id ='discountType'>
                                     <option value="1" @if(isset($studentTutoringPackage) && $studentTutoringPackage->discount_type == \App\Models\Tax::FLAT_DISCOUNT) selected @endif>Flat</option>
@@ -229,7 +229,6 @@
                 type: $(this).attr('method'),
                 data: $(this).serialize(),
                 success: function (response) {
-                    console.log(response)
                     toastr.success(response.message);
                     $("input[type='submit']").attr("disabled", false);
                     window.location = response.redirectTo
@@ -305,7 +304,6 @@
 
             let lastId = $(`.item-tr:last`).attr("id");
             let splitId = lastId.split("-");
-            console.log(splitId)
             let nextId = Number(splitId[1]) + 1;
 
             let data = {
@@ -347,56 +345,184 @@
                 }
             });
         })
-        $(document).on('click', '.delete-item', function () {
-            let totalItems = $('.delete-item').length -1;
-            let id = $(this).attr('id');
-            console.log(id)
-            console.log(`Total items ${totalItems}`)
-            let splitId = id.split("-");
-            let itemId = splitId[2];
-            if(totalItems<1){
-                toastr.error("You can't delete this item");
-                return false;
+        $(document).on('change','#discountType',function (){
+            calculateTotal();
+        });
+        $(document).on('change keyup','#discount',function (){
+            calculateTotal();
+        });
+        $(document).on('change','.taxes-2',function (){
+            let attributeId = $(this).attr('id')
+            let splitId = attributeId.split("-");
+            let price = $(`#item-price-${splitId[2]}`).val()
+            let qty = $(`#item-quantity-${splitId[2]}`).val()
+            let total = price * qty
+            let tax = $(this).select2('data');
+            let totalTax = 0;
+            if(tax == null){
+                tax = 0;
+                totalTax = total * tax / 100
             }else{
-                $(`#item-${itemId}`).remove();
-                // calculateTotal();
-                toastr.success("Item deleted successfully");
+                tax.forEach(function (item){
+                    tax = parseFloat(item.element.dataset.tax)
+                    totalTax = total * tax / 100
+                    total = total+totalTax;
+                })
             }
-
+            let amount = (total).toFixed(2);
+            $(`#item-${splitId[2]}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${amount}`)
+            calculateTotal();
+        })
+        $(document).on('change','.taxes',function (){
+            let attributeId = $(this).attr('id')
+            let splitId = attributeId.split("-");
+            let price = $(`#item-price-${splitId[2]}`).val()
+            let qty = $(`#item-quantity-${splitId[2]}`).val()
+            console.log(qty)
+            let total = price * qty
+            let tax = $(this).select2('data');
+            let totalTax = 0;
+            if(tax == null){
+                tax = 0;
+                totalTax = total * tax / 100
+            }else{
+                tax.forEach(function (item){
+                    tax = parseFloat(item.element.dataset.tax)
+                    totalTax = total * tax / 100
+                    total = total+totalTax;
+                })
+            }
+            let amount = (total).toFixed(2);
+            $(`#item-${splitId[2]}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${amount}`)
+            calculateTotal();
+        });
+        $(document).on('click', '.delete-item', function () {
+            let attributeId = $(this).attr('id')
+            let splitId = attributeId.split("-");
+            $(`#item-${splitId[2]}`).remove();
+            calculateTotal();
         });
         $(document).on('change','.items',function (){
             let attributeId = $(this).attr('id')
             let splitId = attributeId.split("-");
-            let id = $(this).val()
-
-            let price = $(this).find(':selected').data('price')
-            $(`#${attributeId}`).closest('tr').find('.price-input').val(price)
-            $(`#${attributeId}`).closest('tr').find('.qty').val(1)
-            $(`#${attributeId}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${price}`)
-            // calculateTotal();
-
+            let price = $(this).select2('data');
+            if(price == null){
+                price = 0;
+            }else{
+                price = parseFloat(price[0].element.dataset.price)
+            }
+            $(`#item-price-${splitId[2]}`).val(price)
+            let qty = $(`#item-quantity-${splitId[2]}`).val()
+            if(qty == null || qty === ''){
+                $(`#item-quantity-${splitId[2]}`).val(1)
+                qty = 1;
+            }
+            console.log(qty)
+            let total = price * qty
+            let tax = $(`#tax-id-${splitId[2]}`).select2('data');
+            let totalTax = 0;
+            if(tax == null){
+                tax = 0;
+                totalTax = total * tax / 100
+            }else{
+                tax.forEach(function (item){
+                    tax = parseFloat(item.element.dataset.tax)
+                    totalTax = total * tax / 100
+                    total = total+totalTax;
+                })
+            }
+            let amount = (total).toFixed(2);
+            $(`#item-${splitId[2]}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${amount}`)
+            calculateTotal();
         });
         $(document).on('change keyup','.qty',function (){
             let attributeId = $(this).attr('id')
             let splitId = attributeId.split("-");
-            let id = $(this).val()
-            let price = $(`#item-price-${splitId[2]}`).val()
-            let total = price * id
-            $(`#item-${splitId[2]}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${total}`)
-            // calculateTotal();
-        });
-        $(document).on('change','.taxes',function (){
-            let attributeId = $(this).attr('id')
-            let splitId = attributeId.split("-");
-            let id = $(this).val()
-            let tax = $(this).find(':selected').data('tax')
             let price = $(`#item-price-${splitId[2]}`).val()
             let qty = $(`#item-quantity-${splitId[2]}`).val()
             let total = price * qty
-            let totalTax = total * tax / 100
-            console.log(splitId)
-            $(`#item-${splitId[2]}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${total + totalTax}`)
-            // calculateTotal();
+            let tax = $(`#tax-id-${splitId[2]}`).select2('data');
+            let totalTax = 0;
+            if(tax == null){
+                tax = 0;
+                totalTax = total * tax / 100
+            }else{
+                tax.forEach(function (item){
+                    tax = parseFloat(item.element.dataset.tax)
+                    totalTax = total * tax / 100
+                    total = total+totalTax;
+                })
+            }
+            let amount = (total).toFixed(2);
+            $(`#item-${splitId[2]}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${amount}`)
+            calculateTotal();
         });
+
+        $(document).on('change keyup','.price-input',function (){
+            let attributeId = $(this).attr('id')
+            let splitId = attributeId.split("-");
+            let price = $(`#item-price-${splitId[2]}`).val()
+            let qty = $(`#item-quantity-${splitId[2]}`).val()
+            let total = price * qty
+            let tax = $(`#tax-id-${splitId[2]}`).select2('data');
+            let totalTax = 0;
+            if(tax == null){
+                tax = 0;
+                totalTax = total * tax / 100
+            }else{
+                tax.forEach(function (item){
+                    tax = parseFloat(item.element.dataset.tax)
+                    totalTax = total * tax / 100
+                    total = total+totalTax;
+                })
+            }
+            let amount = (total).toFixed(2);
+            $(`#item-${splitId[2]}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${amount}`)
+            calculateTotal();
+        });
+
+        function calculateTotal(){
+            let total = 0;
+            let totalTax = 0;
+            let totalDiscount = 0;
+            let finalAmount = 0;
+            let subtotal = 0;
+            let discountType = parseInt($("#discountType").val());
+            let discountAmount = parseFloat($("#discount").val());
+            if(isNaN(discountAmount)){
+                discountAmount = 0;
+            }
+            $(".item-total").each(function() {
+                let amount = $(this).text();
+                amount = amount.replace(/[^0-9.-]+/g,"");
+                total = total + parseFloat(amount);
+            });
+
+            if(discountType === 1){
+                totalDiscount = discountAmount;
+            }else if(discountType === 2){
+                totalDiscount = total * discountAmount / 100;
+            }
+            subtotal = total
+            total = total - totalDiscount
+            $(".taxes-2").each(function() {
+                let tax = $(this).select2('data');
+                if(tax == null){
+                    tax = 0;
+                }else{
+                    tax.forEach(function (item){
+                        tax = parseFloat(item.element.dataset.tax)
+                        totalTax = total * tax / 100
+                        total = total+totalTax;
+                    })
+                }
+            });
+            finalAmount = total;
+            $("#total").text(subtotal.toFixed(2));
+            $("#totalTax").text(totalTax.toFixed(2));
+            $("#discountAmount").text(totalDiscount.toFixed(2));
+            $("#finalAmount").text(finalAmount.toFixed(2));
+
+        }
     </script>
 @endpush
