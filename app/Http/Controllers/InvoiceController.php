@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\DataTables\InvoiceDataTable;
 use App\Http\Requests\CreateInvoiceRequest;
 use App\Http\Requests\UpdateInvoiceRequest;
+use App\Models\LineItem;
 use App\Models\Tax;
 use App\Repositories\InvoiceRepository;
 use Flash;
@@ -65,8 +66,9 @@ class InvoiceController extends AppBaseController
      */
     public function create()
     {
+        $items = LineItem::all();
         $taxes = Tax::select(['id','name','value'])->get();
-        return view('invoices.create',['taxes'=>$taxes]);
+        return view('invoices.create',['taxes'=>$taxes,'items' => $items]);
     }
 
     /**

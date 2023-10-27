@@ -678,6 +678,47 @@ class PermissionSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ],
+            //LineItems
+            [
+                'name' => 'line_item-index',
+                'display_name' => 'LineItem Index',
+                'description' => 'LineItem Index',
+                'resource' => 'LineItem',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'line_item-create',
+                'display_name' => 'LineItem Create',
+                'description' => 'LineItem Create',
+                'resource' => 'LineItem',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'line_item-show',
+                'display_name' => 'LineItem Show',
+                'description' => 'LineItem Show',
+                'resource' => 'LineItem',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'line_item-edit',
+                'display_name' => 'LineItem Edit',
+                'description' => 'LineItem Edit',
+                'resource' => 'LineItem',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'line_item-destroy',
+                'display_name' => 'LineItem Destroy',
+                'description' => 'LineItem Destroy',
+                'resource' => 'LineItem',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
         ]);
     }
 }

@@ -35,7 +35,7 @@
 <div class="form-group col-sm-12">
     <div class="mb-0">
         <div class="col-12 text-end mb-lg-10 mb-6 ">
-            <button type="button" class="btn btn-primary text-start float-right" id="add-item">
+            <button type="button" class="btn btn-primary text-start float-right" id="addItem">
                 {{ __('messages.invoice.add') }}</button>
         </div>
         <div class="table-responsive">
@@ -51,25 +51,27 @@
                     <th scope="col" class="text-end">{{ __('messages.common.action') }}</th>
                 </tr>
                 </thead>
+
                 <tbody class="invoice-item-container">
                 <tr class="item-tr" id="item-1">
                     <td class="text-center item-number align-center">1</td>
                     <td class="w-25">
-                        <select name="item_id[]" class='form-control items' data-control='select2' id='item-id-1' multiple="multiple">
+                        <select name="item_id[]" class='form-control items' data-control='select2' id='item-id-1'>
+                            <option >Select Line Item</option>
                             @foreach ($items as $item)
-                                <option value="{{ $item->id }}" data-tax="{{ $item->price }}">{{ $item->name }}
+                                <option value="{{ $item->id }}" data-price="{{ $item->price }}">{{ $item->name }}
                                 </option>
                             @endforeach
                         </select>
                     </td>
                     <td style="width: 10% !important;">
-                        {{ Form::number('quantity[]', null, ['class' => 'form-control qty ', 'required', 'type' => 'number', 'min' => '0', 'step' => '.01', 'oninput' => "validity.valid||(value=value.replace(/[e\+\-]/gi,''))"]) }}
+                        {{ Form::number('quantity[]', null, ['class' => 'form-control qty', 'required','id'=>'item-quantity-1' ,'type' => 'number', 'min' => '0', 'step' => '.01', 'oninput' => "validity.valid||(value=value.replace(/[e\+\-]/gi,''))"]) }}
                     </td>
                     <td style="width: 10% !important;">
-                        {{ Form::number('price[]', null, ['class' => 'form-control price-input price ', 'oninput' => "validity.valid||(value=value.replace(/[e\+\-]/gi,''))", 'min' => '0', 'value' => '0', 'step' => '.01', 'pattern' => "^\d*(\.\d{0,2})?$", 'required', 'onKeyPress' => 'if(this.value.length==8) return false;']) }}
+                        {{ Form::number('price[]', null, ['class' => 'form-control price-input price ','id'=>'item-price-1' , 'oninput' => "validity.valid||(value=value.replace(/[e\+\-]/gi,''))", 'min' => '0', 'value' => '0', 'step' => '.01', 'pattern' => "^\d*(\.\d{0,2})?$", 'required', 'onKeyPress' => 'if(this.value.length==8) return false;']) }}
                     </td>
                     <td class="w-25">
-                        <select name="tax_id[]" class='form-control taxes' data-control='select2' id='tax-id-0' multiple="multiple">
+                        <select name="tax_id[]" class='form-control taxes' data-control='select2' id='tax-id-1' multiple="multiple">
                             @foreach ($taxes as $tax)
                                 <option value="{{ $tax->id }}" data-tax="{{ $tax->value }}">{{ $tax->name }}
                                 </option>
@@ -80,8 +82,7 @@
                         <span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>0.00
                     </td>
                     <td class="text-end">
-                        <button type="button" title="Delete"
-                                class="btn btn-icon fs-3 text-danger btn-active-color-danger" id="delete-item-1">
+                        <button type="button" class="btn btn-icon fs-3 text-danger btn-active-color-danger delete-item" id="delete-item-1">
                             <i class="far fa-trash-alt"></i>
                         </button>
                     </td>
@@ -98,7 +99,7 @@
                         <div class="input-group">
                             {!!  Form::number('discount', null, ['class' => 'form-control'])  !!}
                             <div class="input-group-append">
-                                <select class="form-control input-group-text" name="discount_type" id = 'discount-type'>
+                                <select class="form-control input-group-text" name="discount_type" id ='discountType'>
                                     <option value="1" @if(isset($studentTutoringPackage) && $studentTutoringPackage->discount_type == \App\Models\Tax::FLAT_DISCOUNT) selected @endif>Flat</option>
                                     <option value="2" @if(isset($studentTutoringPackage) && $studentTutoringPackage->discount_type == \App\Models\Tax::PERCENTAGE_DISCOUNT) selected @endif>%</option>
                                 </select>
@@ -107,7 +108,7 @@
                     </div>
                     <div class="form-group col-sm-12 float-right">
                         {{ Form::label('tax2', __('messages.invoice.tax') . ':', ['class' => 'form-label mb-1']) }}
-                        <select name="tax2_id[]" class='form-control taxes' data-control='select2' id='tax2-id' multiple="multiple">
+                        <select name="tax2_id[]" class='form-control taxes-2' data-control='select2' id='tax2-id' multiple="multiple">
                             @foreach ($taxes as $tax)
                                 <option value="{{ $tax->id }}" data-tax="{{ $tax->value }}">{{ $tax->name }}
                                 </option>
@@ -200,6 +201,8 @@
 </div>
 
 @push('page_scripts')
+
+{{--    <script src="{{asset("js/invoices.js")}}" ></script>--}}
     <script>
         $("#store-client").click(function(){
             $.post("{{route('clients.store')}}",
@@ -254,7 +257,7 @@
             minimumInputLength: 3,
             multiple: true,
             ajax: {
-                url: "{{route('tutor-email-ajax')}}",
+                url: "{{route('client-email-ajax')}}",
                 dataType: "json",
                 delay: 250,
                 data: function (params) {
@@ -286,17 +289,19 @@
             placeholder: "Please select tax type",
 
         });
-
-        $("#item-id").select2({
+        $(".taxes-2").select2({
             dropdownAutoWidth: true, width: 'auto',
             theme: 'bootstrap4',
-            minimumInputLength: 3,
-            placeholder: "Please type item",
-            escapeMarkup: function (markup) {
-                return markup;
-            }
+            multiple: true,
+            placeholder: "Please select tax type",
+
         });
-        $('#add-item').on('click',function (){
+        $("#item-id-1").select2({
+            dropdownAutoWidth: true, width: 'auto',
+            theme: 'bootstrap4',
+            placeholder: "Please type item",
+        });
+        $('#addItem').on('click',function (){
 
             let lastId = $(`.item-tr:last`).attr("id");
             let splitId = lastId.split("-");
@@ -306,23 +311,18 @@
             let data = {
                 'nextId':nextId,
             }
-
             $.ajax({
                 type: "get",
-                url: {{route('getNewLineItem')}},
+                url: "{{route('get-new-line-item')}}",
                 data: data,
                 success: function(response)
                 {
                     toastr.success(response.message);
-                    $(`.item-tr:last`).after(response);
+                    $(`.item-tr:last`).after(response.html);
                     $(`#item-id-${nextId}`).select2({
                         dropdownAutoWidth: true, width: 'auto',
                         theme: 'bootstrap4',
-                        minimumInputLength: 3,
                         placeholder: "Please type item",
-                        escapeMarkup: function (markup) {
-                            return markup;
-                        }
                     })
                     $(`#tax-id-${nextId}`).select2({
                         dropdownAutoWidth: true, width: 'auto',
@@ -347,5 +347,56 @@
                 }
             });
         })
+        $(document).on('click', '.delete-item', function () {
+            let totalItems = $('.delete-item').length -1;
+            let id = $(this).attr('id');
+            console.log(id)
+            console.log(`Total items ${totalItems}`)
+            let splitId = id.split("-");
+            let itemId = splitId[2];
+            if(totalItems<1){
+                toastr.error("You can't delete this item");
+                return false;
+            }else{
+                $(`#item-${itemId}`).remove();
+                // calculateTotal();
+                toastr.success("Item deleted successfully");
+            }
+
+        });
+        $(document).on('change','.items',function (){
+            let attributeId = $(this).attr('id')
+            let splitId = attributeId.split("-");
+            let id = $(this).val()
+
+            let price = $(this).find(':selected').data('price')
+            $(`#${attributeId}`).closest('tr').find('.price-input').val(price)
+            $(`#${attributeId}`).closest('tr').find('.qty').val(1)
+            $(`#${attributeId}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${price}`)
+            // calculateTotal();
+
+        });
+        $(document).on('change keyup','.qty',function (){
+            let attributeId = $(this).attr('id')
+            let splitId = attributeId.split("-");
+            let id = $(this).val()
+            let price = $(`#item-price-${splitId[2]}`).val()
+            let total = price * id
+            $(`#item-${splitId[2]}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${total}`)
+            // calculateTotal();
+        });
+        $(document).on('change','.taxes',function (){
+            let attributeId = $(this).attr('id')
+            let splitId = attributeId.split("-");
+            let id = $(this).val()
+            let tax = $(this).find(':selected').data('tax')
+            let price = $(`#item-price-${splitId[2]}`).val()
+            let qty = $(`#item-quantity-${splitId[2]}`).val()
+            let total = price * qty
+            let totalTax = total * tax / 100
+            console.log(splitId)
+            $(`#item-${splitId[2]}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${total + totalTax}`)
+            // calculateTotal();
+        });
     </script>
 @endpush

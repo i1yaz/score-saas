@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\InvoicePackageTypeController;
+use App\Http\Controllers\LineItemController;
 use App\Http\Controllers\MonthlyInvoicePackageController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\ParentController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\SessionController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentTutoringPackageController;
 use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\TaxController;
 use App\Http\Controllers\TutorController;
 use App\Http\Controllers\TutoringLocationController;
 use App\Http\Controllers\TutoringPackageTypeController;
@@ -153,8 +155,26 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor']], function () {
     Route::delete('monthly-invoice-packages/{monthly_invoice_package}', [MonthlyInvoicePackageController::class, 'destroy'])->name('monthly-invoice-packages.destroy')->middleware(['permission:monthly_invoice_package-destroy']);
     //Clients
     Route::get('clients', [ClientController::class, 'index'])->name('clients.index')->middleware(['permission:client-index']);
+    Route::get('client-email-ajax', [TaxController::class, 'index'])->name('client-email-ajax')->middleware(['permission:client-index']);
     Route::post('clients', [ClientController::class, 'store'])->name('clients.store')->middleware(['permission:client-create']);
+    //Taxes
+    Route::get('taxes', [TaxController::class, 'index'])->name('taxes.index')->middleware(['permission:tax-index']);
+    Route::get('taxes/create', [TaxController::class, 'create'])->name('taxes.create')->middleware(['permission:tax-create']);
+    Route::post('taxes', [TaxController::class, 'store'])->name('taxes.store')->middleware(['permission:tax-create']);
+    Route::get('taxes/{tax}', [TaxController::class, 'show'])->name('taxes.show')->middleware(['permission:tax-show']);
+    Route::get('taxes/{tax}/edit', [TaxController::class, 'edit'])->name('taxes.edit')->middleware(['permission:tax-edit']);
+    Route::patch('taxes/{tax}', [TaxController::class, 'update'])->name('taxes.update')->middleware(['permission:tax-edit']);
+    Route::delete('taxes/{tax}', [TaxController::class, 'destroy'])->name('taxes.destroy')->middleware(['permission:tax-destroy']);
+    Route::get('get-new-line-item', [TaxController::class, 'getNewLineItem'])->name('get-new-line-item');
+
+    //LineItems
+    Route::get('line-items', [LineItemController::class, 'index'])->name('line-items.index')->middleware(['permission:line_item-index']);
+    Route::get('line-items/create', [LineItemController::class, 'create'])->name('line-items.create')->middleware(['permission:line_item-create']);
+    Route::post('line-items', [LineItemController::class, 'store'])->name('line-items.store')->middleware(['permission:line_item-create']);
+    Route::get('line-items/{line_item}', [LineItemController::class, 'show'])->name('line-items.show')->middleware(['permission:line_item-show']);
+    Route::get('line-items/{line_item}/edit', [LineItemController::class, 'edit'])->name('line-items.edit')->middleware(['permission:line_item-edit']);
+    Route::patch('line-items/{line_item}', [LineItemController::class, 'update'])->name('line-items.update')->middleware(['permission:line_item-edit']);
+    Route::delete('line-items/{line_item}', [LineItemController::class, 'destroy'])->name('line-items.destroy')->middleware(['permission:line_item-destroy']);
+
 
 });
-
-Route::resource('taxes', App\Http\Controllers\TaxController::class);

@@ -630,10 +630,4 @@ if (!function_exists('getPriceFromMonthlyInvoicePackage')){
             ->where('monthly_invoice_package_id',$monthlyInvoicePackage->id)->get();
     }
 }
-if (!function_exists('addLineItem')){
-    function addLineItem(): string
-    {
-        $taxes = Tax::select(['id','name','value'])->get();
-        return view('taxes.line-item',['taxes' => $taxes])->render();
-    }
-}
+

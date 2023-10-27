@@ -3,18 +3,27 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Client extends Model
+class LineItem extends Model
 {
-    use HasFactory;
+    public $table = 'line_items';
 
-    protected $fillable = [
-        'first_name',
-        'last_name',
-        'email',
-        'address'
+    public $fillable = [
+        'name',
+        'price',
+        'auth_guard',
+        'added_by'
+    ];
+
+    protected $casts = [
+        'id' => 'integer',
+        'name' => 'string',
+        'price' => 'string'
+    ];
+
+    public static array $rules = [
+
     ];
     /**
      *------------------------------------------------------------------
@@ -23,11 +32,12 @@ class Client extends Model
      */
     public function scopeActive(Builder $query): void
     {
-        $query->where('clients.status', true);
+        $query->where('status', true);
     }
 
     public function scopeInActive(Builder $query): void
     {
-        $query->where('clients.status', false);
+        $query->where('status', false);
     }
+
 }

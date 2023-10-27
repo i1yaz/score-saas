@@ -149,6 +149,13 @@
             </a>
         </li>
         @endpermission
+        @permission('line_item-index')
+        <li class="nav-item">
+            <a href="{{ route('line-items.index') }}" class="nav-link {{ Request::is('line-items*') ? 'active' : '' }}">
+                <p>Line Items</p>
+            </a>
+        </li>
+        @endpermission
     </ul>
 </li>
 @endpermission
