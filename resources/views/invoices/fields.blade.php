@@ -86,7 +86,7 @@
                     <td class="" style="text-align:right" id="items-qty-price">
                         <span >{{ getCurrencySymbol() }}</span>0.00
                     </td>
-                    <td style="width: 10% !important;text-align:right" id="items-price-after-tax" class="item-total-after-tax">
+                    <td style="width: 10% !important;text-align:right" id="items-price-after-tax" class="item-price-after-tax">
                         <span class="invoice-item-currency" >{{ getCurrencySymbol() }}</span>0.00
                     </td>
                     <td class="text-end">
@@ -510,17 +510,17 @@
             let subtotal = 0;
             let discountType = parseInt($("#discountType").val());
             let discountAmount = parseFloat($("#discount").val());
-            let originalTotal = 0
             if(isNaN(discountAmount)){
                 discountAmount = 0;
             }
-            $(".item-total").each(function() {
-                let amount = $(this).text();
-                amount = amount.replace(/[^0-9.-]+/g,"");
-                originalTotal = total + parseFloat(amount);
-            });
+            let originalTotal = 0;
 
-            $(".item-total-after-tax").each(function() {
+            $(".item-total").each(function() {
+                let originalAmount = $(this).text();
+                originalAmount = originalAmount.replace(/[^0-9.-]+/g,"");
+                originalAmount = total + parseFloat(originalAmount);
+            });
+            $(".item-price-after-tax").each(function() {
                 let amount = $(this).text();
                 amount = amount.replace(/[^0-9.-]+/g,"");
                 total = total + parseFloat(amount);
@@ -546,7 +546,7 @@
                 }
             });
             finalAmount = total;
-            $("#total").text(subtotal.toFixed(2));
+            $("#total").text(finalAmount.toFixed(2));
             $("#totalTax").text(totalTax.toFixed(2));
             $("#discountAmount").text(totalDiscount.toFixed(2));
             $("#finalAmount").text(finalAmount.toFixed(2));
