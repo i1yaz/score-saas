@@ -43,12 +43,14 @@
                 <thead>
                 <tr class="border-bottom fs-7 fw-bolder text-gray-700 text-uppercase">
                     <th scope="col">#</th>
-                    <th scope="col" class="required">{{ __('messages.item.item') }}</th>
-                    <th scope="col" class="required">{{ __('messages.invoice.qty') }}</th>
-                    <th scope="col" class="required">{{ __('messages.item.unit_price') }}</th>
-                    <th scope="col">{{ __('messages.invoice.tax') }}</th>
-                    <th scope="col" class="required">{{ __('messages.invoice.amount') }}</th>
-                    <th scope="col" class="text-end">{{ __('messages.common.action') }}</th>
+                    <th scope="col" style="white-space: pre;"  class="required">{{ __('messages.item.item') }}</th>
+                    <th scope="col" style="white-space: pre;"  class="required">{{ __('messages.invoice.qty') }}</th>
+                    <th scope="col" style="white-space: pre;"  class="required">{{ __('messages.item.unit_price') }}</th>
+                    <th scope="col" style="white-space: pre;" >{{ __('messages.invoice.tax') }}</th>
+                    <th scope="col" style="white-space: pre;text-align: right" >{{ __('messages.invoice.sub_total') }}</th>
+                    <th scope="col" style="white-space: pre;"  class="required">{{ __('messages.invoice.tax_amount') }}</th>
+                    <th scope="col" style="white-space: pre;text-align: right"  class="required">{{ __('messages.invoice.total') }}</th>
+                    <th scope="col" style="white-space: pre;text-align: right"  class="text-end">{{ __('messages.common.action') }}</th>
                 </tr>
                 </thead>
 
@@ -78,8 +80,14 @@
                             @endforeach
                         </select>
                     </td>
-                    <td class="text-end item-total pt-8 text-nowrap">
-                        <span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>0.00
+                    <td style="width: 10% !important;text-align:right" class="text-end item-total pt-8 text-nowrap" >
+                        <span class="invoice-selected-currency" >{{ getCurrencySymbol() }}</span>0.00
+                    </td>
+                    <td class="" style="text-align:right" id="items-qty-price">
+                        <span >{{ getCurrencySymbol() }}</span>0.00
+                    </td>
+                    <td style="width: 10% !important;text-align:right" id="items-price-after-tax" class="item-total-after-tax">
+                        <span class="invoice-item-currency" >{{ getCurrencySymbol() }}</span>0.00
                     </td>
                     <td class="text-end">
                         <button type="button" class="btn btn-icon fs-3 text-danger btn-active-color-danger delete-item" id="delete-item-1">
@@ -356,7 +364,8 @@
             let splitId = attributeId.split("-");
             let price = $(`#item-price-${splitId[2]}`).val()
             let qty = $(`#item-quantity-${splitId[2]}`).val()
-            let total = price * qty
+            let subtotal;
+            let total = subtotal = price * qty
             let tax = $(this).select2('data');
             let totalTax = 0;
             if(tax == null){
@@ -369,8 +378,10 @@
                     total = total+totalTax;
                 })
             }
-            let amount = (total).toFixed(2);
-            $(`#item-${splitId[2]}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${amount}`)
+
+            $(`#item-${splitId[2]}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${subtotal.toFixed(2)}`)
+            $(`#item-${splitId[2]}`).closest('tr').find('#items-price-after-tax').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${total.toFixed(2)}`)
+            $(`#item-${splitId[2]}`).closest('tr').find('#items-qty-price').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${totalTax.toFixed(2)}`)
             calculateTotal();
         })
         $(document).on('change','.taxes',function (){
@@ -378,8 +389,8 @@
             let splitId = attributeId.split("-");
             let price = $(`#item-price-${splitId[2]}`).val()
             let qty = $(`#item-quantity-${splitId[2]}`).val()
-            console.log(qty)
-            let total = price * qty
+            let subtotal;
+            let total = subtotal = price * qty
             let tax = $(this).select2('data');
             let totalTax = 0;
             if(tax == null){
@@ -388,12 +399,15 @@
             }else{
                 tax.forEach(function (item){
                     tax = parseFloat(item.element.dataset.tax)
-                    totalTax = total * tax / 100
-                    total = total+totalTax;
+                    tax = total * tax / 100
+                    totalTax += tax;
+                    total = total+tax;
                 })
             }
-            let amount = (total).toFixed(2);
-            $(`#item-${splitId[2]}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${amount}`)
+
+            $(`#item-${splitId[2]}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${subtotal.toFixed(2)}`)
+            $(`#item-${splitId[2]}`).closest('tr').find('#items-price-after-tax').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${total.toFixed(2)}`)
+            $(`#item-${splitId[2]}`).closest('tr').find('#items-qty-price').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${totalTax.toFixed(2)}`)
             calculateTotal();
         });
         $(document).on('click', '.delete-item', function () {
@@ -417,8 +431,8 @@
                 $(`#item-quantity-${splitId[2]}`).val(1)
                 qty = 1;
             }
-            console.log(qty)
-            let total = price * qty
+            let subtotal;
+            let total = subtotal = price * qty
             let tax = $(`#tax-id-${splitId[2]}`).select2('data');
             let totalTax = 0;
             if(tax == null){
@@ -431,8 +445,10 @@
                     total = total+totalTax;
                 })
             }
-            let amount = (total).toFixed(2);
-            $(`#item-${splitId[2]}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${amount}`)
+
+            $(`#item-${splitId[2]}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${subtotal.toFixed(2)}`)
+            $(`#item-${splitId[2]}`).closest('tr').find('#items-price-after-tax').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${total.toFixed(2)}`)
+            $(`#item-${splitId[2]}`).closest('tr').find('#items-qty-price').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${totalTax.toFixed(2)}`)
             calculateTotal();
         });
         $(document).on('change keyup','.qty',function (){
@@ -440,7 +456,8 @@
             let splitId = attributeId.split("-");
             let price = $(`#item-price-${splitId[2]}`).val()
             let qty = $(`#item-quantity-${splitId[2]}`).val()
-            let total = price * qty
+            let subtotal;
+            let total = subtotal = price * qty
             let tax = $(`#tax-id-${splitId[2]}`).select2('data');
             let totalTax = 0;
             if(tax == null){
@@ -453,8 +470,9 @@
                     total = total+totalTax;
                 })
             }
-            let amount = (total).toFixed(2);
-            $(`#item-${splitId[2]}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${amount}`)
+            $(`#item-${splitId[2]}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${subtotal.toFixed(2)}`)
+            $(`#item-${splitId[2]}`).closest('tr').find('#items-price-after-tax').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${total.toFixed(2)}`)
+            $(`#item-${splitId[2]}`).closest('tr').find('#items-qty-price').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${totalTax.toFixed(2)}`)
             calculateTotal();
         });
 
@@ -463,7 +481,8 @@
             let splitId = attributeId.split("-");
             let price = $(`#item-price-${splitId[2]}`).val()
             let qty = $(`#item-quantity-${splitId[2]}`).val()
-            let total = price * qty
+            let subtotal;
+            let total = subtotal = price * qty
             let tax = $(`#tax-id-${splitId[2]}`).select2('data');
             let totalTax = 0;
             if(tax == null){
@@ -476,8 +495,10 @@
                     total = total+totalTax;
                 })
             }
-            let amount = (total).toFixed(2);
-            $(`#item-${splitId[2]}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${amount}`)
+
+            $(`#item-${splitId[2]}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${subtotal.toFixed(2)}`)
+            $(`#item-${splitId[2]}`).closest('tr').find('#items-price-after-tax').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${total.toFixed(2)}`)
+            $(`#item-${splitId[2]}`).closest('tr').find('#items-qty-price').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${totalTax.toFixed(2)}`)
             calculateTotal();
         });
 
@@ -489,10 +510,17 @@
             let subtotal = 0;
             let discountType = parseInt($("#discountType").val());
             let discountAmount = parseFloat($("#discount").val());
+            let originalTotal = 0
             if(isNaN(discountAmount)){
                 discountAmount = 0;
             }
             $(".item-total").each(function() {
+                let amount = $(this).text();
+                amount = amount.replace(/[^0-9.-]+/g,"");
+                originalTotal = total + parseFloat(amount);
+            });
+
+            $(".item-total-after-tax").each(function() {
                 let amount = $(this).text();
                 amount = amount.replace(/[^0-9.-]+/g,"");
                 total = total + parseFloat(amount);

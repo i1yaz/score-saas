@@ -23,8 +23,14 @@
             @endforeach
         </select>
     </td>
-    <td class="text-end item-total pt-8 text-nowrap">
-        <span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>0.00
+    <td style="width: 10% !important;text-align:right" class="text-end item-total pt-8 text-nowrap" >
+        <span class="invoice-selected-currency" >{{ getCurrencySymbol() }}</span>0.00
+    </td>
+    <td class="" style="text-align:right" id="items-qty-price">
+        <span >{{ getCurrencySymbol() }}</span>0.00
+    </td>
+    <td style="width: 10% !important;text-align:right" id="items-price-after-tax" class="item-total-after-tax">
+        <span class="invoice-item-currency" >{{ getCurrencySymbol() }}</span>0.00
     </td>
     <td class="text-end">
         <button type="button" class="btn btn-icon fs-3 text-danger btn-active-color-danger delete-item" id="delete-item-{{$id}}">

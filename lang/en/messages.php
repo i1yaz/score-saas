@@ -13,6 +13,8 @@ return [
         'qty' => 'Qty',
         'tax' => 'Tax',
         'price' => 'Price',
+        'price_after_tax' => 'Price After Tax',
+        'tax_amount' => 'Tax Amount',
         'amount' => 'Amount',
         'invoice_id' => 'Invoice ID',
         'sub_total' => 'Sub Total',
