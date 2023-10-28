@@ -26,10 +26,10 @@
     <td style="width: 10% !important;text-align:right" class="text-end item-total pt-8 text-nowrap" >
         <span class="invoice-selected-currency" >{{ getCurrencySymbol() }}</span>0.00
     </td>
-    <td class="" style="text-align:right" id="items-qty-price">
+    <td class="item-tax-price" style="text-align:right" >
         <span >{{ getCurrencySymbol() }}</span>0.00
     </td>
-    <td style="width: 10% !important;text-align:right" id="items-price-after-tax" class="item-total-after-tax">
+    <td style="width: 10% !important;text-align:right" class="item-price-after-tax">
         <span class="invoice-item-currency" >{{ getCurrencySymbol() }}</span>0.00
     </td>
     <td class="text-end">

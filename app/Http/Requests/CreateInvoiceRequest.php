@@ -26,4 +26,12 @@ class CreateInvoiceRequest extends FormRequest
     {
         return Invoice::$rules;
     }
+
+    public function messages()
+    {
+        return [
+            'client_id.required' => 'Client is required',
+            'due_date.required' => 'Due date is required',
+        ];
+    }
 }

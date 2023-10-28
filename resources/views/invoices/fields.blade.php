@@ -83,10 +83,10 @@
                     <td style="width: 10% !important;text-align:right" class="text-end item-total pt-8 text-nowrap" >
                         <span class="invoice-selected-currency" >{{ getCurrencySymbol() }}</span>0.00
                     </td>
-                    <td class="" style="text-align:right" id="items-qty-price">
+                    <td class="item-tax-price" style="text-align:right" id="">
                         <span >{{ getCurrencySymbol() }}</span>0.00
                     </td>
-                    <td style="width: 10% !important;text-align:right" id="items-price-after-tax" class="item-price-after-tax">
+                    <td style="width: 10% !important;text-align:right"  class="item-price-after-tax">
                         <span class="invoice-item-currency" >{{ getCurrencySymbol() }}</span>0.00
                     </td>
                     <td class="text-end">
@@ -380,8 +380,8 @@
             }
 
             $(`#item-${splitId[2]}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${subtotal.toFixed(2)}`)
-            $(`#item-${splitId[2]}`).closest('tr').find('#items-price-after-tax').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${total.toFixed(2)}`)
-            $(`#item-${splitId[2]}`).closest('tr').find('#items-qty-price').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${totalTax.toFixed(2)}`)
+            $(`#item-${splitId[2]}`).closest('tr').find('.item-price-after-tax').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${total.toFixed(2)}`)
+            $(`#item-${splitId[2]}`).closest('tr').find('.item-tax-price').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${totalTax.toFixed(2)}`)
             calculateTotal();
         })
         $(document).on('change','.taxes',function (){
@@ -406,8 +406,8 @@
             }
 
             $(`#item-${splitId[2]}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${subtotal.toFixed(2)}`)
-            $(`#item-${splitId[2]}`).closest('tr').find('#items-price-after-tax').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${total.toFixed(2)}`)
-            $(`#item-${splitId[2]}`).closest('tr').find('#items-qty-price').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${totalTax.toFixed(2)}`)
+            $(`#item-${splitId[2]}`).closest('tr').find('.item-price-after-tax').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${total.toFixed(2)}`)
+            $(`#item-${splitId[2]}`).closest('tr').find('.item-tax-price').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${totalTax.toFixed(2)}`)
             calculateTotal();
         });
         $(document).on('click', '.delete-item', function () {
@@ -446,9 +446,10 @@
                 })
             }
 
+
             $(`#item-${splitId[2]}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${subtotal.toFixed(2)}`)
-            $(`#item-${splitId[2]}`).closest('tr').find('#items-price-after-tax').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${total.toFixed(2)}`)
-            $(`#item-${splitId[2]}`).closest('tr').find('#items-qty-price').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${totalTax.toFixed(2)}`)
+            $(`#item-${splitId[2]}`).closest('tr').find('.item-price-after-tax').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${total.toFixed(2)}`)
+            $(`#item-${splitId[2]}`).closest('tr').find('.item-tax-price').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${totalTax.toFixed(2)}`)
             calculateTotal();
         });
         $(document).on('change keyup','.qty',function (){
@@ -471,8 +472,8 @@
                 })
             }
             $(`#item-${splitId[2]}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${subtotal.toFixed(2)}`)
-            $(`#item-${splitId[2]}`).closest('tr').find('#items-price-after-tax').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${total.toFixed(2)}`)
-            $(`#item-${splitId[2]}`).closest('tr').find('#items-qty-price').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${totalTax.toFixed(2)}`)
+            $(`#item-${splitId[2]}`).closest('tr').find('.item-price-after-tax').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${total.toFixed(2)}`)
+            $(`#item-${splitId[2]}`).closest('tr').find('.item-tax-price').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${totalTax.toFixed(2)}`)
             calculateTotal();
         });
 
@@ -497,33 +498,39 @@
             }
 
             $(`#item-${splitId[2]}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${subtotal.toFixed(2)}`)
-            $(`#item-${splitId[2]}`).closest('tr').find('#items-price-after-tax').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${total.toFixed(2)}`)
-            $(`#item-${splitId[2]}`).closest('tr').find('#items-qty-price').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${totalTax.toFixed(2)}`)
+            $(`#item-${splitId[2]}`).closest('tr').find('.item-price-after-tax').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${total.toFixed(2)}`)
+            $(`#item-${splitId[2]}`).closest('tr').find('.item-tax-price').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${totalTax.toFixed(2)}`)
             calculateTotal();
         });
 
         function calculateTotal(){
-            let total = 0;
             let totalTax = 0;
             let totalDiscount = 0;
             let finalAmount = 0;
-            let subtotal = 0;
             let discountType = parseInt($("#discountType").val());
             let discountAmount = parseFloat($("#discount").val());
+            let total = 0;
             if(isNaN(discountAmount)){
                 discountAmount = 0;
             }
             let originalTotal = 0;
-
             $(".item-total").each(function() {
                 let originalAmount = $(this).text();
                 originalAmount = originalAmount.replace(/[^0-9.-]+/g,"");
-                originalAmount = total + parseFloat(originalAmount);
+                originalTotal = originalTotal + parseFloat(originalAmount);
             });
+
             $(".item-price-after-tax").each(function() {
                 let amount = $(this).text();
                 amount = amount.replace(/[^0-9.-]+/g,"");
                 total = total + parseFloat(amount);
+            });
+
+            let itemsTax = 0;
+            $(".item-tax-price").each(function() {
+                let amount = $(this).text();
+                amount = amount.replace(/[^0-9.-]+/g,"");
+                itemsTax = itemsTax + parseFloat(amount);
             });
 
             if(discountType === 1){
@@ -531,7 +538,7 @@
             }else if(discountType === 2){
                 totalDiscount = total * discountAmount / 100;
             }
-            subtotal = total
+
             total = total - totalDiscount
             $(".taxes-2").each(function() {
                 let tax = $(this).select2('data');
@@ -541,13 +548,14 @@
                     tax.forEach(function (item){
                         tax = parseFloat(item.element.dataset.tax)
                         totalTax = total * tax / 100
+                        itemsTax += totalTax;
                         total = total+totalTax;
                     })
                 }
             });
             finalAmount = total;
-            $("#total").text(finalAmount.toFixed(2));
-            $("#totalTax").text(totalTax.toFixed(2));
+            $("#total").text(originalTotal.toFixed(2));
+            $("#totalTax").text(itemsTax.toFixed(2));
             $("#discountAmount").text(totalDiscount.toFixed(2));
             $("#finalAmount").text(finalAmount.toFixed(2));
 
