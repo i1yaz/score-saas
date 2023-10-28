@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->decimal('discount')->default(0)->after('tutor_hourly_rate');
             $table->unsignedSmallInteger('discount_type')->nullable()->after('discount');
             $table->boolean('is_free')->default(false)->after('discount_type');
-            $table->decimal('is_score_guaranteed')->default(0)->after('is_free');
+            $table->boolean('is_score_guaranteed')->default(0)->after('is_free');
         });
     }
 

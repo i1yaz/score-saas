@@ -27,7 +27,7 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::table('invoices', function (Blueprint $table) {
-            $table->float('amount_paid')->default(0)->change();
+            $table->decimal('amount_paid')->default(0)->change();
         });
         Schema::table('student_tutoring_packages', function (Blueprint $table) {
             $table->integer('hours')->default(0)->change();

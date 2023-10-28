@@ -24,7 +24,7 @@ return new class extends Migration
             $table->text('detailed_description')->nullable();
             $table->boolean('email_to_parent')->default(false);
             $table->boolean('email_to_student')->default(false);
-            $table->float('amount_paid')->default(0);
+            $table->decimal('amount_paid')->default(0);
             $table->string('paid_status')->default(Invoice::DRAFT);
             $table->string('paid_by_modal')->nullable();
             $table->bigInteger('paid_by_id')->nullable();

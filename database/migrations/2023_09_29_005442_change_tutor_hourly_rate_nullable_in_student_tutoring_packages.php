@@ -9,14 +9,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('student_tutoring_packages', function (Blueprint $table) {
-            $table->decimal('tutor_hourly_rate', 8, 2)->nullable()->change();
+            $table->decimal('tutor_hourly_rate')->nullable()->change();
         });
     }
 
     public function down(): void
     {
         Schema::table('student_tutoring_packages', function (Blueprint $table) {
-            $table->decimal('tutor_hourly_rate', 8, 2)->nullable(false)->change();
+            $table->decimal('tutor_hourly_rate')->nullable(false)->change();
         });
     }
 };
