@@ -7,8 +7,8 @@
                 <th>Package</th>
                 <th>Invoice Status</th>
                 <th>Invoice Type</th>
-                <th>Student</th>
-                <th>Parent</th>
+{{--                <th>Student</th>--}}
+{{--                <th>Parent</th>--}}
                 <th>Created At</th>
                 <th>Due Date</th>
                 <th>Amount Paid</th>
@@ -39,8 +39,8 @@
                     { data: 'package', name: 'package', orderable: false },
                     { data: 'invoice_status', name: 'invoice_status', orderable: true },
                     { data: 'invoice_type', name: 'invoice_type', orderable: true },
-                    { data: 'student', name: 'student', orderable: true },
-                    { data: 'parent', name: 'parent', orderable: true },
+                    // { data: 'student', name: 'student', orderable: true },
+                    // { data: 'parent', name: 'parent', orderable: true },
                     { data: 'created_at', name: 'created_at', orderable: true },
                     { data: 'due_date', name: 'due_date', orderable: true },
                     { data: 'amount_paid', name: 'amount_paid', orderable: true },

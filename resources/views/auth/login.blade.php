@@ -17,19 +17,19 @@
 
                         <div class="form-group">
                             <div class="custom-control custom-radio">
-                                <input class="custom-control-input" type="radio" id="student" name="type" value="student" checked>
+                                <input class="custom-control-input" type="radio" id="student" name="type" value="student"  {{ old("type") == 'student' ? 'checked' : 'checked' }}>
                                 <label for="student" class="custom-control-label">Student</label>
                             </div>
                             <div class="custom-control custom-radio">
-                                <input class="custom-control-input" type="radio" id="parent" name="type" value="parent" >
+                                <input class="custom-control-input" type="radio" id="parent" name="type" value="parent"  {{ old("type") == 'parent' ? 'checked' : '' }}>
                                 <label for="parent" class="custom-control-label">Parent</label>
                             </div>
                             <div class="custom-control custom-radio">
-                                <input class="custom-control-input" type="radio" id="tutor" name="type" value="tutor" >
+                                <input class="custom-control-input" type="radio" id="tutor" name="type" value="tutor"  {{ old("type") == 'tutor' ? 'checked' : '' }}>
                                 <label for="tutor" class="custom-control-label">Tutor</label>
                             </div>
                             <div class="custom-control custom-radio">
-                                <input class="custom-control-input" type="radio" id="client" name="type" value="client" >
+                                <input class="custom-control-input" type="radio" id="client" name="type" value="client" {{ old("type") == 'client' ? 'checked' : '' }}>
                                 <label for="client" class="custom-control-label">Client</label>
                             </div>
                         </div>

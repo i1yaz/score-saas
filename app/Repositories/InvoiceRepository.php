@@ -143,10 +143,14 @@ class InvoiceRepository extends BaseRepository
         $totalFinalAmount = 0;
         foreach ($input['item_id'] as $key => $item_id) {
             $total = (float) $input['price'][$key]* $input['quantity'][$key];
-            $tax = getTaxAmountForLine($input['tax_id'],$total,$key);
+            $tax = 0;
+            if (!empty($input['tax_id'])){
+                $tax = getTaxAmountForLine($input['tax_id'],$total,$key);
+                $taxIds = getTaxIdsForLineInJson($input['tax_id'], $key);
+            }
             $finalAmount = ($total + $tax);
             $data[$item_id] = [
-                    'tax_ids' => getTaxIdsForLineInJson($input['tax_id'], $key),
+                    'tax_ids' => $taxIds ?? null,
                     'price' => $input['price'][$key],
                     'qty' => $input['quantity'][$key],
                     'tax_amount' => $tax,
@@ -160,14 +164,18 @@ class InvoiceRepository extends BaseRepository
 
         $discountedAmountOnSubtotal = getDiscountedAmountOnSubtotal($input['discount_type'], $input['discount'], $totalFinalAmount);
         $totalFinalAmount =  $totalFinalAmount - $discountedAmountOnSubtotal;
-        $taxOnSubtotal = chargeTaxOnSubtotal($input['tax2_id'], $totalFinalAmount);
+        $taxOnSubtotal= 0;
+        if (!empty($input['tax2_id'])){
+            $taxOnSubtotal = chargeTaxOnSubtotal($input['tax2_id'], $totalFinalAmount);
+            $tax2Ids =  json_encode($input['tax2_id']);
+        }
         $totalFinalAmount = $totalFinalAmount+$taxOnSubtotal;
 
         DB::beginTransaction();
         try {
             $nonPackageInvoice = new NonInvoicePackage();
             $nonPackageInvoice->client_id = $input['client_id'];
-            $nonPackageInvoice->tax2_ids = json_encode($input['tax2_id']);
+            $nonPackageInvoice->tax2_ids = $tax2Ids ?? null;
             $nonPackageInvoice->discount_amount = $discountedAmountOnSubtotal;
             $nonPackageInvoice->tax_amount = $taxOnSubtotal;
             $nonPackageInvoice->final_amount = $totalFinalAmount;

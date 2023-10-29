@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('non_invoice_packages', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id')->startingValue(\App\Models\NonInvoicePackage::CODE_START);
             $table->foreignIdFor(\App\Models\Client::class)->constrained();
             $table->string('tax2_ids')->nullable()->comment('for reference only');
             $table->decimal('discount_amount')->default(0);

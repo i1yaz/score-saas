@@ -494,6 +494,14 @@ class PermissionSeeder extends Seeder
                 'updated_at' => Carbon::now()
             ],
             [
+                'name' => 'invoice-pay',
+                'display_name' => 'Invoice pay',
+                'description' => 'Pay invoice',
+                'resource' => 'Invoice',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
                 'name' => 'tutor_dashboard-index',
                 'display_name' => 'Tutor Dashboard',
                 'description' => 'Tutor Dashboard',

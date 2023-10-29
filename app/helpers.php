@@ -122,8 +122,16 @@ if (!function_exists('getPackageCodeFromModelAndId')){
         if ($type === MonthlyInvoicePackage::class){
             return getMonthlyInvoicePackageCodeFromId($id);
         }
+        if ($type === NonInvoicePackage::class){
+            return getNonInvoicePackageCodeFromId($id);
+        }
         return '';
 
+    }
+
+    function getNonInvoicePackageCodeFromId($id): string
+    {
+        return NonInvoicePackage::PREFIX_START.($id);
     }
 }
 if (!function_exists('getPackageCodeFromModel')){
@@ -710,5 +718,21 @@ if (!function_exists('chargeTaxOnSubtotal')){
             $total = $total +$totalTax;
         }
         return (float) $totalTax ;
+    }
+}
+if (!function_exists('getInvoiceCodeFromInvoiceableType')){
+    function getInvoiceCodeFromInvoiceableTypeAndId(string $model,$id): string
+    {
+        if ($model === StudentTutoringPackage::class){
+            return getStudentTutoringPackageCodeFromId($id);
+        }
+        if ($model === MonthlyInvoicePackage::class){
+            return getMonthlyInvoicePackageCodeFromId($id);
+        }
+        if ($model === NonInvoicePackage::class){
+            return getNonInvoicePackageCodeFromId($id);
+        }
+        return '';
+
     }
 }

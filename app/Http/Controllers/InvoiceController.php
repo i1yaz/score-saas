@@ -80,7 +80,10 @@ class InvoiceController extends AppBaseController
         $input = $request->all();
 
         $this->invoiceRepository->create($input);
-
+        if ($request->ajax()){
+            Flash::success('Invoice Added successfully.');
+            return response()->json(['success'=>true,'message'=>'Invoice created successfully','redirect'=>route('invoices.index')]);
+        }
         return redirect(route('invoices.index'));
     }
 
@@ -156,5 +159,16 @@ class InvoiceController extends AppBaseController
         Flash::success('Invoice deleted successfully.');
 
         return redirect(route('invoices.index'));
+    }
+    public function showPaymentPage($invoice){
+
+        $invoice = $this->invoiceRepository->show($invoice);
+
+        if (empty($invoice)) {
+            Flash::error('Invoice not found');
+
+            return redirect(route('invoices.index'));
+        }
+        return view('invoices.payment-create',['invoice'=>$invoice]);
     }
 }

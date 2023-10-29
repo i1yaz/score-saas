@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -49,6 +50,19 @@ class Client extends Authenticatable implements LaratrustUser
         'password' => 'required|string|min:8|max:255',
         'address' => 'required|string'
     ];
+    /**
+     *------------------------------------------------------------------
+     * Scopes
+     *------------------------------------------------------------------
+     */
+    public function scopeActive(Builder $query): void
+    {
+        $query->where('status', true);
+    }
 
+    public function scopeInActive(Builder $query): void
+    {
+        $query->where('status', false);
+    }
 
 }

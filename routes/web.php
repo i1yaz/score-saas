@@ -133,6 +133,7 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], functio
     Route::get('invoices', [InvoiceController::class, 'index'])->name('invoices.index')->middleware(['permission:invoice-index']);
     Route::get('invoices/create', [InvoiceController::class, 'create'])->name('invoices.create')->middleware(['permission:invoice-create']);
     Route::post('invoices', [InvoiceController::class, 'store'])->name('invoices.store')->middleware(['permission:invoice-create']);
+    Route::get('invoices/{invoice}/pay', [InvoiceController::class, 'showPaymentPage'])->name('invoices.pay')->middleware(['permission:invoice-pay']);
     Route::get('invoices/{invoice}/{type?}', [InvoiceController::class, 'show'])->name('invoices.show')->middleware(['permission:invoice-show']);
     Route::get('invoices/{invoice}/edit', [InvoiceController::class, 'edit'])->name('invoices.edit')->middleware(['permission:invoice-edit']);
     Route::patch('invoices/{invoice}', [InvoiceController::class, 'update'])->name('invoices.update')->middleware(['permission:invoice-edit']);
@@ -161,7 +162,6 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], functio
     Route::get('clients/{client}/edit', [ClientController::class, 'edit'])->name('clients.edit')->middleware(['permission:client-edit']);
     Route::patch('clients/{client}', [ClientController::class, 'update'])->name('clients.update')->middleware(['permission:client-edit']);
     Route::delete('clients/{client}', [ClientController::class, 'destroy'])->name('clients.destroy')->middleware(['permission:client-destroy']);
-
     Route::get('client-email-ajax', [TaxController::class, 'index'])->name('client-email-ajax')->middleware(['permission:client-index']);
     //Taxes
     Route::get('taxes', [TaxController::class, 'index'])->name('taxes.index')->middleware(['permission:tax-index']);
