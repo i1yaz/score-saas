@@ -3,6 +3,7 @@
 use App\Models\Invoice;
 use App\Models\MonthlyInvoicePackage;
 use App\Models\MonthlyInvoicePackageTutor;
+use App\Models\NonInvoicePackage;
 use App\Models\StudentTutoringPackage;
 use App\Models\Tax;
 use App\Models\Tutor;
@@ -216,8 +217,14 @@ if (! function_exists('getPriceFromHoursAndHourlyWithDiscounts')) {
     /**
      * Get price from hourly rate and hours
      */
-    function getPriceFromHoursAndHourlyWithDiscount(float $hourlyRate, float $hours, float $discount = 1, int $discountType = 1): string
+    function getPriceFromHoursAndHourlyWithDiscount(float $hourlyRate, float|null $hours, int $discount = 1, int|null $discountType = 1): string
     {
+        if (is_null($hours)){
+            $hours = 0;
+        }
+        if (is_null($discountType)){
+            $discountType = 1;
+        }
         $price = ($hourlyRate * $hours);
 
         if ($discountType == StudentTutoringPackage::FLAT_DISCOUNT) {
@@ -317,13 +324,28 @@ if (!function_exists('formatTime')){
 }
 
 if (! function_exists('getInvoiceTypeFromClass')) {
-    function getInvoiceTypeFromClass($type): string
+    function getInvoiceTypeFromClass($type,$slug=false): string
     {
         if ($type == StudentTutoringPackage::class) {
-            return 'Tutoring Package';
+            $name = 'Tutoring Package';
+            if ($slug){
+                $name = Str::slug($name);
+            }
+            return $name;
         }
         if ($type == MonthlyInvoicePackage::class) {
-            return 'Monthly Invoice Package';
+            $name = 'Monthly Invoice Package';
+            if ($slug){
+                $name = Str::slug($name);
+            }
+            return $name;
+        }
+        if ($type == NonInvoicePackage::class) {
+            $name = 'Non Package Invoice';
+            if ($slug){
+                $name = Str::slug($name);
+            }
+            return $name;
         }
     }
 }
@@ -651,16 +673,17 @@ if (!function_exists('getDiscountedAmountOnSubtotal')){
     }
 }
 if (!function_exists('getTaxAmountForLine')){
-    function getTaxAmountForLine($taxes,$price, $quantity,$key): float|int
+    function getTaxAmountForLine($taxes,$total ,$key): float|int
     {
-        $taxedAmount = 0;
+        $totalTax = 0;
         foreach ($taxes as  $tax){
             if (!empty($tax[$key])){
                 $tax = Tax::find($tax[$key]);
-                $taxedAmount = $taxedAmount + ((($price * $quantity) * $tax->value) / 100);
+                $totalTax = $totalTax + (($total * $tax->value) / 100);
+                $total = $total +$totalTax;
             }
         }
-        return formatAmountWithoutCurrency($taxedAmount) ;
+        return (float) $totalTax ;
     }
 }
 if (!function_exists('getTaxIdsForLine')){
@@ -673,5 +696,17 @@ if (!function_exists('getTaxIdsForLine')){
             }
         }
         return json_encode($taxIds);
+    }
+}
+if (!function_exists('chargeTaxOnSubtotal')){
+    function chargeTaxOnSubtotal($taxes, $total): float|int
+    {
+        $totalTax = 0;
+        foreach ($taxes as  $tax){
+            $tax = Tax::find($tax);
+            $totalTax = $totalTax + (($total * $tax->value) / 100);
+            $total = $total +$totalTax;
+        }
+        return (float) $totalTax ;
     }
 }

@@ -98,7 +98,7 @@ class InvoiceDataTable implements IDataTables
                 $nestedData['due_date'] = formatDate($invoice->due_date);
                 $nestedData['amount_paid'] = formatAmountWithCurrency($invoice->amount_paid);
                 $nestedData['fully_paid_at'] = $invoice->fully_paid_at;
-                $nestedData['action'] = view('invoices.actions', ['invoice' => $invoice])->render();
+                $nestedData['action'] = view('invoices.actions', ['invoice' => $invoice,'type' => getInvoiceTypeFromClass($invoice->invoiceable_type,true)])->render();
                 $data[] = $nestedData;
             }
         }

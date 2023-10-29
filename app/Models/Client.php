@@ -5,10 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laratrust\Contracts\LaratrustUser;
+use Laratrust\Traits\HasRolesAndPermissions;
+use Laravel\Sanctum\HasApiTokens;
 
-class Client extends Model
+class Client extends Authenticatable implements LaratrustUser
 {
-    use HasFactory;
+    use HasApiTokens, HasFactory, HasRolesAndPermissions,Notifiable;
 
     protected $fillable = [
         'first_name',

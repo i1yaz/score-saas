@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('invoice_line_item', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Invoice::class);
-            $table->foreignIdFor(LineItem::class);
-            $table->string('tax_ids')->nullable();
+            $table->foreignIdFor(Invoice::class)->constrained();
+            $table->foreignIdFor(LineItem::class)->constrained();
+            $table->string('tax_ids')->nullable()->comment('for reference only');
             $table->decimal('price')->default(0);
             $table->decimal('qty')->default(0);
             $table->decimal('tax_amount')->default(0);

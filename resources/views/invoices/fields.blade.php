@@ -374,14 +374,11 @@
             }else{
                 tax.forEach(function (item){
                     tax = parseFloat(item.element.dataset.tax)
-                    totalTax = total * tax / 100
+                    totalTax = totalTax + (total * tax / 100);
                     total = total+totalTax;
                 })
             }
 
-            $(`#item-${splitId[2]}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${subtotal.toFixed(2)}`)
-            $(`#item-${splitId[2]}`).closest('tr').find('.item-price-after-tax').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${total.toFixed(2)}`)
-            $(`#item-${splitId[2]}`).closest('tr').find('.item-tax-price').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${totalTax.toFixed(2)}`)
             calculateTotal();
         })
         $(document).on('change','.taxes',function (){
@@ -399,12 +396,11 @@
             }else{
                 tax.forEach(function (item){
                     tax = parseFloat(item.element.dataset.tax)
-                    tax = total * tax / 100
-                    totalTax += tax;
-                    total = total+tax;
+                    totalTax = totalTax + (total * tax / 100);
+                    total = total+totalTax;
                 })
             }
-
+            total = subtotal + totalTax;
             $(`#item-${splitId[2]}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${subtotal.toFixed(2)}`)
             $(`#item-${splitId[2]}`).closest('tr').find('.item-price-after-tax').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${total.toFixed(2)}`)
             $(`#item-${splitId[2]}`).closest('tr').find('.item-tax-price').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${totalTax.toFixed(2)}`)
@@ -441,12 +437,11 @@
             }else{
                 tax.forEach(function (item){
                     tax = parseFloat(item.element.dataset.tax)
-                    totalTax = total * tax / 100
+                    totalTax = totalTax + (total * tax / 100);
                     total = total+totalTax;
                 })
             }
-
-
+            total = subtotal + totalTax;
             $(`#item-${splitId[2]}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${subtotal.toFixed(2)}`)
             $(`#item-${splitId[2]}`).closest('tr').find('.item-price-after-tax').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${total.toFixed(2)}`)
             $(`#item-${splitId[2]}`).closest('tr').find('.item-tax-price').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${totalTax.toFixed(2)}`)
@@ -467,10 +462,11 @@
             }else{
                 tax.forEach(function (item){
                     tax = parseFloat(item.element.dataset.tax)
-                    totalTax = total * tax / 100
+                    totalTax = totalTax + (total * tax / 100);
                     total = total+totalTax;
                 })
             }
+            total = subtotal + totalTax;
             $(`#item-${splitId[2]}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${subtotal.toFixed(2)}`)
             $(`#item-${splitId[2]}`).closest('tr').find('.item-price-after-tax').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${total.toFixed(2)}`)
             $(`#item-${splitId[2]}`).closest('tr').find('.item-tax-price').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${totalTax.toFixed(2)}`)
@@ -492,11 +488,11 @@
             }else{
                 tax.forEach(function (item){
                     tax = parseFloat(item.element.dataset.tax)
-                    totalTax = total * tax / 100
+                    totalTax = totalTax + (total * tax / 100);
                     total = total+totalTax;
                 })
             }
-
+            total = subtotal + totalTax;
             $(`#item-${splitId[2]}`).closest('tr').find('.item-total').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${subtotal.toFixed(2)}`)
             $(`#item-${splitId[2]}`).closest('tr').find('.item-price-after-tax').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${total.toFixed(2)}`)
             $(`#item-${splitId[2]}`).closest('tr').find('.item-tax-price').html(`<span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span>${totalTax.toFixed(2)}`)
@@ -547,12 +543,12 @@
                 }else{
                     tax.forEach(function (item){
                         tax = parseFloat(item.element.dataset.tax)
-                        totalTax = total * tax / 100
-                        itemsTax += totalTax;
+                        totalTax = totalTax + (total * tax / 100);
                         total = total+totalTax;
                     })
                 }
             });
+            itemsTax = itemsTax + totalTax;
             finalAmount = total;
             $("#total").text(originalTotal.toFixed(2));
             $("#totalTax").text(itemsTax.toFixed(2));

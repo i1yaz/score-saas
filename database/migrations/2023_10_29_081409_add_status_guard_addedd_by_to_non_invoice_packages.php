@@ -1,0 +1,32 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('non_invoice_packages', function (Blueprint $table) {
+            $table->boolean('status')->default(true)->after('final_amount');
+            $table->string('auth_guard')->after('status');
+            $table->bigInteger('added_by')->after('auth_guard');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('non_invoice_packages', function (Blueprint $table) {
+            $table->dropColumn('status');
+            $table->dropColumn('auth_guard');
+            $table->dropColumn('added_by');
+        });
+    }
+};

@@ -133,7 +133,7 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor']], function () {
     Route::get('invoices', [InvoiceController::class, 'index'])->name('invoices.index')->middleware(['permission:invoice-index']);
     Route::get('invoices/create', [InvoiceController::class, 'create'])->name('invoices.create')->middleware(['permission:invoice-create']);
     Route::post('invoices', [InvoiceController::class, 'store'])->name('invoices.store')->middleware(['permission:invoice-create']);
-    Route::get('invoices/{invoice}', [InvoiceController::class, 'show'])->name('invoices.show')->middleware(['permission:invoice-show']);
+    Route::get('invoices/{invoice}/{type?}', [InvoiceController::class, 'show'])->name('invoices.show')->middleware(['permission:invoice-show']);
     Route::get('invoices/{invoice}/edit', [InvoiceController::class, 'edit'])->name('invoices.edit')->middleware(['permission:invoice-edit']);
     Route::patch('invoices/{invoice}', [InvoiceController::class, 'update'])->name('invoices.update')->middleware(['permission:invoice-edit']);
     Route::delete('invoices/{invoice}', [InvoiceController::class, 'destroy'])->name('invoices.destroy')->middleware(['permission:invoice-destroy']);
