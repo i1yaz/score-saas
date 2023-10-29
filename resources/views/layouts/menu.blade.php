@@ -97,7 +97,7 @@
     </a>
 </li>
 @endpermission
-@permission(['tutoring_package_type-index','subject-index','tutoring_location-index','school-index','invoice_package_type-index'])
+@permission(['tutoring_package_type-index','subject-index','tutoring_location-index','school-index','invoice_package_type-index','client-index','tax-index','line_item-index'])
 <li class="nav-item {{Request::is(['tutoring-package-types*','subjects*','tutoring-locations*'])?'menu-is-opening menu-open active':''}}">
     <a href="#" class="nav-link {{Request::is(['tutoring-package-types*','subjects*','tutoring-locations*'])?'active':''}}">
         <i class="nav-icon fas fa-cog"></i>
@@ -153,6 +153,13 @@
         <li class="nav-item">
             <a href="{{ route('line-items.index') }}" class="nav-link {{ Request::is('line-items*') ? 'active' : '' }}">
                 <p>Line Items</p>
+            </a>
+        </li>
+        @endpermission
+        @permission('client-index')
+        <li class="nav-item">
+            <a href="{{ route('clients.index') }}" class="nav-link {{ Request::is('clients*') ? 'active' : '' }}">
+                <p>Clients</p>
             </a>
         </li>
         @endpermission

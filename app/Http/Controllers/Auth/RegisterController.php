@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Client;
 use App\Models\ParentUser;
 use App\Models\Student;
 use App\Models\Tutor;
@@ -91,7 +92,9 @@ class RegisterController extends Controller
             $user = $this->createStudent($request->all());
         } elseif ($request->registrationType == 'tutor') {
             $user = $this->createTutor($request->all());
-        } else {
+        } elseif ($request->registrationType == 'client') {
+            $user = $this->createClient($request->all());
+        }else {
             $user = $this->create($request->all());
         }
 
@@ -144,5 +147,12 @@ class RegisterController extends Controller
         Validator::make($request, Tutor::$rules);
 
         return Tutor::create($request);
+    }
+
+    private function createClient(array $request)
+    {
+        Validator::make($request, Client::$rules);
+
+        return Client::create($request);
     }
 }

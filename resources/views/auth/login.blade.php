@@ -28,6 +28,10 @@
                                 <input class="custom-control-input" type="radio" id="tutor" name="type" value="tutor" >
                                 <label for="tutor" class="custom-control-label">Tutor</label>
                             </div>
+                            <div class="custom-control custom-radio">
+                                <input class="custom-control-input" type="radio" id="client" name="type" value="client" >
+                                <label for="client" class="custom-control-label">Client</label>
+                            </div>
                         </div>
 
                         <div class="input-group mb-3">

@@ -45,7 +45,7 @@ Route::get('/', function () {
 Auth::routes(['register' => false]);
 Route::get('admin/login', [LoginController::class, 'showAdminLoginForm'])->name('admin.login');
 
-Route::group(['middleware' => ['auth:web,parent,student,tutor']], function () {
+Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     //Parent
     Route::get('parents', [ParentController::class, 'index'])->name('parents.index')->middleware(['permission:parent-index']);
@@ -155,8 +155,14 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor']], function () {
     Route::delete('monthly-invoice-packages/{monthly_invoice_package}', [MonthlyInvoicePackageController::class, 'destroy'])->name('monthly-invoice-packages.destroy')->middleware(['permission:monthly_invoice_package-destroy']);
     //Clients
     Route::get('clients', [ClientController::class, 'index'])->name('clients.index')->middleware(['permission:client-index']);
-    Route::get('client-email-ajax', [TaxController::class, 'index'])->name('client-email-ajax')->middleware(['permission:client-index']);
+    Route::get('clients/create', [ClientController::class, 'create'])->name('clients.create')->middleware(['permission:client-create']);
     Route::post('clients', [ClientController::class, 'store'])->name('clients.store')->middleware(['permission:client-create']);
+    Route::get('clients/{client}', [ClientController::class, 'show'])->name('clients.show')->middleware(['permission:client-show']);
+    Route::get('clients/{client}/edit', [ClientController::class, 'edit'])->name('clients.edit')->middleware(['permission:client-edit']);
+    Route::patch('clients/{client}', [ClientController::class, 'update'])->name('clients.update')->middleware(['permission:client-edit']);
+    Route::delete('clients/{client}', [ClientController::class, 'destroy'])->name('clients.destroy')->middleware(['permission:client-destroy']);
+
+    Route::get('client-email-ajax', [TaxController::class, 'index'])->name('client-email-ajax')->middleware(['permission:client-index']);
     //Taxes
     Route::get('taxes', [TaxController::class, 'index'])->name('taxes.index')->middleware(['permission:tax-index']);
     Route::get('taxes/create', [TaxController::class, 'create'])->name('taxes.create')->middleware(['permission:tax-create']);

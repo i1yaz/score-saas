@@ -35,6 +35,7 @@ class LoginController extends Controller
         $this->middleware('guest:parent')->except('logout');
         $this->middleware('guest:student')->except('logout');
         $this->middleware('guest:tutor')->except('logout');
+        $this->middleware('guest:client')->except('logout');
     }
 
     /**
@@ -58,6 +59,9 @@ class LoginController extends Controller
         }
         if ($request->type === 'tutor') {
             return $this->tutorLogin($request);
+        }
+        if ($request->type === 'client') {
+            return $this->clientLogin($request);
         }
 
         $this->validateLogin($request);
@@ -152,5 +156,10 @@ class LoginController extends Controller
         return $request->wantsJson()
             ? new JsonResponse([], 204)
             : redirect('/');
+    }
+
+    private function clientLogin(Request $request)
+    {
+        return $this->loginByRoleGuards($request, 'client');
     }
 }

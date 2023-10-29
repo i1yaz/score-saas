@@ -19,7 +19,15 @@ class Student extends Authenticatable implements LaratrustUser
     public $table = 'students';
 
     protected string $guard = 'student';
-
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
     public $fillable = [
         'school_id',
         'email',

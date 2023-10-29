@@ -103,6 +103,7 @@ return [
         'parent' => \App\Models\ParentUser::class,
         'student' => \App\Models\Student::class,
         'tutor' => \App\Models\Tutor::class,
+        'client' => \App\Models\Client::class,
     ],
 
     /*

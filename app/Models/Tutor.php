@@ -18,6 +18,15 @@ class Tutor extends Authenticatable implements LaratrustUser
     protected string $guard = 'tutors';
 
     public $table = 'tutors';
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 
     public $fillable = [
         'first_name',

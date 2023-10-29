@@ -2,8 +2,10 @@
 
 namespace App\DataTables;
 
+use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\MonthlyInvoicePackage;
+use App\Models\NonInvoicePackage;
 use App\Models\ParentUser;
 use App\Models\Student;
 use App\Models\StudentTutoringPackage;
@@ -46,6 +48,9 @@ class InvoiceDataTable implements IDataTables
             ->leftJoin('monthly_invoice_packages', function ($q) {
                 $q->on('invoices.invoiceable_id', '=', 'monthly_invoice_packages.id')->where('invoices.invoiceable_type', '=', MonthlyInvoicePackage::class);
             })
+            ->leftJoin('non_invoice_packages', function ($q) {
+                $q->on('invoices.invoiceable_id', '=', 'non_invoice_packages.id')->where('invoices.invoiceable_type', '=', NonInvoicePackage::class);
+            })
             ->leftJoin('students as s1', 'student_tutoring_packages.student_id', '=', 's1.id')
             ->leftJoin('students as s2', 'monthly_invoice_packages.student_id', '=', 's2.id')
             ->leftJoin('parents as p1', 's1.parent_id', '=', 'p1.id')
@@ -74,9 +79,13 @@ class InvoiceDataTable implements IDataTables
             ->leftJoin('monthly_invoice_packages', function ($q) {
                 $q->on('invoices.invoiceable_id', '=', 'monthly_invoice_packages.id')->where('invoices.invoiceable_type', '=', MonthlyInvoicePackage::class);
             })
+            ->leftJoin('non_invoice_packages', function ($q) {
+                $q->on('invoices.invoiceable_id', '=', 'non_invoice_packages.id')->where('invoices.invoiceable_type', '=', NonInvoicePackage::class);
+            })
             ->leftJoin('students as s1', 'student_tutoring_packages.student_id', '=', 's1.id')
             ->leftJoin('students as s2', 'monthly_invoice_packages.student_id', '=', 's2.id')
             ->leftJoin('parents as p1', 's1.parent_id', '=', 'p1.id')
+            ->leftJoin('clients', 'non_invoice_packages.client_id', '=', 'clients.id')
             ->leftJoin('parents as p2', 's2.parent_id', '=', 'p2.id');
         $invoices = static::getModelQueryBySearch($search, $invoices);
 
@@ -122,12 +131,26 @@ class InvoiceDataTable implements IDataTables
                     ->orWhere('s2.parent_id', Auth::id());
             });
         }
+        if (Auth::user()->hasRole('client') && Auth::user() instanceof ParentUser) {
+            $records = $records->where(function ($q){
+                $q->where('s1.parent_id', Auth::id())
+                    ->orWhere('s2.parent_id', Auth::id());
+            });
+        }
         if (Auth::user()->hasRole('student') && Auth::user() instanceof Student) {
             $records = $records->where(function ($q){
                 $q->where('student_tutoring_packages.student_id', Auth::id())
                     ->orWhere('monthly_invoice_packages.student_id', Auth::id())
                     ->WhereRaw('(CASE WHEN s1.parent_id IS NULL THEN true ELSE false END OR CASE WHEN s2.parent_id IS NULL THEN true ELSE false END)');
             });
+        }
+        if (Auth::user()->hasRole('client') && Auth::user() instanceof Client) {
+            $records = $records->where(function ($q){
+                $q->where('non_invoice_packages.client_id', Auth::id())
+                    ->where('invoices.invoiceable_type',NonInvoicePackage::class)
+                    ->where('invoices.invoice_package_type_id',5);
+            });
+
 
         }
 

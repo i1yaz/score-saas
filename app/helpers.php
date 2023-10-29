@@ -37,7 +37,9 @@ if (! function_exists('getRoleDescriptionOfLoggedInUser')) {
         if (Auth::user()->hasRole('tutor')) {
             return 'Tutor';
         }
-
+        if (Auth::user()->hasRole('client')) {
+            return 'Client';
+        }
         return '';
     }
 }

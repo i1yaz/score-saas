@@ -11,8 +11,10 @@ use App\Models\Student;
 use App\Models\StudentTutoringPackage;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Laracasts\Flash\Flash;
 
 class InvoiceRepository extends BaseRepository
 {
@@ -135,7 +137,7 @@ class InvoiceRepository extends BaseRepository
     /**
      * @throws \Exception
      */
-    public function create(array $input): Model
+    public function create(array $input): NonInvoicePackage
     {
         $data = [];
         $totalFinalAmount = 0;
@@ -186,11 +188,12 @@ class InvoiceRepository extends BaseRepository
             $invoice->save();
             $invoice->items()->sync($data);
             DB::commit();
+            Flash::success('Invoice saved successfully.');
             return $nonPackageInvoice;
-
-        }catch (\Exception $e){
+        }catch (QueryException $queryException){
             DB::rollBack();
-            throw $e;
+            report($queryException);
+            Flash::error('something went wrong');
         }
 
     }

@@ -81,8 +81,6 @@ class InvoiceController extends AppBaseController
 
         $this->invoiceRepository->create($input);
 
-        Flash::success('Invoice saved successfully.');
-
         return redirect(route('invoices.index'));
     }
 
