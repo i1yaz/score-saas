@@ -8,12 +8,13 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('clients', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
             $table->string('first_name');
             $table->string('last_name')->nullable();
             $table->string('email')->unique();
             $table->string('address')->nullable();
             $table->timestamps();
+
         });
     }
 

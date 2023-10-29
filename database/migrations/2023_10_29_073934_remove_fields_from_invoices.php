@@ -15,7 +15,6 @@ return new class extends Migration
             $table->dropColumn('tax2_ids');
             $table->dropColumn('discount_amount');
             $table->dropColumn('tax_amount');
-            $table->dropColumn('sub_total');
         });
     }
 
@@ -28,7 +27,6 @@ return new class extends Migration
             $table->string('tax2_ids')->nullable();
             $table->decimal('discount_amount')->default(0);
             $table->decimal('tax_amount')->default(0);
-            $table->decimal('sub_total')->default(0);
         });
     }
 };

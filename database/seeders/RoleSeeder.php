@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Permission;
 use App\Models\Role;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
@@ -69,6 +70,8 @@ class RoleSeeder extends Seeder
                 'updated_at' => Carbon::now()
             ]
         ]);
-
+        $permissions = Permission::get();
+        $superAdmin = Role::where('id',1)->first();
+        $superAdmin->givePermissions($permissions);
     }
 }

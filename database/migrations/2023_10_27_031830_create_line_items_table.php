@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('line_items', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('name');
             $table->string('price');
             $table->boolean('status')->default(true);
