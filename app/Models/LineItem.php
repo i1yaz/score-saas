@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class LineItem extends Model
 {
@@ -39,5 +40,13 @@ class LineItem extends Model
     {
         $query->where('status', false);
     }
-
+    /**
+     *------------------------------------------------------------------
+     * Relations
+     *------------------------------------------------------------------
+     */
+    public function invoices(): BelongsToMany
+    {
+        return $this->belongsToMany(Invoice::class);
+    }
 }

@@ -2,12 +2,14 @@
 
 namespace App\Repositories;
 
+use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\MonthlyInvoicePackage;
 use App\Models\ParentUser;
 use App\Models\Student;
 use App\Models\StudentTutoringPackage;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class InvoiceRepository extends BaseRepository
@@ -122,5 +124,89 @@ class InvoiceRepository extends BaseRepository
         $invoice->added_by = Auth::id();
         $invoice->save();
         return $invoice;
+    }
+
+    public function create(array $input): Model
+    {
+        // client_id" => "3"
+        //  "due_date" => "10/31/2023"
+        //  "general_description" => null
+        //  "detailed_description" => null
+        //  "item_id" => array:2 [
+        //    1 => "2"
+        //    2 => "1"
+        //  ]
+        //  "quantity" => array:2 [
+        //    1 => "1"
+        //    2 => "2"
+        //  ]
+        //  "price" => array:2 [
+        //    1 => "10.8"
+        //    2 => "14.6"
+        //  ]
+        //  "tax_id" => array:3 [
+        //    0 => array:1 [
+        //        1 => "1"
+        //    ]
+        //    1 => array:1 [
+        //        2 => "1"
+        //    ]
+        //    2 => array:1 [
+        //        2 => "2"
+        //    ]
+        //  ]
+        //  "discount" => "11"
+        //  "discount_type" => "1"
+        //  "tax2_id" => array:2 [
+        //        0 => "1"
+        //        1 => "2"
+        //  ]
+        //  "first_name" => null
+        //  "last_name" => null
+        //  "email" => null
+        //  "address" => null
+//        $user->roles()->sync([1 => ['expires' => true], 2, 3]);
+        $invoice = new Invoice();
+        $invoice->invoice_package_type_id = 5;
+        $invoice->due_date = $input['due_date'];
+        $invoice->general_description = $input['general_description'] ?? null;
+        $invoice->detailed_description = $input['detailed_description'] ?? null;
+        $invoice->invoiceable_type = Client::class;
+        $invoice->tax2_ids = json_encode($input['tax2_id']);
+        $invoice->invoiceable_id = $input['client_id'];
+        $invoice->auth_guard = Auth::guard()->name;
+        $invoice->added_by = Auth::id();
+//        $invoice->save();
+        $data = [];
+        $totalFinalAmount = 0;
+        foreach ($input['item_id'] as $key => $item_id) {
+            $taxedAmount = getTaxAmountForLine($input['tax_id'], $input['price'][$key], $input['quantity'][$key],$key);
+            $finalAmount = (($input['quantity'][$key] * $input['price'][$key]) + $taxedAmount);
+            $data[$item_id] = [
+                    'tax_ids' => getTaxIdsForLineInJson($input['tax_id'], $key),
+                    'price' => $input['price'][$key],
+                    'qty' => $input['quantity'][$key],
+                    'tax_amount' => $taxedAmount,
+                    'final_amount' =>  $finalAmount,
+                    'auth_guard' => Auth::guard()->name,
+                    'added_by' => Auth::id(),
+            ];
+            $totalFinalAmount += $finalAmount;
+//            $invoice->items()->attach($item_id, [
+//                'qty' => $input['quantity'][$key],
+//                'price' => $input['price'][$key],
+//                'tax_ids' => json_encode($input['tax_id'][$key]),
+//                'tax2_ids' => json_encode($input['tax2_id'][$key]),
+//                'discount' => $discountedAmount,
+//                'discount_type' => $input['discount_type'],
+//                'final_amount' => ($input['quantity'][$key] * $input['price'][$key]) - $discountedAmount,
+//                'auth_guard' => Auth::guard()->name,
+//                'added_by' => Auth::id(),
+//            ]);
+        }
+        $discountedAmountOnSubtotal = getDiscountedAmountOnSubtotal($input['discount_type'], $input['discount'], $totalFinalAmount);
+
+        dd($data,$invoice,$totalFinalAmount,$discountedAmountOnSubtotal);
+
     }
 }

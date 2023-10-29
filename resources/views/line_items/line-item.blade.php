@@ -10,7 +10,7 @@
         </select>
     </td>
     <td style="width: 10% !important;">
-        {{ Form::number("quantity[$id]", null, ['class' => 'form-control qty ', 'required','id'=>"item-quantity-$id", 'type' => 'number', 'min' => '0', 'step' => '.01', 'oninput' => "validity.valid||(value=value.replace(/[e\+\-]/gi,''))"]) }}
+        {{ Form::number("quantity[$id]", null, ['class' => 'form-control qty ', 'required','id'=>"item-quantity-$id", 'type' => 'number', 'min' => '1', 'oninput' => "validity.valid||(value=value.replace(/[e\+\-]/gi,''))"]) }}
     </td>
     <td style="width: 10% !important;">
         {{ Form::number("price[$id]", null, ['class' => 'form-control price-input price ','id'=>"item-price-$id", 'oninput' => "validity.valid||(value=value.replace(/[e\+\-]/gi,''))", 'min' => '0', 'value' => '0', 'step' => '.01', 'pattern' => "^\d*(\.\d{0,2})?$", 'required', 'onKeyPress' => 'if(this.value.length==8) return false;']) }}

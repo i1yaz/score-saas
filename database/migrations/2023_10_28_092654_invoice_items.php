@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('invoice_items', function (Blueprint $table) {
+        Schema::create('invoice_line_item', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Invoice::class);
             $table->foreignIdFor(LineItem::class);

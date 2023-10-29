@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Invoice extends Model
 {
@@ -23,7 +24,8 @@ class Invoice extends Model
     const ID_START = 1000;
 
     const PREFIX_START = 'INV-';
-
+    const FLAT_DISCOUNT = 1;
+    const PERCENTAGE_DISCOUNT = 2;
     public $fillable = [
         'invoice_package_type_id',
         'due_date',
@@ -70,5 +72,16 @@ class Invoice extends Model
     public function getInvoiceCodeAttribute(): string
     {
         return getInvoiceCodeFromId($this->id);
+    }
+
+    /**
+     *------------------------------------------------------------------
+     * Relations
+     *------------------------------------------------------------------
+     */
+    public function items(): BelongsToMany
+    {
+        return $this->belongsToMany(LineItem::class, 'invoice_line_item')
+            ->withPivot(['tax_ids', 'price', 'qty', 'tax_amount', 'final_amount', 'status', 'auth_guard', 'added_by']);
     }
 }

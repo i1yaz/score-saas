@@ -264,7 +264,13 @@ if (! function_exists('formatAmountWithCurrency')) {
      */
     function formatAmountWithCurrency(float $amount, $decimals = 2): string
     {
-        return getCurrencySymbol().number_format($amount, 2, '.', '');
+        return getCurrencySymbol().formatAmountWithoutCurrency($amount, $decimals);
+    }
+}
+if(!function_exists('formatAmountWithoutCurrency')){
+    function formatAmountWithoutCurrency(float $amount, $decimals = 2): string
+    {
+        return number_format($amount, 2, '.', '');
     }
 }
 
@@ -630,4 +636,42 @@ if (!function_exists('getPriceFromMonthlyInvoicePackage')){
             ->where('monthly_invoice_package_id',$monthlyInvoicePackage->id)->get();
     }
 }
+if (!function_exists('getDiscountedAmountOnSubtotal')){
+    function getDiscountedAmountOnSubtotal($discount_type ,$discount, $amount): float|int
+    {
+        if ($discount_type == Invoice::FLAT_DISCOUNT) {
+            return formatAmountWithoutCurrency($discount);
+        }
+        if ($discount_type == Invoice::PERCENTAGE_DISCOUNT) {
+            return  formatAmountWithoutCurrency((($amount) * $discount) / 100);
+        }
 
+        return formatAmountWithoutCurrency($amount);
+
+    }
+}
+if (!function_exists('getTaxAmountForLine')){
+    function getTaxAmountForLine($taxes,$price, $quantity,$key): float|int
+    {
+        $taxedAmount = 0;
+        foreach ($taxes as  $tax){
+            if (!empty($tax[$key])){
+                $tax = Tax::find($tax[$key]);
+                $taxedAmount = $taxedAmount + ((($price * $quantity) * $tax->value) / 100);
+            }
+        }
+        return formatAmountWithoutCurrency($taxedAmount) ;
+    }
+}
+if (!function_exists('getTaxIdsForLine')){
+    function getTaxIdsForLineInJson($taxes,$key): bool|string
+    {
+        $taxIds = [];
+        foreach ($taxes as  $tax){
+            if (!empty($tax[$key])){
+                $taxIds[] = $tax[$key];
+            }
+        }
+        return json_encode($taxIds);
+    }
+}
