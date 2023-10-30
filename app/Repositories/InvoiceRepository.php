@@ -208,12 +208,13 @@ class InvoiceRepository extends BaseRepository
 
     }
 
-    public function showNonPackageInvoice($invoice)
+    public function showNonPackageInvoice($id)
     {
         $invoice = Invoice::query()->select(
             [
                 'invoices.id as invoice_id',
                 'invoices.amount_paid',
+                'non_invoice_packages.final_amount'
             ])
             ->leftJoin('non_invoice_packages', function ($q) {
                 $q->on('invoices.invoiceable_id', '=', 'non_invoice_packages.id')->where('invoices.invoiceable_type', '=', NonInvoicePackage::class);
@@ -221,7 +222,6 @@ class InvoiceRepository extends BaseRepository
         if (Auth::user()->hasRole('client') && Auth::user() instanceof Client) {
             $invoice = $invoice->where('non_invoice_packages.client_id', Auth::id());
         }
-
-        return $invoice->where('invoices.id', $invoice)->first();
+        return $invoice->where('invoices.id', $id)->first();
     }
 }
