@@ -161,8 +161,10 @@ class InvoiceRepository extends BaseRepository
             $totalFinalAmount += $finalAmount;
 
         }
-
-        $discountedAmountOnSubtotal = getDiscountedAmountOnSubtotal($input['discount_type'], $input['discount'], $totalFinalAmount);
+        $discountedAmountOnSubtotal = 0;
+        if(!empty($input['discount'])){
+            $discountedAmountOnSubtotal = getDiscountedAmountOnSubtotal($input['discount_type'], $input['discount'], $totalFinalAmount);
+        }
         $totalFinalAmount =  $totalFinalAmount - $discountedAmountOnSubtotal;
         $taxOnSubtotal= 0;
         if (!empty($input['tax2_id'])){
@@ -204,5 +206,22 @@ class InvoiceRepository extends BaseRepository
             Flash::error('something went wrong');
         }
 
+    }
+
+    public function showNonPackageInvoice($invoice)
+    {
+        $invoice = Invoice::query()->select(
+            [
+                'invoices.id as invoice_id',
+                'invoices.amount_paid',
+            ])
+            ->leftJoin('non_invoice_packages', function ($q) {
+                $q->on('invoices.invoiceable_id', '=', 'non_invoice_packages.id')->where('invoices.invoiceable_type', '=', NonInvoicePackage::class);
+            });
+        if (Auth::user()->hasRole('client') && Auth::user() instanceof Client) {
+            $invoice = $invoice->where('non_invoice_packages.client_id', Auth::id());
+        }
+
+        return $invoice->where('invoices.id', $invoice)->first();
     }
 }

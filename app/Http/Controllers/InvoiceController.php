@@ -160,14 +160,18 @@ class InvoiceController extends AppBaseController
 
         return redirect(route('invoices.index'));
     }
-    public function showPaymentPage($invoice){
+    public function showPaymentPage(Request $request, $invoice){
 
-        $invoice = $this->invoiceRepository->show($invoice);
+
 
         if (empty($invoice)) {
             Flash::error('Invoice not found');
 
             return redirect(route('invoices.index'));
+        }
+        if ($request->type === 'non-package-invoice'){
+            $invoice = $this->invoiceRepository->showNonPackageInvoice($invoice);
+            return view('invoices.non-package-payment-create',['invoice'=>$invoice]);
         }
         return view('invoices.payment-create',['invoice'=>$invoice]);
     }
