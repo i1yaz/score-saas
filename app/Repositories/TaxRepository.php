@@ -21,4 +21,5 @@ class TaxRepository extends BaseRepository
     {
         return Tax::class;
     }
+
 }

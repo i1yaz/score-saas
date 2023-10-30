@@ -224,4 +224,12 @@ class InvoiceRepository extends BaseRepository
         }
         return $invoice->where('invoices.id', $id)->first();
     }
+
+    public function getInvoiceData($invoice)
+    {
+    }
+
+    public function getNonPackageInvoiceData($invoice)
+    {
+    }
 }

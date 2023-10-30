@@ -24,8 +24,10 @@ class UpdateTaxRequest extends FormRequest
      */
     public function rules()
     {
-        $rules = Tax::$rules;
-        
-        return $rules;
+        return Tax::$rules;
+    }
+    public function messages()
+    {
+        return Tax::$messages;
     }
 }

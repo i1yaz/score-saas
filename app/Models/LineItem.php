@@ -24,7 +24,14 @@ class LineItem extends Model
     ];
 
     public static array $rules = [
-
+        'name' => ['required','string'],
+        'price' => ['required','numeric']
+    ];
+    public static array $messages = [
+        'name.required' => 'Line item name is required',
+        'name.string' => 'Line Item name must be string',
+        'price.required' => 'Price is required',
+        'price.string' => 'Price must be numeric'
     ];
     /**
      *------------------------------------------------------------------

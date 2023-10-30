@@ -41,7 +41,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-
+Route::get('invoice/{invoice}/public-view/{type?}',[InvoiceController::class,'showPublicInvoice']);
 Auth::routes(['register' => false]);
 Route::get('admin/login', [LoginController::class, 'showAdminLoginForm'])->name('admin.login');
 
@@ -181,6 +181,4 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], functio
     Route::patch('line-items/{line_item}', [LineItemController::class, 'update'])->name('line-items.update')->middleware(['permission:line_item-edit']);
     Route::delete('line-items/{line_item}', [LineItemController::class, 'destroy'])->name('line-items.destroy')->middleware(['permission:line_item-destroy']);
     Route::get('get-new-line-item', [LineItemController::class, 'getNewLineItem'])->name('get-new-line-item');
-
-
 });

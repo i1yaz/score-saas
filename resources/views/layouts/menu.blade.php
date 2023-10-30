@@ -80,6 +80,14 @@
 </li>
 
 @endpermission
+@permission('monthly_invoice_package-index')
+<li class="nav-item">
+    <a href="{{ route('monthly-invoice-packages.index') }}" class="nav-link {{ Request::is('monthly-invoice-packages*') ? 'active' : '' }}">
+        <i class="nav-icon fas fa-home"></i>
+        <p style="white-space: nowrap;">Monthly Invoice Packages</p>
+    </a>
+</li>
+@endpermission
 
 @permission('invoice-index')
 <li class="nav-item">
@@ -164,14 +172,5 @@
         </li>
         @endpermission
     </ul>
-</li>
-@endpermission
-
-@permission('monthly_invoice_package-index')
-<li class="nav-item">
-    <a href="{{ route('monthly-invoice-packages.index') }}" class="nav-link {{ Request::is('monthly-invoice-packages*') ? 'active' : '' }}">
-        <i class="nav-icon fas fa-home"></i>
-        <p style="white-space: nowrap;">Monthly Invoice Packages</p>
-    </a>
 </li>
 @endpermission

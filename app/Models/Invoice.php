@@ -41,6 +41,8 @@ class Invoice extends Model
         'paid_by_id',
         'invoiceable_type',
         'invoiceable_id',
+        'auth_guard',
+        'added_by'
     ];
 
     protected $casts = [

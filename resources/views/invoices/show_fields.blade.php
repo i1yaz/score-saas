@@ -33,17 +33,6 @@
     <p>{{ $invoice->detailed_description }}</p>
 </div>
 
-<!-- Email To Parent Field -->
-<div class="col-sm-12 col-md-6">
-    {!! Form::label('email_to_parent', 'Email To Parent:') !!}
-    <p>{{ $invoice->parent_email }}</p>
-</div>
-
-<!-- Email To Student Field -->
-<div class="col-sm-12 col-md-6">
-    {!! Form::label('email_to_student', 'Email To Student:') !!}
-    <p>{{ $invoice->student_email }}</p>
-</div>
 
 <!-- Amount Paid Field -->
 <div class="col-sm-12 col-md-6">

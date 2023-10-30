@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\DataTables\InvoiceDataTable;
 use App\Http\Requests\CreateInvoiceRequest;
 use App\Http\Requests\UpdateInvoiceRequest;
+use App\Models\Invoice;
 use App\Models\LineItem;
+use App\Models\Payment;
 use App\Models\Tax;
 use App\Repositories\InvoiceRepository;
 use Flash;
@@ -82,7 +84,7 @@ class InvoiceController extends AppBaseController
         $this->invoiceRepository->create($input);
         if ($request->ajax()){
             Flash::success('Invoice Added successfully.');
-            return response()->json(['success'=>true,'message'=>'Invoice created successfully','redirect'=>route('invoices.index')]);
+            return response()->json(['success'=>true,'message'=>'Invoice created successfully','redirect'=> route('invoices.index')]);
         }
         return redirect(route('invoices.index'));
     }
@@ -174,5 +176,20 @@ class InvoiceController extends AppBaseController
             return view('invoices.non-package-payment-create',['invoice'=>$invoice]);
         }
         return view('invoices.payment-create',['invoice'=>$invoice]);
+    }
+
+    public function showPublicInvoice($invoice,$type=null){
+        if ($type=='non-package-invoice'){
+            $invoiceData = $this->invoiceRepository->getNonPackageInvoiceData($invoice);
+        }
+        $invoiceData['statusArr'] = Invoice::STATUS_ARR;
+        $invoiceData['status'] = $invoice->status;
+        unset($invoiceData['statusArr'][Invoice::DRAFT]);
+        $invoiceData['paymentType'] = Payment::PAYMENT_TYPE;
+        $invoiceData['paymentMode'] = $this->invoiceRepository->getPaymentGateways();
+        $invoiceData['stripeKey'] = getSettingValue('stripe_key');
+        $invoiceData['userLang'] = $invoice->client->user->language;
+
+        return view('invoices.public-invoice.public_view')->with($invoiceData);
     }
 }

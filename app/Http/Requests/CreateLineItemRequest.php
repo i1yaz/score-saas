@@ -26,4 +26,8 @@ class CreateLineItemRequest extends FormRequest
     {
         return LineItem::$rules;
     }
+    public function messages()
+    {
+        return LineItem::$messages;
+    }
 }

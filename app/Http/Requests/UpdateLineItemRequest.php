@@ -24,8 +24,10 @@ class UpdateLineItemRequest extends FormRequest
      */
     public function rules()
     {
-        $rules = LineItem::$rules;
-        
-        return $rules;
+        return LineItem::$rules;
+    }
+    public function messages()
+    {
+        return LineItem::$messages;
     }
 }
