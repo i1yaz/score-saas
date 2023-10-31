@@ -277,11 +277,15 @@ if (! function_exists('formatAmountWithCurrency')) {
     /**
      * Formats a given float number into a string with a currency Sign.
      *
-     * @param  float  $amount The float number to be formatted.
+     * @param float|null $amount The float number to be formatted.
+     * @param int $decimals
      * @return string The formatted number as a string.
      */
-    function formatAmountWithCurrency(float $amount, $decimals = 2): string
+    function formatAmountWithCurrency(float|null $amount, $decimals = 2): string
     {
+        if (is_null($amount)){
+            $amount = 0;
+        }
         return getCurrencySymbol().formatAmountWithoutCurrency($amount, $decimals);
     }
 }

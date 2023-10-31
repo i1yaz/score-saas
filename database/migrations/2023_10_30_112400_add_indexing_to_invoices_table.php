@@ -15,7 +15,7 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::table('invoices', function (Blueprint $table) {
-            //
+            $table->dropIndex(['invoiceable_type','invoiceable_id']);
         });
     }
 };

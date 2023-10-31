@@ -607,9 +607,9 @@ class PermissionSeeder extends Seeder
             ],
             [
                 'name' => 'client-index',
-                'display_name' => 'Session Index',
-                'description' => 'Session Index',
-                'resource' => 'Session',
+                'display_name' => 'Client Index',
+                'description' => 'Client Index',
+                'resource' => 'Client',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ],

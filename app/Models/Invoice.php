@@ -34,7 +34,6 @@ class Invoice extends Model
         'detailed_description',
         'email_to_parent',
         'email_to_student',
-        'amount_paid',
         'amount_remaining',
         'paid_status',
         'paid_by_modal',

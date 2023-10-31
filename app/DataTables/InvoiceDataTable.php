@@ -19,8 +19,8 @@ class InvoiceDataTable implements IDataTables
     {
         $columns = [
             'invoice_type' => 'invoiceable_type',
-            'parent' => 'parent_email,parent_email_p2',
-            'student' => 'student_email,student_email_s2',
+//            'parent' => 'parent_email,parent_email_p2',
+//            'student' => 'student_email,student_email_s2',
             'created_at' => 'invoice_created_at'
         ];
 
@@ -100,11 +100,11 @@ class InvoiceDataTable implements IDataTables
                 $nestedData['package'] = getPackageCodeFromModelAndId($invoice->invoiceable_type,$invoice->invoiceable_id);
                 $nestedData['invoice_status'] = getInvoiceStatusFromId($invoice->invoice_status);
                 $nestedData['invoice_type'] = getInvoiceTypeFromClass($invoice->invoiceable_type);
-                $nestedData['student'] = $invoice->student_email??$invoice->student_email_s2;
-                $nestedData['parent'] = $invoice->parent_email??$invoice->parent_email_p2;
+//                $nestedData['student'] = $invoice->student_email??$invoice->student_email_s2;
+//                $nestedData['parent'] = $invoice->parent_email??$invoice->parent_email_p2;
                 $nestedData['created_at'] = formatDate($invoice->invoice_created_at);
                 $nestedData['due_date'] = formatDate($invoice->due_date);
-                $nestedData['amount_paid'] = formatAmountWithCurrency($invoice->amount_paid);
+                $nestedData['amount_paid'] = formatAmountWithCurrency($invoice->amount_paid??0);
                 $nestedData['fully_paid_at'] = $invoice->fully_paid_at;
                 $nestedData['action'] = view('invoices.actions', ['invoice' => $invoice,'type' => getInvoiceTypeFromClass($invoice->invoiceable_type,true)])->render();
                 $data[] = $nestedData;
