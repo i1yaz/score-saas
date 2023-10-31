@@ -138,6 +138,9 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], functio
     Route::get('invoices/{invoice}/edit', [InvoiceController::class, 'edit'])->name('invoices.edit')->middleware(['permission:invoice-edit']);
     Route::patch('invoices/{invoice}', [InvoiceController::class, 'update'])->name('invoices.update')->middleware(['permission:invoice-edit']);
     Route::delete('invoices/{invoice}', [InvoiceController::class, 'destroy'])->name('invoices.destroy')->middleware(['permission:invoice-destroy']);
+
+    Route::post('stripe-payment', [StripeController::class, 'createSession'])->name('client.stripe-payment');
+
     //Sessions
     Route::get('sessions', [SessionController::class, 'index'])->name('sessions.index')->middleware(['permission:session-index']);
     Route::get('sessions/create', [SessionController::class, 'create'])->name('sessions.create')->middleware(['permission:session-create']);

@@ -164,8 +164,6 @@ class InvoiceController extends AppBaseController
     }
     public function showPaymentPage(Request $request, $invoice){
 
-
-
         if (empty($invoice)) {
             Flash::error('Invoice not found');
 
@@ -173,9 +171,10 @@ class InvoiceController extends AppBaseController
         }
         if ($request->type === 'non-package-invoice'){
             $invoice = $this->invoiceRepository->showNonPackageInvoice($invoice);
-            return view('invoices.non-package-payment-create',['invoice'=>$invoice]);
+            $stripeKey = config('services.stripe.key');
+            return view('invoices.non-package-payment-create',['invoice'=>$invoice,'stripeKey' => $stripeKey]);
         }
-        return view('invoices.payment-create',['invoice'=>$invoice]);
+//        return view('invoices.payment-create',['invoice'=>$invoice]);
     }
 
     public function showPublicInvoice($invoice,$type=null){

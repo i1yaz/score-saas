@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Stripe\Stripe;
 
 if (! function_exists('booleanSelect')) {
     function booleanSelect($value): string
@@ -734,5 +735,32 @@ if (!function_exists('getInvoiceCodeFromInvoiceableType')){
         }
         return '';
 
+    }
+}
+if (! function_exists('setStripeApiKey')) {
+    function setStripeApiKey()
+    {
+        $stripeSecretKey = config('services.stripe.secret_key');
+//        $stripeSecret = getSettingValue('stripe_secret');
+        isset($stripeSecret) ? Stripe::setApiKey($stripeSecret) : Stripe::setApiKey($stripeSecretKey);
+    }
+}
+if (! function_exists('getSettingValue')) {
+    /**
+     * @return mixed
+     */
+    function getSettingValue($keyName): mixed
+    {
+        $key = 'setting'.'-'.$keyName;
+        static $settingValues;
+
+        if (isset($settingValues[$key])) {
+            return $settingValues[$key];
+        }
+        /** @var Setting $setting */
+        $setting = Setting::where('key', '=', $keyName)->first();
+        $settingValues[$key] = $setting->value;
+
+        return $setting->value;
     }
 }

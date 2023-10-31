@@ -45,7 +45,13 @@
         </div>
     </div>
     @push('page_scripts')
+        <script src="https://js.stripe.com/v3/"></script>
         <script>
+            @if(!empty($stripeKey))
+                let stripe = Stripe('{{  $stripeKey ?? config('services.stripe.key') }}');
+            @endif
+            let invoiceStripePaymentUrl = '{{ route('client.stripe-payment') }}';
+
             $('#payment-type').select2({
                 dropdownAutoWidth: true, width: 'auto',
                 theme: 'bootstrap4',
