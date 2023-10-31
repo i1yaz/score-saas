@@ -29,7 +29,6 @@ class InvoiceDataTable implements IDataTables
             [
                 'invoices.id as invoice_id',
                 'invoices.paid_status as invoice_status',
-                'invoices.invoiceable_type',
                 's1.email as student_email',
                 's2.email as student_email_s2',
                 'p1.email as parent_email',
@@ -37,11 +36,10 @@ class InvoiceDataTable implements IDataTables
                 'invoices.created_at as invoice_created_at',
                 'invoices.due_date',
                 'invoices.fully_paid_at',
-                'invoices.amount_paid',
                 'invoices.invoiceable_id',
                 'invoices.invoiceable_type'
-
             ])
+            ->selectRaw('sum(payments.amount) as amount_paid')
             ->leftJoin('student_tutoring_packages', function ($q) {
                 $q->on('invoices.invoiceable_id', '=', 'student_tutoring_packages.id')->where('invoices.invoiceable_type', '=', StudentTutoringPackage::class);
             })
@@ -51,12 +49,13 @@ class InvoiceDataTable implements IDataTables
             ->leftJoin('non_invoice_packages', function ($q) {
                 $q->on('invoices.invoiceable_id', '=', 'non_invoice_packages.id')->where('invoices.invoiceable_type', '=', NonInvoicePackage::class);
             })
+            ->leftJoin('payments','payments.invoice_id','invoices.id')
             ->leftJoin('students as s1', 'student_tutoring_packages.student_id', '=', 's1.id')
             ->leftJoin('students as s2', 'monthly_invoice_packages.student_id', '=', 's2.id')
             ->leftJoin('parents as p1', 's1.parent_id', '=', 'p1.id')
             ->leftJoin('parents as p2', 's2.parent_id', '=', 'p2.id');
         $invoices = static::getModelQueryBySearch($search, $invoices);
-        $invoices = $invoices->offset($start)
+        $invoices = $invoices->groupBy('payments.amount')->offset($start)
             ->limit($limit);
         $columns = explode(',', $order);
         foreach ($columns as $column){
@@ -162,7 +161,7 @@ class InvoiceDataTable implements IDataTables
 
         $invoices = Invoice::query()->select(
             [
-                'invoices.id as invoice_id',
+                'invoices as invoice_id',
             ])
             ->leftJoin('student_tutoring_packages', function ($q) {
                 $q->on('invoices.invoiceable_id', '=', 'student_tutoring_packages.id')->where('invoices.invoiceable_type', '=', StudentTutoringPackage::class);
