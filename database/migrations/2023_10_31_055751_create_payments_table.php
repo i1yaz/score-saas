@@ -17,11 +17,14 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->foreignIdFor(Transaction::class)->constrained();
             $table->foreignIdFor(Invoice::class)->constrained();
             $table->smallInteger('payment_gateway_id');
+            $table->string('transaction_id')->comment('payment gateway\'s payment id ');
             $table->float('amount');
+            $table->string('paid_by_modal')->comment('This is the model of the payer like, Student,Parent of Client')->nullable();
+            $table->unsignedBigInteger('paid_by_id')->comment('This is the primary key of above model')->nullable();
             $table->text('meta');
+            $table->unsignedSmallInteger('status');
             $table->timestamps();
         });
     }
