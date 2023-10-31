@@ -8,6 +8,8 @@ use App\Http\Controllers\LineItemController;
 use App\Http\Controllers\MonthlyInvoicePackageController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\ParentController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PaymentGateways\StripeController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\StudentController;
@@ -141,6 +143,7 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], functio
 
     Route::post('stripe-payment', [StripeController::class, 'createSession'])->name('client.stripe-payment');
 
+
     //Sessions
     Route::get('sessions', [SessionController::class, 'index'])->name('sessions.index')->middleware(['permission:session-index']);
     Route::get('sessions/create', [SessionController::class, 'create'])->name('sessions.create')->middleware(['permission:session-create']);
@@ -184,4 +187,15 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], functio
     Route::patch('line-items/{line_item}', [LineItemController::class, 'update'])->name('line-items.update')->middleware(['permission:line_item-edit']);
     Route::delete('line-items/{line_item}', [LineItemController::class, 'destroy'])->name('line-items.destroy')->middleware(['permission:line_item-destroy']);
     Route::get('get-new-line-item', [LineItemController::class, 'getNewLineItem'])->name('get-new-line-item');
+
+    //Payments
+
+    Route::get('payments', [PaymentController::class, 'index'])->name('payments.index')->middleware(['permission:payment-index']);
+//    Route::get('payments/create', [PaymentController::class, 'create'])->name('payments.create')->middleware(['permission:payment-create']);
+//    Route::post('payments', [PaymentController::class, 'store'])->name('payments.store')->middleware(['permission:payment-create']);
+    Route::get('payments/{payment}', [PaymentController::class, 'show'])->name('payments.show')->middleware(['permission:payment-show']);
+//    Route::get('payments/{payment}/edit', [PaymentController::class, 'edit'])->name('payments.edit')->middleware(['permission:payment-edit']);
+//    Route::patch('payments/{payment}', [PaymentController::class, 'update'])->name('payments.update')->middleware(['permission:payment-edit']);
+//    Route::delete('payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy')->middleware(['permission:payment-destroy']);
 });
+

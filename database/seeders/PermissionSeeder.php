@@ -727,6 +727,47 @@ class PermissionSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ],
+            //Taxes
+            [
+                'name' => 'payment-index',
+                'display_name' => 'Payment Index',
+                'description' => 'Payment Index',
+                'resource' => 'Payment',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'payment-create',
+                'display_name' => 'Payment Create',
+                'description' => 'Payment Create',
+                'resource' => 'Payment',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'payment-show',
+                'display_name' => 'Payment Show',
+                'description' => 'Payment Show',
+                'resource' => 'Payment',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'payment-edit',
+                'display_name' => 'Payment Edit',
+                'description' => 'Payment Edit',
+                'resource' => 'Payment',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'name' => 'payment-destroy',
+                'display_name' => 'Payment Destroy',
+                'description' => 'Payment Destroy',
+                'resource' => 'Payment',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
         ]);
     }
 }

@@ -105,6 +105,14 @@
     </a>
 </li>
 @endpermission
+@permission('payment-index')
+<li class="nav-item">
+    <a href="{{ route('payments.index') }}" class="nav-link {{ Request::is('payments*') ? 'active' : '' }}">
+        <i class="nav-icon fas fa-home"></i>
+        <p>Payments</p>
+    </a>
+</li>
+@endpermission
 @permission(['tutoring_package_type-index','subject-index','tutoring_location-index','school-index','invoice_package_type-index','client-index','tax-index','line_item-index'])
 <li class="nav-item {{Request::is(['tutoring-package-types*','subjects*','tutoring-locations*'])?'menu-is-opening menu-open active':''}}">
     <a href="#" class="nav-link {{Request::is(['tutoring-package-types*','subjects*','tutoring-locations*'])?'active':''}}">
