@@ -4,12 +4,11 @@ namespace App\Repositories;
 
 use App\Mail\ClientMakePaymentMail;
 use App\Models\Invoice;
+use App\Models\NonInvoicePackage;
 use App\Models\Payment;
-use App\Models\Transaction;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Stripe\Checkout\Session;
@@ -23,86 +22,55 @@ class StripeRepository
         $sessionData = Session::retrieve($sessionId);
 
         $stripeID = $sessionData->id;
-        $paymentStatus = $sessionData->payment_status;
-        $invoiceId = $sessionData->client_reference_id;
+        $reference = $sessionData->client_reference_id;
+        $reference = explode('-', $reference);
+        $invoiceId = $reference[0];
+        $userId = $reference[1];
+        $guard = $reference[2];
 
-        /** @var Invoice $invoice */
-        $invoice = Invoice::with(['payments', 'client'])->findOrFail($invoiceId);
+        $invoice = Invoice::query()
+            ->select(['invoices.id as invoice_id','non_invoice_packages.final_amount','invoiceable_type','invoiceable_id'])
+            ->selectRaw('sum(payments.amount) as paid_amount')
+            ->leftJoin('payments', 'payments.invoice_id', '=', 'invoices.id')
+            ->leftJoin('non_invoice_packages', function ($q){
+                $q->on('non_invoice_packages.id', '=', 'invoices.invoiceable_id')
+                    ->where('invoices.invoiceable_type', '=', NonInvoicePackage::class);
+            })
+            ->where('invoices.id',$invoiceId)->firstOrFail();
 
-        $amount = (getInvoiceCurrencyCode($invoice->currency_id) != 'JPY') ? $sessionData->amount_total / 100 : $sessionData->amount_total;
-        $transactionNotes = $sessionData->metadata->description ?? '';
+        $amountPaid = $sessionData->amount_total / 100 ;
 
-        $userId = Auth::check() ? getLogInUserId() : $invoice->client->user_id;
-
-        $transactionData = [
-            'transaction_id' => $stripeID,
-            'amount' => $amount,
-            'user_id' => $userId,
-            'status' => $paymentStatus,
-            'meta' => $sessionData->toArray(),
-        ];
-
-        try {
+//        try {
             DB::beginTransaction();
 
-            $invoice = Invoice::with('payments')->findOrFail($invoiceId);
-            if ($invoice->status == Payment::PARTIALLYPAYMENT) {
-                $totalAmount = ($invoice->final_amount - $invoice->payments->sum('amount'));
-            } else {
-                $totalAmount = $invoice->final_amount;
-            }
+            $payment = new Payment();
+            $payment->invoice_id = $invoiceId;
+            $payment->payment_gateway = Payment::STRIPE;
+            $payment->transaction_id = $stripeID;
+            $payment->amount = $amountPaid;
+            $payment->paid_by_modal = getAuthModelFromGuard($guard);
+            $payment->paid_by_id = $userId;
+            $payment->save();
 
-            $transaction = Transaction::create($transactionData);
-            $PaymentData = [
-                'invoice_id' => $invoiceId,
-                'amount' => $amount,
-                'payment_mode' => Payment::STRIPE,
-                'payment_date' => Carbon::now(),
-                'transaction_id' => $transaction->id,
-                'notes' => $transactionNotes,
-                'is_approved' => Payment::APPROVED,
-            ];
-
-            // update invoice bill
-
-            $invoicePayment = Payment::create($PaymentData);
-
-            if (round($totalAmount, 2) == $amount) {
-                $invoice->status = Payment::FULLPAYMENT;
+            if ($amountPaid == $invoice->final_amount - $invoice->paid_amount) {
+                $invoice = Invoice::findOrFail($invoiceId);
+                $invoice->fully_paid_at = Carbon::now();
+                $invoice->paid_status = Payment::PAID;
                 $invoice->save();
             } else {
-                if (round($totalAmount, 2) != $amount) {
-                    $invoice->status = Payment::PARTIALLYPAYMENT;
-                    $invoice->save();
-                }
+                $invoice = Invoice::findOrFail($invoiceId);
+                $invoice->paid_status = Payment::PARTIAL_PAYMENT;
+                $invoice->save();
             }
-            $this->saveNotification($PaymentData, $invoice);
-            $invoiceData = [];
-            $invoiceData['amount'] = $PaymentData['amount'];
-            $invoiceData['payment_date'] = $PaymentData['payment_date'];
-            $invoiceData['invoice_id'] = $invoice->id;
-            $invoiceData['invoice'] = $invoice;
-
+            DB::commit();
             $admins = User::whereHasRole(['super-admin'])->get(['email']);
             $admins = $admins->pluck('email')->toArray();
-            Mail::to($admins)->send(new ClientMakePaymentMail($invoiceData));
+            Mail::to($admins)->send(new ClientMakePaymentMail($payment->toArray()));
 
-            DB::commit();
-        } catch (Exception $e) {
-            DB::rollBack();
-            throw new UnprocessableEntityHttpException($e->getMessage());
-        }
+//        } catch (Exception $e) {
+//            DB::rollBack();
+//            throw new UnprocessableEntityHttpException($e->getMessage());
+//        }
     }
 
-    public function saveNotification($input, $invoice)
-    {
-        $adminUserId = getAdminUser()->id;
-        $invoice = Invoice::find($input['invoice_id']);
-        $title = 'Payment '.getInvoiceCurrencyIcon($invoice->currency_id).$input['amount'].' received successfully for #'.$invoice->invoice_id.'.';
-        addNotification([
-            Notification::NOTIFICATION_TYPE['Invoice Payment'],
-            $adminUserId,
-            $title,
-        ]);
-    }
 }
