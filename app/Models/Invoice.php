@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Invoice extends Model
 {
@@ -84,5 +85,10 @@ class Invoice extends Model
     {
         return $this->belongsToMany(LineItem::class, 'invoice_line_item')
             ->withPivot(['tax_ids', 'price', 'qty', 'tax_amount', 'final_amount', 'status', 'auth_guard', 'added_by']);
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
     }
 }

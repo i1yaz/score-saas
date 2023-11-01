@@ -55,7 +55,7 @@ class InvoiceDataTable implements IDataTables
             ->leftJoin('parents as p1', 's1.parent_id', '=', 'p1.id')
             ->leftJoin('parents as p2', 's2.parent_id', '=', 'p2.id');
         $invoices = static::getModelQueryBySearch($search, $invoices);
-        $invoices = $invoices->groupBy('payments.amount')->offset($start)
+        $invoices = $invoices->groupBy('invoices.id')->offset($start)
             ->limit($limit);
         $columns = explode(',', $order);
         foreach ($columns as $column){

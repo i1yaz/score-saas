@@ -233,4 +233,11 @@ class InvoiceRepository extends BaseRepository
     public function getNonPackageInvoiceData($invoice)
     {
     }
+
+    public function getPaymentGateways(): array
+    {
+        return [
+            'stripe' => 'Stripe',
+        ];
+    }
 }

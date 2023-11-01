@@ -4,12 +4,15 @@ namespace App\Http\Controllers\PaymentGateways;
 
 use App\Http\Controllers\AppBaseController;
 use App\Models\Invoice;
+use App\Models\NonInvoicePackage;
 use App\Repositories\StripeRepository;
+use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Laracasts\Flash\Flash;
+use Stripe\Checkout\Session;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 
@@ -28,41 +31,61 @@ class StripeController extends AppBaseController
 
     public function createSession(Request $request)
     {
-        $amount = $request->get('amount');
-        $payable_amount = $request->get('payable_amount');
-        $transactionNotes = $request->get('transactionNotes');
-        $invoice = Invoice::with('client.user')->where('id', $request->get('invoiceId'))->firstOrFail();
+        $invoice = Invoice::query()
+            ->select(['invoices.id as invoice_id','non_invoice_packages.final_amount','invoiceable_type','invoiceable_id'])
+            ->selectRaw('sum(payments.amount) as paid_amount')
+            ->leftJoin('payments', 'payments.invoice_id', '=', 'invoices.id')
+            ->leftJoin('non_invoice_packages', function ($q){
+                $q->on('non_invoice_packages.id', '=', 'invoices.invoiceable_id')
+                    ->where('invoices.invoiceable_type', '=', NonInvoicePackage::class);
+            })
+            ->where('invoices.id',$request->invoiceId)->firstOrFail();
+
+        $payable_amount = $invoice->final_amount - $invoice->paid_amount;
+        $amount = $request->partialAmount;
+        if (!is_numeric($amount)) {
+            $amount = $payable_amount;
+        }
+        if ($amount > $payable_amount) {
+            $amount = $payable_amount;
+        }
+
         $invoiceId = $invoice->invoice_id;
-        $client = $invoice->client->user;
-        $user = $request->user() ?? $client;
-        $userEmail = $user->email;
+        if ($invoice->invoiceable_type == NonInvoicePackage::class) {
+            $userEmail = NonInvoicePackage::query()
+                ->select(['clients.email'])
+                ->leftJoin('clients', 'clients.id', '=', 'non_invoice_packages.client_id')
+                ->where('non_invoice_packages.id',$invoice->invoiceable_id)->firstOrFail()->email;
+        }
+        $invoiceType = getInvoiceTypeFromClass($invoice->invoiceable_type);
+        $invoiceCode = getInvoiceCodeFromId($invoice->invoiceable_id);
 
         try {
             setStripeApiKey();
-            $session = \Stripe\Checkout\Session::create([
+            $session = Session::create([
                 'payment_method_types' => ['card'],
                 'customer_email' => $userEmail,
                 'line_items' => [
                     [
                         'price_data' => [
                             'product_data' => [
-                                'name' => 'BILL OF PRODUCT #'.$invoiceId,
-                                'description' => 'BILL OF PRODUCT #'.$invoiceId,
+                                'name' => 'Payment for '.$invoiceType,
+                                'description' => 'Bill invoice #'.$invoiceCode,
                             ],
-                            'unit_amount' => (getInvoiceCurrencyCode($invoice->currency_id) != 'JPY') ? $amount * 100 : $amount,
-                            'currency' => getInvoiceCurrencyCode($invoice->currency_id),
+                            'unit_amount' =>  $amount * 100 ,
+                            'currency' => getInvoiceCurrencyCode(),
                         ],
                         'quantity' => 1,
                     ],
                 ],
                 'metadata' => [
-                    'description' => $transactionNotes,
+                    'description' =>  'Bill invoice #'.$invoiceCode,
                 ],
                 'billing_address_collection' => 'auto',
-                'client_reference_id' => $request->get('invoiceId'),
+                'client_reference_id' => $invoiceId,
                 'mode' => 'payment',
-                'success_url' => url('client/payment-success').'?session_id={CHECKOUT_SESSION_ID}',
-                'cancel_url' => url('client/failed-payment?error=payment_cancelled'),
+                'success_url' => route('payment-success').'?session_id={CHECKOUT_SESSION_ID}',
+                'cancel_url' => route('payment-failed').'?error=payment_cancelled',
             ]);
             $result = [
                 'sessionId' => $session['id'],
@@ -89,7 +112,7 @@ class StripeController extends AppBaseController
 
         $this->stripeRepository->clientPaymentSuccess($sessionId);
 
-        $sessionData = \Stripe\Checkout\Session::retrieve($sessionId);
+        $sessionData = Session::retrieve($sessionId);
         $invoiceId = $sessionData->client_reference_id;
 
         /** @var Invoice $invoice */

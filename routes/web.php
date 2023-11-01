@@ -46,6 +46,8 @@ Route::get('/', function () {
 Route::get('invoice/{invoice}/public-view/{type?}',[InvoiceController::class,'showPublicInvoice']);
 Auth::routes(['register' => false]);
 Route::get('admin/login', [LoginController::class, 'showAdminLoginForm'])->name('admin.login');
+Route::get('payment/success', [PaymentController::class, 'success'])->name('payment-success');
+Route::get('payment/failed', [PaymentController::class, 'failed'])->name('payment-failed');
 
 Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

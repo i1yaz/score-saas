@@ -4,9 +4,12 @@ use App\Models\Invoice;
 use App\Models\MonthlyInvoicePackage;
 use App\Models\MonthlyInvoicePackageTutor;
 use App\Models\NonInvoicePackage;
+use App\Models\ParentUser;
+use App\Models\Student;
 use App\Models\StudentTutoringPackage;
 use App\Models\Tax;
 use App\Models\Tutor;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
@@ -766,5 +769,32 @@ if (! function_exists('getSettingValue')) {
         $settingValues[$key] = $setting->value;
 
         return $setting->value;
+    }
+}
+if (!function_exists('getInvoiceCurrencyCode')){
+    function getInvoiceCurrencyCode(): string
+    {
+        return 'USD';
+    }
+}
+if (!function_exists('getAuthModelFromGuard')){
+    function getAuthModelFromGuard(string $authGuard):string
+    {
+        if ($authGuard === 'web'){
+            return User::class;
+        }
+        if ($authGuard === 'tutor'){
+            return Tutor::class;
+        }
+        if ($authGuard === 'student'){
+            return Student::class;
+        }
+        if ($authGuard === 'parent'){
+            return ParentUser::class;
+        }
+        if ($authGuard === 'client'){
+            return Student::class;
+        }
+
     }
 }

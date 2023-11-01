@@ -84,7 +84,7 @@ class InvoiceController extends AppBaseController
         $this->invoiceRepository->create($input);
         if ($request->ajax()){
             Flash::success('Invoice Added successfully.');
-            return response()->json(['success'=>true,'message'=>'Invoice created successfully','redirect'=> route('invoices.index')]);
+            return response()->json(['success'=>true,'message'=>'Invoice created successfully','redirectTo'=> route('invoices.index')]);
         }
         return redirect(route('invoices.index'));
     }
@@ -171,8 +171,10 @@ class InvoiceController extends AppBaseController
         }
         if ($request->type === 'non-package-invoice'){
             $invoice = $this->invoiceRepository->showNonPackageInvoice($invoice);
+
             $stripeKey = config('services.stripe.key');
-            return view('invoices.non-package-payment-create',['invoice'=>$invoice,'stripeKey' => $stripeKey]);
+            $paymentModes = $this->invoiceRepository->getPaymentGateways();
+            return view('invoices.non-package-payment-create',['invoice'=>$invoice,'stripeKey' => $stripeKey,'paymentModes'=>$paymentModes]);
         }
 //        return view('invoices.payment-create',['invoice'=>$invoice]);
     }
