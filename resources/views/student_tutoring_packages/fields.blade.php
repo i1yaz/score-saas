@@ -81,24 +81,24 @@
             <table class="table table-borderless box-shadow-none mb-0 mt-5">
                 <tbody>
                 <tr>
-                    <td class="ps-0">{{ __('messages.invoice.sub_total') . ':' }}</td>
-                    <td class="text-gray-900 text-end pe-0">
-                        <span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span><span id="total" class="price">
+                    <td class="ps-0" style="width:50%;">{{ __('messages.invoice.sub_total') . ':' }}</td>
+                    <td class="text-gray-900 text-end pe-0" style="width:50%;">
+                        <span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span> <span id="total" class="price">
                                         0
                                     </span>
                     </td>
                 </tr>
                 <tr>
-                    <td class="ps-0">{{ __('messages.invoice.discount') . ':' }}</td>
-                    <td class="text-gray-900 text-end pe-0">
+                    <td class="ps-0" style="width:50%;">{{ __('messages.invoice.discount') . ':' }}</td>
+                    <td class="text-gray-900 text-end pe-0" style="width:50%;">
                         <span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span> <span id="discountAmount">
                                         0
                                     </span>
                     </td>
                 </tr>
                 <tr>
-                    <td class="ps-0">{{ __('messages.invoice.total') . ':' }}</td>
-                    <td class="text-gray-900 text-end pe-0">
+                    <td class="ps-0" style="width:50%;">{{ __('messages.invoice.total') . ':' }}</td>
+                    <td class="text-gray-900 text-end pe-0" style="width:50%;">
                         <span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span> <span id="finalAmount">
                                         0
                                     </span>

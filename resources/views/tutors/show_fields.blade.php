@@ -34,6 +34,11 @@
     <p>{{ $tutor->secondary_phone }}</p>
 </div>
 
+<!-- Hourly rate Field -->
+<div class="col-sm-12 col-md-6">
+    {!! Form::label('hourly_rate', 'Hourly Rate:') !!}
+    <p>{{ $tutor->hourly_rate }}</p>
+</div>
 
 <!-- Start Date Field -->
 <div class="col-sm-12 col-md-6">
