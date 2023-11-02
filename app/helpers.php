@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\MonthlyInvoicePackage;
 use App\Models\MonthlyInvoicePackageTutor;
@@ -780,20 +781,20 @@ if (!function_exists('getInvoiceCurrencyCode')){
 if (!function_exists('getAuthModelFromGuard')){
     function getAuthModelFromGuard(string $authGuard):string
     {
-        if ($authGuard === 'web'){
+        if ($authGuard == 'web'){
             return User::class;
         }
-        if ($authGuard === 'tutor'){
+        if ($authGuard == 'tutor'){
             return Tutor::class;
         }
-        if ($authGuard === 'student'){
+        if ($authGuard == 'student'){
             return Student::class;
         }
-        if ($authGuard === 'parent'){
+        if ($authGuard == 'parent'){
             return ParentUser::class;
         }
-        if ($authGuard === 'client'){
-            return Student::class;
+        if ($authGuard == 'client'){
+            return Client::class;
         }
 
     }

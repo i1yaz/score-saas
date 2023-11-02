@@ -134,9 +134,9 @@ class PaymentController extends AppBaseController
         if (empty($sessionId)) {
             throw new UnprocessableEntityHttpException('session_id required');
         }
-        $sessionData = $this->paymentRepository->stripePaymentSuccess($sessionId);
-        $invoiceId = $sessionData->client_reference_id;
-        return view('payments.success');
+        $this->paymentRepository->stripePaymentSuccess($sessionId);
+        Flash::success('Invoice Paid successfully.');
+        return redirect(route('invoices.index'));
     }
 
     public function failed(){

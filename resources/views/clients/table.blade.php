@@ -22,18 +22,18 @@
                         <div class='btn-group'>
                             @permission('client-show')
                             <a href="{{ route('clients.show', [$client->id]) }}"
-                               class='btn btn-default btn-xs'>
+                               class='btn btn-default'>
                                 <i class="far fa-eye"></i>
                             </a>
                             @endpermission
                             @permission('client-edit')
                             <a href="{{ route('clients.edit', [$client->id]) }}"
-                               class='btn btn-default btn-xs'>
+                               class='btn btn-default'>
                                 <i class="far fa-edit"></i>
                             </a>
                             @endpermission
                             @permission('client-destroy')
-                            {!! Form::button('<i class="far fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
+                            {!! Form::button('<i class="far fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-danger', 'onclick' => "return confirm('Are you sure?')"]) !!}
                             @endpermission
                         </div>
                         {!! Form::close() !!}

@@ -85,25 +85,26 @@ class InvoiceRepository extends BaseRepository
 
     public function createOrUpdateInvoiceForPackage($studentTutoringPackage, $input = []): Invoice
     {
+
         $invoice = Invoice::where('invoiceable_type', StudentTutoringPackage::class)
             ->where('invoiceable_id', $studentTutoringPackage->id)
             ->first();
+
         if (!$invoice){
             $invoice = new Invoice();
+
         }
         $invoice->invoice_package_type_id = 1;
         $invoice->due_date = $studentTutoringPackage->due_date;
         $invoice->general_description = $input['general_description'] ?? null;
         $invoice->detailed_description = $input['detailed_description'] ?? null;
         $invoice->email_to_parent = $input['email_to_parent'] ?? false;
-        $invoice->amount_paid = 0;
         $invoice->paid_status = Invoice::PENDING;
         $invoice->invoiceable_type = StudentTutoringPackage::class;
         $invoice->invoiceable_id = $studentTutoringPackage->id;
         $invoice->auth_guard = Auth::guard()->name;
         $invoice->added_by = Auth::id();
         $invoice->save();
-
         return $invoice;
     }
 
@@ -239,5 +240,32 @@ class InvoiceRepository extends BaseRepository
         return [
             'stripe' => 'Stripe',
         ];
+    }
+
+    public function showTutoringPackageInvoice($id)
+    {
+        $records = Invoice::query()->select(
+            [
+                'invoices.id as invoice_id',
+            ])
+            ->selectRaw('sum(payments.amount) as amount_paid')
+            ->leftJoin('payments','payments.invoice_id','invoices.id')
+            ->leftJoin('student_tutoring_packages', function ($q) {
+                $q->on('invoices.invoiceable_id', '=', 'student_tutoring_packages.id')->where('invoices.invoiceable_type', '=', StudentTutoringPackage::class);
+            })
+            ->leftJoin('students','students.id','student_tutoring_packages.student_id')
+            ->leftJoin('parents','parents.id','students.parent_id');
+
+        if (Auth::user()->hasRole('student') && Auth::user() instanceof Student) {
+            $records = $records->where(function ($q){
+                $q->where('student_tutoring_packages.student_id', Auth::id());
+            });
+        }
+        if (Auth::user()->hasRole('parent') && Auth::user() instanceof ParentUser) {
+            $records = $records->where(function ($q){
+                $q->where('parents.id', Auth::id());
+            });
+        }
+        return $records->where('invoices.id', $id)->first();
     }
 }

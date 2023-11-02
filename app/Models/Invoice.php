@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Invoice extends Model
+class Invoice extends BaseModel
 {
     use HasFactory;
     public $table = 'invoices';

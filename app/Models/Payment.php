@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Payment extends Model
 {
+    const STRIPE = '1';
     public $table = 'payments';
     public const DRAFT = 0;
 

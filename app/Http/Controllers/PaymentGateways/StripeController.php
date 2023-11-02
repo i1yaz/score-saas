@@ -12,7 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Laracasts\Flash\Flash;
-use Stripe\Checkout\Session;
+use Stripe\Checkout\Session as StripeSession;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 
@@ -57,19 +57,21 @@ class StripeController extends AppBaseController
                 ->leftJoin('clients', 'clients.id', '=', 'non_invoice_packages.client_id')
                 ->where('non_invoice_packages.id',$invoice->invoiceable_id)->firstOrFail()->email;
         }
-        $invoiceType = getInvoiceTypeFromClass($invoice->invoiceable_type);
-        $invoiceCode = getInvoiceCodeFromId($invoice->invoiceable_id);
-
+        $invoiceCode = getInvoiceCodeFromId($invoiceId);
+        $packageType = getInvoiceTypeFromClass($invoice->invoiceable_type);
+        $packageCode = getNonInvoicePackageCodeFromId($invoice->invoiceable_id);
+        $userId = \Auth::id()??'none';
+        $guard = \Auth::guard()->name??'none';
         try {
             setStripeApiKey();
-            $session = Session::create([
+            $session = StripeSession::create([
                 'payment_method_types' => ['card'],
                 'customer_email' => $userEmail,
                 'line_items' => [
                     [
                         'price_data' => [
                             'product_data' => [
-                                'name' => 'Payment for '.$invoiceType,
+                                'name' => 'Payment for '.$packageType.' Package #'.$packageCode,
                                 'description' => 'Bill invoice #'.$invoiceCode,
                             ],
                             'unit_amount' =>  $amount * 100 ,
@@ -82,7 +84,7 @@ class StripeController extends AppBaseController
                     'description' =>  'Bill invoice #'.$invoiceCode,
                 ],
                 'billing_address_collection' => 'auto',
-                'client_reference_id' => $invoiceId,
+                'client_reference_id' => "{$invoiceId}-{$userId}-{$guard}",
                 'mode' => 'payment',
                 'success_url' => route('payment-success').'?session_id={CHECKOUT_SESSION_ID}',
                 'cancel_url' => route('payment-failed').'?error=payment_cancelled',
@@ -97,34 +99,6 @@ class StripeController extends AppBaseController
         }
     }
 
-    /**
-     * @return Application|RedirectResponse|Redirector
-     *
-     * @throws \Stripe\Exception\ApiErrorException
-     */
-    public function paymentSuccess(Request $request): RedirectResponse
-    {
-        $sessionId = $request->get('session_id');
-
-        if (empty($sessionId)) {
-            throw new UnprocessableEntityHttpException('session_id required');
-        }
-
-        $this->stripeRepository->clientPaymentSuccess($sessionId);
-
-        $sessionData = Session::retrieve($sessionId);
-        $invoiceId = $sessionData->client_reference_id;
-
-        /** @var Invoice $invoice */
-        $invoice = Invoice::with(['payments', 'client'])->findOrFail($invoiceId);
-
-        Flash::success('Payment successfully done.');
-        if (! Auth()->check()) {
-            return redirect(route('invoice-show-url', $invoice->invoice_id));
-        }
-
-        return redirect(route('client.invoices.index'));
-    }
 
     public function handleFailedPayment(): RedirectResponse
     {

@@ -87,7 +87,7 @@
                     return false;
                 }
                 console.log($("#partial-amount").val())
-                let btnSubmitEle = $(this).find("#btnPay");
+                let btnSubmitEle = $("#btnPay");
                 ToggleBtnLoader(btnSubmitEle);
                 let payloadData = {
                     _token: "{{ csrf_token() }}",
