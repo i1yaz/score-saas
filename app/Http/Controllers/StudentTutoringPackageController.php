@@ -299,7 +299,7 @@ class StudentTutoringPackageController extends AppBaseController
             throw ValidationException::withMessages(['tutoring_package_id' => 'Please Choose Tutoring Package']);
         }
         $tutors = Tutor::active()
-            ->select(['tutors.id as id', 'tutors.email as text'])
+            ->select(['tutors.id as id', 'tutors.email as text','tutors.hourly_rate as hourly'])
             ->where('tutors.email', 'LIKE', "%{$email}%");
         if (!empty($tutoring_package_id) && Str::startsWith($tutoring_package_id,StudentTutoringPackage::PREFIX_START)) {
             $tutoring_package_id = getOriginalPackageIdFromCode($tutoring_package_id);

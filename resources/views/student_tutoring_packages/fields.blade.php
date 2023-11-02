@@ -47,13 +47,14 @@
 <div class="form-group col-sm-6">
     {!! Form::label('hourly_rate', 'Hourly Rate:') !!}
     {!! Form::number('hourly_rate', null, ['class' => 'form-control','id'=>'hourly-rate']) !!}
+    <span class="text-danger" id="hourly-rate-validation"> </span>
 </div>
 
 <!-- Discount Type Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('discount_type', 'Discount:') !!}
     <div class="input-group">
-        {!!  Form::number('discount', null, ['class' => 'form-control'])  !!}
+        {!!  Form::number('discount', null, ['class' => 'form-control','id'=> 'discount'])  !!}
         <div class="input-group-append">
             <select class="form-control input-group-text" name="discount_type" id = 'discount-type'>
                 <option value="1" @if(isset($studentTutoringPackage) && $studentTutoringPackage->discount_type == \App\Models\StudentTutoringPackage::FLAT_DISCOUNT) selected @endif>Flat</option>
@@ -73,6 +74,40 @@
 <div class="form-group col-sm-6">
     {!! Form::label('start_date', 'Start Date:') !!}
     {!! Form::text('start_date', isset($studentTutoringPackage)? $studentTutoringPackage->start_date?->format('m/d/Y'):null, ['class' => 'form-control date-input']) !!}
+</div>
+<div class="form-group col-sm-12">
+    <div class="row" style="border:2px dotted">
+        <div class="form-group col-sm-12">
+            <table class="table table-borderless box-shadow-none mb-0 mt-5">
+                <tbody>
+                <tr>
+                    <td class="ps-0">{{ __('messages.invoice.sub_total') . ':' }}</td>
+                    <td class="text-gray-900 text-end pe-0">
+                        <span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span><span id="total" class="price">
+                                        0
+                                    </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="ps-0">{{ __('messages.invoice.discount') . ':' }}</td>
+                    <td class="text-gray-900 text-end pe-0">
+                        <span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span> <span id="discountAmount">
+                                        0
+                                    </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="ps-0">{{ __('messages.invoice.total') . ':' }}</td>
+                    <td class="text-gray-900 text-end pe-0">
+                        <span class="invoice-selected-currency">{{ getCurrencySymbol() }}</span> <span id="finalAmount">
+                                        0
+                                    </span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 <div class="form-group col-sm-12" id="all-subjects">
     @include('student_tutoring_packages.subjects')
@@ -202,7 +237,7 @@
                 let data = e.params.data;
                 $('#hours').empty()
                 $('#hours').val(data.hours)
-
+                $('#hours').trigger('change')
             });
             $("#student-id").select2({
                 dropdownAutoWidth: true, width: 'auto',
@@ -254,7 +289,8 @@
                             results: $.map(data, function (item) {
                                 return {
                                     text: item.text,
-                                    id: item.id
+                                    id: item.id,
+                                    hourly: item.hourly
                                 }
                             })
                         };
@@ -264,7 +300,12 @@
                 placeholder: "Please type tutor email",
                 escapeMarkup: function (markup) {
                     return markup;
-                }
+                },
+                templateSelection: function (data) {
+                    $(data.element).attr('data-hourly', data.hourly);
+                    return data.text;
+                },
+
             });
 
             $("#tutoring-location-id").select2({
@@ -298,5 +339,79 @@
                 }
             });
         });
+        $(document).on('change keyup','#hours',function (){
+            calculateTotal();
+        });
+        $(document).on('change keyup','#hourly-rate',function (){
+            calculateTotal();
+        });
+        $(document).on('change','#discount-type',function (){
+            calculateTotal();
+        });
+        $(document).on('change keyup','#discount',function (){
+            calculateTotal();
+        })
+        function calculateTotal(originalPrice=null){
+            let hours = parseInt($('#hours').val());
+            if (isNaN(hours)){
+                hours = 0;
+            }
+            let hourlyRate = parseFloat($('#hourly-rate').val());
+            if (isNaN(hourlyRate)){
+                hourlyRate = 0;
+            }
+            let discountType = parseInt($('#discount-type').val());
+            let discount = parseInt($('#discount').val());
+            if (isNaN(discount)){
+                discount = 0;
+            }
+            let totalPrice = 0;
+
+            if (!(originalPrice ==null || isNaN(originalPrice))){
+                totalPrice = originalPrice;
+            }else{
+                totalPrice = (hourlyRate * hours);
+            }
+
+            let afterDiscount = 0;
+            if (discountType===1){
+                afterDiscount = totalPrice - discount;
+            }else if(discountType===2){
+                discount = (discount/100) * totalPrice
+                afterDiscount = totalPrice-discount;
+            }
+            $("#total").text(totalPrice.toFixed(2));
+            $("#discountAmount").text(discount.toFixed(2));
+            $("#finalAmount").text(afterDiscount.toFixed(2));
+        }
+        $("#tutor-id").on("select2:select select2:unselect", function (e) {
+            let hours = parseInt($('#hours').val());
+            let teacherHourly = e.params.data.hourly;
+            let count = parseInt($("option:selected", "#tutor-id").length)
+            let hourly_rate = parseFloat($('#hourly-rate').val())
+            let totalPrice = 0;
+            if (isNaN(hourly_rate) && count===1){
+
+                $("option:selected", "#tutor-id").each(function (index, val) {
+                    teacherHourly = parseFloat(val.getAttribute("data-hourly"));
+                });
+                totalPrice = teacherHourly * hours;
+            }else if(!isNaN(hourly_rate) && count===1){
+                totalPrice = hourly_rate * hours;
+            }else if(count>1){
+                totalPrice = hourly_rate * hours;
+            }else if (count < 1){
+                totalPrice = hourly_rate * hours;
+            }
+
+            if (isNaN(totalPrice) && count > 1){
+                $('#hourly-rate-validation').text('Please enter hourly rate if the selected tutors are more than one!')
+            }else{
+                $('#hourly-rate-validation').empty()
+            }
+            calculateTotal(totalPrice)
+        })
+
+
     </script>
 @endpush
