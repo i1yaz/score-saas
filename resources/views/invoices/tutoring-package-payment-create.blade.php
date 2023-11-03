@@ -35,10 +35,13 @@
                         {!! Form::label('final_amount', 'Payable Amount:') !!}
                         {!! Form::input('text','final_amount',($remainingAmount),['readonly'=>'readonly','class' => 'form-control']) !!}
                     </div>
-                    <div class="form-group col-sm-12 col-md-6 payment-type">
-                        {!! Form::label('payment_type', 'Payment Type:') !!}
-                        {!! Form::select('payment_type',['full' => 'Full Payment','partial' => 'Partial'],null,['class' => 'form-control','id'=>'payment-type']) !!}
-                    </div>
+                    @if($invoice->allow_partial_payment)
+                        <div class="form-group col-sm-12 col-md-6 payment-type">
+                            {!! Form::label('payment_type', 'Payment Type:') !!}
+                            {!! Form::select('payment_type',['full' => 'Full Payment','partial' => 'Partial'],null,['class' => 'form-control','id'=>'payment-type']) !!}
+                        </div>
+                    @endif
+
                     <div class="form-group col-sm-12 col-md-6">
                         {!! Form::label('payment_mode', 'Payment Mode:') !!}
                         {!! Form::select('payment_mode',$paymentModes??[],null,['class' => 'form-control','id'=>'payment-mode']) !!}

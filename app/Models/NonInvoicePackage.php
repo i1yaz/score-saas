@@ -20,4 +20,7 @@ class NonInvoicePackage extends Model
         'prefix',
         'is_active'
     ];
+    protected $casts = [
+        'allow_partial_payment' => 'boolean'
+    ];
 }

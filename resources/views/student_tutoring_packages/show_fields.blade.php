@@ -75,12 +75,12 @@
                         <strong>{{getPriceFromHoursAndHourlyWithDiscount($studentTutoringPackage->hours, $studentTutoringPackage->hourly_rate, $studentTutoringPackage->discount, $studentTutoringPackage->discount_type)}}</strong>
                     </td>
                 </tr>
-                <tr>
+{{--                <tr>--}}
 
-                    <td colspan="2" style="text-align: center">
-                        <a href="#" class="btn btn-warning">Make Payment</a>
-                    </td>
-                </tr>
+{{--                    <td colspan="2" style="text-align: center">--}}
+{{--                        <a href="#" class="btn btn-warning">Make Payment</a>--}}
+{{--                    </td>--}}
+{{--                </tr>--}}
                 </tbody>
             </table>
         </div>

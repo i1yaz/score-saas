@@ -14,7 +14,6 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Laracasts\Flash\Flash;
 use Stripe\Checkout\Session as StripeSession;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 
 class StripeController extends AppBaseController

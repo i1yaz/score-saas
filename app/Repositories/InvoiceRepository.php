@@ -183,7 +183,7 @@ class InvoiceRepository extends BaseRepository
             $nonPackageInvoice->tax_amount = $taxOnSubtotal;
             $nonPackageInvoice->final_amount = $totalFinalAmount;
             $nonPackageInvoice->auth_guard = Auth::guard()->name;
-            $nonPackageInvoice->allow_partial_payment = ($input['allow_partial_payment'] == 1) ?? false;
+            $nonPackageInvoice->allow_partial_payment = yesNoToBoolean($input['allow_partial_payment']);
             $nonPackageInvoice->added_by = Auth::id();
             $nonPackageInvoice->save();
 
@@ -215,7 +215,8 @@ class InvoiceRepository extends BaseRepository
         $invoice = Invoice::query()->select(
             [
                 'invoices.id as invoice_id',
-                'non_invoice_packages.final_amount'
+                'non_invoice_packages.final_amount',
+                'non_invoice_packages.allow_partial_payment'
             ])
             ->selectRaw('sum(payments.amount) as amount_paid')
             ->leftJoin('payments','payments.invoice_id','invoices.id')
@@ -252,6 +253,7 @@ class InvoiceRepository extends BaseRepository
                 'student_tutoring_packages.hours',
                 'student_tutoring_packages.discount',
                 'student_tutoring_packages.discount_type',
+                'student_tutoring_packages.allow_partial_payment'
             ])
             ->selectRaw('sum(payments.amount) as amount_paid')
             ->leftJoin('payments','payments.invoice_id','invoices.id')

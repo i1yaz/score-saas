@@ -29,7 +29,7 @@
 <!-- Allow Partial Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('allow_partial_payment', 'Allow Partial Payments ?') !!}
-    {!! Form::select('allow_partial_payment',[1=>'Yes',2=>'No'] ,null, ['class' => 'form-control']) !!}
+    {!! Form::select('allow_partial_payment',['no'=>'No','yes'=>'Yes'] ,null, ['class' => 'form-control']) !!}
 </div>
 <!-- Detailed Description Field -->
 <div class="form-group col-sm-6">

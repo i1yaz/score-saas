@@ -52,6 +52,7 @@ class StudentTutoringPackage extends BaseModel
         'discount' => 'integer',
         'discount_type' => 'integer',
         'start_date' => 'date',
+        'allow_partial_payment' => 'boolean'
     ];
 
     public static mixed $messages = [

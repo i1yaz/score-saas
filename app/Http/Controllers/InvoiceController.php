@@ -182,7 +182,7 @@ class InvoiceController extends AppBaseController
 
             $totalAmount = cleanAmountWithCurrencyFormat(getPriceFromHoursAndHourlyWithDiscount($invoice->hourly_rate,$invoice->hours,$invoice->discount,$invoice->discount_type));
             $remainingAmount = $totalAmount - $invoice->amount_paid??0;
-            return view('invoices.tutoring-package-create',[
+            return view('invoices.tutoring-package-payment-create',[
                 'invoice'=>$invoice,
                 'stripeKey' => $stripeKey,
                 'paymentModes'=>$paymentModes,
