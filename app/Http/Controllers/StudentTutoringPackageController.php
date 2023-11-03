@@ -94,6 +94,7 @@ class StudentTutoringPackageController extends AppBaseController
     public function store(CreateStudentTutoringPackageRequest $request)
     {
         DB::beginTransaction();
+
         try {
             $input = $request->all();
             $tutors = $input['tutor_ids'];
@@ -102,7 +103,6 @@ class StudentTutoringPackageController extends AppBaseController
             if (empty($input['discount'])) {
                 $input['discount'] = 0;
             }
-
             $studentTutoringPackage = $this->studentTutoringPackageRepository->create($input);
 
             $studentTutoringPackage->tutors()->sync($tutors);
@@ -110,14 +110,20 @@ class StudentTutoringPackageController extends AppBaseController
             $this->invoiceRepository->createOrUpdateInvoiceForPackage($studentTutoringPackage, $input);
 
             DB::commit();
+
             if ($input['email_to_parent'] == 1) {
                 $parentEmail = Student::select(['parents.email as parent_email', 'students.id', 'students.parent_id'])->where('students.id', $input['student_id'])
                     ->join('parents', 'students.parent_id', '=', 'parents.id')->first();
+                try {
+                    Mail::to($parentEmail->parent_email)->send(new ParentInvoiceMailAfterStudentTutoringPackageCreation($studentTutoringPackage));
 
-                Mail::to($parentEmail->parent_email)->send(new ParentInvoiceMailAfterStudentTutoringPackageCreation($studentTutoringPackage));
+                }catch (\Exception $exception) {
+                    report($exception);
+                }
+
             }
-            $redirectRoute = route('student-tutoring-packages.show', ['student_tutoring_package' => $studentTutoringPackage->id]);
 
+            $redirectRoute = route('student-tutoring-packages.show', ['student_tutoring_package' => $studentTutoringPackage->id]);
             if ($request->ajax()){
                 return response()->json(['success' => true, 'message' => 'Tutoring Package saved successfully.','redirectTo' => $redirectRoute]);
             }

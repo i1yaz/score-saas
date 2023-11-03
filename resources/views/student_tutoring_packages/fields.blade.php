@@ -47,7 +47,6 @@
 <div class="form-group col-sm-6">
     {!! Form::label('hourly_rate', 'Hourly Rate:') !!}
     {!! Form::number('hourly_rate', null, ['class' => 'form-control','id'=>'hourly-rate']) !!}
-    <span class="text-danger" id="hourly-rate-validation"> </span>
 </div>
 
 <!-- Discount Type Field -->
@@ -67,7 +66,8 @@
 <!-- Tutor Hourly Rate Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('tutor_hourly_rate', 'Tutor Hourly Rate:') !!}
-    {!! Form::number('tutor_hourly_rate', null, ['class' => 'form-control']) !!}
+    {!! Form::number('tutor_hourly_rate', null, ['class' => 'form-control','id'=>'tutor-hourly-rate']) !!}
+    <span class="text-danger" id="tutor-hourly-rate-validation"> </span>
 </div>
 
 <!-- Start Date Field -->
@@ -405,9 +405,9 @@
             }
 
             if (isNaN(totalPrice) && count > 1){
-                $('#hourly-rate-validation').text('Please enter hourly rate if the selected tutors are more than one!')
+                $('#tutor-hourly-rate-validation').text('Please enter tutor hourly rate if the selected tutors are more than one!')
             }else{
-                $('#hourly-rate-validation').empty()
+                $('#tutor-hourly-rate-validation').empty()
             }
             calculateTotal(totalPrice)
         })

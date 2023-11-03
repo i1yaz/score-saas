@@ -128,7 +128,12 @@ class SessionController extends Controller
         if ($input['flag_session']) {
             $admins = User::whereHasRole(['super-admin'])->get(['email']);
             $admins = $admins->pluck('email')->toArray();
-            Mail::to($admins)->send(new FlagSessionMail($input));
+            try {
+                Mail::to($admins)->send(new FlagSessionMail($input));
+
+            }catch (\Exception $e) {
+                report($e);
+            }
         }
 
         if ($request->ajax()) {

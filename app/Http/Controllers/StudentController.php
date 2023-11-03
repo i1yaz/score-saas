@@ -100,7 +100,12 @@ class StudentController extends AppBaseController
             $user->addRole('student');
             DB::commit();
             $input['password'] = App::environment(['production']) ? $passwordString : 'abcd1234';
-            Mail::to($user)->send(new StudentRegistrationMail($input));
+            try {
+                Mail::to($user)->send(new StudentRegistrationMail($input));
+
+            }catch (\Exception $exception){
+                report($exception);
+            }
             if ($request->ajax()){
                 return response()->json(['success' => true, 'message' => 'Student saved successfully.','redirectTo' => route('students.index')]);
             }

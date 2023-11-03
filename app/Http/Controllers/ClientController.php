@@ -69,7 +69,11 @@ class ClientController extends AppBaseController
             $user->addRole('client');
             DB::commit();
             $input['password'] = App::environment(['production']) ? $passwordString : 'abcd1234';
-            Mail::to($user)->send(new ClientRegisteredMail($input));
+            try {
+                Mail::to($user)->send(new ClientRegisteredMail($input));
+            }catch (\Exception $e) {
+                report($e);
+            }
             \Laracasts\Flash\Flash::success('Parent saved successfully.');
 
             return redirect(route('clients.index'));
