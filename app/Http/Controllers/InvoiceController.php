@@ -178,7 +178,6 @@ class InvoiceController extends AppBaseController
             $invoice = $this->invoiceRepository->showTutoringPackageInvoice($invoice);
             $stripeKey = config('services.stripe.key');
             $paymentModes = $this->invoiceRepository->getPaymentGateways();
-            dd($invoice);
             return view('invoices.tutoring-package-create',['invoice'=>$invoice,'stripeKey' => $stripeKey,'paymentModes'=>$paymentModes]);
         }
 //        return view('invoices.payment-create',['invoice'=>$invoice]);

@@ -99,7 +99,11 @@ class PaymentRepository extends BaseRepository
         }
         $admins = User::whereHasRole(['super-admin'])->get(['email']);
         $admins = $admins->pluck('email')->toArray();
-        Mail::to($admins)->send(new ClientMakePaymentMail($paymentTransactionData));
+        try {
+            Mail::to($admins)->send(new ClientMakePaymentMail($paymentTransactionData));
+        }catch (Exception $e){
+            report($e);
+        }
         return $sessionData;
     }
 

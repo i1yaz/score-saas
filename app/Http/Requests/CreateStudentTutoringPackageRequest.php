@@ -32,7 +32,7 @@ class CreateStudentTutoringPackageRequest extends FormRequest
             'tutor_ids' => ['required', 'array', 'min:1'],
             'subject_ids' => ['required', 'array', 'min:1'],
             'tutoring_location_id' => ['required'],
-            'internal_notes' => ['string'],
+            'internal_notes' => ['nullable','string'],
             'hours' => ['required', 'numeric', 'min:1'],
             'hourly_rate' => ['required', 'numeric', 'min:1'],
             'discount_type' => ['required'],

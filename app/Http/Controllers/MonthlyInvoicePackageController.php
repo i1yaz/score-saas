@@ -103,8 +103,11 @@ class MonthlyInvoicePackageController extends AppBaseController
             if ($input['email_to_parent'] == 1) {
                 $parentEmail = Student::select(['parents.email as parent_email', 'students.id', 'students.parent_id'])->where('students.id', $input['student_id'])
                     ->join('parents', 'students.parent_id', '=', 'parents.id')->first();
-
-                Mail::to($parentEmail->parent_email)->send(new ParentInvoiceMailAfterMonthlyInvoicePackageCreationMail($monthlyInvoicePackage));
+                try {
+                    Mail::to($parentEmail->parent_email)->send(new ParentInvoiceMailAfterMonthlyInvoicePackageCreationMail($monthlyInvoicePackage));
+                }catch (\Exception $exception) {
+                    report($exception);
+                }
             }
             $redirectRoute = route('monthly-invoice-packages.show', ['monthly_invoice_package' => $monthlyInvoicePackage->id]);
             if ($request->ajax()){

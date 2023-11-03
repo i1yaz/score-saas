@@ -101,7 +101,12 @@ class ParentController extends AppBaseController
             $user->addRole('parent');
             DB::commit();
             $input['password'] = App::environment(['production']) ? $passwordString : 'abcd1234';
-            Mail::to($user)->send(new ParentRegisteredMail($input));
+            try {
+                Mail::to($user)->send(new ParentRegisteredMail($input));
+
+            }catch (\Exception $e){
+                report($e);
+            }
             Flash::success('Parent saved successfully.');
 
             return redirect(route('parents.index'));
