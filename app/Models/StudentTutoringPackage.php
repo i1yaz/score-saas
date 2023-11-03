@@ -38,6 +38,7 @@ class StudentTutoringPackage extends BaseModel
         'added_by',
         'auth_guard',
         'status',
+        'allow_partial_payment',
     ];
 
     protected $casts = [

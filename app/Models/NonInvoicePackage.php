@@ -11,4 +11,13 @@ class NonInvoicePackage extends Model
 
     const CODE_START = 5000;
     const PREFIX_START = 'INP';
+    protected $fillable = [
+        'name',
+        'description',
+        'final_amount',
+        'allow_partial_payment',
+        'code',
+        'prefix',
+        'is_active'
+    ];
 }
