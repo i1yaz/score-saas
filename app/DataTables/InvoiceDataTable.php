@@ -154,7 +154,7 @@ class InvoiceDataTable implements IDataTables
             $records = $records->where(function ($q){
                 $q->where('non_invoice_packages.client_id', Auth::id())
                     ->where('invoices.invoiceable_type',NonInvoicePackage::class)
-                    ->where('invoices.invoice_package_type_id',5);
+                    ->where('invoices.invoice_package_type_id',3);
             });
 
 

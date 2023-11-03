@@ -188,7 +188,7 @@ class InvoiceRepository extends BaseRepository
             $nonPackageInvoice->save();
 
             $invoice = new Invoice();
-            $invoice->invoice_package_type_id = 5;
+            $invoice->invoice_package_type_id = 3;
             $invoice->due_date =  Carbon::parse($input['due_date']);
             $invoice->general_description = $input['general_description'] ?? null;
             $invoice->detailed_description = $input['detailed_description'] ?? null;

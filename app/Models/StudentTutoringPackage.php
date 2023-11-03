@@ -15,7 +15,7 @@ class StudentTutoringPackage extends BaseModel
 
     const CODE_START = 3000;
 
-    const PREFIX_START = 'T';
+    const PREFIX_START = 'T-';
 
     /**
      * @var \Illuminate\Database\Eloquent\HigherOrderBuilderProxy|mixed
