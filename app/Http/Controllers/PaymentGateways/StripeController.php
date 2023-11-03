@@ -56,6 +56,7 @@ class StripeController extends AppBaseController
                     ->where('invoices.invoiceable_type', '=', StudentTutoringPackage::class);
             })
             ->where('invoices.id',$request->invoiceId)->firstOrFail();
+
         if ($invoice->invoiceable_type == NonInvoicePackage::class) {
             $payable_amount = $invoice->final_amount - $invoice->paid_amount;
             $userEmail = NonInvoicePackage::query()
@@ -72,8 +73,10 @@ class StripeController extends AppBaseController
                 ->where('student_tutoring_packages.id',$invoice->invoiceable_id)->firstOrFail()->email;
 
             $packageCode = getStudentTutoringPackageCodeFromId($invoice->invoiceable_id);
+            $payable_amount = $payable_amount - $invoice->paid_amount;
         }
         $amount = $request->partialAmount;
+
         if (!is_numeric($amount)) {
             $amount = $payable_amount;
         }

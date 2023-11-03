@@ -86,12 +86,15 @@
                     displayErrorMessage("Partial should not be equal to zero");
                     return false;
                 }
-                console.log($("#partial-amount").val())
+                let partialAmount = parseFloat($("#partial-amount").val())
+                if(isNaN(partialAmount)){
+                    partialAmount = null
+                }
                 let btnSubmitEle = $("#btnPay");
                 ToggleBtnLoader(btnSubmitEle);
                 let payloadData = {
                     _token: "{{ csrf_token() }}",
-                    partialAmount: parseFloat($("#partial-amount").val()),
+                    partialAmount: partialAmount,
                     invoiceId: "{{ $invoice->invoice_id }}",
                 };
 

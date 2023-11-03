@@ -7,6 +7,7 @@ use App\Mail\FlagSessionMail;
 use App\Models\Invoice;
 use App\Models\NonInvoicePackage;
 use App\Models\Payment;
+use App\Models\StudentTutoringPackage;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Repositories\BaseRepository;
@@ -42,6 +43,9 @@ class PaymentRepository extends BaseRepository
     {
         setStripeApiKey();
         $sessionData = Session::retrieve($sessionId);
+        if (empty($sessionData)){
+            throw new UnprocessableEntityHttpException('Session not found');
+        }
         $stripeID = $sessionData->id;
         $amountPaidInLastSession = $sessionData->amount_total/100;
         $reference = $sessionData->client_reference_id;
@@ -60,14 +64,22 @@ class PaymentRepository extends BaseRepository
             $nonInvoicePackage = NonInvoicePackage::findOrFail($invoice->invoiceable_id);
             if (($amountPaidInLastSession + $invoice->paid_amount) == $nonInvoicePackage->final_amount ) {
                 $paymentStatus = Payment::PAID;
-                Log::critical('Payment total paid : '.($amountPaidInLastSession + $invoice->paid_amount).' Final: '.$nonInvoicePackage->final_amount);
             } else {
                 $paymentStatus = Payment::PARTIAL_PAYMENT;
-                Log::critical('Partial Payment total paid : '.($amountPaidInLastSession + $invoice->paid_amount).' Final: '.$nonInvoicePackage->final_amount);
             }
 
         }
+        if ($invoice->invoiceable_type == StudentTutoringPackage::class) {
+            $studentTutoringPackage = StudentTutoringPackage::findOrFail($invoice->invoiceable_id);
+            $payable_amount  = cleanAmountWithCurrencyFormat(getPriceFromHoursAndHourlyWithDiscount($studentTutoringPackage->hourly_rate,$studentTutoringPackage->hours,$studentTutoringPackage->discount,$studentTutoringPackage->discount_type));
 
+            if (($amountPaidInLastSession + $invoice->paid_amount) == $payable_amount ) {
+                $paymentStatus = Payment::PAID;
+            } else {
+                $paymentStatus = Payment::PARTIAL_PAYMENT;
+            }
+
+        }
 
         $paymentTransactionData = [
             'invoice_id' => $invoiceId,
@@ -94,6 +106,7 @@ class PaymentRepository extends BaseRepository
             DB::commit();
 
         } catch (Exception $e) {
+            report($e);
             DB::rollBack();
             throw new UnprocessableEntityHttpException($e->getMessage());
         }
