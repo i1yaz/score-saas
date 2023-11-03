@@ -10,6 +10,7 @@ use App\Models\Student;
 use App\Models\StudentTutoringPackage;
 use App\Models\Tax;
 use App\Models\Tutor;
+use App\Models\TutoringPackageType;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -797,5 +798,26 @@ if (!function_exists('getAuthModelFromGuard')){
             return Client::class;
         }
 
+    }
+}
+
+if (!function_exists('getRemainingAmount')){
+    function getRemainingAmount(Invoice $invoice)
+    {
+        if ($invoice->invoiceable_type == NonInvoicePackage::class){
+
+            return formatAmountWithCurrency($invoice->final_amount - $invoice->amount_paid );
+        }
+        if ($invoice->invoiceable_type == StudentTutoringPackage::class){
+
+                $hours = $invoice->hours;
+                $hourly_rate = $invoice->tutoring_hourly_rate;
+                $discount =$invoice->discount;
+                $discount_type =$invoice->discount_type;
+                $final_amount = cleanAmountWithCurrencyFormat(getPriceFromHoursAndHourlyWithDiscount($hourly_rate,$hours,$discount,$discount_type));
+
+                return formatAmountWithCurrency($final_amount - $invoice->amount_paid );
+        }
+        return 0;
     }
 }

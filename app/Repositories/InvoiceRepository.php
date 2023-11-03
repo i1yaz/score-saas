@@ -247,6 +247,10 @@ class InvoiceRepository extends BaseRepository
         $records = Invoice::query()->select(
             [
                 'invoices.id as invoice_id',
+                'student_tutoring_packages.hourly_rate',
+                'student_tutoring_packages.hours',
+                'student_tutoring_packages.discount',
+                'student_tutoring_packages.discount_type',
             ])
             ->selectRaw('sum(payments.amount) as amount_paid')
             ->leftJoin('payments','payments.invoice_id','invoices.id')

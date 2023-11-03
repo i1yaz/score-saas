@@ -38,6 +38,7 @@ class InvoiceController extends AppBaseController
                 'created_at',
                 'due_date',
                 'amount_paid',
+                'amount_remaining',
                 'fully_paid_at',
                 'action',
             ];
@@ -178,8 +179,15 @@ class InvoiceController extends AppBaseController
             $invoice = $this->invoiceRepository->showTutoringPackageInvoice($invoice);
             $stripeKey = config('services.stripe.key');
             $paymentModes = $this->invoiceRepository->getPaymentGateways();
-            dd($invoice);
-            return view('invoices.tutoring-package-create',['invoice'=>$invoice,'stripeKey' => $stripeKey,'paymentModes'=>$paymentModes]);
+
+            $totalAmount = cleanAmountWithCurrencyFormat(getPriceFromHoursAndHourlyWithDiscount($invoice->hourly_rate,$invoice->hours,$invoice->discount,$invoice->discount_type));
+            $remainingAmount = $totalAmount - $invoice->amount_paid??0;
+            return view('invoices.tutoring-package-create',[
+                'invoice'=>$invoice,
+                'stripeKey' => $stripeKey,
+                'paymentModes'=>$paymentModes,
+                'totalAmount'=>$totalAmount,
+                'remainingAmount'=>$remainingAmount]);
         }
 //        return view('invoices.payment-create',['invoice'=>$invoice]);
     }

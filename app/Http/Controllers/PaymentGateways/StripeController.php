@@ -5,6 +5,7 @@ namespace App\Http\Controllers\PaymentGateways;
 use App\Http\Controllers\AppBaseController;
 use App\Models\Invoice;
 use App\Models\NonInvoicePackage;
+use App\Models\StudentTutoringPackage;
 use App\Repositories\StripeRepository;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
@@ -32,16 +33,46 @@ class StripeController extends AppBaseController
     public function createSession(Request $request)
     {
         $invoice = Invoice::query()
-            ->select(['invoices.id as invoice_id','non_invoice_packages.final_amount','invoiceable_type','invoiceable_id'])
+            ->select(
+                [
+                    'invoices.id as invoice_id',
+                    'non_invoice_packages.final_amount',
+                    'invoiceable_type',
+                    'invoiceable_id',
+                    'student_tutoring_packages.hourly_rate as stp_hourly_rate',
+                    'student_tutoring_packages.hours as stp_hours',
+                    'student_tutoring_packages.discount as stp_discount',
+                    'student_tutoring_packages.discount_type as stp_discount_type',
+
+                ])
             ->selectRaw('sum(payments.amount) as paid_amount')
             ->leftJoin('payments', 'payments.invoice_id', '=', 'invoices.id')
             ->leftJoin('non_invoice_packages', function ($q){
                 $q->on('non_invoice_packages.id', '=', 'invoices.invoiceable_id')
                     ->where('invoices.invoiceable_type', '=', NonInvoicePackage::class);
             })
+            ->leftJoin('student_tutoring_packages', function ($q){
+                $q->on('student_tutoring_packages.id', '=', 'invoices.invoiceable_id')
+                    ->where('invoices.invoiceable_type', '=', StudentTutoringPackage::class);
+            })
             ->where('invoices.id',$request->invoiceId)->firstOrFail();
+        if ($invoice->invoiceable_type == NonInvoicePackage::class) {
+            $payable_amount = $invoice->final_amount - $invoice->paid_amount;
+            $userEmail = NonInvoicePackage::query()
+                ->select(['clients.email'])
+                ->leftJoin('clients', 'clients.id', '=', 'non_invoice_packages.client_id')
+                ->where('non_invoice_packages.id',$invoice->invoiceable_id)->firstOrFail()->email;
+            $packageCode = getNonInvoicePackageCodeFromId($invoice->invoiceable_id);
+        }
+        if ($invoice->invoiceable_type == StudentTutoringPackage::class) {
+            $payable_amount  = cleanAmountWithCurrencyFormat(getPriceFromHoursAndHourlyWithDiscount($invoice->stp_hourly_rate,$invoice->stp_hours,$invoice->stp_discount,$invoice->stp_discount_type));
+            $userEmail = StudentTutoringPackage::query()
+                ->select(['students.email'])
+                ->leftJoin('students', 'students.id', '=', 'student_tutoring_packages.student_id')
+                ->where('student_tutoring_packages.id',$invoice->invoiceable_id)->firstOrFail()->email;
 
-        $payable_amount = $invoice->final_amount - $invoice->paid_amount;
+            $packageCode = getStudentTutoringPackageCodeFromId($invoice->invoiceable_id);
+        }
         $amount = $request->partialAmount;
         if (!is_numeric($amount)) {
             $amount = $payable_amount;
@@ -51,15 +82,8 @@ class StripeController extends AppBaseController
         }
 
         $invoiceId = $invoice->invoice_id;
-        if ($invoice->invoiceable_type == NonInvoicePackage::class) {
-            $userEmail = NonInvoicePackage::query()
-                ->select(['clients.email'])
-                ->leftJoin('clients', 'clients.id', '=', 'non_invoice_packages.client_id')
-                ->where('non_invoice_packages.id',$invoice->invoiceable_id)->firstOrFail()->email;
-        }
         $invoiceCode = getInvoiceCodeFromId($invoiceId);
         $packageType = getInvoiceTypeFromClass($invoice->invoiceable_type);
-        $packageCode = getNonInvoicePackageCodeFromId($invoice->invoiceable_id);
         $userId = \Auth::id()??'none';
         $guard = \Auth::guard()->name??'none';
         try {

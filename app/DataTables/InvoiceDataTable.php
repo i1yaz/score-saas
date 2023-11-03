@@ -37,7 +37,13 @@ class InvoiceDataTable implements IDataTables
                 'invoices.due_date',
                 'invoices.fully_paid_at',
                 'invoices.invoiceable_id',
-                'invoices.invoiceable_type'
+                'invoices.invoiceable_type',
+                'non_invoice_packages.final_amount',
+                'student_tutoring_packages.hours',
+                'student_tutoring_packages.hourly_rate as tutoring_hourly_rate',
+                'student_tutoring_packages.discount',
+                'student_tutoring_packages.discount_type',
+                'monthly_invoice_packages.hourly_rate',
             ])
             ->selectRaw('sum(payments.amount) as amount_paid')
             ->leftJoin('student_tutoring_packages', function ($q) {
@@ -105,6 +111,7 @@ class InvoiceDataTable implements IDataTables
                 $nestedData['created_at'] = formatDate($invoice->invoice_created_at);
                 $nestedData['due_date'] = formatDate($invoice->due_date);
                 $nestedData['amount_paid'] = formatAmountWithCurrency($invoice->amount_paid??0);
+                $nestedData['amount_remaining'] = getRemainingAmount($invoice);
                 $nestedData['fully_paid_at'] = $invoice->fully_paid_at;
                 $nestedData['action'] = view('invoices.actions', ['invoice' => $invoice,'type' => getInvoiceTypeFromClass($invoice->invoiceable_type,true)])->render();
                 $data[] = $nestedData;
@@ -180,4 +187,5 @@ class InvoiceDataTable implements IDataTables
         return $invoices->count();
 
     }
+
 }
