@@ -183,6 +183,7 @@ class InvoiceRepository extends BaseRepository
             $nonPackageInvoice->tax_amount = $taxOnSubtotal;
             $nonPackageInvoice->final_amount = $totalFinalAmount;
             $nonPackageInvoice->auth_guard = Auth::guard()->name;
+            $nonPackageInvoice->allow_partial_payment = ($input['allow_partial_payment'] == 1) ?? false;
             $nonPackageInvoice->added_by = Auth::id();
             $nonPackageInvoice->save();
 
