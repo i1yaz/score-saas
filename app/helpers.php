@@ -648,6 +648,13 @@ if (!function_exists('chargeSessionMissedTimeInSeconds')){
 if (!function_exists('getTotalChargedSessionTimeFromSessionInSeconds')){
     function getTotalChargedSessionTimeFromSessionInSeconds(\App\Models\Session $session): float|int
     {
+        $scheduledDate = Carbon::createFromFormat('Y-m-d H:i:s', $session->scheduled_date)->format('m/d/Y');
+        $sessionEnd =  $session->end_time;
+        $sessionEnd = Carbon::createFromFormat('m/d/Y H:i:s', "$scheduledDate $sessionEnd");
+        $now = Carbon::now();
+        if ($now->lte($sessionEnd)){
+            return 0;
+        }
         if ($session->session_completion_code !== \App\Models\Session::PARTIAL_COMPLETION_CODE){
             return getTotalChargedTimeOfSessionFromSessionInSeconds($session);
         }
@@ -659,6 +666,13 @@ if (!function_exists('getTotalChargedSessionTimeFromSessionInSeconds')){
 if (!function_exists('getTotalChargedMissedSessionTimeFromSessionInSeconds')){
     function getTotalChargedMissedSessionTimeFromSessionInSeconds(\App\Models\Session $session): int
     {
+        $scheduledDate = Carbon::createFromFormat('Y-m-d H:i:s', $session->scheduled_date)->format('m/d/Y');
+        $sessionEnd =  $session->end_time;
+        $sessionEnd = Carbon::createFromFormat('m/d/Y H:i:s', "$scheduledDate $sessionEnd");
+        $now = Carbon::now();
+        if ($now->lte($sessionEnd)){
+            return 0;
+        }
         if ($session->session_completion_code !== \App\Models\Session::PARTIAL_COMPLETION_CODE){
             return 0;
         }

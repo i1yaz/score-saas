@@ -417,7 +417,5 @@
             }
             calculateTotal(totalPrice)
         })
-
-
     </script>
 @endpush
