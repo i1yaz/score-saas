@@ -151,13 +151,13 @@
             </a>
         </li>
         @endpermission
-        @permission('invoice_package_type-index')
-        <li class="nav-item">
-            <a href="{{ route('invoice-package-types.index') }}" class="nav-link {{ Request::is('invoice-package-types*') ? 'active' : '' }}">
-                <p>Invoice Package Types</p>
-            </a>
-        </li>
-        @endpermission
+{{--        @permission('invoice_package_type-index')--}}
+{{--        <li class="nav-item">--}}
+{{--            <a href="{{ route('invoice-package-types.index') }}" class="nav-link {{ Request::is('invoice-package-types*') ? 'active' : '' }}">--}}
+{{--                <p>Invoice Package Types</p>--}}
+{{--            </a>--}}
+{{--        </li>--}}
+{{--        @endpermission--}}
         @permission('tax-index')
         <li class="nav-item">
             <a href="{{ route('taxes.index') }}" class="nav-link {{ Request::is('taxes*') ? 'active' : '' }}">
