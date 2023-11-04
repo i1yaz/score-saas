@@ -104,7 +104,7 @@ class ParentController extends AppBaseController
             try {
                 Mail::to($user)->send(new ParentRegisteredMail($input));
 
-            }catch (\Exception $e){
+            } catch (\Exception $e) {
                 report($e);
             }
             Flash::success('Parent saved successfully.');
@@ -165,7 +165,7 @@ class ParentController extends AppBaseController
     public function destroy($id)
     {
         $parent = ParentUser::findOrFail($id);
-        if (!$parent) {
+        if (! $parent) {
             Flash::error('No record found.');
 
             return redirect(route('parents.index'));

@@ -3,7 +3,6 @@
 namespace App\Mail;
 
 use App\Models\MonthlyInvoicePackage;
-use App\Models\StudentTutoringPackage;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;

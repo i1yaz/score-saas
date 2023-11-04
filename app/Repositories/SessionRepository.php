@@ -72,7 +72,7 @@ class SessionRepository extends BaseRepository
                 $tickMark = '✓';
             }
             $start_time = date('H:i', strtotime($session->start_time ?? ''));
-            $title = $session->title??$session->title_s2;
+            $title = $session->title ?? $session->title_s2;
             $packagePrefix = $session->monthly_invoice_package_id ? 'M' : ($session->student_tutoring_package_id ? 'T' : '');
             $session['color'] = getHexColors($i);
             $session['allDay'] = true;

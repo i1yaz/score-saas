@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class TutoringPackageTypeFactory extends Factory
 {
     protected $model = TutoringPackageType::class;
+
     /**
      * Define the model's default state.
      *
@@ -20,11 +21,11 @@ class TutoringPackageTypeFactory extends Factory
     {
         return [
             'name' => $this->faker->word,
-            'hours' => $this->faker->numberBetween(24,72),
+            'hours' => $this->faker->numberBetween(24, 72),
             'auth_guard' => 'web',
             'added_by' => 1,
             'created_at' => now(),
-            'updated_at' => now()
+            'updated_at' => now(),
         ];
     }
 }

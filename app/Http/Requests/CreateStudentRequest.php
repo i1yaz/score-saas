@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use App\Models\Student;
-use App\Models\StudentTutoringPackage;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateStudentRequest extends FormRequest
@@ -27,6 +26,7 @@ class CreateStudentRequest extends FormRequest
     {
         return Student::$rules;
     }
+
     /**
      * Get the error messages for the defined validation rules.
      *

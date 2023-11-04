@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,7 +21,6 @@ class LoginController extends Controller
     */
 
     use AuthenticatesUsers;
-
 
     /**
      * Create a new controller instance.
@@ -131,17 +129,17 @@ class LoginController extends Controller
 
         return $this->sendFailedLoginResponse($request);
     }
+
     /**
      * Log the user out of the application.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
     public function logout(Request $request)
     {
-        if (!empty($request->guard)) {
+        if (! empty($request->guard)) {
             Auth::guard($request->guard)->logout();
-        } else{
+        } else {
             $this->guard()->logout();
         }
 

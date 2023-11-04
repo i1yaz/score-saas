@@ -24,8 +24,8 @@ class SessionDataTable implements IDataTables
         $order = $columns[$order] ?? $order;
         $sessions = Session::query()->select(
             [
-                'sessions.id','sessions.start_time as start',
-                'sessions.tutoring_location_id' ,
+                'sessions.id', 'sessions.start_time as start',
+                'sessions.tutoring_location_id',
                 'sessions.end_time as end',
                 'sessions.id as id',
                 'sessions.start_time',
@@ -39,7 +39,7 @@ class SessionDataTable implements IDataTables
                 'list_data.name as completion_code',
                 'student_tutoring_packages.id as student_tutoring_package_id',
                 'monthly_invoice_packages.id as monthly_invoice_package_id',
-                'tutors.email as tutor_email'
+                'tutors.email as tutor_email',
             ])
             ->leftJoin('student_tutoring_packages', 'student_tutoring_packages.id', '=', 'sessions.student_tutoring_package_id')
             ->leftJoin('monthly_invoice_packages', 'monthly_invoice_packages.id', '=', 'sessions.monthly_invoice_package_id')
@@ -55,7 +55,7 @@ class SessionDataTable implements IDataTables
         $sessions = $sessions->offset($start)
             ->limit($limit);
         $columns = explode(',', $order);
-        foreach ($columns as $column){
+        foreach ($columns as $column) {
             $sessions = $sessions->orderBy($column, $dir);
         }
 
@@ -66,7 +66,7 @@ class SessionDataTable implements IDataTables
     public static function totalFilteredRecords(mixed $search): int
     {
         $sessions = Session::query()->select(['id']);
-        $sessions = static::getModelQueryBySearch($search, $sessions,true);
+        $sessions = static::getModelQueryBySearch($search, $sessions, true);
 
         return $sessions->count();
     }
@@ -81,11 +81,11 @@ class SessionDataTable implements IDataTables
                 $start = date('H:i', strtotime($session->start ?? ''));
                 $end = date('H:i', strtotime($session->end ?? ''));
                 $nestedData['id'] = getSessionCodeFromId($session->id);
-                $nestedData['tutoring_package'] = getPackageCodeFromId($session->student_tutoring_package_id,$session->monthly_invoice_package_id);
+                $nestedData['tutoring_package'] = getPackageCodeFromId($session->student_tutoring_package_id, $session->monthly_invoice_package_id);
                 $nestedData['scheduled_date'] = "$date $start - $end";
                 $nestedData['location'] = $session->location_name;
                 $nestedData['tutor'] = $session->tutor_email;
-                $nestedData['student'] = $session->student_email??$session->student_email_s2;
+                $nestedData['student'] = $session->student_email ?? $session->student_email_s2;
                 $nestedData['completion_code'] = $session->completion_code ?? '';
                 $nestedData['homework_completed_80'] = view('partials.status_badge', ['status' => $session->home_work_completed, 'text_success' => 'Completed', 'text_danger' => 'Not Completed'])->render();
                 $nestedData['action'] = view('sessions.actions', ['session' => $session])->render();
@@ -97,9 +97,9 @@ class SessionDataTable implements IDataTables
 
     }
 
-    public static function getModelQueryBySearch(mixed $search, Builder $records,$count=false): Builder
+    public static function getModelQueryBySearch(mixed $search, Builder $records, $count = false): Builder
     {
-        if (! empty($search) && !$count) {
+        if (! empty($search) && ! $count) {
             $records = $records->where(function ($q) use ($search) {
                 $q->where('tutoring_locations.name', 'like', "%{$search}%")
                     ->orWhere('sessions.id', 'like', "%{$search}%")

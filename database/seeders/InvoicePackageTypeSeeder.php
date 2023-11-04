@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\InvoicePackageType;
 use Carbon\Carbon;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class InvoicePackageTypeSeeder extends Seeder
@@ -22,7 +21,7 @@ class InvoicePackageTypeSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
                 'auth_guard' => 'web',
-                'added_by' => 1
+                'added_by' => 1,
             ],
             [
                 'id' => 2,
@@ -30,7 +29,7 @@ class InvoicePackageTypeSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
                 'auth_guard' => 'web',
-                'added_by' => 1
+                'added_by' => 1,
             ],
             [
                 'id' => 3,
@@ -38,8 +37,8 @@ class InvoicePackageTypeSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
                 'auth_guard' => 'web',
-                'added_by' => 1
-            ]
+                'added_by' => 1,
+            ],
         ]);
     }
 }

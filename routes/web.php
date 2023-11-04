@@ -22,7 +22,6 @@ use App\Http\Controllers\TutoringPackageTypeController;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Stripe\Checkout\Session;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,7 +45,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('invoice/{invoice}/public-view/{type?}',[InvoiceController::class,'showPublicInvoice']);
+Route::get('invoice/{invoice}/public-view/{type?}', [InvoiceController::class, 'showPublicInvoice']);
 Auth::routes(['register' => false]);
 Route::get('admin/login', [LoginController::class, 'showAdminLoginForm'])->name('admin.login');
 Route::get('payment/success', [PaymentController::class, 'success'])->name('payment-success');
@@ -146,8 +145,6 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], functio
     Route::patch('invoices/{invoice}', [InvoiceController::class, 'update'])->name('invoices.update')->middleware(['permission:invoice-edit']);
     Route::delete('invoices/{invoice}', [InvoiceController::class, 'destroy'])->name('invoices.destroy')->middleware(['permission:invoice-destroy']);
 
-
-
     //Sessions
     Route::get('sessions', [SessionController::class, 'index'])->name('sessions.index')->middleware(['permission:session-index']);
     Route::get('sessions/create', [SessionController::class, 'create'])->name('sessions.create')->middleware(['permission:session-create']);
@@ -200,8 +197,7 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], functio
     Route::get('payments/create', [PaymentController::class, 'create'])->name('payments.create')->middleware(['permission:payment-create']);
     Route::post('payments', [PaymentController::class, 'store'])->name('payments.store')->middleware(['permission:payment-create']);
     Route::get('payments/{payment}', [PaymentController::class, 'show'])->name('payments.show')->middleware(['permission:payment-show']);
-//    Route::get('payments/{payment}/edit', [PaymentController::class, 'edit'])->name('payments.edit')->middleware(['permission:payment-edit']);
-//    Route::patch('payments/{payment}', [PaymentController::class, 'update'])->name('payments.update')->middleware(['permission:payment-edit']);
-//    Route::delete('payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy')->middleware(['permission:payment-destroy']);
+    //    Route::get('payments/{payment}/edit', [PaymentController::class, 'edit'])->name('payments.edit')->middleware(['permission:payment-edit']);
+    //    Route::patch('payments/{payment}', [PaymentController::class, 'update'])->name('payments.update')->middleware(['permission:payment-edit']);
+    //    Route::delete('payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy')->middleware(['permission:payment-destroy']);
 });
-

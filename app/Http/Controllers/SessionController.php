@@ -14,7 +14,6 @@ use App\Models\StudentTutoringPackage;
 use App\Models\StudentTutoringPackageTutor;
 use App\Models\User;
 use App\Repositories\SessionRepository;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -93,35 +92,39 @@ class SessionController extends Controller
         $input['scheduled_date'] = date('Y-m-d', strtotime($input['scheduled_date']));
         $tutoringPackageId = $input['tutoring_package_id'];
         if (Auth::user()->hasRole(['tutor'])) {
-            if (Str::startsWith( $input['tutoring_package_id'],StudentTutoringPackage::PREFIX_START)) {
+            if (Str::startsWith($input['tutoring_package_id'], StudentTutoringPackage::PREFIX_START)) {
                 $tutoringPackageTutor = StudentTutoringPackageTutor::where(['tutor_id' => Auth::user()->id, 'student_tutoring_package_id' => $tutoringPackageId])->first();
             }
-            if (Str::startsWith( $input['tutoring_package_id'],MonthlyInvoicePackage::PREFIX_START)) {
+            if (Str::startsWith($input['tutoring_package_id'], MonthlyInvoicePackage::PREFIX_START)) {
                 $tutoringPackageTutor = MonthlyInvoicePackageTutor::where(['tutor_id' => Auth::user()->id, 'student_tutoring_package_id' => $tutoringPackageId])->first();
             }
 
-            if (Auth::user()->hasRole(['tutor']) && !empty($tutoringPackageTutor)) {
+            if (Auth::user()->hasRole(['tutor']) && ! empty($tutoringPackageTutor)) {
                 $input['tutor_id'] = Auth::user()->id;
             } else {
                 return response()->json(['success' => false, 'message' => 'You are not allowed to create session for this student.'], 404);
             }
         }
 
-        if (Str::startsWith( $input['tutoring_package_id'],StudentTutoringPackage::PREFIX_START)) {
+        if (Str::startsWith($input['tutoring_package_id'], StudentTutoringPackage::PREFIX_START)) {
             $input['student_tutoring_package_id'] = getOriginalStudentTutoringPackageIdFromCode($input['tutoring_package_id']);
 
         }
-        if (Str::startsWith( $input['tutoring_package_id'],MonthlyInvoicePackage::PREFIX_START)) {
+        if (Str::startsWith($input['tutoring_package_id'], MonthlyInvoicePackage::PREFIX_START)) {
             $input['monthly_invoice_package_id'] = getOriginalMonthlyInvoicePackageIdFromCode($input['tutoring_package_id']);
         }
-        if (isset($input['session_completion_code']) && (integer) $input['session_completion_code']===Session::PARTIAL_COMPLETION_CODE){
-            if (isset($input['charge_for_missed_time'] ) &&  (integer)  $input['charge_for_missed_time'] == Session::PARTIAL_COMPLETION_CODE){
+        if (isset($input['session_completion_code']) && (int) $input['session_completion_code'] === Session::PARTIAL_COMPLETION_CODE) {
+            if (isset($input['charge_for_missed_time']) && (int) $input['charge_for_missed_time'] == Session::PARTIAL_COMPLETION_CODE) {
                 $input['charge_missed_time'] = true;
             }
-        }else{
+        } else {
             $input['charge_missed_time'] = false;
-            if(isset($input['attended_start_time'])) unset($input['attended_start_time']);
-            if(isset($input['attended_end_time'])) unset($input['attended_end_time']);
+            if (isset($input['attended_start_time'])) {
+                unset($input['attended_start_time']);
+            }
+            if (isset($input['attended_end_time'])) {
+                unset($input['attended_end_time']);
+            }
         }
 
         $this->sessionRepository->create($input);
@@ -131,7 +134,7 @@ class SessionController extends Controller
             try {
                 Mail::to($admins)->send(new FlagSessionMail($input));
 
-            }catch (\Exception $e) {
+            } catch (\Exception $e) {
                 report($e);
             }
         }
@@ -152,7 +155,7 @@ class SessionController extends Controller
                 'sessions.id as id', 'sessions.scheduled_date', 'sessions.start_time', 'sessions.end_time', 'tutoring_locations.name as tutoring_location_name',
                 'sessions.session_completion_code', 'sessions.pre_session_notes', 'sessions.student_parent_session_notes', 'sessions.homework', 'sessions.internal_notes',
                 'sessions.home_work_completed as percent_homework_completed_80',
-                'list_data.name as completion_code','sessions.tutor_id'
+                'list_data.name as completion_code', 'sessions.tutor_id',
             ])
             ->selectRaw("CONCAT(students.first_name,' ',students.last_name) as student_name")
             ->leftJoin('student_tutoring_packages', 'student_tutoring_packages.id', '=', 'sessions.student_tutoring_package_id')
@@ -184,7 +187,7 @@ class SessionController extends Controller
 
     public function edit($session)
     {
-        $session = Session::select(['sessions.*','tutoring_locations.name as tutoring_location_name','student_tutoring_packages.hours as package_hours'])
+        $session = Session::select(['sessions.*', 'tutoring_locations.name as tutoring_location_name', 'student_tutoring_packages.hours as package_hours'])
             ->selectRaw("CONCAT(students.first_name,' ',students.last_name) as student_name")
             ->join('student_tutoring_packages', 'student_tutoring_packages.id', '=', 'sessions.student_tutoring_package_id')
             ->join('tutoring_locations', 'student_tutoring_packages.tutoring_location_id', '=', 'tutoring_locations.id')
@@ -202,13 +205,14 @@ class SessionController extends Controller
         $session->scheduled_date = date('m/d/Y', strtotime($session->scheduled_date ?? ''));
 
         $selectedTutoringPackage = [
-            $session->student_tutoring_package_id  =>getStudentTutoringPackageCodeFromId($session->tutoring_location_name).' - '.$session->student_name.' - '.$session->package_hours,
+            $session->student_tutoring_package_id => getStudentTutoringPackageCodeFromId($session->tutoring_location_name).' - '.$session->student_name.' - '.$session->package_hours,
 
         ];
         $selectedLocation = [
             $session->tutoring_location_id => $session->tutoring_location_name,
         ];
-        return view('sessions.edit', compact('session', 'completionCodes','selectedTutoringPackage','selectedLocation'));
+
+        return view('sessions.edit', compact('session', 'completionCodes', 'selectedTutoringPackage', 'selectedLocation'));
     }
 
     public function update(UpdateSessionRequest $request, Session $session)
@@ -220,31 +224,31 @@ class SessionController extends Controller
         $input['scheduled_date'] = date('Y-m-d', strtotime($input['scheduled_date']));
         $tutoringPackageId = $input['tutoring_package_id'];
         if (Auth::user()->hasRole(['tutor'])) {
-            if (Str::startsWith( $input['tutoring_package_id'],StudentTutoringPackage::PREFIX_START)) {
+            if (Str::startsWith($input['tutoring_package_id'], StudentTutoringPackage::PREFIX_START)) {
                 $tutoringPackageTutor = StudentTutoringPackageTutor::where(['tutor_id' => Auth::user()->id, 'student_tutoring_package_id' => $tutoringPackageId])->first();
             }
-            if (Str::startsWith( $input['tutoring_package_id'],MonthlyInvoicePackage::PREFIX_START)) {
+            if (Str::startsWith($input['tutoring_package_id'], MonthlyInvoicePackage::PREFIX_START)) {
                 $tutoringPackageTutor = MonthlyInvoicePackageTutor::where(['tutor_id' => Auth::user()->id, 'student_tutoring_package_id' => $tutoringPackageId])->first();
             }
 
-            if (Auth::user()->hasRole(['tutor']) && !empty($tutoringPackageTutor)) {
+            if (Auth::user()->hasRole(['tutor']) && ! empty($tutoringPackageTutor)) {
                 $input['tutor_id'] = Auth::user()->id;
             } else {
                 return response()->json(['success' => false, 'message' => 'You are not allowed to create session for this student.'], 404);
             }
         }
-        if (Str::startsWith( $input['tutoring_package_id'],StudentTutoringPackage::PREFIX_START)) {
+        if (Str::startsWith($input['tutoring_package_id'], StudentTutoringPackage::PREFIX_START)) {
             $input['student_tutoring_package_id '] = getPackageCodeFromModel($input['tutoring_package_id']);
 
         }
-        if (Str::startsWith( $input['tutoring_package_id'],MonthlyInvoicePackage::PREFIX_START)) {
+        if (Str::startsWith($input['tutoring_package_id'], MonthlyInvoicePackage::PREFIX_START)) {
             $input['monthly_invoice_package_id  '] = getPackageCodeFromModel($input['tutoring_package_id']);
         }
-        if (isset($input['session_completion_code']) && (integer) $input['session_completion_code']===Session::PARTIAL_COMPLETION_CODE){
-            if (isset($input['charge_for_missed_time'] ) &&  (integer)  $input['charge_for_missed_time'] == Session::PARTIAL_COMPLETION_CODE){
+        if (isset($input['session_completion_code']) && (int) $input['session_completion_code'] === Session::PARTIAL_COMPLETION_CODE) {
+            if (isset($input['charge_for_missed_time']) && (int) $input['charge_for_missed_time'] == Session::PARTIAL_COMPLETION_CODE) {
                 $input['charge_missed_time'] = true;
             }
-        }else{
+        } else {
             $input['charge_missed_time'] = false;
             $input['attended_start_time'] = null;
             $input['attended_end_time'] = null;

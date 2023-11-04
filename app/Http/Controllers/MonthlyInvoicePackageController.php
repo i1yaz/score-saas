@@ -3,26 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\DataTables\MonthlyInvoicePackageDataTable;
-use App\DataTables\StudentTutoringPackageDataTable;
 use App\Http\Requests\CreateMonthlyInvoicePackageRequest;
 use App\Http\Requests\UpdateMonthlyInvoicePackageRequest;
 use App\Mail\ParentInvoiceMailAfterMonthlyInvoicePackageCreationMail;
-use App\Mail\ParentInvoiceMailAfterStudentTutoringPackageCreation;
 use App\Models\MonthlyInvoicePackage;
 use App\Models\Student;
 use App\Models\Subject;
 use App\Repositories\InvoiceRepository;
 use App\Repositories\MonthlyInvoicePackageRepository;
+use Flash;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Flash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class MonthlyInvoicePackageController extends AppBaseController
 {
-    /** @var MonthlyInvoicePackageRepository $monthlyInvoicePackageRepository*/
     private MonthlyInvoicePackageRepository $monthlyInvoicePackageRepository;
+
     private InvoiceRepository $invoiceRepository;
 
     public function __construct(MonthlyInvoicePackageRepository $monthlyInvoicePackageRepo, InvoiceRepository $invoiceRepository)
@@ -77,6 +75,7 @@ class MonthlyInvoicePackageController extends AppBaseController
     public function create()
     {
         $subjects = Subject::get(['id', 'name']);
+
         return view('monthly_invoice_packages.create', compact('subjects'));
     }
 
@@ -92,7 +91,7 @@ class MonthlyInvoicePackageController extends AppBaseController
             unset($input['name']);
             $input['is_score_guaranteed'] = yesNoToBoolean($input['is_score_guaranteed']);
             $input['is_free'] = yesNoToBoolean($input['is_free']);
-            $input['discount'] = $input['discount']??0;
+            $input['discount'] = $input['discount'] ?? 0;
             $tutors = $input['tutor_ids'];
             $subjects = $input['subject_ids'];
             unset($input['tutor_ids'],$input['subject_ids']);
@@ -106,23 +105,24 @@ class MonthlyInvoicePackageController extends AppBaseController
                     ->join('parents', 'students.parent_id', '=', 'parents.id')->first();
                 try {
                     Mail::to($parentEmail->parent_email)->send(new ParentInvoiceMailAfterMonthlyInvoicePackageCreationMail($monthlyInvoicePackage));
-                }catch (\Exception $exception) {
+                } catch (\Exception $exception) {
                     report($exception);
                 }
             }
             $redirectRoute = route('monthly-invoice-packages.show', ['monthly_invoice_package' => $monthlyInvoicePackage->id]);
-            if ($request->ajax()){
-                return response()->json(['success' => true, 'message' => 'Monthly Invoice Package saved successfully.','redirectTo' => $redirectRoute]);
+            if ($request->ajax()) {
+                return response()->json(['success' => true, 'message' => 'Monthly Invoice Package saved successfully.', 'redirectTo' => $redirectRoute]);
             }
             Flash::success('Monthly Invoice Package saved successfully.');
+
             return redirect($redirectRoute);
-        }catch (QueryException $queryException) {
+        } catch (QueryException $queryException) {
             DB::rollBack();
             report($queryException);
             \Laracasts\Flash\Flash::error('something went wrong');
 
             return redirect(route('monthly-invoice-packages.index'));
-        }catch (\Exception $exception) {
+        } catch (\Exception $exception) {
             DB::rollBack();
             report($exception);
             \Laracasts\Flash\Flash::error('something went wrong');

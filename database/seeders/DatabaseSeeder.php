@@ -3,10 +3,6 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use App\Models\InvoicePackageType;
-use App\Models\ListData;
-use App\Models\Permission;
-use App\Models\Role;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
@@ -27,9 +23,9 @@ class DatabaseSeeder extends Seeder
             InvoicePackageTypeSeeder::class,
             ListDataSeeder::class,
             InvoicePackageSeeder::class,
-//            ClientPermissionsSeeder::class,
-//            ParentPermissionsSeeder::class,
-//            StudentPermissionsSeeder::class,
+            //            ClientPermissionsSeeder::class,
+            //            ParentPermissionsSeeder::class,
+            //            StudentPermissionsSeeder::class,
         ]);
 
         $user = User::create([

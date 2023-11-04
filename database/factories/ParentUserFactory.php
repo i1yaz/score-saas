@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\ParentUser;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
@@ -19,7 +18,7 @@ class ParentUserFactory extends Factory
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
             'email' => $this->faker->unique()->safeEmail(),
-            'password' => Hash::make("abcd1234"),
+            'password' => Hash::make('abcd1234'),
             'email_verified_at' => Carbon::now(),
             'remember_token' => Str::random(10),
             'phone' => $this->faker->phoneNumber(),

@@ -10,7 +10,6 @@ use App\Models\ParentUser;
 use App\Models\Student;
 use App\Models\StudentTutoringPackage;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -95,7 +94,7 @@ class InvoiceRepository extends BaseRepository
             ->where('invoiceable_id', $studentTutoringPackage->id)
             ->first();
 
-        if (!$invoice){
+        if (! $invoice) {
             $invoice = new Invoice();
 
         }
@@ -110,6 +109,7 @@ class InvoiceRepository extends BaseRepository
         $invoice->auth_guard = Auth::guard()->name;
         $invoice->added_by = Auth::id();
         $invoice->save();
+
         return $invoice;
     }
 
@@ -118,7 +118,7 @@ class InvoiceRepository extends BaseRepository
         $invoice = Invoice::where('invoiceable_type', MonthlyInvoicePackage::class)
             ->where('invoiceable_id', $monthlyInvoicePackage->id)
             ->first();
-        if (!$invoice){
+        if (! $invoice) {
             $invoice = new Invoice();
         }
         $invoice->invoice_package_type_id = 2;
@@ -127,7 +127,7 @@ class InvoiceRepository extends BaseRepository
         $invoice->detailed_description = $input['detailed_description'] ?? null;
         $invoice->email_to_parent = $input['email_to_parent'] ?? false;
         $invoice->paid_status = Invoice::PENDING;
-        if ($input['is_score_guaranteed'] || $input['is_free']){
+        if ($input['is_score_guaranteed'] || $input['is_free']) {
             $invoice->paid_status = Invoice::PAID;
             $invoice->fully_paid_at = Carbon::now();
         }
@@ -136,6 +136,7 @@ class InvoiceRepository extends BaseRepository
         $invoice->auth_guard = Auth::guard()->name;
         $invoice->added_by = Auth::id();
         $invoice->save();
+
         return $invoice;
     }
 
@@ -147,36 +148,36 @@ class InvoiceRepository extends BaseRepository
         $data = [];
         $totalFinalAmount = 0;
         foreach ($input['item_id'] as $key => $item_id) {
-            $total = (float) $input['price'][$key]* $input['quantity'][$key];
+            $total = (float) $input['price'][$key] * $input['quantity'][$key];
             $tax = 0;
-            if (!empty($input['tax_id'])){
-                $tax = getTaxAmountForLine($input['tax_id'],$total,$key);
+            if (! empty($input['tax_id'])) {
+                $tax = getTaxAmountForLine($input['tax_id'], $total, $key);
                 $taxIds = getTaxIdsForLineInJson($input['tax_id'], $key);
             }
             $finalAmount = ($total + $tax);
             $data[$item_id] = [
-                    'tax_ids' => $taxIds ?? null,
-                    'price' => $input['price'][$key],
-                    'qty' => $input['quantity'][$key],
-                    'tax_amount' => $tax,
-                    'final_amount' =>  $finalAmount,
-                    'auth_guard' => Auth::guard()->name,
-                    'added_by' => Auth::id(),
+                'tax_ids' => $taxIds ?? null,
+                'price' => $input['price'][$key],
+                'qty' => $input['quantity'][$key],
+                'tax_amount' => $tax,
+                'final_amount' => $finalAmount,
+                'auth_guard' => Auth::guard()->name,
+                'added_by' => Auth::id(),
             ];
             $totalFinalAmount += $finalAmount;
 
         }
         $discountedAmountOnSubtotal = 0;
-        if(!empty($input['discount'])){
+        if (! empty($input['discount'])) {
             $discountedAmountOnSubtotal = getDiscountedAmountOnSubtotal($input['discount_type'], $input['discount'], $totalFinalAmount);
         }
-        $totalFinalAmount =  $totalFinalAmount - $discountedAmountOnSubtotal;
-        $taxOnSubtotal= 0;
-        if (!empty($input['tax2_id'])){
+        $totalFinalAmount = $totalFinalAmount - $discountedAmountOnSubtotal;
+        $taxOnSubtotal = 0;
+        if (! empty($input['tax2_id'])) {
             $taxOnSubtotal = chargeTaxOnSubtotal($input['tax2_id'], $totalFinalAmount);
-            $tax2Ids =  json_encode($input['tax2_id']);
+            $tax2Ids = json_encode($input['tax2_id']);
         }
-        $totalFinalAmount = $totalFinalAmount+$taxOnSubtotal;
+        $totalFinalAmount = $totalFinalAmount + $taxOnSubtotal;
 
         DB::beginTransaction();
         try {
@@ -193,7 +194,7 @@ class InvoiceRepository extends BaseRepository
 
             $invoice = new Invoice();
             $invoice->invoice_package_type_id = 3;
-            $invoice->due_date =  Carbon::parse($input['due_date']);
+            $invoice->due_date = Carbon::parse($input['due_date']);
             $invoice->general_description = $input['general_description'] ?? null;
             $invoice->detailed_description = $input['detailed_description'] ?? null;
             $invoice->invoiceable_type = NonInvoicePackage::class;
@@ -205,8 +206,9 @@ class InvoiceRepository extends BaseRepository
             $invoice->items()->sync($data);
             DB::commit();
             Flash::success('Invoice saved successfully.');
+
             return $nonPackageInvoice;
-        }catch (QueryException $queryException){
+        } catch (QueryException $queryException) {
             DB::rollBack();
             report($queryException);
             Flash::error('something went wrong');
@@ -220,16 +222,17 @@ class InvoiceRepository extends BaseRepository
             [
                 'invoices.id as invoice_id',
                 'non_invoice_packages.final_amount',
-                'non_invoice_packages.allow_partial_payment'
+                'non_invoice_packages.allow_partial_payment',
             ])
             ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount ELSE 0 END) AS amount_paid')
-            ->leftJoin('payments','payments.invoice_id','invoices.id')
+            ->leftJoin('payments', 'payments.invoice_id', 'invoices.id')
             ->leftJoin('non_invoice_packages', function ($q) {
                 $q->on('invoices.invoiceable_id', '=', 'non_invoice_packages.id')->where('invoices.invoiceable_type', '=', NonInvoicePackage::class);
             });
         if (Auth::user()->hasRole('client') && Auth::user() instanceof Client) {
             $invoice = $invoice->where('non_invoice_packages.client_id', Auth::id());
         }
+
         return $invoice->where('invoices.id', $id)->first();
     }
 
@@ -257,28 +260,30 @@ class InvoiceRepository extends BaseRepository
                 'student_tutoring_packages.hours',
                 'student_tutoring_packages.discount',
                 'student_tutoring_packages.discount_type',
-                'student_tutoring_packages.allow_partial_payment'
+                'student_tutoring_packages.allow_partial_payment',
             ])
             ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount ELSE 0 END) AS amount_paid')
-            ->leftJoin('payments','payments.invoice_id','invoices.id')
+            ->leftJoin('payments', 'payments.invoice_id', 'invoices.id')
             ->leftJoin('student_tutoring_packages', function ($q) {
                 $q->on('invoices.invoiceable_id', '=', 'student_tutoring_packages.id')->where('invoices.invoiceable_type', '=', StudentTutoringPackage::class);
             })
-            ->leftJoin('students','students.id','student_tutoring_packages.student_id')
-            ->leftJoin('parents','parents.id','students.parent_id');
+            ->leftJoin('students', 'students.id', 'student_tutoring_packages.student_id')
+            ->leftJoin('parents', 'parents.id', 'students.parent_id');
 
         if (Auth::user()->hasRole('student') && Auth::user() instanceof Student) {
-            $records = $records->where(function ($q){
+            $records = $records->where(function ($q) {
                 $q->where('student_tutoring_packages.student_id', Auth::id());
             });
         }
         if (Auth::user()->hasRole('parent') && Auth::user() instanceof ParentUser) {
-            $records = $records->where(function ($q){
+            $records = $records->where(function ($q) {
                 $q->where('parents.id', Auth::id());
             });
         }
+
         return $records->where('invoices.id', $id)->first();
     }
+
     public function update(array $input, int $id)
     {
         $input['allow_partial_payment'] = yesNoToBoolean($input['allow_partial_payment']);

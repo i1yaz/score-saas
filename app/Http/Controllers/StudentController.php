@@ -103,13 +103,14 @@ class StudentController extends AppBaseController
             try {
                 Mail::to($user)->send(new StudentRegistrationMail($input));
 
-            }catch (\Exception $exception){
+            } catch (\Exception $exception) {
                 report($exception);
             }
-            if ($request->ajax()){
-                return response()->json(['success' => true, 'message' => 'Student saved successfully.','redirectTo' => route('students.index')]);
+            if ($request->ajax()) {
+                return response()->json(['success' => true, 'message' => 'Student saved successfully.', 'redirectTo' => route('students.index')]);
             }
             Flash::success('Student saved successfully.');
+
             return redirect(route('students.index'));
         } catch (QueryException $queryException) {
             DB::rollBack();
@@ -148,8 +149,8 @@ class StudentController extends AppBaseController
         $student = Student::query()
             ->select(
                 [
-                    'students.*','parents.id as parent_id','parents.email as parent_email',
-                    'schools.id as school_id','schools.name as school_name'
+                    'students.*', 'parents.id as parent_id', 'parents.email as parent_email',
+                    'schools.id as school_id', 'schools.name as school_name',
                 ]
             )
             ->leftJoin('parents', 'students.parent_id', '=', 'parents.id')
@@ -189,10 +190,11 @@ class StudentController extends AppBaseController
         $input['status'] = $input['status'] == 'yes';
         $input = array_filter($input);
         $this->studentRepository->update($input, $id);
-        if ($request->ajax()){
-            return response()->json(['success' => true, 'message' => 'Student saved successfully.','redirectTo' => route('students.index')]);
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Student saved successfully.', 'redirectTo' => route('students.index')]);
         }
         Flash::success('Student updated successfully.');
+
         return redirect(route('students.index'));
     }
 

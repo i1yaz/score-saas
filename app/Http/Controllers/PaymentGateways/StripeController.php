@@ -8,17 +8,13 @@ use App\Models\NonInvoicePackage;
 use App\Models\StudentTutoringPackage;
 use App\Repositories\StripeRepository;
 use Exception;
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Redirector;
 use Laracasts\Flash\Flash;
 use Stripe\Checkout\Session as StripeSession;
 
-
 class StripeController extends AppBaseController
 {
-
     /**
      * @var StripeRepository
      */
@@ -48,40 +44,40 @@ class StripeController extends AppBaseController
                 ])
             ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount ELSE 0 END) AS amount_paid')
             ->leftJoin('payments', 'payments.invoice_id', '=', 'invoices.id')
-            ->leftJoin('non_invoice_packages', function ($q){
+            ->leftJoin('non_invoice_packages', function ($q) {
                 $q->on('non_invoice_packages.id', '=', 'invoices.invoiceable_id')
                     ->where('invoices.invoiceable_type', '=', NonInvoicePackage::class);
             })
-            ->leftJoin('student_tutoring_packages', function ($q){
+            ->leftJoin('student_tutoring_packages', function ($q) {
                 $q->on('student_tutoring_packages.id', '=', 'invoices.invoiceable_id')
                     ->where('invoices.invoiceable_type', '=', StudentTutoringPackage::class);
             })
-            ->where('invoices.id',$request->invoiceId)->firstOrFail();
+            ->where('invoices.id', $request->invoiceId)->firstOrFail();
 
         if ($invoice->invoiceable_type == NonInvoicePackage::class) {
             $payable_amount = $invoice->final_amount - $invoice->amount_paid;
             $userEmail = NonInvoicePackage::query()
                 ->select(['clients.email'])
                 ->leftJoin('clients', 'clients.id', '=', 'non_invoice_packages.client_id')
-                ->where('non_invoice_packages.id',$invoice->invoiceable_id)->firstOrFail()->email;
+                ->where('non_invoice_packages.id', $invoice->invoiceable_id)->firstOrFail()->email;
             $packageCode = getNonInvoicePackageCodeFromId($invoice->invoiceable_id);
         }
         if ($invoice->invoiceable_type == StudentTutoringPackage::class) {
-            $payable_amount  = cleanAmountWithCurrencyFormat(getPriceFromHoursAndHourlyWithDiscount($invoice->stp_hourly_rate,$invoice->stp_hours,$invoice->stp_discount,$invoice->stp_discount_type));
+            $payable_amount = cleanAmountWithCurrencyFormat(getPriceFromHoursAndHourlyWithDiscount($invoice->stp_hourly_rate, $invoice->stp_hours, $invoice->stp_discount, $invoice->stp_discount_type));
             $userEmail = StudentTutoringPackage::query()
                 ->select(['students.email'])
                 ->leftJoin('students', 'students.id', '=', 'student_tutoring_packages.student_id')
-                ->where('student_tutoring_packages.id',$invoice->invoiceable_id)->firstOrFail()->email;
+                ->where('student_tutoring_packages.id', $invoice->invoiceable_id)->firstOrFail()->email;
 
             $packageCode = getStudentTutoringPackageCodeFromId($invoice->invoiceable_id);
             $payable_amount = $payable_amount - $invoice->amount_paid;
         }
         $amount = null;
-        if ( filter_var($invoice->nip_allow_partial_payment,FILTER_VALIDATE_BOOLEAN) || filter_var($invoice->stp_allow_partial_payment,FILTER_VALIDATE_BOOLEAN)){
+        if (filter_var($invoice->nip_allow_partial_payment, FILTER_VALIDATE_BOOLEAN) || filter_var($invoice->stp_allow_partial_payment, FILTER_VALIDATE_BOOLEAN)) {
             $amount = $request->partialAmount;
         }
 
-        if (!is_numeric($amount)) {
+        if (! is_numeric($amount)) {
             $amount = $payable_amount;
         }
         if ($amount > $payable_amount) {
@@ -91,8 +87,8 @@ class StripeController extends AppBaseController
         $invoiceId = $invoice->invoice_id;
         $invoiceCode = getInvoiceCodeFromId($invoiceId);
         $packageType = getInvoiceTypeFromClass($invoice->invoiceable_type);
-        $userId = \Auth::id()??'none';
-        $guard = \Auth::guard()->name??'none';
+        $userId = \Auth::id() ?? 'none';
+        $guard = \Auth::guard()->name ?? 'none';
         try {
             setStripeApiKey();
             $session = StripeSession::create([
@@ -105,14 +101,14 @@ class StripeController extends AppBaseController
                                 'name' => 'Payment for '.$packageType.' Package #'.$packageCode,
                                 'description' => 'Bill invoice #'.$invoiceCode,
                             ],
-                            'unit_amount' =>  $amount * 100 ,
+                            'unit_amount' => $amount * 100,
                             'currency' => getInvoiceCurrencyCode(),
                         ],
                         'quantity' => 1,
                     ],
                 ],
                 'metadata' => [
-                    'description' =>  'Bill invoice #'.$invoiceCode,
+                    'description' => 'Bill invoice #'.$invoiceCode,
                 ],
                 'billing_address_collection' => 'auto',
                 'client_reference_id' => "{$invoiceId}-{$userId}-{$guard}",
@@ -129,7 +125,6 @@ class StripeController extends AppBaseController
             return $this->sendError($exception->getMessage());
         }
     }
-
 
     public function handleFailedPayment(): RedirectResponse
     {

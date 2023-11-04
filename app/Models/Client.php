@@ -15,6 +15,7 @@ class Client extends Authenticatable implements LaratrustUser
     use HasApiTokens, HasFactory, HasRolesAndPermissions,Notifiable;
 
     public $table = 'clients';
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -24,6 +25,7 @@ class Client extends Authenticatable implements LaratrustUser
         'password',
         'remember_token',
     ];
+
     public $fillable = [
         'first_name',
         'last_name',
@@ -40,7 +42,7 @@ class Client extends Authenticatable implements LaratrustUser
         'first_name' => 'string',
         'last_name' => 'string',
         'email' => 'string',
-        'password' => 'string'
+        'password' => 'string',
     ];
 
     public static array $rules = [
@@ -48,8 +50,9 @@ class Client extends Authenticatable implements LaratrustUser
         'last_name' => 'required|string|min:2|max:255',
         'email' => 'required|email|unique:clients',
         'password' => 'required|string|min:8|max:255',
-        'address' => 'required|string'
+        'address' => 'required|string',
     ];
+
     /**
      *------------------------------------------------------------------
      * Scopes
@@ -64,5 +67,4 @@ class Client extends Authenticatable implements LaratrustUser
     {
         $query->where('status', false);
     }
-
 }

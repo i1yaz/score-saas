@@ -2,10 +2,6 @@
 
 namespace App\Repositories;
 
-
-
 class StripeRepository
 {
-
-
 }

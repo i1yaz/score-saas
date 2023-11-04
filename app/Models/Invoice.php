@@ -3,13 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Invoice extends BaseModel
 {
     use HasFactory;
+
     public $table = 'invoices';
 
     public const DRAFT = 0;
@@ -25,8 +25,11 @@ class Invoice extends BaseModel
     const ID_START = 1000;
 
     const PREFIX_START = 'INV-';
+
     const FLAT_DISCOUNT = 1;
+
     const PERCENTAGE_DISCOUNT = 2;
+
     public $fillable = [
         'invoice_package_type_id',
         'due_date',
@@ -42,7 +45,7 @@ class Invoice extends BaseModel
         'invoiceable_type',
         'invoiceable_id',
         'auth_guard',
-        'added_by'
+        'added_by',
     ];
 
     protected $casts = [
@@ -64,7 +67,7 @@ class Invoice extends BaseModel
     public static array $rules = [
         'client_id' => 'required',
         'due_date' => ['required', 'date', 'after_or_equal:today'],
-        'item_id' => ['required','array','min:1'],
+        'item_id' => ['required', 'array', 'min:1'],
 
     ];
 

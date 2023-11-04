@@ -115,7 +115,7 @@ class SchoolController extends AppBaseController
     public function destroy($id)
     {
         $school = School::findOrFail($id);
-        if (!$school) {
+        if (! $school) {
             Flash::error('No record found');
 
             return redirect(route('schools.index'));

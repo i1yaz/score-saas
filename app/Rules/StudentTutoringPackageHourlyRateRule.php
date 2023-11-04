@@ -10,7 +10,7 @@ class StudentTutoringPackageHourlyRateRule implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         $tutors = request()->tutor_ids;
-        if (!empty($tutors) && count($tutors) > 1) {
+        if (! empty($tutors) && count($tutors) > 1) {
             if (request()->tutor_hourly_rate == null) {
                 $fail('Tutor Hourly rate is required when more than one tutor is selected');
             }
@@ -20,7 +20,7 @@ class StudentTutoringPackageHourlyRateRule implements ValidationRule
             if (request()->tutor_hourly_rate < 1) {
                 $fail('Tutor Hourly rate must be greater than 0');
             }
-        } elseif (!empty($tutors) && $tutors == 1 && ! empty(request()->tutor_hourly_rate)) {
+        } elseif (! empty($tutors) && $tutors == 1 && ! empty(request()->tutor_hourly_rate)) {
             if (! is_numeric(request()->tutor_hourly_rate)) {
                 $fail('Tutor Hourly rate must be numeric');
             }

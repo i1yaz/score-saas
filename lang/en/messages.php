@@ -2,7 +2,6 @@
 
 return [
 
-
     'invoice' => [
         'new_invoice' => 'New Invoice',
         'edit_invoice' => 'Edit Invoice',
@@ -70,7 +69,7 @@ return [
         'send' => 'Send',
         'amount_should_be_less_than_payable_amount' => 'Amount should be less than payable amount.',
         'payment_reminder_mail' => 'Payment Reminder Mail',
-        'copy_invoice_url' => 'Copy Invoice URL'
+        'copy_invoice_url' => 'Copy Invoice URL',
     ],
 
     'item' => [

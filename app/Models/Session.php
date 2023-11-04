@@ -10,8 +10,11 @@ class Session extends Model
     use HasFactory;
 
     const VOID_COMPLETION_CODE = 5;
+
     const CANCELED_COMPLETION_CODE = 4;
+
     const PARTIAL_COMPLETION_CODE = 2;
+
     protected $fillable = [
         'student_tutoring_package_id',
         'monthly_invoice_package_id',
@@ -35,11 +38,13 @@ class Session extends Model
         'attended_end_time',
         'charge_missed_time',
     ];
+
     public static $messages = [
-        'tutoring_location_id' => "Please select a tutoring location",
-        'tutor_id' => "Please select a tutor",
-        'student_tutoring_package_id' => "Please select a tutoring package",
+        'tutoring_location_id' => 'Please select a tutoring location',
+        'tutor_id' => 'Please select a tutor',
+        'student_tutoring_package_id' => 'Please select a tutoring package',
     ];
+
     protected $casts = [
 
     ];
@@ -47,5 +52,6 @@ class Session extends Model
     const CODE_START = 5000;
 
     const LIST_DATA_LIST_ID = 1;
+
     const PREFIX = 'SRN-';
 }

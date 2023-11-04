@@ -4,17 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreatePaymentRequest;
 use App\Http\Requests\UpdatePaymentRequest;
-use App\Http\Controllers\AppBaseController;
-use App\Models\Invoice;
 use App\Repositories\PaymentRepository;
-use Illuminate\Http\Request;
 use Flash;
-use Stripe\Checkout\Session;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class PaymentController extends AppBaseController
 {
-    /** @var PaymentRepository $paymentRepository*/
+    /** @var PaymentRepository */
     private $paymentRepository;
 
     public function __construct(PaymentRepository $paymentRepo)
@@ -128,7 +125,9 @@ class PaymentController extends AppBaseController
 
         return redirect(route('payments.index'));
     }
-    public function success(Request $request){
+
+    public function success(Request $request)
+    {
         $sessionId = $request->get('session_id');
 
         if (empty($sessionId)) {
@@ -136,10 +135,12 @@ class PaymentController extends AppBaseController
         }
         $this->paymentRepository->stripePaymentSuccess($sessionId);
         Flash::success('Invoice Paid successfully.');
+
         return redirect(route('invoices.index'));
     }
 
-    public function failed(){
+    public function failed()
+    {
         return view('payments.failed');
     }
 }

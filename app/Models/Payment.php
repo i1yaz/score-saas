@@ -7,8 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Payment extends Model
 {
     const STRIPE = '1';
+
     const PAYPAL = '2';
+
     public $table = 'payments';
+
     public const DRAFT = 0;
 
     public const PENDING = 1;
@@ -18,8 +21,11 @@ class Payment extends Model
     public const PAID = 3;
 
     public const VOID = 4;
+
     public const REFUND = 5;
+
     public const FAILED = 6;
+
     public const CANCELLED = 7;
 
     public $fillable = [
@@ -30,7 +36,7 @@ class Payment extends Model
         'status',
         'meta',
         'paid_by_id',
-        'paid_by_modal'
+        'paid_by_modal',
     ];
 
     protected $casts = [
@@ -38,12 +44,10 @@ class Payment extends Model
         'invoice_id' => 'integer',
         'amount' => 'float',
         'payment_gateway' => 'integer',
-        'transaction_id' => 'integer'
+        'transaction_id' => 'integer',
     ];
 
     public static array $rules = [
 
     ];
-
-
 }

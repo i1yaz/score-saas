@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Models\Invoice;
 use App\Models\Session;
 use App\Models\StudentTutoringPackage;
 use App\Models\Tutor;
@@ -47,6 +46,7 @@ class StudentTutoringPackageRepository extends BaseRepository
 
         return $model;
     }
+
     public function update(array $input, int $id)
     {
         $input['allow_partial_payment'] = yesNoToBoolean($input['allow_partial_payment']);
@@ -65,11 +65,11 @@ class StudentTutoringPackageRepository extends BaseRepository
         return StudentTutoringPackage::query()
             ->with(['tutors', 'subjects'])
             ->with('sessions', function ($q) {
-                $q = $q->select('sessions.*','tutors.email as tutor_email','list_data.name as completion_code_name')
+                $q = $q->select('sessions.*', 'tutors.email as tutor_email', 'list_data.name as completion_code_name')
                     ->selectRaw("CONCAT(tutors.first_name,' ',tutors.last_name) as tutor_name")
-                    ->leftJoin('list_data',function ($q){
-                        $q->on('list_data.id','=','sessions.session_completion_code')
-                            ->where('list_data.list_id','=',Session::LIST_DATA_LIST_ID);
+                    ->leftJoin('list_data', function ($q) {
+                        $q->on('list_data.id', '=', 'sessions.session_completion_code')
+                            ->where('list_data.list_id', '=', Session::LIST_DATA_LIST_ID);
                     })
                     ->join('tutors', 'tutors.id', 'sessions.tutor_id');
                 if (Auth::user()->hasRole('tutor') && Auth::user() instanceof Tutor) {
@@ -106,5 +106,4 @@ class StudentTutoringPackageRepository extends BaseRepository
             ->first();
 
     }
-
 }

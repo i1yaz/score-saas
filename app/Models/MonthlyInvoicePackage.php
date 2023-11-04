@@ -10,12 +10,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class MonthlyInvoicePackage extends Model
 {
     use HasFactory;
+
     public $table = 'monthly_invoice_packages';
+
     const CODE_START = 4000;
+
     const PREFIX_START = 'M';
+
     const FLAT_DISCOUNT = 1;
 
     const PERCENTAGE_DISCOUNT = 2;
+
     public $fillable = [
         'student_id',
         'notes',
@@ -38,7 +43,7 @@ class MonthlyInvoicePackage extends Model
         'notes' => 'string',
         'internal_notes' => 'string',
         'start_date' => 'date',
-        'tutoring_location_id' => 'integer'
+        'tutoring_location_id' => 'integer',
     ];
 
     public static array $rules = [
@@ -48,8 +53,9 @@ class MonthlyInvoicePackage extends Model
         'start_date' => 'nullable|date',
         'hourly_rate' => 'required|integer',
         'tutor_hourly_rate' => 'required|integer',
-        'tutoring_location_id' => 'required|integer'
+        'tutoring_location_id' => 'required|integer',
     ];
+
     public static array $messages = [
         'student_id.required' => 'Student is required',
         'student_id.integer' => 'Student must be an integer',
@@ -68,6 +74,7 @@ class MonthlyInvoicePackage extends Model
         'tutor_ids.exists' => 'Tutor does not exist',
 
     ];
+
     /**
      *------------------------------------------------------------------
      * Relationships

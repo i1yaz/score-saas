@@ -23,10 +23,10 @@ class TutorDataTable implements IDataTables
                     'student_tutoring_packages.student_id as stp_student_id',
                     'monthly_invoice_packages.student_id as mip_student_id',
                 ])
-            ->leftJoin('student_tutoring_package_tutor','student_tutoring_package_tutor.tutor_id','tutors.id')
-            ->leftJoin('student_tutoring_packages','student_tutoring_packages.id','student_tutoring_package_tutor.student_tutoring_package_id')
-            ->leftJoin('monthly_invoice_package_tutor','monthly_invoice_package_tutor.tutor_id','tutors.id')
-            ->leftJoin('monthly_invoice_packages','monthly_invoice_packages.id','monthly_invoice_package_tutor.monthly_invoice_package_id');
+            ->leftJoin('student_tutoring_package_tutor', 'student_tutoring_package_tutor.tutor_id', 'tutors.id')
+            ->leftJoin('student_tutoring_packages', 'student_tutoring_packages.id', 'student_tutoring_package_tutor.student_tutoring_package_id')
+            ->leftJoin('monthly_invoice_package_tutor', 'monthly_invoice_package_tutor.tutor_id', 'tutors.id')
+            ->leftJoin('monthly_invoice_packages', 'monthly_invoice_packages.id', 'monthly_invoice_package_tutor.monthly_invoice_package_id');
 
         $tutors = static::getModelQueryBySearch($search, $tutors);
         $tutors = $tutors->offset($start)
@@ -40,10 +40,10 @@ class TutorDataTable implements IDataTables
     {
         $tutors = Tutor::query()
             ->select(['id'])
-            ->leftJoin('student_tutoring_package_tutor','student_tutoring_package_tutor.tutor_id','tutors.id')
-            ->leftJoin('student_tutoring_packages','student_tutoring_packages.id','student_tutoring_package_tutor.student_tutoring_package_id')
-            ->leftJoin('monthly_invoice_package_tutor','monthly_invoice_package_tutor.tutor_id','tutors.id')
-            ->leftJoin('monthly_invoice_packages','monthly_invoice_packages.id','monthly_invoice_package_tutor.monthly_invoice_package_id');
+            ->leftJoin('student_tutoring_package_tutor', 'student_tutoring_package_tutor.tutor_id', 'tutors.id')
+            ->leftJoin('student_tutoring_packages', 'student_tutoring_packages.id', 'student_tutoring_package_tutor.student_tutoring_package_id')
+            ->leftJoin('monthly_invoice_package_tutor', 'monthly_invoice_package_tutor.tutor_id', 'tutors.id')
+            ->leftJoin('monthly_invoice_packages', 'monthly_invoice_packages.id', 'monthly_invoice_package_tutor.monthly_invoice_package_id');
         $tutors = static::getModelQueryBySearch($search, $tutors);
 
         return $tutors->count();
@@ -81,7 +81,7 @@ class TutorDataTable implements IDataTables
             $records = $records->where('id', Auth::id());
         }
         if (Auth::user()->hasRole('student') && Auth::user() instanceof Student) {
-            $records = $records->where(function ($q){
+            $records = $records->where(function ($q) {
                 $q->where('student_tutoring_packages.student_id', Auth::id())
                     ->orWhere('monthly_invoice_packages.student_id', Auth::id());
             });
@@ -95,22 +95,23 @@ class TutorDataTable implements IDataTables
         $tutors = Tutor::query()
             ->select(
                 [
-                    'id'
+                    'id',
                 ]
             )
-            ->leftJoin('student_tutoring_package_tutor','student_tutoring_package_tutor.tutor_id','tutors.id')
-            ->leftJoin('student_tutoring_packages','student_tutoring_packages.id','student_tutoring_package_tutor.student_tutoring_package_id')
-            ->leftJoin('monthly_invoice_package_tutor','monthly_invoice_package_tutor.tutor_id','tutors.id')
-            ->leftJoin('monthly_invoice_packages','monthly_invoice_packages.id','monthly_invoice_package_tutor.monthly_invoice_package_id');
+            ->leftJoin('student_tutoring_package_tutor', 'student_tutoring_package_tutor.tutor_id', 'tutors.id')
+            ->leftJoin('student_tutoring_packages', 'student_tutoring_packages.id', 'student_tutoring_package_tutor.student_tutoring_package_id')
+            ->leftJoin('monthly_invoice_package_tutor', 'monthly_invoice_package_tutor.tutor_id', 'tutors.id')
+            ->leftJoin('monthly_invoice_packages', 'monthly_invoice_packages.id', 'monthly_invoice_package_tutor.monthly_invoice_package_id');
         if (Auth::user()->hasRole('tutor') && Auth::user() instanceof ParentUser) {
             $tutors = $tutors->where('id', Auth::id());
         }
         if (Auth::user()->hasRole('student') && Auth::user() instanceof Student) {
-            $tutors = $tutors->where(function ($q){
+            $tutors = $tutors->where(function ($q) {
                 $q->where('student_tutoring_packages.student_id', Auth::id())
                     ->orWhere('monthly_invoice_packages.student_id', Auth::id());
             });
         }
+
         return $tutors->count();
     }
 }

@@ -32,12 +32,12 @@ class CreateStudentTutoringPackageRequest extends FormRequest
             'tutor_ids' => ['required', 'array', 'min:1'],
             'subject_ids' => ['required', 'array', 'min:1'],
             'tutoring_location_id' => ['required'],
-            'internal_notes' => ['nullable','string'],
+            'internal_notes' => ['nullable', 'string'],
             'hours' => ['required', 'numeric', 'min:1'],
             'hourly_rate' => ['required', 'decimal:0,2', 'min:1'],
             'discount_type' => ['required'],
             'start_date' => ['required'],
-            'tutor_hourly_rate' => ['sometimes',new StudentTutoringPackageHourlyRateRule],
+            'tutor_hourly_rate' => ['sometimes', new StudentTutoringPackageHourlyRateRule],
         ];
     }
 

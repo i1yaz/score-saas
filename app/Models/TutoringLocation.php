@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class TutoringLocation extends BaseModel
 {
     use HasFactory;
+
     public $table = 'tutoring_locations';
 
     public $fillable = [

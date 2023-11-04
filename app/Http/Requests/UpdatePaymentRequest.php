@@ -25,7 +25,7 @@ class UpdatePaymentRequest extends FormRequest
     public function rules()
     {
         $rules = Payment::$rules;
-        
+
         return $rules;
     }
 }

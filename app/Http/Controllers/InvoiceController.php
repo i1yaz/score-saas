@@ -33,8 +33,8 @@ class InvoiceController extends AppBaseController
                 'package',
                 'invoice_status',
                 'invoice_type',
-//                'student',
-//                'parent',
+                //                'student',
+                //                'parent',
                 'created_at',
                 'due_date',
                 'amount_paid',
@@ -70,12 +70,14 @@ class InvoiceController extends AppBaseController
     public function create()
     {
         $items = LineItem::all();
-        $taxes = Tax::select(['id','name','value'])->get();
-        return view('invoices.create',['taxes'=>$taxes,'items' => $items]);
+        $taxes = Tax::select(['id', 'name', 'value'])->get();
+
+        return view('invoices.create', ['taxes' => $taxes, 'items' => $items]);
     }
 
     /**
      * Store a newly created Invoice in storage.
+     *
      * @throws \Exception
      */
     public function store(CreateInvoiceRequest $request)
@@ -83,9 +85,10 @@ class InvoiceController extends AppBaseController
         $input = $request->all();
 
         $this->invoiceRepository->create($input);
-        if ($request->ajax()){
-            return response()->json(['success'=>true,'message'=>'Invoice created successfully','redirectTo'=> route('invoices.index')]);
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Invoice created successfully', 'redirectTo' => route('invoices.index')]);
         }
+
         return redirect(route('invoices.index'));
     }
 
@@ -162,38 +165,43 @@ class InvoiceController extends AppBaseController
 
         return redirect(route('invoices.index'));
     }
-    public function showPaymentPage(Request $request, $invoice){
+
+    public function showPaymentPage(Request $request, $invoice)
+    {
 
         if (empty($invoice)) {
             Flash::error('Invoice not found');
 
             return redirect(route('invoices.index'));
         }
-        if ($request->type === 'non-package-invoice'){
+        if ($request->type === 'non-package-invoice') {
             $invoice = $this->invoiceRepository->showNonPackageInvoice($invoice);
             $stripeKey = config('services.stripe.key');
             $paymentModes = $this->invoiceRepository->getPaymentGateways();
-            return view('invoices.non-package-payment-create',['invoice'=>$invoice,'stripeKey' => $stripeKey,'paymentModes'=>$paymentModes]);
+
+            return view('invoices.non-package-payment-create', ['invoice' => $invoice, 'stripeKey' => $stripeKey, 'paymentModes' => $paymentModes]);
         }
-        if ($request->type === 'tutoring-package'){
+        if ($request->type === 'tutoring-package') {
             $invoice = $this->invoiceRepository->showTutoringPackageInvoice($invoice);
             $stripeKey = config('services.stripe.key');
             $paymentModes = $this->invoiceRepository->getPaymentGateways();
 
-            $totalAmount = cleanAmountWithCurrencyFormat(getPriceFromHoursAndHourlyWithDiscount($invoice->hourly_rate,$invoice->hours,$invoice->discount,$invoice->discount_type));
-            $remainingAmount = $totalAmount - $invoice->amount_paid??0;
-            return view('invoices.tutoring-package-payment-create',[
-                'invoice'=>$invoice,
+            $totalAmount = cleanAmountWithCurrencyFormat(getPriceFromHoursAndHourlyWithDiscount($invoice->hourly_rate, $invoice->hours, $invoice->discount, $invoice->discount_type));
+            $remainingAmount = $totalAmount - $invoice->amount_paid ?? 0;
+
+            return view('invoices.tutoring-package-payment-create', [
+                'invoice' => $invoice,
                 'stripeKey' => $stripeKey,
-                'paymentModes'=>$paymentModes,
-                'totalAmount'=>$totalAmount,
-                'remainingAmount'=>$remainingAmount]);
+                'paymentModes' => $paymentModes,
+                'totalAmount' => $totalAmount,
+                'remainingAmount' => $remainingAmount]);
         }
-//        return view('invoices.payment-create',['invoice'=>$invoice]);
+        //        return view('invoices.payment-create',['invoice'=>$invoice]);
     }
 
-    public function showPublicInvoice($invoice,$type=null){
-        if ($type=='non-package-invoice'){
+    public function showPublicInvoice($invoice, $type = null)
+    {
+        if ($type == 'non-package-invoice') {
             $invoiceData = $this->invoiceRepository->getNonPackageInvoiceData($invoice);
         }
         $invoiceData['statusArr'] = Invoice::STATUS_ARR;

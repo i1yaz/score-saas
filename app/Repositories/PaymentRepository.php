@@ -3,20 +3,17 @@
 namespace App\Repositories;
 
 use App\Mail\ClientMakePaymentMail;
-use App\Mail\FlagSessionMail;
 use App\Models\Invoice;
 use App\Models\MonthlyInvoicePackage;
 use App\Models\NonInvoicePackage;
 use App\Models\Payment;
 use App\Models\StudentTutoringPackage;
 use App\Models\User;
-use App\Repositories\BaseRepository;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Stripe\Checkout\Session;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -27,7 +24,7 @@ class PaymentRepository extends BaseRepository
         'invoice_id',
         'amount',
         'payment_gateway',
-        'transaction_id'
+        'transaction_id',
     ];
 
     public function getFieldsSearchable(): array
@@ -44,11 +41,11 @@ class PaymentRepository extends BaseRepository
     {
         setStripeApiKey();
         $sessionData = Session::retrieve($sessionId);
-        if (empty($sessionData)){
+        if (empty($sessionData)) {
             throw new UnprocessableEntityHttpException('Session not found');
         }
         $stripeID = $sessionData->id;
-        $amountPaidInLastSession = $sessionData->amount_total/100;
+        $amountPaidInLastSession = $sessionData->amount_total / 100;
         $reference = $sessionData->client_reference_id;
         $reference = explode('-', $reference);
         $invoiceId = $reference[0];
@@ -56,14 +53,14 @@ class PaymentRepository extends BaseRepository
         $authGuard = $reference[2];
 
         $invoice = Invoice::query()
-            ->select(['invoices.id as invoice_id','invoiceable_type','invoiceable_id'])
+            ->select(['invoices.id as invoice_id', 'invoiceable_type', 'invoiceable_id'])
             ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount ELSE 0 END) AS amount_paid')
             ->leftJoin('payments', 'payments.invoice_id', '=', 'invoices.id')
-        ->findOrFail($invoiceId);
+            ->findOrFail($invoiceId);
         $paymentStatus = Payment::PENDING;
         if ($invoice->invoiceable_type == NonInvoicePackage::class) {
             $nonInvoicePackage = NonInvoicePackage::findOrFail($invoice->invoiceable_id);
-            if (($amountPaidInLastSession + $invoice->paid_amount) == $nonInvoicePackage->final_amount ) {
+            if (($amountPaidInLastSession + $invoice->paid_amount) == $nonInvoicePackage->final_amount) {
                 $paymentStatus = Payment::PAID;
             } else {
                 $paymentStatus = Payment::PARTIAL_PAYMENT;
@@ -72,9 +69,9 @@ class PaymentRepository extends BaseRepository
         }
         if ($invoice->invoiceable_type == StudentTutoringPackage::class) {
             $studentTutoringPackage = StudentTutoringPackage::findOrFail($invoice->invoiceable_id);
-            $payable_amount  = cleanAmountWithCurrencyFormat(getPriceFromHoursAndHourlyWithDiscount($studentTutoringPackage->hourly_rate,$studentTutoringPackage->hours,$studentTutoringPackage->discount,$studentTutoringPackage->discount_type));
+            $payable_amount = cleanAmountWithCurrencyFormat(getPriceFromHoursAndHourlyWithDiscount($studentTutoringPackage->hourly_rate, $studentTutoringPackage->hours, $studentTutoringPackage->discount, $studentTutoringPackage->discount_type));
 
-            if (($amountPaidInLastSession + $invoice->paid_amount) == $payable_amount ) {
+            if (($amountPaidInLastSession + $invoice->paid_amount) == $payable_amount) {
                 $paymentStatus = Payment::PAID;
             } else {
                 $paymentStatus = Payment::PARTIAL_PAYMENT;
@@ -100,7 +97,7 @@ class PaymentRepository extends BaseRepository
                     [
                         'paid_status' => $paymentStatus,
                         'fully_paid_at' => $paymentStatus === Invoice::PAID ? Carbon::now() : null,
-                        'updated_at' => Carbon::now()
+                        'updated_at' => Carbon::now(),
                     ]
                 );
 
@@ -115,11 +112,13 @@ class PaymentRepository extends BaseRepository
         $admins = $admins->pluck('email')->toArray();
         try {
             Mail::to($admins)->send(new ClientMakePaymentMail($paymentTransactionData));
-        }catch (Exception $e){
+        } catch (Exception $e) {
             report($e);
         }
+
         return $sessionData;
     }
+
     /**
      * Paginate records for scaffold.
      */
@@ -158,13 +157,13 @@ class PaymentRepository extends BaseRepository
             $payments = $payments->where('non_invoice_packages.client_id', Auth::id());
         }
         if (Auth::user()->hasRole('student')) {
-            $payments = $payments->where(function ($q){
+            $payments = $payments->where(function ($q) {
                 $q->where('student_tutoring_packages.student_id', Auth::id())
                     ->orWhere('monthly_invoice_packages.student_id', Auth::id());
             });
         }
         if (Auth::user()->hasRole('parent')) {
-            $payments = $payments->where(function ($q){
+            $payments = $payments->where(function ($q) {
                 $q->where('s1.parent_id', Auth::id())
                     ->orWhere('s2.parent_id', Auth::id());
             });

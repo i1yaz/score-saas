@@ -100,7 +100,7 @@ class TutorController extends AppBaseController
             $input['password'] = App::environment(['production']) ? $passwordString : 'abcd1234';
             try {
                 Mail::to($user)->send(new TutorRegistrationMail($input));
-            }catch (\Exception $exception) {
+            } catch (\Exception $exception) {
                 report($exception);
             }
             Flash::success('Tutor saved successfully.');

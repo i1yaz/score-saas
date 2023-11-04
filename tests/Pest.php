@@ -46,35 +46,44 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function loginAsSuperAdmin($user=null){
+function loginAsSuperAdmin($user = null)
+{
     return test()->actingAs($user ?? User::first());
 }
 
-function loginAsAdmin(){
-    if (empty($user)){
+function loginAsAdmin()
+{
+    if (empty($user)) {
         $user = User::factory()->create();
         $user->addRole('admin');
     }
+
     return test()->actingAs($user);
 }
-function loginAsParent($user=null){
-    if (empty($user)){
+function loginAsParent($user = null)
+{
+    if (empty($user)) {
         $user = ParentUser::factory()->create();
         $user->addRole('parent');
     }
+
     return test()->actingAs($user);
 }
-function loginAsStudent($user=null){
-    if (empty($user)){
+function loginAsStudent($user = null)
+{
+    if (empty($user)) {
         $user = Student::factory()->create();
         $user->addRole('student');
     }
+
     return test()->actingAs($user);
 }
-function loginAsTutor($user=null){
-    if (empty($user)){
+function loginAsTutor($user = null)
+{
+    if (empty($user)) {
         $user = \App\Models\Tutor::factory()->create();
         $user->addRole('tutor');
     }
+
     return test()->actingAs($user);
 }

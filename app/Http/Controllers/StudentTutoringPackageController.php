@@ -18,7 +18,6 @@ use App\Repositories\StudentTutoringPackageRepository;
 use Flash;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -27,14 +26,14 @@ use Illuminate\Validation\ValidationException;
 class StudentTutoringPackageController extends AppBaseController
 {
     private StudentTutoringPackageRepository $studentTutoringPackageRepository;
+
     private InvoiceRepository $invoiceRepository;
 
-    public function __construct(StudentTutoringPackageRepository $studentTutoringPackageRepo,InvoiceRepository $invoiceRepository)
+    public function __construct(StudentTutoringPackageRepository $studentTutoringPackageRepo, InvoiceRepository $invoiceRepository)
     {
         $this->studentTutoringPackageRepository = $studentTutoringPackageRepo;
         $this->invoiceRepository = $invoiceRepository;
     }
-
 
     /**
      * Display a listing of the StudentTutoringPackage.
@@ -117,17 +116,18 @@ class StudentTutoringPackageController extends AppBaseController
                 try {
                     Mail::to($parentEmail->parent_email)->send(new ParentInvoiceMailAfterStudentTutoringPackageCreation($studentTutoringPackage));
 
-                }catch (\Exception $exception) {
+                } catch (\Exception $exception) {
                     report($exception);
                 }
 
             }
 
             $redirectRoute = route('student-tutoring-packages.show', ['student_tutoring_package' => $studentTutoringPackage->id]);
-            if ($request->ajax()){
-                return response()->json(['success' => true, 'message' => 'Tutoring Package saved successfully.','redirectTo' => $redirectRoute]);
+            if ($request->ajax()) {
+                return response()->json(['success' => true, 'message' => 'Tutoring Package saved successfully.', 'redirectTo' => $redirectRoute]);
             }
             Flash::success('Student Tutoring Package saved successfully.');
+
             return redirect($redirectRoute);
         } catch (QueryException $queryException) {
             DB::rollBack();
@@ -135,7 +135,7 @@ class StudentTutoringPackageController extends AppBaseController
             \Laracasts\Flash\Flash::error('something went wrong');
 
             return redirect(route('student-tutoring-packages.index'));
-        }catch (\Exception $exception) {
+        } catch (\Exception $exception) {
             DB::rollBack();
             report($exception);
             \Laracasts\Flash\Flash::error('something went wrong');
@@ -168,8 +168,8 @@ class StudentTutoringPackageController extends AppBaseController
     {
         $subjects = Subject::get(['id', 'name']);
         $studentTutoringPackage = StudentTutoringPackage::query()
-            ->select(['student_tutoring_packages.*','students.email as student_email','tutoring_package_types.name as tutoring_package_type_name','tutoring_locations.name as tutoring_location_name'])
-            ->with(['subjects','tutors'])
+            ->select(['student_tutoring_packages.*', 'students.email as student_email', 'tutoring_package_types.name as tutoring_package_type_name', 'tutoring_locations.name as tutoring_location_name'])
+            ->with(['subjects', 'tutors'])
             ->join('students', 'students.id', '=', 'student_tutoring_packages.student_id')
             ->join('tutoring_package_types', 'tutoring_package_types.id', '=', 'student_tutoring_packages.tutoring_package_type_id')
             ->join('tutoring_locations', 'tutoring_locations.id', '=', 'student_tutoring_packages.tutoring_location_id')
@@ -179,7 +179,7 @@ class StudentTutoringPackageController extends AppBaseController
         $tutoringPackageType[$studentTutoringPackage->tutoring_package_type_id] = $studentTutoringPackage->tutoring_package_type_name;
         $tutoringLocation[$studentTutoringPackage->tutoring_location_id] = $studentTutoringPackage->tutoring_location_name;
         $selectedTutors = [];
-        foreach ($studentTutoringPackage->tutors as $tutor){
+        foreach ($studentTutoringPackage->tutors as $tutor) {
             $selectedTutors[$tutor->id] = $tutor->email;
         }
         if (empty($studentTutoringPackage)) {
@@ -229,10 +229,11 @@ class StudentTutoringPackageController extends AppBaseController
             $this->invoiceRepository->createOrUpdateInvoiceForPackage($studentTutoringPackage, $input);
             DB::commit();
             $redirectRoute = route('student-tutoring-packages.show', ['student_tutoring_package' => $studentTutoringPackage->id]);
-            if ($request->ajax()){
-                return response()->json(['success' => true, 'message' => 'Tutoring Package saved successfully.','redirectTo' => $redirectRoute]);
+            if ($request->ajax()) {
+                return response()->json(['success' => true, 'message' => 'Tutoring Package saved successfully.', 'redirectTo' => $redirectRoute]);
             }
             Flash::success('Student Tutoring Package saved successfully.');
+
             return redirect($redirectRoute);
         } catch (QueryException $queryException) {
             DB::rollBack();
@@ -240,7 +241,7 @@ class StudentTutoringPackageController extends AppBaseController
             \Laracasts\Flash\Flash::error('something went wrong');
 
             return redirect(route('student-tutoring-packages.index'));
-        }catch (\Exception $exception) {
+        } catch (\Exception $exception) {
             DB::rollBack();
             report($exception);
             \Laracasts\Flash\Flash::error('something went wrong');
@@ -300,19 +301,19 @@ class StudentTutoringPackageController extends AppBaseController
     {
         $email = trim($request->email);
         $tutoring_package_id = trim($request->tutoring_package_id);
-        $strict = (boolean) $request->strict;
-        if ($strict && empty($tutoring_package_id)){
+        $strict = (bool) $request->strict;
+        if ($strict && empty($tutoring_package_id)) {
             throw ValidationException::withMessages(['tutoring_package_id' => 'Please Choose Tutoring Package']);
         }
         $tutors = Tutor::active()
-            ->select(['tutors.id as id', 'tutors.email as text','tutors.hourly_rate as hourly'])
+            ->select(['tutors.id as id', 'tutors.email as text', 'tutors.hourly_rate as hourly'])
             ->where('tutors.email', 'LIKE', "%{$email}%");
-        if (!empty($tutoring_package_id) && Str::startsWith($tutoring_package_id,StudentTutoringPackage::PREFIX_START)) {
+        if (! empty($tutoring_package_id) && Str::startsWith($tutoring_package_id, StudentTutoringPackage::PREFIX_START)) {
             $tutoring_package_id = getOriginalPackageIdFromCode($tutoring_package_id);
             $tutors = $tutors->join('student_tutoring_package_tutor as stpt', 'stpt.tutor_id', '=', 'tutors.id')
                 ->where('stpt.student_tutoring_package_id', $tutoring_package_id);
         }
-        if (!empty($tutoring_package_id) && Str::startsWith($tutoring_package_id,MonthlyInvoicePackage::PREFIX_START)) {
+        if (! empty($tutoring_package_id) && Str::startsWith($tutoring_package_id, MonthlyInvoicePackage::PREFIX_START)) {
             $tutoring_package_id = getOriginalPackageIdFromCode($tutoring_package_id);
             $tutors = $tutors->join('monthly_invoice_package_tutor as mipt', 'mipt.tutor_id', '=', 'tutors.id')
                 ->where('mipt.monthly_invoice_package_id', $tutoring_package_id);
@@ -335,5 +336,4 @@ class StudentTutoringPackageController extends AppBaseController
         return response()->json($tutoringLocations->toArray());
 
     }
-
 }

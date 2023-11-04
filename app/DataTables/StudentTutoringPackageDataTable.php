@@ -28,7 +28,7 @@ class StudentTutoringPackageDataTable implements IDataTables
                 'student_tutoring_packages.status as status',
                 'student_tutoring_packages.start_date as start_date',
                 'parents.id as parent_id',
-                'students.id as student_id'
+                'students.id as student_id',
             ])
             ->selectRaw('(SELECT COUNT(id) FROM sessions WHERE sessions.student_tutoring_package_id  = student_tutoring_packages.id) as sessions_count')
             ->join('students', 'student_tutoring_packages.student_id', 'students.id')
@@ -50,7 +50,7 @@ class StudentTutoringPackageDataTable implements IDataTables
             [
                 'id',
                 'parents.id as parent_id',
-                'students.id as student_id'
+                'students.id as student_id',
             ])
             ->join('students', 'student_tutoring_packages.student_id', 'students.id')
 
@@ -74,7 +74,7 @@ class StudentTutoringPackageDataTable implements IDataTables
                 $nestedData['location'] = $studentTutoringPackage->location;
                 $nestedData['start_date'] = Carbon::parse($studentTutoringPackage->start_date)->format('j F,Y');
                 $nestedData['sessions_count'] = $studentTutoringPackage->sessions_count;
-                $nestedData['status'] = view('partials.status_badge', ['status' => $studentTutoringPackage->status,'text_success' => 'Active','text_danger' => 'Inactive'])->render();
+                $nestedData['status'] = view('partials.status_badge', ['status' => $studentTutoringPackage->status, 'text_success' => 'Active', 'text_danger' => 'Inactive'])->render();
                 $nestedData['action'] = view('student_tutoring_packages.actions', ['studentTutoringPackage' => $studentTutoringPackage])->render();
                 $data[] = $nestedData;
 
@@ -95,15 +95,16 @@ class StudentTutoringPackageDataTable implements IDataTables
                     ->orWhere('student_tutoring_packages.start_date', 'like', "%{$search}%");
             });
         }
-        if (!(Auth::user()->hasRole(['super-admin']) && Auth::user() instanceof User)){
+        if (! (Auth::user()->hasRole(['super-admin']) && Auth::user() instanceof User)) {
             $records = $records->where('student_tutoring_packages.status', true);
         }
-        if (Auth::user()->hasRole(['student'])){
+        if (Auth::user()->hasRole(['student'])) {
             $records = $records->where('student_id', Auth::id());
         }
-        if (Auth::user()->hasRole(['parent'])){
+        if (Auth::user()->hasRole(['parent'])) {
             $records = $records->where('parent_id', Auth::id());
         }
+
         return $records;
     }
 

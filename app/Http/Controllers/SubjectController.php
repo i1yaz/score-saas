@@ -47,15 +47,14 @@ class SubjectController extends AppBaseController
 
         $this->subjectRepository->create($input);
         if ($request->ajax()) {
-            $subjects=[];
-            if (!empty($input['student_tutoring_package_id'])){
+            $subjects = [];
+            if (! empty($input['student_tutoring_package_id'])) {
                 $tutoringPackage = StudentTutoringPackage::with(['subjects'])->where('id', $input['student_tutoring_package_id'])->first(['id']);
             }
-            if (!empty($input['monthly_tutoring_package_id'])){
+            if (! empty($input['monthly_tutoring_package_id'])) {
                 $tutoringPackage = MonthlyInvoicePackage::with(['subjects'])->where('id', $input['monthly_tutoring_package_id'])->first(['id']);
             }
-            if (!empty($tutoringPackage))
-            {
+            if (! empty($tutoringPackage)) {
                 $subjects = $tutoringPackage->subjects->pluck(['id'])->toArray();
             }
             $subjectsRenderedView = view('student_tutoring_packages.subjects', ['subjects' => $this->subjectRepository->all(), 'selectedSubjects' => $subjects])->render();

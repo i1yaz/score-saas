@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class ClientPolicy
 {
     use HandlesAuthorization;
+
     public function before(Authenticatable $user)
     {
         //['super-admin','admin','student','parent','tutor','proctor','client','developer']
@@ -18,6 +19,7 @@ class ClientPolicy
             return true;
         }
     }
+
     public function viewAny(Authenticatable $user): bool
     {
         if (Auth::user()->hasRole(['client'])) {
@@ -45,6 +47,7 @@ class ClientPolicy
         if ($user->hasRole(['client']) && $user instanceof Client) {
             return $user->id === $client->id;
         }
+
         return false;
     }
 

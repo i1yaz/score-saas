@@ -4,14 +4,13 @@ namespace Database\Seeders;
 
 use App\Models\Permission;
 use App\Models\Role;
-use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
 class StudentPermissionsSeeder extends Seeder
 {
     public function run(): void
     {
-        $permissions = Permission::whereIn('name',[
+        $permissions = Permission::whereIn('name', [
             'parent-index',
             'parent-show',
             'student-index',
@@ -27,7 +26,7 @@ class StudentPermissionsSeeder extends Seeder
             'payment-index',
         ])->get();
 
-        $student = Role::where('name','student')->first();
+        $student = Role::where('name', 'student')->first();
         $student->givePermissions($permissions);
     }
 }

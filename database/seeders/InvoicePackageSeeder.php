@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\TutoringLocation;
 use App\Models\TutoringPackageType;
 use Carbon\Carbon;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class InvoicePackageSeeder extends Seeder
@@ -23,7 +22,7 @@ class InvoicePackageSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
                 'auth_guard' => 'web',
-                'added_by' => 1
+                'added_by' => 1,
             ],
             [
                 'id' => 2,
@@ -32,7 +31,7 @@ class InvoicePackageSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
                 'auth_guard' => 'web',
-                'added_by' => 1
+                'added_by' => 1,
             ],
         ]);
         TutoringLocation::insert([
@@ -41,22 +40,22 @@ class InvoicePackageSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
                 'auth_guard' => 'web',
-                'added_by' => 1
+                'added_by' => 1,
             ],
             [
                 'name' => 'Home',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
                 'auth_guard' => 'web',
-                'added_by' => 1
+                'added_by' => 1,
             ],
             [
                 'name' => 'Zoom',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
                 'auth_guard' => 'web',
-                'added_by' => 1
-            ]
+                'added_by' => 1,
+            ],
         ]);
     }
 }

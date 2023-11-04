@@ -18,6 +18,7 @@ class Tutor extends Authenticatable implements LaratrustUser
     protected string $guard = 'tutors';
 
     public $table = 'tutors';
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -77,11 +78,11 @@ class Tutor extends Authenticatable implements LaratrustUser
     {
         return $this->belongsToMany(StudentTutoringPackage::class);
     }
+
     public function monthlyInvoicePackages(): BelongsToMany
     {
         return $this->belongsToMany(MonthlyInvoicePackage::class);
     }
-
 
     /**
      *------------------------------------------------------------------

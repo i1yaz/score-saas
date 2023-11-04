@@ -4,9 +4,7 @@ namespace App\Repositories;
 
 use App\Models\MonthlyInvoicePackage;
 use App\Models\Session;
-use App\Models\StudentTutoringPackage;
 use App\Models\Tutor;
-use App\Repositories\BaseRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,7 +17,7 @@ class MonthlyInvoicePackageRepository extends BaseRepository
         'start_date',
         'hourly_rate',
         'tutor_hourly_rate',
-        'tutoring_location_id'
+        'tutoring_location_id',
     ];
 
     public function getFieldsSearchable(): array
@@ -48,11 +46,11 @@ class MonthlyInvoicePackageRepository extends BaseRepository
         return MonthlyInvoicePackage::query()
             ->with(['tutors', 'subjects'])
             ->with('sessions', function ($q) {
-                $q = $q->select('sessions.*','tutors.email as tutor_email','list_data.name as completion_code_name')
+                $q = $q->select('sessions.*', 'tutors.email as tutor_email', 'list_data.name as completion_code_name')
                     ->selectRaw("CONCAT(tutors.first_name,' ',tutors.last_name) as tutor_name")
-                    ->leftJoin('list_data',function ($q){
-                        $q->on('list_data.id','=','sessions.session_completion_code')
-                            ->where('list_data.list_id','=',Session::LIST_DATA_LIST_ID);
+                    ->leftJoin('list_data', function ($q) {
+                        $q->on('list_data.id', '=', 'sessions.session_completion_code')
+                            ->where('list_data.list_id', '=', Session::LIST_DATA_LIST_ID);
                     })
                     ->join('tutors', 'tutors.id', 'sessions.tutor_id');
                 if (Auth::user()->hasRole('tutor') && Auth::user() instanceof Tutor) {

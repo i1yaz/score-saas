@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Models\Client;
-use App\Repositories\BaseRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,7 +13,7 @@ class ClientRepository extends BaseRepository
         'last_name',
         'email',
         'password',
-        'address'
+        'address',
     ];
 
     public function getFieldsSearchable(): array
@@ -26,6 +25,7 @@ class ClientRepository extends BaseRepository
     {
         return Client::class;
     }
+
     public function create(array $input): Model
     {
         $input['auth_guard'] = Auth::guard()->name;

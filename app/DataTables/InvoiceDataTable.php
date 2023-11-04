@@ -19,9 +19,9 @@ class InvoiceDataTable implements IDataTables
     {
         $columns = [
             'invoice_type' => 'invoiceable_type',
-//            'parent' => 'parent_email,parent_email_p2',
-//            'student' => 'student_email,student_email_s2',
-            'created_at' => 'invoice_created_at'
+            //            'parent' => 'parent_email,parent_email_p2',
+            //            'student' => 'student_email,student_email_s2',
+            'created_at' => 'invoice_created_at',
         ];
 
         $order = $columns[$order] ?? $order;
@@ -44,7 +44,7 @@ class InvoiceDataTable implements IDataTables
                 'student_tutoring_packages.discount',
                 'student_tutoring_packages.discount_type',
                 'monthly_invoice_packages.hourly_rate',
-                'clients.email as client_email'
+                'clients.email as client_email',
             ])
             ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount ELSE 0 END) AS amount_paid')
             ->leftJoin('student_tutoring_packages', function ($q) {
@@ -56,7 +56,7 @@ class InvoiceDataTable implements IDataTables
             ->leftJoin('non_invoice_packages', function ($q) {
                 $q->on('invoices.invoiceable_id', '=', 'non_invoice_packages.id')->where('invoices.invoiceable_type', '=', NonInvoicePackage::class);
             })
-            ->leftJoin('payments','payments.invoice_id','invoices.id')
+            ->leftJoin('payments', 'payments.invoice_id', 'invoices.id')
             ->leftJoin('students as s1', 'student_tutoring_packages.student_id', '=', 's1.id')
             ->leftJoin('students as s2', 'monthly_invoice_packages.student_id', '=', 's2.id')
             ->leftJoin('parents as p1', 's1.parent_id', '=', 'p1.id')
@@ -67,7 +67,7 @@ class InvoiceDataTable implements IDataTables
             ->groupBy('invoices.id')->offset($start)
             ->limit($limit);
         $columns = explode(',', $order);
-        foreach ($columns as $column){
+        foreach ($columns as $column) {
             $invoices = $invoices->orderBy($column, $dir);
         }
 
@@ -106,17 +106,17 @@ class InvoiceDataTable implements IDataTables
         if (! empty($records)) {
             foreach ($records as $invoice) {
                 $nestedData['invoice_id'] = getInvoiceCodeFromId($invoice->invoice_id);
-                $nestedData['package'] = getPackageCodeFromModelAndId($invoice->invoiceable_type,$invoice->invoiceable_id);
+                $nestedData['package'] = getPackageCodeFromModelAndId($invoice->invoiceable_type, $invoice->invoiceable_id);
                 $nestedData['invoice_status'] = getInvoiceStatusFromId($invoice->invoice_status);
                 $nestedData['invoice_type'] = getInvoiceTypeFromClass($invoice->invoiceable_type);
-//                $nestedData['student'] = $invoice->student_email??$invoice->student_email_s2;
-//                $nestedData['parent'] = $invoice->parent_email??$invoice->parent_email_p2;
+                //                $nestedData['student'] = $invoice->student_email??$invoice->student_email_s2;
+                //                $nestedData['parent'] = $invoice->parent_email??$invoice->parent_email_p2;
                 $nestedData['created_at'] = formatDate($invoice->invoice_created_at);
                 $nestedData['due_date'] = formatDate($invoice->due_date);
                 $nestedData['amount_paid'] = formatAmountWithCurrency($invoice->amount_paid);
                 $nestedData['amount_remaining'] = getRemainingAmount($invoice);
                 $nestedData['fully_paid_at'] = $invoice->fully_paid_at;
-                $nestedData['action'] = view('invoices.actions', ['invoice' => $invoice,'type' => getInvoiceTypeFromClass($invoice->invoiceable_type,true)])->render();
+                $nestedData['action'] = view('invoices.actions', ['invoice' => $invoice, 'type' => getInvoiceTypeFromClass($invoice->invoiceable_type, true)])->render();
                 $data[] = $nestedData;
             }
         }
@@ -135,31 +135,30 @@ class InvoiceDataTable implements IDataTables
         }
 
         if (Auth::user()->hasRole('parent') && Auth::user() instanceof ParentUser) {
-            $records = $records->where(function ($q){
+            $records = $records->where(function ($q) {
                 $q->where('s1.parent_id', Auth::id())
                     ->orWhere('s2.parent_id', Auth::id());
             });
         }
         if (Auth::user()->hasRole('client') && Auth::user() instanceof ParentUser) {
-            $records = $records->where(function ($q){
+            $records = $records->where(function ($q) {
                 $q->where('s1.parent_id', Auth::id())
                     ->orWhere('s2.parent_id', Auth::id());
             });
         }
         if (Auth::user()->hasRole('student') && Auth::user() instanceof Student) {
-            $records = $records->where(function ($q){
+            $records = $records->where(function ($q) {
                 $q->where('student_tutoring_packages.student_id', Auth::id())
                     ->orWhere('monthly_invoice_packages.student_id', Auth::id())
                     ->WhereRaw('(CASE WHEN s1.parent_id IS NULL THEN true ELSE false END OR CASE WHEN s2.parent_id IS NULL THEN true ELSE false END)');
             });
         }
         if (Auth::user()->hasRole('client') && Auth::user() instanceof Client) {
-            $records = $records->where(function ($q){
+            $records = $records->where(function ($q) {
                 $q->where('non_invoice_packages.client_id', Auth::id())
-                    ->where('invoices.invoiceable_type',NonInvoicePackage::class)
-                    ->where('invoices.invoice_package_type_id',3);
+                    ->where('invoices.invoiceable_type', NonInvoicePackage::class)
+                    ->where('invoices.invoice_package_type_id', 3);
             });
-
 
         }
 
@@ -190,5 +189,4 @@ class InvoiceDataTable implements IDataTables
         return $invoices->count();
 
     }
-
 }

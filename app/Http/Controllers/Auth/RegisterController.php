@@ -94,7 +94,7 @@ class RegisterController extends Controller
             $user = $this->createTutor($request->all());
         } elseif ($request->registrationType == 'client') {
             $user = $this->createClient($request->all());
-        }else {
+        } else {
             $user = $this->create($request->all());
         }
 

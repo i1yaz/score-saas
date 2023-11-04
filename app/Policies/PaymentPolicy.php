@@ -19,51 +19,52 @@ class PaymentPolicy
             return true;
         }
     }
+
     public function viewAny(Authenticatable $user): bool
     {
-        if (!(Auth::user()->hasRole(['super-admin', 'admin','client','student','parent']))) {
+        if (! (Auth::user()->hasRole(['super-admin', 'admin', 'client', 'student', 'parent']))) {
             return false;
         }
     }
 
     public function view(Authenticatable $user, Payment $payment): bool
     {
-        if (!(Auth::user()->hasRole(['super-admin', 'admin','client','student','parent']))) {
+        if (! (Auth::user()->hasRole(['super-admin', 'admin', 'client', 'student', 'parent']))) {
             return false;
         }
     }
 
     public function create(Authenticatable $user): bool
     {
-        if (!(Auth::user()->hasRole(['super-admin', 'admin','client','student','parent']))) {
+        if (! (Auth::user()->hasRole(['super-admin', 'admin', 'client', 'student', 'parent']))) {
             return false;
         }
     }
 
     public function update(Authenticatable $user, Payment $payment): bool
     {
-        if (!(Auth::user()->hasRole(['super-admin', 'admin','client','student','parent']))) {
+        if (! (Auth::user()->hasRole(['super-admin', 'admin', 'client', 'student', 'parent']))) {
             return false;
         }
     }
 
     public function delete(Authenticatable $user, Payment $payment): bool
     {
-        if (!(Auth::user()->hasRole(['super-admin', 'admin','client','student','parent']))) {
+        if (! (Auth::user()->hasRole(['super-admin', 'admin', 'client', 'student', 'parent']))) {
             return false;
         }
     }
 
     public function restore(Authenticatable $user, Payment $payment): bool
     {
-        if (!(Auth::user()->hasRole(['super-admin', 'admin','client','student','parent']))) {
+        if (! (Auth::user()->hasRole(['super-admin', 'admin', 'client', 'student', 'parent']))) {
             return false;
         }
     }
 
     public function forceDelete(Authenticatable $user, Payment $payment): bool
     {
-        if (!(Auth::user()->hasRole(['super-admin', 'admin','client','student','parent']))) {
+        if (! (Auth::user()->hasRole(['super-admin', 'admin', 'client', 'student', 'parent']))) {
             return false;
         }
     }

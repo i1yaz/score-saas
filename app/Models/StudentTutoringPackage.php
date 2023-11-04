@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class StudentTutoringPackage extends BaseModel
 {
     use HasFactory;
+
     const FLAT_DISCOUNT = 1;
 
     const PERCENTAGE_DISCOUNT = 2;
@@ -52,13 +53,13 @@ class StudentTutoringPackage extends BaseModel
         'discount' => 'integer',
         'discount_type' => 'integer',
         'start_date' => 'date',
-        'allow_partial_payment' => 'boolean'
+        'allow_partial_payment' => 'boolean',
     ];
 
     public static mixed $messages = [
-        'student_id' => "Please select a student",
-        'tutoring_location_id' => "Please select a tutoring location",
-        'tutoring_package_type_id' => "Please select a tutoring package type",
+        'student_id' => 'Please select a student',
+        'tutoring_location_id' => 'Please select a tutoring location',
+        'tutoring_package_type_id' => 'Please select a tutoring package type',
         'tutor_ids.required' => 'Please select at least one tutor',
         'subject_ids.required' => 'Please select at least one subject',
     ];
