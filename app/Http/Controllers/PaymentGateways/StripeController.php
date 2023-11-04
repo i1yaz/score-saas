@@ -59,7 +59,7 @@ class StripeController extends AppBaseController
             ->where('invoices.id',$request->invoiceId)->firstOrFail();
 
         if ($invoice->invoiceable_type == NonInvoicePackage::class) {
-            $payable_amount = $invoice->final_amount - $invoice->paid_amount;
+            $payable_amount = $invoice->final_amount - $invoice->amount_paid;
             $userEmail = NonInvoicePackage::query()
                 ->select(['clients.email'])
                 ->leftJoin('clients', 'clients.id', '=', 'non_invoice_packages.client_id')
@@ -74,10 +74,10 @@ class StripeController extends AppBaseController
                 ->where('student_tutoring_packages.id',$invoice->invoiceable_id)->firstOrFail()->email;
 
             $packageCode = getStudentTutoringPackageCodeFromId($invoice->invoiceable_id);
-            $payable_amount = $payable_amount - $invoice->paid_amount;
+            $payable_amount = $payable_amount - $invoice->amount_paid;
         }
         $amount = null;
-        if ( filter_var($invoice->nip_allow_partial_payment,FILTER_VALIDATE_BOOLEAN) || file_put_contents($invoice->stp_allow_partial_payment,FILTER_VALIDATE_BOOLEAN)){
+        if ( filter_var($invoice->nip_allow_partial_payment,FILTER_VALIDATE_BOOLEAN) || filter_var($invoice->stp_allow_partial_payment,FILTER_VALIDATE_BOOLEAN)){
             $amount = $request->partialAmount;
         }
 
