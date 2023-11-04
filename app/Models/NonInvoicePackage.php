@@ -10,7 +10,7 @@ class NonInvoicePackage extends Model
     use HasFactory;
 
     const CODE_START = 5000;
-    const PREFIX_START = 'INP';
+    const PREFIX_START = 'INP-';
     protected $fillable = [
         'name',
         'description',

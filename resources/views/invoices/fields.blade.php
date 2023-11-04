@@ -411,6 +411,11 @@
             calculateTotal();
         });
         $(document).on('click', '.delete-item', function () {
+
+            if($('.delete-item').length === 1)
+            {
+                return false;
+            }
             let attributeId = $(this).attr('id')
             let splitId = attributeId.split("-");
             $(`#item-${splitId[2]}`).remove();

@@ -26,12 +26,15 @@ class StudentTutoringPackageDataTable implements IDataTables
                 'student_tutoring_packages.notes as notes',
                 'student_tutoring_packages.hours as hours',
                 'student_tutoring_packages.status as status',
-                'student_tutoring_packages.start_date as start_date'
+                'student_tutoring_packages.start_date as start_date',
+                'parents.id as parent_id',
+                'students.id as student_id'
             ])
             ->selectRaw('(SELECT COUNT(id) FROM sessions WHERE sessions.student_tutoring_package_id  = student_tutoring_packages.id) as sessions_count')
             ->join('students', 'student_tutoring_packages.student_id', 'students.id')
             ->join('tutoring_package_types', 'student_tutoring_packages.tutoring_package_type_id', 'tutoring_package_types.id')
-            ->join('tutoring_locations', 'student_tutoring_packages.tutoring_location_id', 'tutoring_locations.id');
+            ->join('tutoring_locations', 'student_tutoring_packages.tutoring_location_id', 'tutoring_locations.id')
+            ->leftJoin('parents', 'students.parent_id', 'parents.id');
         $studentTutoringPackages = static::getModelQueryBySearch($search, $studentTutoringPackages);
         $studentTutoringPackages = $studentTutoringPackages->offset($start)
             ->limit($limit)
@@ -43,7 +46,16 @@ class StudentTutoringPackageDataTable implements IDataTables
 
     public static function totalFilteredRecords(mixed $search): int
     {
-        $studentTutoringPackages = StudentTutoringPackage::query()->select(['id']);
+        $studentTutoringPackages = StudentTutoringPackage::query()->select(
+            [
+                'id',
+                'parents.id as parent_id',
+                'students.id as student_id'
+            ])
+            ->join('students', 'student_tutoring_packages.student_id', 'students.id')
+
+            ->leftJoin('parents', 'students.parent_id', 'parents.id');
+
         $studentTutoringPackages = static::getModelQueryBySearch($search, $studentTutoringPackages);
 
         return $studentTutoringPackages->count();
@@ -85,6 +97,12 @@ class StudentTutoringPackageDataTable implements IDataTables
         }
         if (!(Auth::user()->hasRole(['super-admin']) && Auth::user() instanceof User)){
             $records = $records->where('student_tutoring_packages.status', true);
+        }
+        if (Auth::user()->hasRole(['student'])){
+            $records = $records->where('student_id', Auth::id());
+        }
+        if (Auth::user()->hasRole(['parent'])){
+            $records = $records->where('parent_id', Auth::id());
         }
         return $records;
     }

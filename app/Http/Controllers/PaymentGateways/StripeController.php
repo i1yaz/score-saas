@@ -44,7 +44,7 @@ class StripeController extends AppBaseController
                     'student_tutoring_packages.discount_type as stp_discount_type',
 
                 ])
-            ->selectRaw('sum(payments.amount) as paid_amount')
+            ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount ELSE 0 END) AS amount_paid')
             ->leftJoin('payments', 'payments.invoice_id', '=', 'invoices.id')
             ->leftJoin('non_invoice_packages', function ($q){
                 $q->on('non_invoice_packages.id', '=', 'invoices.invoiceable_id')

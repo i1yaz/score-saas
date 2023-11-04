@@ -39,14 +39,13 @@
     {!! Form::label('amount_paid', 'Amount Paid:') !!}
     <p>{{ formatAmountWithCurrency($invoice->amount_paid) }}</p>
 </div>
-{{--@php--}}
-{{--    $invoice_total = getPriceFromHoursAndHourlyWithDiscount($invoice->hourly_rate,$invoice->hours,$invoice->discount,$invoice->discount_type);--}}
-{{--@endphp--}}
-{{--<!-- Amount Remaining Field -->--}}
-{{--<div class="col-sm-12 col-md-6">--}}
-{{--    {!! Form::label('amount_remaining', 'Amount Remaining:') !!}--}}
-{{--    <p>{{  getRemainingAmountFromTotalAndPaidAmount(total:cleanAmountWithCurrencyFormat( $invoice_total), paid: $invoice->amount_paid) }}</p>--}}
-{{--</div>--}}
+@if($invoice->invoiceable_type == \App\Models\NonInvoicePackage::class)
+    <!-- Client EMail -->
+    <div class="col-sm-12 col-md-6">
+        {!! Form::label('paid_status', 'Client Email:') !!}
+        <p>{!! $invoice->client_email  !!}</p>
+    </div>
+@endif
 
 <!-- Paid Status Field -->
 <div class="col-sm-12 col-md-6">
@@ -54,11 +53,6 @@
     <p>{!! getInvoiceStatusFromId($invoice->invoice_status)  !!}</p>
 </div>
 
-<!-- Paid By Modal Field -->
-<div class="col-sm-12 col-md-6">
-    {!! Form::label('paid_by_modal', 'Paid By:') !!}
-    <p>{{ $invoice->paid_by_modal }}</p>
-</div>
 
 
 

@@ -6,6 +6,7 @@ use App\Models\MonthlyInvoicePackage;
 use App\Models\MonthlyInvoicePackageTutor;
 use App\Models\NonInvoicePackage;
 use App\Models\ParentUser;
+use App\Models\Payment;
 use App\Models\Student;
 use App\Models\StudentTutoringPackage;
 use App\Models\Tax;
@@ -833,5 +834,17 @@ if (!function_exists('getRemainingAmount')){
                 return formatAmountWithCurrency($final_amount - $invoice->amount_paid );
         }
         return 0;
+    }
+}
+if (!function_exists('getPaymentGatewayNameFromId')){
+    function getPaymentGatewayNameFromId($id): string
+    {
+        if ($id == Payment::STRIPE){
+            return 'Stripe';
+        }
+        if ($id == Payment::PAYPAL){
+            return 'PayPal';
+        }
+        return '';
     }
 }

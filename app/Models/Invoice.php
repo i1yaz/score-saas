@@ -63,7 +63,9 @@ class Invoice extends BaseModel
 
     public static array $rules = [
         'client_id' => 'required',
-        'due_date' => 'required',
+        'due_date' => ['required', 'date', 'after_or_equal:today'],
+        'item_id' => ['required','array','min:1'],
+
     ];
 
     /**

@@ -59,14 +59,19 @@ class InvoiceRepository extends BaseRepository
                 'tutoring_package_types.name as tutoring_package_type_name',
                 'monthly_invoice_packages.hourly_rate', 'monthly_invoice_packages.discount',
                 'monthly_invoice_packages.discount_type',
+                'clients.email as client_email',
             ])
-            ->selectRaw('sum(payments.amount) as amount_paid')
+            ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount ELSE 0 END) AS amount_paid')
             ->leftJoin('student_tutoring_packages', function ($q) {
                 $q->on('invoices.invoiceable_id', '=', 'student_tutoring_packages.id')->where('invoices.invoiceable_type', '=', StudentTutoringPackage::class);
             })
             ->leftJoin('monthly_invoice_packages', function ($q) {
                 $q->on('invoices.invoiceable_id', '=', 'monthly_invoice_packages.id')->where('invoices.invoiceable_type', '=', MonthlyInvoicePackage::class);
             })
+            ->leftJoin('non_invoice_packages', function ($q) {
+                $q->on('invoices.invoiceable_id', '=', 'non_invoice_packages.id')->where('invoices.invoiceable_type', '=', NonInvoicePackage::class);
+            })
+            ->leftJoin('clients', 'non_invoice_packages.client_id', '=', 'clients.id')
             ->leftJoin('payments', 'payments.invoice_id', 'invoices.id')
             ->leftJoin('tutoring_package_types', 'student_tutoring_packages.tutoring_package_type_id', '=', 'tutoring_package_types.id')
             ->leftJoin('students', 'student_tutoring_packages.student_id', '=', 'students.id')
@@ -218,7 +223,7 @@ class InvoiceRepository extends BaseRepository
                 'non_invoice_packages.final_amount',
                 'non_invoice_packages.allow_partial_payment'
             ])
-            ->selectRaw('sum(payments.amount) as amount_paid')
+            ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount ELSE 0 END) AS amount_paid')
             ->leftJoin('payments','payments.invoice_id','invoices.id')
             ->leftJoin('non_invoice_packages', function ($q) {
                 $q->on('invoices.invoiceable_id', '=', 'non_invoice_packages.id')->where('invoices.invoiceable_type', '=', NonInvoicePackage::class);
@@ -255,7 +260,7 @@ class InvoiceRepository extends BaseRepository
                 'student_tutoring_packages.discount_type',
                 'student_tutoring_packages.allow_partial_payment'
             ])
-            ->selectRaw('sum(payments.amount) as amount_paid')
+            ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount ELSE 0 END) AS amount_paid')
             ->leftJoin('payments','payments.invoice_id','invoices.id')
             ->leftJoin('student_tutoring_packages', function ($q) {
                 $q->on('invoices.invoiceable_id', '=', 'student_tutoring_packages.id')->where('invoices.invoiceable_type', '=', StudentTutoringPackage::class);

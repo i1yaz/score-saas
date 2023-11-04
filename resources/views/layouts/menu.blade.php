@@ -114,8 +114,8 @@
 </li>
 @endpermission
 @permission(['tutoring_package_type-index','subject-index','tutoring_location-index','school-index','invoice_package_type-index','client-index','tax-index','line_item-index'])
-<li class="nav-item {{Request::is(['tutoring-package-types*','subjects*','tutoring-locations*'])?'menu-is-opening menu-open active':''}}">
-    <a href="#" class="nav-link {{Request::is(['tutoring-package-types*','subjects*','tutoring-locations*'])?'active':''}}">
+<li class="nav-item {{Request::is(['tutoring-package-types*','subjects*','tutoring-locations*','schools*','invoice-package-types*','taxes*','line-items*','clients*'])?'menu-is-opening menu-open active':''}}">
+    <a href="#" class="nav-link {{Request::is(['tutoring-package-types*','subjects*','tutoring-locations*','schools*','invoice-package-types*','taxes*','line-items*','clients*'])?'active':''}}">
         <i class="nav-icon fas fa-cog"></i>
         <p>
             Settings

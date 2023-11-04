@@ -79,7 +79,7 @@
 <!-- Allow Partial Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('allow_partial_payment', 'Allow Partial Payments ?') !!}
-    {!! Form::select('allow_partial_payment',['no'=>'No','yes'=>'Yes'] ,strtolower(booleanToYesNo($studentTutoringPackage->allow_partial_payment))??'no', ['class' => 'form-control']) !!}
+    {!! Form::select('allow_partial_payment',['no'=>'No','yes'=>'Yes'] ,strtolower(booleanToYesNo($studentTutoringPackage->allow_partial_payment??null))??'no', ['class' => 'form-control']) !!}
 </div>
 <div class="form-group col-sm-12">
     <div class="row" style="border:2px dotted">

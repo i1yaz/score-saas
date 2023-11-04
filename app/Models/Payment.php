@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Payment extends Model
 {
     const STRIPE = '1';
+    const PAYPAL = '2';
     public $table = 'payments';
     public const DRAFT = 0;
 
@@ -17,6 +18,10 @@ class Payment extends Model
     public const PAID = 3;
 
     public const VOID = 4;
+    public const REFUND = 5;
+    public const FAILED = 6;
+    public const CANCELLED = 7;
+
     public $fillable = [
         'transaction_id',
         'invoice_id',

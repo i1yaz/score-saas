@@ -44,8 +44,9 @@ class InvoiceDataTable implements IDataTables
                 'student_tutoring_packages.discount',
                 'student_tutoring_packages.discount_type',
                 'monthly_invoice_packages.hourly_rate',
+                'clients.email as client_email'
             ])
-            ->selectRaw('sum(payments.amount) as amount_paid')
+            ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount ELSE 0 END) AS amount_paid')
             ->leftJoin('student_tutoring_packages', function ($q) {
                 $q->on('invoices.invoiceable_id', '=', 'student_tutoring_packages.id')->where('invoices.invoiceable_type', '=', StudentTutoringPackage::class);
             })
@@ -59,9 +60,11 @@ class InvoiceDataTable implements IDataTables
             ->leftJoin('students as s1', 'student_tutoring_packages.student_id', '=', 's1.id')
             ->leftJoin('students as s2', 'monthly_invoice_packages.student_id', '=', 's2.id')
             ->leftJoin('parents as p1', 's1.parent_id', '=', 'p1.id')
+            ->leftJoin('clients', 'non_invoice_packages.client_id', '=', 'clients.id')
             ->leftJoin('parents as p2', 's2.parent_id', '=', 'p2.id');
         $invoices = static::getModelQueryBySearch($search, $invoices);
-        $invoices = $invoices->groupBy('invoices.id')->offset($start)
+        $invoices = $invoices
+            ->groupBy('invoices.id')->offset($start)
             ->limit($limit);
         $columns = explode(',', $order);
         foreach ($columns as $column){
@@ -110,7 +113,7 @@ class InvoiceDataTable implements IDataTables
 //                $nestedData['parent'] = $invoice->parent_email??$invoice->parent_email_p2;
                 $nestedData['created_at'] = formatDate($invoice->invoice_created_at);
                 $nestedData['due_date'] = formatDate($invoice->due_date);
-                $nestedData['amount_paid'] = formatAmountWithCurrency($invoice->amount_paid??0);
+                $nestedData['amount_paid'] = formatAmountWithCurrency($invoice->amount_paid);
                 $nestedData['amount_remaining'] = getRemainingAmount($invoice);
                 $nestedData['fully_paid_at'] = $invoice->fully_paid_at;
                 $nestedData['action'] = view('invoices.actions', ['invoice' => $invoice,'type' => getInvoiceTypeFromClass($invoice->invoiceable_type,true)])->render();

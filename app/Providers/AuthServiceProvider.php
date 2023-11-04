@@ -6,11 +6,13 @@ namespace App\Providers;
 use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\ParentUser;
+use App\Models\Payment;
 use App\Models\Session;
 use App\Models\Student;
 use App\Policies\ClientPolicy;
 use App\Policies\InvoicePolicy;
 use App\Policies\ParentUserPolicy;
+use App\Policies\PaymentPolicy;
 use App\Policies\SessionPolicy;
 use App\Policies\StudentPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -29,6 +31,7 @@ class AuthServiceProvider extends ServiceProvider
         Session::class => SessionPolicy::class,
         Client::class => ClientPolicy::class,
         Invoice::class => InvoicePolicy::class,
+        Payment::class => PaymentPolicy::class,
     ];
 
     /**
