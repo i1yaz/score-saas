@@ -36,6 +36,8 @@ class StripeController extends AppBaseController
                 [
                     'invoices.id as invoice_id',
                     'non_invoice_packages.final_amount',
+                    'non_invoice_packages.allow_partial_payment as nip_allow_partial_payment',
+                    'student_tutoring_packages.allow_partial_payment as stp_allow_partial_payment',
                     'invoiceable_type',
                     'invoiceable_id',
                     'student_tutoring_packages.hourly_rate as stp_hourly_rate',
@@ -74,7 +76,10 @@ class StripeController extends AppBaseController
             $packageCode = getStudentTutoringPackageCodeFromId($invoice->invoiceable_id);
             $payable_amount = $payable_amount - $invoice->paid_amount;
         }
-        $amount = $request->partialAmount;
+        $amount = null;
+        if ( filter_var($invoice->nip_allow_partial_payment,FILTER_VALIDATE_BOOLEAN) || file_put_contents($invoice->stp_allow_partial_payment,FILTER_VALIDATE_BOOLEAN)){
+            $amount = $request->partialAmount;
+        }
 
         if (!is_numeric($amount)) {
             $amount = $payable_amount;

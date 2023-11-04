@@ -46,7 +46,7 @@
 <!-- Hourly Rate Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('hourly_rate', 'Hourly Rate:') !!}
-    {!! Form::number('hourly_rate', null, ['class' => 'form-control','id'=>'hourly-rate']) !!}
+    {!! Form::number('hourly_rate', null, ['class' => 'form-control','id'=>'hourly-rate','type' => 'number', 'min' => '1', 'oninput' => "validity.valid||(value=value.replace(/[e\+\-]/gi,''))"]) !!}
 </div>
 
 <!-- Discount Type Field -->
@@ -66,7 +66,7 @@
 <!-- Tutor Hourly Rate Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('tutor_hourly_rate', 'Tutor Hourly Rate:') !!}
-    {!! Form::number('tutor_hourly_rate', null, ['class' => 'form-control','id'=>'tutor-hourly-rate']) !!}
+    {!! Form::number('tutor_hourly_rate', null, ['class' => 'form-control','id'=>'tutor-hourly-rate','type' => 'number', 'min' => '1', 'oninput' => "validity.valid||(value=value.replace(/[e\+\-]/gi,''))"]) !!}
     <span class="text-danger" id="tutor-hourly-rate-validation"> </span>
 </div>
 
@@ -417,5 +417,13 @@
             }
             calculateTotal(totalPrice)
         })
+    </script>
+    <script>
+
+        $(document).ready(function (){
+            setTimeout(function (){
+                $('#hourly-rate').trigger('change')
+            },100)
+        });
     </script>
 @endpush

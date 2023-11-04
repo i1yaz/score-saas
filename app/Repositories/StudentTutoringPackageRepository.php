@@ -47,6 +47,18 @@ class StudentTutoringPackageRepository extends BaseRepository
 
         return $model;
     }
+    public function update(array $input, int $id)
+    {
+        $input['allow_partial_payment'] = yesNoToBoolean($input['allow_partial_payment']);
+        $query = $this->model->newQuery();
+
+        $model = $query->findOrFail($id);
+
+        $model->fill($input);
+        $model->save();
+
+        return $model;
+    }
 
     public function show($id): StudentTutoringPackage
     {

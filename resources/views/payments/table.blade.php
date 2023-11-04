@@ -3,9 +3,9 @@
         <table class="table" id="payments-table">
             <thead>
             <tr>
-                <th>Invoice Id</th>
+                <th>Invoice Code</th>
                 <th>Invoice Type</th>
-                <th>Package Id</th>
+                <th>Package Code</th>
                 <th>Amount</th>
                 <th>Date</th>
                 <th>Payment Gateway</th>
@@ -15,9 +15,9 @@
             <tbody>
             @foreach($payments as $payment)
                 <tr>
-                    <td>{{ $payment->invoice_id }}</td>
+                    <td>{{ getInvoiceCodeFromId($payment->invoice_id) }}</td>
                     <td>{{ getInvoiceTypeFromClass($payment->invoiceable_type) }}</td>
-                    <td>{{ $payment->invoiceable_id }}</td>
+                    <td>{{ getInvoiceCodeFromInvoiceableTypeAndId($payment->invoiceable_type,$payment->invoiceable_id) }}</td>
                     <td>{{ formatAmountWithCurrency($payment->amount) }}</td>
                     <td>{{ $payment->created_at }}</td>
                     <td>{{ getPaymentGatewayNameFromId($payment->payment_gateway_id) }}</td>

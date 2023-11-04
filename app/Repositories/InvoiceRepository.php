@@ -280,4 +280,16 @@ class InvoiceRepository extends BaseRepository
         }
         return $records->where('invoices.id', $id)->first();
     }
+    public function update(array $input, int $id)
+    {
+        $input['allow_partial_payment'] = yesNoToBoolean($input['allow_partial_payment']);
+        $query = $this->model->newQuery();
+
+        $model = $query->findOrFail($id);
+
+        $model->fill($input);
+        $model->save();
+
+        return $model;
+    }
 }

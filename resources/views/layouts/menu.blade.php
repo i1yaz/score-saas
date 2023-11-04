@@ -108,7 +108,7 @@
 @permission('payment-index')
 <li class="nav-item">
     <a href="{{ route('payments.index') }}" class="nav-link {{ Request::is('payments*') ? 'active' : '' }}">
-        <i class="nav-icon fas fa-home"></i>
+        <i class="fas fa-money-check-alt"></i>
         <p>Payments</p>
     </a>
 </li>
