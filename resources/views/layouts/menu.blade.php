@@ -74,7 +74,7 @@
 @permission('student_tutoring_package-index')
 <li class="nav-item">
     <a href="{{ route('student-tutoring-packages.index') }}" class="nav-link {{ Request::is('student-tutoring-packages*') ? 'active' : '' }}">
-        <i class="nav-icon fas fa-table"></i>
+        <i class="nav-icon  fas fa-cubes"></i>
         <p>Tutoring Packages</p>
     </a>
 </li>
@@ -83,7 +83,7 @@
 @permission('monthly_invoice_package-index')
 <li class="nav-item">
     <a href="{{ route('monthly-invoice-packages.index') }}" class="nav-link {{ Request::is('monthly-invoice-packages*') ? 'active' : '' }}">
-        <i class="nav-icon fas fa-home"></i>
+        <i class="nav-icon fas fa-table"></i>
         <p style="white-space: nowrap;">Monthly Invoice Packages</p>
     </a>
 </li>
@@ -100,7 +100,7 @@
 @permission('session-index')
 <li class="nav-item">
     <a href="{{ route('sessions.index') }}" class="nav-link {{ Request::is('session*') ? 'active' : '' }}">
-        <i class="nav-icon fas fa-calendar"></i>
+        <i class="nav-icon  far fa-calendar-alt"></i>
         <p>Sessions</p>
     </a>
 </li>

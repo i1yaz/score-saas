@@ -126,8 +126,7 @@ class InvoiceRepository extends BaseRepository
         $invoice->general_description = $input['general_description'] ?? null;
         $invoice->detailed_description = $input['detailed_description'] ?? null;
         $invoice->email_to_parent = $input['email_to_parent'] ?? false;
-        $invoice->amount_paid = 0;
-        $invoice->paid_status = Invoice::DRAFT;
+        $invoice->paid_status = Invoice::PENDING;
         if ($input['is_score_guaranteed'] || $input['is_free']){
             $invoice->paid_status = Invoice::PAID;
             $invoice->fully_paid_at = Carbon::now();

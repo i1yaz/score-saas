@@ -92,6 +92,7 @@ class MonthlyInvoicePackageController extends AppBaseController
             unset($input['name']);
             $input['is_score_guaranteed'] = yesNoToBoolean($input['is_score_guaranteed']);
             $input['is_free'] = yesNoToBoolean($input['is_free']);
+            $input['discount'] = $input['discount']??0;
             $tutors = $input['tutor_ids'];
             $subjects = $input['subject_ids'];
             unset($input['tutor_ids'],$input['subject_ids']);
