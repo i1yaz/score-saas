@@ -95,7 +95,7 @@ class StudentTutoringPackageDataTable implements IDataTables
                     ->orWhere('student_tutoring_packages.start_date', 'like', "%{$search}%");
             });
         }
-        if (! (Auth::user()->hasRole(['super-admin']) && Auth::user() instanceof User)) {
+        if (!(Auth::user()->hasRole(['super-admin']) && Auth::user() instanceof User)) {
             $records = $records->where('student_tutoring_packages.status', true);
         }
         if (Auth::user()->hasRole(['student'])) {

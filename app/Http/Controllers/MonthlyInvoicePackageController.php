@@ -36,6 +36,7 @@ class MonthlyInvoicePackageController extends AppBaseController
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', MonthlyInvoicePackage::class);
         if ($request->ajax()) {
             $columns = [
                 'package_id',

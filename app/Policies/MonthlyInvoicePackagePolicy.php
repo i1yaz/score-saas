@@ -17,6 +17,9 @@ class MonthlyInvoicePackagePolicy
         if (Auth::user()->hasRole(['super-admin', 'admin'])) {
             return true;
         }
+        if (Auth::user()->hasRole([ 'tutor','proctor','client','developer'])) {
+            abort(403, getRoleOfLoggedInUser() . 's do not have access to Monthly Invoice Packages');
+        }
     }
     public function viewAny(Authenticatable $user): bool
     {

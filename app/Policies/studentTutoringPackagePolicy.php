@@ -18,6 +18,9 @@ class studentTutoringPackagePolicy
         if (Auth::user()->hasRole(['super-admin', 'admin'])) {
             return true;
         }
+        if (Auth::user()->hasRole([ 'tutor','proctor','client','developer'])) {
+            abort(403, getRoleOfLoggedInUser() . 's do not have access to Student Tutoring Packages');
+        }
     }
     public function viewAny(Authenticatable $user): bool
     {

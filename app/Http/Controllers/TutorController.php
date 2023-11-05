@@ -53,6 +53,7 @@ class TutorController extends AppBaseController
             $tutors = TutorDataTable::sortAndFilterRecords($search, $start, $limit, $order, $dir);
             $totalFiltered = TutorDataTable::totalFilteredRecords($search);
             $data = TutorDataTable::populateRecords($tutors);
+
             $json_data = [
                 'draw' => intval($request->input('draw')),
                 'recordsTotal' => intval($totalData),
@@ -121,7 +122,7 @@ class TutorController extends AppBaseController
     public function show($id)
     {
         $tutor = $this->tutorRepository->find($id);
-
+        $this->authorize('view', $tutor);
         if (empty($tutor)) {
             Flash::error('Tutor not found');
 
@@ -137,7 +138,7 @@ class TutorController extends AppBaseController
     public function edit($id)
     {
         $tutor = $this->tutorRepository->find($id);
-
+        $this->authorize('update', $tutor);
         if (empty($tutor)) {
             Flash::error('Tutor not found');
 
@@ -153,6 +154,7 @@ class TutorController extends AppBaseController
     public function update($id, UpdateTutorRequest $request)
     {
         $tutor = $this->tutorRepository->find($id);
+        $this->authorize('update', $tutor);
         if (empty($tutor)) {
             Flash::error('Tutor not found');
 

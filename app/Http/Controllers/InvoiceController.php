@@ -27,6 +27,7 @@ class InvoiceController extends AppBaseController
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Invoice::class);
         if ($request->ajax()) {
             $columns = [
                 'invoice_id',

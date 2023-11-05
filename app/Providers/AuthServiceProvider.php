@@ -11,6 +11,7 @@ use App\Models\Payment;
 use App\Models\Session;
 use App\Models\Student;
 use App\Models\StudentTutoringPackage;
+use App\Models\Tutor;
 use App\Policies\ClientPolicy;
 use App\Policies\InvoicePolicy;
 use App\Policies\MonthlyInvoicePackagePolicy;
@@ -19,6 +20,7 @@ use App\Policies\PaymentPolicy;
 use App\Policies\SessionPolicy;
 use App\Policies\StudentPolicy;
 use App\Policies\studentTutoringPackagePolicy;
+use App\Policies\TutorPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -38,6 +40,7 @@ class AuthServiceProvider extends ServiceProvider
         Payment::class => PaymentPolicy::class,
         StudentTutoringPackage::class => studentTutoringPackagePolicy::class,
         MonthlyInvoicePackage::class => MonthlyInvoicePackagePolicy::class,
+        Tutor::class => TutorPolicy::class,
     ];
 
     /**

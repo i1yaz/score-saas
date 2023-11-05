@@ -41,7 +41,7 @@ class StudentTutoringPackageController extends AppBaseController
      */
     public function index(Request $request)
     {
-
+        $this->authorize('viewAny', StudentTutoringPackage::class);
         if ($request->ajax()) {
             $columns = [
                 'package_id',
