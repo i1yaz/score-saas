@@ -8,6 +8,7 @@ use App\Http\Requests\CreateParentRequest;
 use App\Http\Requests\UpdateParentRequest;
 use App\Mail\ParentRegisteredMail;
 use App\Models\ParentUser;
+use App\Models\Student;
 use App\Repositories\ParentRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -122,8 +123,37 @@ class ParentController extends AppBaseController
     /**
      * Display the specified Parent.
      */
-    public function show(ParentUser $parent)
+    public function show($id)
     {
+        $parent = ParentUser::query()
+            ->select(
+                [
+                    'parents.*'
+                ])
+            ->selectRaw(
+                'CASE WHEN student_tutoring_package_tutor.tutor_id IS NOT NULL THEN student_tutoring_package_tutor.tutor_id
+                                ELSE monthly_invoice_package_tutor.tutor_id END as tutor_id'
+            )
+            ->leftJoin('students', 'parents.id', '=', 'students.parent_id')
+            ->leftJoin('student_tutoring_packages', 'student_tutoring_packages.student_id', '=', 'students.id')
+            ->leftJoin('monthly_invoice_packages', 'monthly_invoice_packages.student_id', '=', 'students.id')
+            ->leftJoin('student_tutoring_package_tutor', 'student_tutoring_package_tutor.student_tutoring_package_id', '=', 'student_tutoring_packages.id')
+            ->leftJoin('monthly_invoice_package_tutor', 'monthly_invoice_package_tutor.monthly_invoice_package_id', '=', 'monthly_invoice_packages.id');
+
+        if (Auth::user()->hasRole('parent') && Auth::user() instanceof ParentUser) {
+            $parent = $parent->where('id', Auth::id());
+        }
+        if (Auth::user()->hasRole('student') && Auth::user() instanceof Student) {
+            $parent = $parent->where('id', Auth::user()->parent_id);
+        }
+        if (Auth::user()->hasRole('tutor')){
+            $parent = $parent->where(function ($q){
+                $q->where('student_tutoring_package_tutor.tutor_id', Auth::id())
+                    ->orWhere('monthly_invoice_package_tutor.tutor_id', Auth::id());
+            });
+        }
+        $parent = $parent->findOrFail($id);
+
         $this->authorize('view', $parent);
         return view('parents.show')->with('parent', $parent);
     }
