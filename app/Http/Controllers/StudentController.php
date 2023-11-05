@@ -127,7 +127,7 @@ class StudentController extends AppBaseController
      */
     public function show($student)
     {
-        $student = Student::select(['students.id as student_id', 'students.email as student_email', 'students.first_name as first_name',
+        $student = Student::select(['students.id as student_id', 'students.parent_id','students.email as student_email', 'students.first_name as first_name',
             'students.last_name as last_name', 'students.status as status', 'parents.email as parent_email', 'schools.name as school_name',
             'students.testing_accommodation', 'students.testing_accommodation_nature', 'students.official_baseline_act_score', 'students.official_baseline_sat_score',
             'students.test_anxiety_challenge', 'students.created_at as student_created_at',
@@ -149,13 +149,17 @@ class StudentController extends AppBaseController
         $student = Student::query()
             ->select(
                 [
-                    'students.*', 'parents.id as parent_id', 'parents.email as parent_email',
-                    'schools.id as school_id', 'schools.name as school_name',
+                    'students.*',
+                    'parents.id as parent_id',
+                    'parents.email as parent_email',
+                    'schools.id as school_id',
+                    'schools.name as school_name',
                 ]
             )
             ->leftJoin('parents', 'students.parent_id', '=', 'parents.id')
             ->join('schools', 'students.school_id', '=', 'schools.id')
             ->find($id);
+        $this->authorize('update', $student);
         $selectedParent[$student->parent_id] = $student->parent_email;
         $selectedSchool[$student->school_id] = $student->school_name;
         if (empty($student)) {

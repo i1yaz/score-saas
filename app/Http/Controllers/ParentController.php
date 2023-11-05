@@ -33,8 +33,6 @@ class ParentController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $this->authorize('viewAny', ParentUser::class);
-
         if ($request->ajax()) {
             $columns = [
                 'family_code',
@@ -127,15 +125,20 @@ class ParentController extends AppBaseController
     public function show(ParentUser $parent)
     {
         $this->authorize('view', $parent);
-
         return view('parents.show')->with('parent', $parent);
     }
 
     /**
      * Show the form for editing the specified Parent.
      */
-    public function edit(ParentUser $parent)
+    public function edit($id)
     {
+        $parent = ParentUser::select(['parents.*','students.parent_id as parent_id'])
+            ->join('students', 'students.parent_id', 'parents.id');
+        if (Auth::user()->hasRole('student')) {
+            $parent = $parent->where('students.id', Auth::id());
+        }
+        $parent = $parent->findOrFail($id);
         $this->authorize('update', $parent);
 
         return view('parents.edit')->with('parent', $parent);
