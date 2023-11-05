@@ -25,7 +25,6 @@ class SessionFactory extends Factory
             'pre_session_notes' => $this->faker->word(),
             'session_completion_code' => $this->faker->randomNumber(),
             'attended_duration' => null,
-            'charge_for_missed_session' => 0,
             'attended_start_time' => null,
             'attended_end_time' => null,
             'charge_missed_time' => 0,

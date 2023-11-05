@@ -220,7 +220,14 @@
                             <td>{{ $session->internal_notes}}</td>
                             <td>{{ $session->completion_code_name}}</td>
                             <td>{{ formatTimeFromSeconds(getTotalChargedSessionTimeFromSessionInSeconds($session))}}</td>
-                            <td>{{ formatTimeFromSeconds(getTotalChargedMissedSessionTimeFromSessionInSeconds($session))}} </td>
+                            <td>
+                                @php $time = formatTimeFromSeconds(getTotalChargedMissedSessionTimeFromSessionInSeconds($session)) ;@endphp
+                                @if($time ==="00h:00m")
+                                    <span class="badge badge-success">{{$time}}</span>
+                                @else
+                                    <span class="badge badge-danger">{{$time}}</span>
+                                @endif
+                            </td>
                             <td>{{ getTotalChargedTimeInHoursSecondsMinutesFromSession($session)}}</td>
                             <td>{{ formatAmountWithCurrency(getTutorHourlyRateForStudentTutoringPackage($studentTutoringPackage,$session->tutor_id))}}</td>
                             <td>{{ formatAmountWithCurrency(0)}}</td>

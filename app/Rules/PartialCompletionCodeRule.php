@@ -35,13 +35,13 @@ class PartialCompletionCodeRule implements ValidationRule
                 $attendedStartTime = Carbon::createFromFormat('m/d/Y H:i', "$scheduledDate $attendedStartTime");
                 $attendedEndTime = Carbon::createFromFormat('m/d/Y H:i', "$scheduledDate $attendedEndTime");
                 if ($attribute == 'attended_start_time') {
-                    if ($attendedStartTime->isBefore($startTime) || $attendedStartTime->isAfter($endTime)) {
-                        $fail('Attended start time must be greater than session start time');
+                    if (!$attendedStartTime->isBetween($startTime, $endTime) ) {
+                        $fail('Attended start time must be between session start time and session end time');
                     }
                 }
                 if ($attribute == 'attended_end_time') {
-                    if ($attendedEndTime->isAfter($endTime) || $attendedEndTime->isBefore($startTime)) {
-                        $fail('Attended end time must be less than session end time');
+                    if (!$attendedEndTime->isBetween($startTime, $endTime) ) {
+                        $fail('Attended end time must be between session start time and session end time');
                     }
                 }
             }
