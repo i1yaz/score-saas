@@ -164,10 +164,11 @@ class ParentController extends AppBaseController
     public function edit($id)
     {
         $parent = ParentUser::select(['parents.*','students.parent_id as parent_id'])
-            ->join('students', 'students.parent_id', 'parents.id');
+            ->leftJoin('students', 'students.parent_id', 'parents.id');
         if (Auth::user()->hasRole('student')) {
             $parent = $parent->where('students.id', Auth::id());
         }
+
         $parent = $parent->findOrFail($id);
         $this->authorize('update', $parent);
 
