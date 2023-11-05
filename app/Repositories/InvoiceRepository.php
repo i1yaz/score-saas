@@ -89,21 +89,31 @@ class InvoiceRepository extends BaseRepository
             ->leftJoin('parents as p1', 's1.parent_id', '=', 'p1.id')
 
             ->leftJoin('students as s2', 'monthly_invoice_packages.student_id', '=', 's2.id')
-            ->leftJoin('parents as p2', 's2.parent_id', '=', 'p2.id');
+            ->leftJoin('parents as p2', 's2.parent_id', '=', 'p2.id')
+            ->where('invoices.id', $id);
         if (Auth::user()->hasRole('parent') && Auth::user() instanceof ParentUser) {
-            $invoice = $invoice->where('parent_id', Auth::id());
+            $invoice = $invoice->where(function ($q){
+                return $q->where('s1.parent_id', Auth::id())
+                    ->orWhere('s2.parent_id', Auth::id());
+
+            });
         }
         if (Auth::user()->hasRole('student') && Auth::user() instanceof Student) {
-            $invoice = $invoice->where('s1.id', Auth::id())
-                ->WhereRaw('CASE WHEN s1.parent_id IS NULL THEN true ELSE false END')
+            $invoice = $invoice
+                ->where(function ($q) {
+                    $q->where('s1.id', Auth::id());
+//                        ->WhereRaw('CASE WHEN s1.parent_id IS NULL THEN true ELSE false END');
+                })
                 ->orWhere(function ($q) {
-                    $q->where('s2.id', Auth::id())
-                        ->WhereRaw('CASE WHEN s2.parent_id IS NULL THEN true ELSE false END');
+                    $q->where('s2.id', Auth::id());
+//                        ->WhereRaw('CASE WHEN s2.parent_id IS NULL THEN true ELSE false END');
                 });
+
         }
-
-
-        $invoice = $invoice->where('invoices.id', $id)->first();
+        if (Auth::user()->hasRole('client') && Auth::user() instanceof Client) {
+            $invoice = $invoice->where('non_invoice_packages.client_id', Auth::id());
+        }
+        $invoice = $invoice->first();
         if (empty($invoice->invoice_id)){
             abort(403, 'Unauthorized action.');
         }
@@ -255,9 +265,11 @@ class InvoiceRepository extends BaseRepository
         if (Auth::user()->hasRole('client') && Auth::user() instanceof Client) {
             $invoice = $invoice->where('non_invoice_packages.client_id', Auth::id());
         }
+        if (!Auth::user()->hasRole(['super-admin','admin','client'])) {
+            abort(403, 'Unauthorized action.');
+        }
+        $invoice = $invoice->where('invoices.id', $id)->first();
 
-        $invoice = $invoice->where('invoices.id', $id)->first();
-        $invoice = $invoice->where('invoices.id', $id)->first();
         if (empty($invoice->invoice_id)){
             abort(403, 'Unauthorized action.');
         }

@@ -176,6 +176,7 @@ class InvoiceController extends AppBaseController
         }
         if ($request->type === 'non-package-invoice') {
             $invoice = $this->invoiceRepository->showNonPackageInvoice($invoice);
+
             $stripeKey = config('services.stripe.key');
             $paymentModes = $this->invoiceRepository->getPaymentGateways();
 
