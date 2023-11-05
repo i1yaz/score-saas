@@ -6,8 +6,10 @@ use App\DataTables\MonthlyInvoicePackageDataTable;
 use App\Http\Requests\CreateMonthlyInvoicePackageRequest;
 use App\Http\Requests\UpdateMonthlyInvoicePackageRequest;
 use App\Mail\ParentInvoiceMailAfterMonthlyInvoicePackageCreationMail;
+use App\Models\Invoice;
 use App\Models\MonthlyInvoicePackage;
 use App\Models\Student;
+use App\Models\StudentTutoringPackage;
 use App\Models\Subject;
 use App\Repositories\InvoiceRepository;
 use App\Repositories\MonthlyInvoicePackageRepository;
@@ -84,7 +86,6 @@ class MonthlyInvoicePackageController extends AppBaseController
      */
     public function store(CreateMonthlyInvoicePackageRequest $request)
     {
-
         DB::beginTransaction();
         try {
             $input = $request->all();
@@ -139,6 +140,7 @@ class MonthlyInvoicePackageController extends AppBaseController
     {
         $monthlyInvoicePackage = $this->monthlyInvoicePackageRepository->show($id);
 
+        $this->authorize('update', $monthlyInvoicePackage);
         if (empty($monthlyInvoicePackage)) {
             Flash::error('Monthly Invoice Package not found');
 
@@ -153,15 +155,34 @@ class MonthlyInvoicePackageController extends AppBaseController
      */
     public function edit($id)
     {
-        $monthlyInvoicePackage = $this->monthlyInvoicePackageRepository->find($id);
-
+        $monthlyInvoicePackage = MonthlyInvoicePackage::query()
+            ->select(['monthly_invoice_packages.*', 'students.email as student_email',  'tutoring_locations.name as tutoring_location_name'])
+            ->with(['subjects', 'tutors','invoice'])
+            ->join('students', 'students.id', '=', 'monthly_invoice_packages.student_id')
+            ->join('tutoring_locations', 'tutoring_locations.id', '=', 'monthly_invoice_packages.tutoring_location_id')
+            ->find($id);
+        $this->authorize('update', $monthlyInvoicePackage);
+        $selectedSubjects = $monthlyInvoicePackage->subjects->pluck(['id'])->toArray();
+        $selectedStudent[$monthlyInvoicePackage->student_id] = $monthlyInvoicePackage->student_email;
+        $tutoringLocation[$monthlyInvoicePackage->tutoring_location_id] = $monthlyInvoicePackage->tutoring_location_name;
+        $selectedTutors = [];
+        foreach ($monthlyInvoicePackage->tutors as $tutor) {
+            $selectedTutors[$tutor->id] = $tutor->email;
+        }
         if (empty($monthlyInvoicePackage)) {
             Flash::error('Monthly Invoice Package not found');
 
             return redirect(route('monthlyInvoicePackages.index'));
         }
+        $subjects = Subject::get(['id', 'name']);
 
-        return view('monthly_invoice_packages.edit')->with('monthlyInvoicePackage', $monthlyInvoicePackage);
+        return view('monthly_invoice_packages.edit')
+            ->with('monthlyInvoicePackage', $monthlyInvoicePackage)
+            ->with('subjects', $subjects)
+            ->with('selectedSubjects', $selectedSubjects)
+            ->with('selectedStudent', $selectedStudent)
+            ->with('selectedTutors', $selectedTutors)
+            ->with('tutoringLocation', $tutoringLocation);
     }
 
     /**
@@ -170,18 +191,58 @@ class MonthlyInvoicePackageController extends AppBaseController
     public function update($id, UpdateMonthlyInvoicePackageRequest $request)
     {
         $monthlyInvoicePackage = $this->monthlyInvoicePackageRepository->find($id);
-
+        $this->authorize('update', $monthlyInvoicePackage);
         if (empty($monthlyInvoicePackage)) {
             Flash::error('Monthly Invoice Package not found');
-
             return redirect(route('monthlyInvoicePackages.index'));
         }
 
-        $monthlyInvoicePackage = $this->monthlyInvoicePackageRepository->update($request->all(), $id);
+        DB::beginTransaction();
+        try {
+            $input = $request->all();
+            unset($input['name']);
+            $input['is_score_guaranteed'] = yesNoToBoolean($input['is_score_guaranteed']);
+            $input['is_free'] = yesNoToBoolean($input['is_free']);
+            $input['discount'] = $input['discount'] ?? 0;
+            $tutors = $input['tutor_ids'];
+            $subjects = $input['subject_ids'];
+            unset($input['tutor_ids'],$input['subject_ids']);
 
-        Flash::success('Monthly Invoice Package updated successfully.');
+            $monthlyInvoicePackage = $this->monthlyInvoicePackageRepository->update($input,$id);
+            $monthlyInvoicePackage->tutors()->sync($tutors);
+            $monthlyInvoicePackage->subjects()->sync($subjects);
+            $this->invoiceRepository->createOrUpdateInvoiceForMonthlyPackage($monthlyInvoicePackage, $input);
+            DB::commit();
+            if ($input['email_to_parent'] == 1) {
+                $parentEmail = Student::select(['parents.email as parent_email', 'students.id', 'students.parent_id'])->where('students.id', $input['student_id'])
+                    ->join('parents', 'students.parent_id', '=', 'parents.id')->first();
+                try {
+                    Mail::to($parentEmail->parent_email)->send(new ParentInvoiceMailAfterMonthlyInvoicePackageCreationMail($monthlyInvoicePackage));
+                } catch (\Exception $exception) {
+                    report($exception);
+                }
+            }
+            $redirectRoute = route('monthly-invoice-packages.show', ['monthly_invoice_package' => $monthlyInvoicePackage->id]);
+            if ($request->ajax()) {
+                return response()->json(['success' => true, 'message' => 'Monthly Invoice Package Updated successfully.', 'redirectTo' => $redirectRoute]);
+            }
+            Flash::success('Monthly Invoice Package Updated successfully.');
 
-        return redirect(route('monthlyInvoicePackages.index'));
+            return redirect($redirectRoute);
+        } catch (QueryException $queryException) {
+            DB::rollBack();
+            report($queryException);
+            \Laracasts\Flash\Flash::error('something went wrong');
+
+            return redirect(route('monthly-invoice-packages.index'));
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            report($exception);
+            \Laracasts\Flash\Flash::error('something went wrong');
+
+            return redirect(route('monthly-invoice-packages.index'));
+        }
+
     }
 
     /**

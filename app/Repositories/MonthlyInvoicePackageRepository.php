@@ -82,4 +82,18 @@ class MonthlyInvoicePackageRepository extends BaseRepository
             ->where('monthly_invoice_packages.id', $id)
             ->first();
     }
+
+    public function update(array $input, int $id)
+    {
+        $query = $this->model->newQuery();
+
+        $model = $query->findOrFail($id);
+
+        $model->fill($input);
+        $model->due_date = $input['due_date'];
+
+        $model->save();
+
+        return $model;
+    }
 }

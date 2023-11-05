@@ -118,11 +118,11 @@
 <div class="form-group col-sm-12" id="all-subjects">
     @include('student_tutoring_packages.subjects')
 </div>
-@if(!isset($studentTutoringPackage))
-    <div class="form-group col-sm-12">
-        @include('student_tutoring_packages.invoice_details')
-    </div>
-@endif
+
+<div class="form-group col-sm-12">
+    @include('student_tutoring_packages.invoice_details', ['invoice' => $studentTutoringPackage->invoice??null])
+</div>
+
 <div class="modal fade" id="store-subject" style="display: none;" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

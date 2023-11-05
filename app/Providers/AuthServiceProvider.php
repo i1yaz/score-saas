@@ -5,16 +5,20 @@ namespace App\Providers;
 // use Illuminate\Support\Facades\Gate;
 use App\Models\Client;
 use App\Models\Invoice;
+use App\Models\MonthlyInvoicePackage;
 use App\Models\ParentUser;
 use App\Models\Payment;
 use App\Models\Session;
 use App\Models\Student;
+use App\Models\StudentTutoringPackage;
 use App\Policies\ClientPolicy;
 use App\Policies\InvoicePolicy;
+use App\Policies\MonthlyInvoicePackagePolicy;
 use App\Policies\ParentUserPolicy;
 use App\Policies\PaymentPolicy;
 use App\Policies\SessionPolicy;
 use App\Policies\StudentPolicy;
+use App\Policies\studentTutoringPackagePolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -32,6 +36,8 @@ class AuthServiceProvider extends ServiceProvider
         Client::class => ClientPolicy::class,
         Invoice::class => InvoicePolicy::class,
         Payment::class => PaymentPolicy::class,
+        StudentTutoringPackage::class => studentTutoringPackagePolicy::class,
+        MonthlyInvoicePackage::class => MonthlyInvoicePackagePolicy::class,
     ];
 
     /**

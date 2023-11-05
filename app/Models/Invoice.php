@@ -62,6 +62,7 @@ class Invoice extends BaseModel
         'paid_by_id' => 'integer',
         'invoiceable_type' => 'string',
         'invoiceable_id' => 'integer',
+        'due_date' => 'date',
     ];
 
     public static array $rules = [

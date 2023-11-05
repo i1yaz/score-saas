@@ -6,6 +6,7 @@ use App\DataTables\StudentTutoringPackageDataTable;
 use App\Http\Requests\CreateStudentTutoringPackageRequest;
 use App\Http\Requests\UpdateStudentTutoringPackageRequest;
 use App\Mail\ParentInvoiceMailAfterStudentTutoringPackageCreation;
+use App\Models\Invoice;
 use App\Models\MonthlyInvoicePackage;
 use App\Models\Student;
 use App\Models\StudentTutoringPackage;
@@ -151,7 +152,7 @@ class StudentTutoringPackageController extends AppBaseController
     public function show($id)
     {
         $studentTutoringPackage = $this->studentTutoringPackageRepository->show($id);
-
+        $this->authorize('update', $studentTutoringPackage);
         if (empty($studentTutoringPackage)) {
             Flash::error('Student Tutoring Package not found');
 
@@ -169,11 +170,13 @@ class StudentTutoringPackageController extends AppBaseController
         $subjects = Subject::get(['id', 'name']);
         $studentTutoringPackage = StudentTutoringPackage::query()
             ->select(['student_tutoring_packages.*', 'students.email as student_email', 'tutoring_package_types.name as tutoring_package_type_name', 'tutoring_locations.name as tutoring_location_name'])
-            ->with(['subjects', 'tutors'])
+            ->with(['subjects', 'tutors','invoice'])
             ->join('students', 'students.id', '=', 'student_tutoring_packages.student_id')
             ->join('tutoring_package_types', 'tutoring_package_types.id', '=', 'student_tutoring_packages.tutoring_package_type_id')
             ->join('tutoring_locations', 'tutoring_locations.id', '=', 'student_tutoring_packages.tutoring_location_id')
             ->find($id);
+
+        $this->authorize('update', $studentTutoringPackage);
         $selectedSubjects = $studentTutoringPackage->subjects->pluck(['id'])->toArray();
         $selectedStudent[$studentTutoringPackage->student_id] = $studentTutoringPackage->student_email;
         $tutoringPackageType[$studentTutoringPackage->tutoring_package_type_id] = $studentTutoringPackage->tutoring_package_type_name;
@@ -202,9 +205,8 @@ class StudentTutoringPackageController extends AppBaseController
      */
     public function update($id, UpdateStudentTutoringPackageRequest $request)
     {
-
         $studentTutoringPackage = $this->studentTutoringPackageRepository->find($id);
-
+        $this->authorize('update', $studentTutoringPackage);
         if (empty($studentTutoringPackage)) {
             Flash::error('Student Tutoring Package not found');
 
@@ -258,8 +260,8 @@ class StudentTutoringPackageController extends AppBaseController
      */
     public function destroy($id)
     {
-        $studentTutoringPackage = $this->studentTutoringPackageRepository->find($id);
-
+        $studentTutoringPackage = $this->studentTutoringPackageRepository->show($id);
+        $this->authorize('delete', $studentTutoringPackage);
         if (empty($studentTutoringPackage)) {
             Flash::error('Student Tutoring Package not found');
 

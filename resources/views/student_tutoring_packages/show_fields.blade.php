@@ -61,7 +61,7 @@
 
                 <tr>
                     <td><strong> Discounted Amount</strong></td>
-                    <td>{{getDiscountedAmount($studentTutoringPackage->hourly_rate,$studentTutoringPackage->hours, $studentTutoringPackage->discount, $studentTutoringPackage->discount_type)}}</td>
+                    <td>{{getDiscountedAmount($studentTutoringPackage->hourly_rate,$studentTutoringPackage->hours, $studentTutoringPackage->discount??0, $studentTutoringPackage->discount_type)}}</td>
                 </tr>
                 @if($studentTutoringPackage->discount_type == \App\Models\StudentTutoringPackage::PERCENTAGE_DISCOUNT)
                     <tr>
@@ -72,7 +72,7 @@
                 <tr>
                     <td><strong> Final Price</strong></td>
                     <td>
-                        <strong>{{getPriceFromHoursAndHourlyWithDiscount($studentTutoringPackage->hours, $studentTutoringPackage->hourly_rate, $studentTutoringPackage->discount, $studentTutoringPackage->discount_type)}}</strong>
+                        <strong>{{getPriceFromHoursAndHourlyWithDiscount($studentTutoringPackage->hours, $studentTutoringPackage->hourly_rate, $studentTutoringPackage->discount??0, $studentTutoringPackage->discount_type)}}</strong>
                     </td>
                 </tr>
 {{--                <tr>--}}
@@ -138,7 +138,7 @@
                 <tr>
                     <td><strong> Invoice Total</strong></td>
                     <td>
-                        <strong>{{getPriceFromHoursAndHourlyWithDiscount($studentTutoringPackage->hourly_rate,$studentTutoringPackage->hours, $studentTutoringPackage->discount, $studentTutoringPackage->discount_type)}}</strong>
+                        <strong>{{getPriceFromHoursAndHourlyWithDiscount($studentTutoringPackage->hourly_rate,$studentTutoringPackage->hours, $studentTutoringPackage->discount??0, $studentTutoringPackage->discount_type)}}</strong>
                     </td>
                 </tr>
                 </tbody>

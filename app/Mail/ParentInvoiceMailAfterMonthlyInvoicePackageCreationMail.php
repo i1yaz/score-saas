@@ -14,7 +14,7 @@ class ParentInvoiceMailAfterMonthlyInvoicePackageCreationMail extends Mailable i
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public MonthlyInvoicePackage $monthlyInvoicePackage)
+    public function __construct(public  $monthlyInvoicePackage)
     {
     }
 
