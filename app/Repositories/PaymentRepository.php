@@ -14,6 +14,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Stripe\Checkout\Session;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -44,6 +45,7 @@ class PaymentRepository extends BaseRepository
         if (empty($sessionData)) {
             throw new UnprocessableEntityHttpException('Session not found');
         }
+        Log::channel('stripe_success')->info('Stripe session',json_decode(json_encode($sessionData ,true),true));
         $stripeID = $sessionData->id;
         $amountPaidInLastSession = $sessionData->amount_total / 100;
         $reference = $sessionData->client_reference_id;

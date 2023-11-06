@@ -7,6 +7,7 @@ use App\Http\Requests\UpdatePaymentRequest;
 use App\Repositories\PaymentRepository;
 use Flash;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class PaymentController extends AppBaseController
@@ -139,8 +140,9 @@ class PaymentController extends AppBaseController
         return redirect(route('invoices.index'));
     }
 
-    public function failed()
+    public function failed(Request $request)
     {
-        return view('payments.failed');
+        Log::channel('stripe_failure')->info('Something happened!');
+        dd($request->all());
     }
 }

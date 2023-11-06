@@ -49,7 +49,7 @@
                 </div>
             </div>
             <div class="card-footer">
-                {!! Form::submit('Save', ['class' => 'btn btn-primary','id'=>'btnPay']) !!}
+                {!! Form::submit('Pay', ['class' => 'btn btn-primary','id'=>'btnPay']) !!}
                 <a href="{{ route('invoices.index') }}" class="btn btn-default"> Cancel </a>
             </div>
 
