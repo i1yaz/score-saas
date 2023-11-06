@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DataTables\MonthlyInvoicePackageDataTable;
+use App\Http\Controllers\PaymentGateways\StripeController;
 use App\Http\Requests\CreateMonthlyInvoicePackageRequest;
 use App\Http\Requests\UpdateMonthlyInvoicePackageRequest;
 use App\Mail\ParentInvoiceMailAfterMonthlyInvoicePackageCreationMail;
@@ -97,6 +98,7 @@ class MonthlyInvoicePackageController extends AppBaseController
             $tutors = $input['tutor_ids'];
             $subjects = $input['subject_ids'];
             unset($input['tutor_ids'],$input['subject_ids']);
+
             $monthlyInvoicePackage = $this->monthlyInvoicePackageRepository->create($input);
             $monthlyInvoicePackage->tutors()->sync($tutors);
             $monthlyInvoicePackage->subjects()->sync($subjects);
@@ -112,6 +114,8 @@ class MonthlyInvoicePackageController extends AppBaseController
                 }
             }
             $redirectRoute = route('monthly-invoice-packages.show', ['monthly_invoice_package' => $monthlyInvoicePackage->id]);
+            $this->monthlyInvoicePackageRepository->createSubscription($monthlyInvoicePackage);
+
             if ($request->ajax()) {
                 return response()->json(['success' => true, 'message' => 'Monthly Invoice Package saved successfully.', 'redirectTo' => $redirectRoute]);
             }
