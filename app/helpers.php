@@ -875,7 +875,14 @@ if (! function_exists('getRemainingAmount')) {
 
             return formatAmountWithCurrency($final_amount - $invoice->amount_paid);
         }
+        if ($invoice->invoiceable_type == MonthlyInvoicePackage::class) {
 
+            $hours = $invoice->hours;
+            $hourly_rate = $invoice->tutoring_hourly_rate;
+            $discount = $invoice->discount;
+            $discount_type = $invoice->discount_type;
+            $final_amount = cleanAmountWithCurrencyFormat(getPriceFromHoursAndHourlyWithDiscount($hourly_rate, $hours, $discount, $discount_type));
+        }
         return 0;
     }
 }

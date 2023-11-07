@@ -7,6 +7,7 @@ use App\Models\Invoice;
 use App\Models\MonthlyInvoicePackage;
 use App\Models\NonInvoicePackage;
 use App\Models\ParentUser;
+use App\Models\Session;
 use App\Models\Student;
 use App\Models\StudentTutoringPackage;
 use Illuminate\Database\Eloquent\Builder;
@@ -103,6 +104,8 @@ class InvoiceDataTable implements IDataTables
     public static function populateRecords($records): array
     {
         $data = [];
+        $monthlyInvoicePackageIds = $records->where('invoiceable_type', NonInvoicePackage::class)->pluck('invoiceable_id')??null;
+        $sessions = Session::whereIn('monthly_invoice_package_id', $monthlyInvoicePackageIds)->get();
         if (! empty($records)) {
             foreach ($records as $invoice) {
                 $nestedData['invoice_id'] = getInvoiceCodeFromId($invoice->invoice_id);
