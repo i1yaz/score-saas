@@ -4,6 +4,8 @@ namespace App\Http\Controllers\PaymentGateways;
 
 use App\Http\Controllers\AppBaseController;
 use App\Models\Invoice;
+use App\Models\MonthlyInvoicePackage;
+use App\Models\MonthlyInvoiceSubscription;
 use App\Models\NonInvoicePackage;
 use App\Models\StudentTutoringPackage;
 use App\Repositories\StripeRepository;
@@ -124,6 +126,29 @@ class StripeController extends AppBaseController
         } catch (Exception $exception) {
             return $this->sendError($exception->getMessage());
         }
+    }
+
+    public function createSessionForSubscription(Request $request){
+        setStripeApiKey();
+        $priceId = MonthlyInvoicePackage::select(['monthly_invoice_subscriptions.subscription_id'])
+            ->join('monthly_invoice_subscriptions','monthly_invoice_subscriptions.monthly_invoice_package_id','monthly_invoice_packages.id')
+            ->where('monthly_invoice_package_id',$request->monthlyInvoicePackageId)->first();
+
+        $session = StripeSession::create([
+            'customer_email' => 'admin@admin.com',
+            'success_url' => route('payment-success').'?session_id={CHECKOUT_SESSION_ID}',
+            'cancel_url' => route('payment-failed').'?error=payment_cancelled',
+            'mode' => 'subscription',
+            'line_items' => [[
+                'price' => $priceId->subscription_id,
+            ]],
+        ]);
+
+        $result = [
+            'sessionId' => $session['id'],
+        ];
+
+        return $this->sendResponse($result, 'Session created successfully.');
     }
 
     public function handleFailedPayment(): RedirectResponse

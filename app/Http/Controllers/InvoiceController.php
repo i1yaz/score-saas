@@ -7,6 +7,7 @@ use App\Http\Requests\CreateInvoiceRequest;
 use App\Http\Requests\UpdateInvoiceRequest;
 use App\Models\Invoice;
 use App\Models\LineItem;
+use App\Models\MonthlyInvoicePackage;
 use App\Models\Payment;
 use App\Models\Tax;
 use App\Repositories\InvoiceRepository;
@@ -27,7 +28,6 @@ class InvoiceController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $this->authorize('viewAny', Invoice::class);
         if ($request->ajax()) {
             $columns = [
                 'invoice_id',
@@ -175,19 +175,16 @@ class InvoiceController extends AppBaseController
 
             return redirect(route('invoices.index'));
         }
+        $stripeKey = config('services.stripe.key');
+        $paymentModes = $this->invoiceRepository->getPaymentGateways();
+
         if ($request->type === 'non-package-invoice') {
             $invoice = $this->invoiceRepository->showNonPackageInvoice($invoice);
-
-            $stripeKey = config('services.stripe.key');
-            $paymentModes = $this->invoiceRepository->getPaymentGateways();
 
             return view('invoices.non-package-payment-create', ['invoice' => $invoice, 'stripeKey' => $stripeKey, 'paymentModes' => $paymentModes]);
         }
         if ($request->type === 'tutoring-package') {
             $invoice = $this->invoiceRepository->showTutoringPackageInvoice($invoice);
-            $stripeKey = config('services.stripe.key');
-            $paymentModes = $this->invoiceRepository->getPaymentGateways();
-
             $totalAmount = cleanAmountWithCurrencyFormat(getPriceFromHoursAndHourlyWithDiscount($invoice->hourly_rate, $invoice->hours, $invoice->discount, $invoice->discount_type));
             $remainingAmount = $totalAmount - $invoice->amount_paid ?? 0;
 
@@ -198,7 +195,17 @@ class InvoiceController extends AppBaseController
                 'totalAmount' => $totalAmount,
                 'remainingAmount' => $remainingAmount]);
         }
-        //        return view('invoices.payment-create',['invoice'=>$invoice]);
+        if ($request->type === 'monthly-invoice-package'){
+            $invoice = $this->invoiceRepository->showMonthlyInvoicePackage($invoice);
+            $monthlyInvoicePackage = MonthlyInvoicePackage::select(['id','hourly_rate'])->findOrFail($invoice->monthly_invoice_package_id);
+            $price = (getTotalInvoicePriceFromMonthlyInvoicePackage($monthlyInvoicePackage));
+            return view('invoices.monthly-invoice-package-payment-create', [
+                'monthlyInvoicePackageId' => $invoice->monthly_invoice_package_id,
+                'stripeKey' => $stripeKey,
+                'paymentModes' => $paymentModes,
+                'subscriptionAmount' => $price,
+                ]);
+        }
     }
 
     public function showPublicInvoice($invoice, $type = null)

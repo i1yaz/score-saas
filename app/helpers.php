@@ -507,9 +507,13 @@ if (! function_exists('getTotalChargedTimeFromStudentTutoringPackageInSeconds'))
     }
 }
 if (! function_exists('getTotalChargedTimeFromMonthlyInvoicePackageInSeconds')) {
-    function getTotalChargedTimeFromMonthlyInvoicePackageInSeconds(MonthlyInvoicePackage $monthlyInvoicePackage): float|int
+    function getTotalChargedTimeFromMonthlyInvoicePackageInSeconds(MonthlyInvoicePackage $monthlyInvoicePackage,$sessions = null,string|Carbon $month=null): float|int
     {
-        $sessions = \App\Models\Session::where('monthly_invoice_package_id', $monthlyInvoicePackage->id)->get();
+        if (empty($sessions)){
+            $sessions = \App\Models\Session::where('monthly_invoice_package_id', $monthlyInvoicePackage->id)
+                ->whereMonth('scheduled_date',$month ?? Carbon::now()->month)
+                ->get();
+        }
         $totalChargedTime = 0;
         foreach ($sessions as $session) {
             $totalChargedTime += getTotalChargedTimeInSecondsFromSession($session);
@@ -517,6 +521,16 @@ if (! function_exists('getTotalChargedTimeFromMonthlyInvoicePackageInSeconds')) 
         }
 
         return $totalChargedTime;
+    }
+}
+if (!function_exists('getTotalInvoicePriceForMonthlyInvoicePackageFromSessions')){
+    function getTotalInvoicePriceForMonthlyInvoicePackageFromSessions(MonthlyInvoicePackage $monthlyInvoicePackage,$sessions): string
+    {
+        $totalChargedTime = getTotalChargedTimeFromMonthlyInvoicePackageInSeconds($monthlyInvoicePackage,sessions:$sessions);
+        $hourlyRate = $monthlyInvoicePackage->hourly_rate;
+        $totalChargedTime = $totalChargedTime * ($hourlyRate / 3600);
+
+        return formatAmountWithCurrency($totalChargedTime);
     }
 }
 if (! function_exists('getTotalInvoicePriceFromMonthlyInvoicePackage')) {

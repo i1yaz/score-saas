@@ -340,4 +340,36 @@ class InvoiceRepository extends BaseRepository
 
         return $model;
     }
+
+    public function showMonthlyInvoicePackage($id)
+    {
+        $invoice = Invoice::query()->select(
+            [
+                'invoices.id as invoice_id',
+                'monthly_invoice_packages.id as monthly_invoice_package_id'
+            ])
+            ->leftJoin('payments', 'payments.invoice_id', 'invoices.id')
+            ->leftJoin('monthly_invoice_packages', function ($q) {
+                $q->on('invoices.invoiceable_id', '=', 'monthly_invoice_packages.id')->where('invoices.invoiceable_type', '=', MonthlyInvoicePackage::class);
+            })
+            ->leftJoin('students', 'students.id', 'monthly_invoice_packages.student_id')
+            ->leftJoin('parents', 'parents.id', 'students.parent_id');
+
+        if (Auth::user()->hasRole('student') && Auth::user() instanceof Student) {
+            $invoice = $invoice->where(function ($q) {
+                $q->where('monthly_invoice_packages.student_id', Auth::id());
+            });
+        }
+        if (Auth::user()->hasRole('parent') && Auth::user() instanceof ParentUser) {
+            $invoice = $invoice->where(function ($q) {
+                $q->where('parents.id', Auth::id());
+            });
+        }
+
+        $invoice = $invoice->where('invoices.id', $id)->first();
+        if (empty($invoice->invoice_id)){
+            abort(403, 'Unauthorized action.');
+        }
+        return $invoice;
+    }
 }
