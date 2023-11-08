@@ -188,6 +188,10 @@ class StripeController extends AppBaseController
              $this->stripeRepository->stripePaymentSuccessfulyCompleted($sessionData);
                 return response('success',200);
         }
+        if ($payload['type']==='charge.refunded'){
+            \Log::channel('stripe_success')->info('charge.refunded',$request->all());
+
+        }
         return response('webhook processing failed',500);
     }
 }
