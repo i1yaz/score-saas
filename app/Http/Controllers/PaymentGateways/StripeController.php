@@ -15,6 +15,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Laracasts\Flash\Flash;
 use Stripe\Checkout\Session as StripeSession;
+use Stripe\PaymentIntent;
 use Stripe\Subscription;
 
 class StripeController extends AppBaseController
@@ -178,5 +179,15 @@ class StripeController extends AppBaseController
         Flash::error('Your Payment is Cancelled');
 
         return redirect()->route('client.invoices.index');
+    }
+    public function webhooks(Request $request){
+        $payload = $request->all();
+        if($payload['type'] === 'checkout.session.completed'){
+            \Log::channel('stripe_success')->info('checkout.session.completed',$request->all());
+            $sessionData = $payload['data']['object'];
+             $this->stripeRepository->stripePaymentSuccessfulyCompleted($sessionData);
+                return response('success',200);
+        }
+        return response('webhook processing failed',500);
     }
 }

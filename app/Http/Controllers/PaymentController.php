@@ -134,8 +134,7 @@ class PaymentController extends AppBaseController
         if (empty($sessionId)) {
             throw new UnprocessableEntityHttpException('session_id required');
         }
-        $this->paymentRepository->stripePaymentSuccess($sessionId);
-        Flash::success('Invoice Paid successfully.');
+        Flash::success('Checkout sessions completed successfully your payment status will update soon.');
 
         return redirect(route('invoices.index'));
     }

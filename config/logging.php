@@ -74,16 +74,16 @@ return [
         ],
         'stripe_success' => [
             'driver' => 'daily',
-            'path' => storage_path('logs/laravel-success.log'),
+            'path' => storage_path('logs/webhooks-success/stripe-success.log'),
             'level' => env('LOG_LEVEL', 'debug'),
-            'days' => 14,
+            'days' => 60,
             'replace_placeholders' => true,
         ],
         'stripe_failure' => [
             'driver' => 'daily',
-            'path' => storage_path('logs/stripe-failure.log'),
+            'path' => storage_path('logs/webhooks-failed/stripe-failure.log'),
             'level' => env('LOG_LEVEL', 'debug'),
-            'days' => 14,
+            'days' => 60,
             'replace_placeholders' => true,
         ],
         'slack' => [
