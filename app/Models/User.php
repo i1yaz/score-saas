@@ -68,4 +68,14 @@ class User extends Authenticatable implements LaratrustUser
     {
         $query->where('status', false);
     }
+
+    /**
+     *------------------------------------------------------------------
+     * Accessor
+     *------------------------------------------------------------------
+     */
+    public function getFullNameAttribute(): string
+    {
+        return "{$this->first_name}  {$this->last_name}";
+    }
 }

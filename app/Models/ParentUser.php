@@ -101,4 +101,8 @@ class ParentUser extends Authenticatable implements LaratrustUser
     {
         return getFamilyCodeFromId($this->id);
     }
+    public function getFullNameAttribute(): string
+    {
+        return "{$this->first_name}  {$this->last_name}";
+    }
 }

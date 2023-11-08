@@ -114,7 +114,7 @@ class MonthlyInvoicePackageController extends AppBaseController
                 }
             }
             $redirectRoute = route('monthly-invoice-packages.show', ['monthly_invoice_package' => $monthlyInvoicePackage->id]);
-            $this->monthlyInvoicePackageRepository->createSubscription($monthlyInvoicePackage);
+            $this->monthlyInvoicePackageRepository->createStripeSubscription($monthlyInvoicePackage);
 
             if ($request->ajax()) {
                 return response()->json(['success' => true, 'message' => 'Monthly Invoice Package saved successfully.', 'redirectTo' => $redirectRoute]);

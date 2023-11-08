@@ -8,12 +8,14 @@ use App\Models\MonthlyInvoicePackage;
 use App\Models\MonthlyInvoiceSubscription;
 use App\Models\NonInvoicePackage;
 use App\Models\StudentTutoringPackage;
+use App\Models\User;
 use App\Repositories\StripeRepository;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Laracasts\Flash\Flash;
 use Stripe\Checkout\Session as StripeSession;
+use Stripe\Subscription;
 
 class StripeController extends AppBaseController
 {
@@ -57,6 +59,7 @@ class StripeController extends AppBaseController
             ->where('invoices.id', $request->invoiceId)->firstOrFail();
 
         if ($invoice->invoiceable_type == NonInvoicePackage::class) {
+            $invoiceType = 3;
             $payable_amount = $invoice->final_amount - $invoice->amount_paid;
             $userEmail = NonInvoicePackage::query()
                 ->select(['clients.email'])
@@ -65,6 +68,7 @@ class StripeController extends AppBaseController
             $packageCode = getNonInvoicePackageCodeFromId($invoice->invoiceable_id);
         }
         if ($invoice->invoiceable_type == StudentTutoringPackage::class) {
+            $invoiceType = 1;
             $payable_amount = cleanAmountWithCurrencyFormat(getPriceFromHoursAndHourlyWithDiscount($invoice->stp_hourly_rate, $invoice->stp_hours, $invoice->stp_discount, $invoice->stp_discount_type));
             $userEmail = StudentTutoringPackage::query()
                 ->select(['students.email'])
@@ -113,7 +117,7 @@ class StripeController extends AppBaseController
                     'description' => 'Bill invoice #'.$invoiceCode,
                 ],
                 'billing_address_collection' => 'auto',
-                'client_reference_id' => "{$invoiceId}-{$userId}-{$guard}",
+                'client_reference_id' => "{$invoiceType}-{$invoiceId}-{$userId}-{$guard}",
                 'mode' => 'payment',
                 'success_url' => route('payment-success').'?session_id={CHECKOUT_SESSION_ID}',
                 'cancel_url' => route('payment-failed').'?error=payment_cancelled',
@@ -130,18 +134,36 @@ class StripeController extends AppBaseController
 
     public function createSessionForSubscription(Request $request){
         setStripeApiKey();
-        $priceId = MonthlyInvoicePackage::select(['monthly_invoice_subscriptions.subscription_id'])
+        $monthlyInvoicePackage = MonthlyInvoicePackage::select(['monthly_invoice_subscriptions.subscription_id','monthly_invoice_subscriptions.stripe_price_id','monthly_invoice_package_id'])
             ->join('monthly_invoice_subscriptions','monthly_invoice_subscriptions.monthly_invoice_package_id','monthly_invoice_packages.id')
             ->where('monthly_invoice_package_id',$request->monthlyInvoicePackageId)->first();
-
+        $userId = \Auth::id() ?? 'none';
+        $guard = \Auth::guard()->name ?? 'none';
+        $monthlyInvoiceSubscription = MonthlyInvoiceSubscription::where('monthly_invoice_package_id',$request->monthlyInvoicePackageId)->first();
+        if ($monthlyInvoiceSubscription->payment_gateway == 'stripe' && empty($monthlyInvoicePackage->subscription_id)) {
+            $subscription = Subscription::create([
+                'customer' => getStripeCustomerIdFromUser(\Auth::user()),
+                'items' => [
+                    [
+                        'price' => $monthlyInvoicePackage->stripe_price_id,
+                    ]
+                ],
+            ]);
+            $monthlyInvoiceSubscription->subscription_id = $subscription->id;
+            $monthlyInvoiceSubscription->save();
+        }
+        $invoiceType = 3;
         $session = StripeSession::create([
             'customer_email' => 'admin@admin.com',
             'success_url' => route('payment-success').'?session_id={CHECKOUT_SESSION_ID}',
             'cancel_url' => route('payment-failed').'?error=payment_cancelled',
             'mode' => 'subscription',
-            'line_items' => [[
-                'price' => $priceId->subscription_id,
-            ]],
+            'line_items' => [
+                [
+                    'price' =>  $monthlyInvoicePackage->stripe_price_id,
+                ]
+            ],
+            'client_reference_id' => "{$invoiceType}-{$request->monthlyInvoicePackageId}-{$userId}-{$guard}",
         ]);
 
         $result = [

@@ -41,7 +41,7 @@ class CreateFailedSubscriptions extends Command
         foreach ($monthlyInvoiceSubscriptions as $monthlyInvoiceSubscription) {
             $monthlyInvoiceRepo = new MonthlyInvoicePackageRepository();
             try {
-                $monthlyInvoiceSubscriptionResponse = $monthlyInvoiceRepo->createSubscription($monthlyInvoiceSubscription);
+                $monthlyInvoiceSubscriptionResponse = $monthlyInvoiceRepo->createStripeSubscription($monthlyInvoiceSubscription);
                 if ($monthlyInvoiceSubscriptionResponse instanceof MonthlyInvoiceSubscription) {
                     $this->info('Subscription for invoice package id ' . $monthlyInvoiceSubscription->id . ' created successfully');
                 } else {

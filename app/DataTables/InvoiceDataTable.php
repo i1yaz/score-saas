@@ -122,6 +122,7 @@ class InvoiceDataTable implements IDataTables
                 $nestedData['amount_paid'] = formatAmountWithCurrency($invoice->amount_paid);
                 if ($invoice->invoiceable_type===MonthlyInvoicePackage::class){
                     $sessions = $allSessions->where('monthly_invoice_package_id',$invoice->invoiceable_id);
+                    $chargedTime = 0;
                     foreach ($sessions as $session){
                         $chargedTime = getTotalChargedTimeInSecondsFromSession($session);
                     }

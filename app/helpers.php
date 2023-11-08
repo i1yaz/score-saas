@@ -13,9 +13,11 @@ use App\Models\Tutor;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Stripe\Customer;
 use Stripe\Stripe;
 
 if (! function_exists('booleanSelect')) {
@@ -509,6 +511,7 @@ if (! function_exists('getTotalChargedTimeFromStudentTutoringPackageInSeconds'))
 if (! function_exists('getTotalChargedTimeFromMonthlyInvoicePackageInSeconds')) {
     function getTotalChargedTimeFromMonthlyInvoicePackageInSeconds(MonthlyInvoicePackage $monthlyInvoicePackage,$sessions = null,string|Carbon $month=null): float|int
     {
+
         if (empty($sessions)){
             $sessions = \App\Models\Session::where('monthly_invoice_package_id', $monthlyInvoicePackage->id)
                 ->whereMonth('scheduled_date',$month ?? Carbon::now()->month)
@@ -911,5 +914,21 @@ if (! function_exists('getPaymentGatewayNameFromId')) {
         }
 
         return '';
+    }
+}
+if (! function_exists('getStripeCustomerIdForLoggedInUser')) {
+    function getStripeCustomerIdFromUser(Authenticatable $user): string
+    {
+        if (!empty($user->stripe_customer_id)) {
+            return $user->stripe_customer_id;
+        } else{
+            $customer = Customer::create([
+                'name' => Auth::user()->fullName,
+                'email' => Auth::user()->email,
+            ]);
+            $user->stripe_customer_id = $customer->id;
+            $user->save();
+            return $customer->id;
+        }
     }
 }

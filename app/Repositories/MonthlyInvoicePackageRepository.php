@@ -100,7 +100,7 @@ class MonthlyInvoicePackageRepository extends BaseRepository
         return $model;
     }
 
-    public function createSubscription(MonthlyInvoicePackage $monthlyInvoicePackage,$gateway='stripe')
+    public function createStripeSubscription(MonthlyInvoicePackage $monthlyInvoicePackage,$gateway='stripe')
     {
         try {
             setStripeApiKey();
@@ -122,7 +122,7 @@ class MonthlyInvoicePackageRepository extends BaseRepository
             $monthlyInvoiceSubscription = new MonthlyInvoiceSubscription();
             $monthlyInvoiceSubscription->monthly_invoice_package_id = $monthlyInvoicePackage->id;
             $monthlyInvoiceSubscription->payment_gateway = $gateway;
-            $monthlyInvoiceSubscription->subscription_id = $stripePrice->id;
+            $monthlyInvoiceSubscription->stripe_price_id = $stripePrice->id;
             $monthlyInvoiceSubscription->start_date = $monthlyInvoicePackage->due_date??Carbon::today();
             $monthlyInvoiceSubscription->frequency = $stripePrice->recurring->interval;
             $monthlyInvoiceSubscription->metadata = json_encode($stripePrice);
