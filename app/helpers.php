@@ -879,8 +879,9 @@ if (! function_exists('getRemainingAmount')) {
     function getRemainingAmount(Invoice $invoice)
     {
         if ($invoice->invoiceable_type == NonInvoicePackage::class) {
-
-            return formatAmountWithCurrency($invoice->final_amount - $invoice->amount_paid);
+            $remainingAmount = $invoice->final_amount - $invoice->amount_paid;
+            $remainingAmount = $remainingAmount + $invoice->amount_refunded;
+            return formatAmountWithCurrency($remainingAmount);
         }
         if ($invoice->invoiceable_type == StudentTutoringPackage::class) {
 
@@ -889,7 +890,7 @@ if (! function_exists('getRemainingAmount')) {
             $discount = $invoice->discount;
             $discount_type = $invoice->discount_type;
             $final_amount = cleanAmountWithCurrencyFormat(getPriceFromHoursAndHourlyWithDiscount($hourly_rate, $hours, $discount, $discount_type));
-
+            $final_amount = $final_amount + $invoice->amount_refunded;
             return formatAmountWithCurrency($final_amount - $invoice->amount_paid);
         }
         if ($invoice->invoiceable_type == MonthlyInvoicePackage::class) {

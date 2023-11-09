@@ -73,6 +73,7 @@ class InvoiceRepository extends BaseRepository
                 'clients.email as client_email',
             ])
             ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount ELSE 0 END) AS amount_paid')
+            ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount_refunded ELSE 0 END) AS amount_refunded')
             ->leftJoin('student_tutoring_packages', function ($q) {
                 $q->on('invoices.invoiceable_id', '=', 'student_tutoring_packages.id')->where('invoices.invoiceable_type', '=', StudentTutoringPackage::class);
             })
@@ -258,6 +259,7 @@ class InvoiceRepository extends BaseRepository
                 'non_invoice_packages.allow_partial_payment',
             ])
             ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount ELSE 0 END) AS amount_paid')
+            ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount_refunded ELSE 0 END) AS amount_refunded')
             ->leftJoin('payments', 'payments.invoice_id', 'invoices.id')
             ->leftJoin('non_invoice_packages', function ($q) {
                 $q->on('invoices.invoiceable_id', '=', 'non_invoice_packages.id')->where('invoices.invoiceable_type', '=', NonInvoicePackage::class);
@@ -303,6 +305,7 @@ class InvoiceRepository extends BaseRepository
                 'student_tutoring_packages.allow_partial_payment',
             ])
             ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount ELSE 0 END) AS amount_paid')
+            ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount_refunded ELSE 0 END) AS amount_refunded')
             ->leftJoin('payments', 'payments.invoice_id', 'invoices.id')
             ->leftJoin('student_tutoring_packages', function ($q) {
                 $q->on('invoices.invoiceable_id', '=', 'student_tutoring_packages.id')->where('invoices.invoiceable_type', '=', StudentTutoringPackage::class);

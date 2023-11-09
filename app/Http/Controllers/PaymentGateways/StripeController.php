@@ -48,6 +48,7 @@ class StripeController extends AppBaseController
 
                 ])
             ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount ELSE 0 END) AS amount_paid')
+            ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount_refunded ELSE 0 END) AS amount_refunded')
             ->leftJoin('payments', 'payments.invoice_id', '=', 'invoices.id')
             ->leftJoin('non_invoice_packages', function ($q) {
                 $q->on('non_invoice_packages.id', '=', 'invoices.invoiceable_id')
@@ -190,6 +191,9 @@ class StripeController extends AppBaseController
         }
         if ($payload['type']==='charge.refunded'){
             \Log::channel('stripe_success')->info('charge.refunded',$request->all());
+            $this->stripeRepository->stripeRefundPayment($request->all());
+            return response('success',200);
+
 
         }
         return response('webhook processing failed',500);

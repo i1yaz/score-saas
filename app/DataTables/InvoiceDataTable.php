@@ -49,6 +49,7 @@ class InvoiceDataTable implements IDataTables
                 'clients.email as client_email',
             ])
             ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount ELSE 0 END) AS amount_paid')
+            ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount_refunded ELSE 0 END) AS amount_refunded')
             ->leftJoin('student_tutoring_packages', function ($q) {
                 $q->on('invoices.invoiceable_id', '=', 'student_tutoring_packages.id')->where('invoices.invoiceable_type', '=', StudentTutoringPackage::class);
             })
@@ -119,7 +120,7 @@ class InvoiceDataTable implements IDataTables
                 //                $nestedData['parent'] = $invoice->parent_email??$invoice->parent_email_p2;
                 $nestedData['created_at'] = formatDate($invoice->invoice_created_at);
                 $nestedData['due_date'] = formatDate($invoice->due_date);
-                $nestedData['amount_paid'] = formatAmountWithCurrency($invoice->amount_paid);
+                $nestedData['amount_paid'] = formatAmountWithCurrency(($invoice->amount_paid - $invoice->amount_refunded));
                 if ($invoice->invoiceable_type===MonthlyInvoicePackage::class){
                     $sessions = $allSessions->where('monthly_invoice_package_id',$invoice->invoiceable_id);
                     $chargedTime = 0;

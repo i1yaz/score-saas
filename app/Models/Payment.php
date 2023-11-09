@@ -33,6 +33,7 @@ class Payment extends Model
         'invoice_id',
         'amount',
         'payment_gateway_id',
+        'payment_intent',
         'status',
         'meta',
         'paid_by_id',

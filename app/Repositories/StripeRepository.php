@@ -36,6 +36,7 @@ class StripeRepository
         $invoice = Invoice::query()
             ->select(['invoices.id as invoice_id', 'invoiceable_type', 'invoiceable_id'])
             ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount ELSE 0 END) AS amount_paid')
+            ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount_refunded ELSE 0 END) AS amount_refunded')
             ->leftJoin('payments', 'payments.invoice_id', '=', 'invoices.id')
             ->findOrFail($invoiceId);
         $paymentStatus = Payment::PENDING;
@@ -67,6 +68,7 @@ class StripeRepository
             'amount' => $amountPaidInLastSession,
             'paid_by_id' => $userId,
             'paid_by_modal' => getAuthModelFromGuard($authGuard),
+            'payment_intent' => $sessionData['payment_intent'],
         ];
 
         try {
@@ -98,5 +100,25 @@ class StripeRepository
         }
 
         return $sessionData;
+    }
+
+    public function stripeRefundPayment(array $refundAmountData)
+    {
+        DB::beginTransaction();
+        try {
+            $refundAmountData = $refundAmountData['data']['object'];
+            $payment = Payment::where('payment_intent',$refundAmountData['payment_intent'])->firstOrFail();
+            $RefundedPayment = $payment->replicate();
+            $RefundedPayment->amount = 0;
+            $RefundedPayment->amount_refunded = $refundAmountData['amount_refunded']/100;
+            $RefundedPayment->save();
+            Invoice::where('id',$payment->invoice_id)->update(['paid_status'=>Invoice::PARTIAL_PAYMENT]);
+            DB::commit();
+        }catch (Exception $e){
+            DB::rollBack();
+            report($e);
+            throw new UnprocessableEntityHttpException($e->getMessage());
+        }
+
     }
 }
