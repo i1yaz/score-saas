@@ -3,12 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
-class MonthlyInvoicePackage extends Model
+class MonthlyInvoicePackage extends BaseModel
 {
     use HasFactory;
 
@@ -22,12 +21,16 @@ class MonthlyInvoicePackage extends Model
 
     const PERCENTAGE_DISCOUNT = 2;
 
-    public $fillable = [
+    const SUBSCRIPTION_ACTIVE=1;
+    const SUBSCRIPTION_INACTIVE=0;
+
+
+    protected $fillable = [
         'student_id',
         'notes',
         'internal_notes',
         'start_date',
-        'due_date'.
+        'due_date',
         'hourly_rate',
         'tutor_hourly_rate',
         'tutoring_location_id',

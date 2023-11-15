@@ -39,7 +39,7 @@ class MonthlyInvoicePackageRepository extends BaseRepository
         $input['auth_guard'] = Auth::guard()->name;
         $input['added_by'] = Auth::id();
         $model = $this->model->newInstance($input);
-        $model->due_date = $input['due_date'];
+
         $model->save();
         return $model;
     }
@@ -93,7 +93,6 @@ class MonthlyInvoicePackageRepository extends BaseRepository
         $model = $query->findOrFail($id);
 
         $model->fill($input);
-        $model->due_date = $input['due_date'];
 
         $model->save();
 
@@ -103,29 +102,10 @@ class MonthlyInvoicePackageRepository extends BaseRepository
     public function createStripeSubscription(MonthlyInvoicePackage $monthlyInvoicePackage,$gateway='stripe')
     {
         try {
-            setStripeApiKey();
-            $stripePrice = Price::create([
-                'product_data' => [
-                    'name' => getMonthlyInvoicePackageCodeFromId($monthlyInvoicePackage->id),
-                    'statement_descriptor' => 'MIP #'.getMonthlyInvoicePackageCodeFromId($monthlyInvoicePackage->id),
-                ],
-                'currency' => 'USD',
-                'billing_scheme' => 'per_unit',
-                'unit_amount' => $monthlyInvoicePackage->hourly_rate * 100,
-                'recurring' => [
-                    'interval' => 'day',
-                    'usage_type' => 'metered'
-                ],
-            ]);
-
-            \Log::channel('stripe_success')->info('Monthly Invoice Package Subscription Created', json_decode(json_encode($stripePrice ,true),true));
             $monthlyInvoiceSubscription = new MonthlyInvoiceSubscription();
             $monthlyInvoiceSubscription->monthly_invoice_package_id = $monthlyInvoicePackage->id;
             $monthlyInvoiceSubscription->payment_gateway = $gateway;
-            $monthlyInvoiceSubscription->stripe_price_id = $stripePrice->id;
             $monthlyInvoiceSubscription->start_date = $monthlyInvoicePackage->due_date??Carbon::today();
-            $monthlyInvoiceSubscription->frequency = $stripePrice->recurring->interval;
-            $monthlyInvoiceSubscription->metadata = json_encode($stripePrice);
             $monthlyInvoiceSubscription->save();
             return $monthlyInvoiceSubscription;
         }catch (\Exception $e){

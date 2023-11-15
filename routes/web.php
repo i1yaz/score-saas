@@ -194,7 +194,8 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], functio
 
     Route::get('payments', [PaymentController::class, 'index'])->name('payments.index')->middleware(['permission:payment-index']);
     Route::post('payment/stripe', [StripeController::class, 'createSession'])->name('client.stripe-payment');
-    Route::post('payment/stripe-subscribe', [StripeController::class, 'createSessionForSubscription'])->name('client.stripe-subscribe');
+    Route::post('payment/stripe-subscribe', [StripeController::class, 'createSessionForSubscription'])->name('client.stripe-monthly-subscription');
+    Route::post('payment/stripe-cancel-subscription', [StripeController::class, 'cancelMonthlyInvoicePackageSubscription'])->name('client.stripe-cancel-monthly-subscription');
 
     Route::get('payments/create', [PaymentController::class, 'create'])->name('payments.create')->middleware(['permission:payment-create']);
     Route::post('payments', [PaymentController::class, 'store'])->name('payments.store')->middleware(['permission:payment-create']);

@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateInvoiceRequest;
 use App\Models\Invoice;
 use App\Models\LineItem;
 use App\Models\MonthlyInvoicePackage;
+use App\Models\MonthlyInvoiceSubscription;
 use App\Models\Payment;
 use App\Models\Tax;
 use App\Repositories\InvoiceRepository;
@@ -187,7 +188,7 @@ class InvoiceController extends AppBaseController
             $invoice = $this->invoiceRepository->showTutoringPackageInvoice($invoice);
             $totalAmount = cleanAmountWithCurrencyFormat(getPriceFromHoursAndHourlyWithDiscount($invoice->hourly_rate, $invoice->hours, $invoice->discount, $invoice->discount_type));
             $remainingAmount = $totalAmount - $invoice->amount_paid ?? 0;
-
+            $remainingAmount = $remainingAmount + $invoice->amount_refunded;
             return view('invoices.tutoring-package-payment-create', [
                 'invoice' => $invoice,
                 'stripeKey' => $stripeKey,
@@ -198,12 +199,14 @@ class InvoiceController extends AppBaseController
         if ($request->type === 'monthly-invoice-package'){
             $invoice = $this->invoiceRepository->showMonthlyInvoicePackage($invoice);
             $monthlyInvoicePackage = MonthlyInvoicePackage::select(['id','hourly_rate'])->findOrFail($invoice->monthly_invoice_package_id);
+            $subscription = MonthlyInvoiceSubscription::select('subscription_id')->where('monthly_invoice_package_id', $invoice->monthly_invoice_package_id)->firstOrFail();
             $price = (getTotalInvoicePriceFromMonthlyInvoicePackage($monthlyInvoicePackage));
             return view('invoices.monthly-invoice-package-payment-create', [
                 'monthlyInvoicePackageId' => $invoice->monthly_invoice_package_id,
                 'stripeKey' => $stripeKey,
                 'paymentModes' => $paymentModes,
                 'subscriptionAmount' => $price,
+                'subscriptionId' => $subscription->subscription_id,
                 ]);
         }
     }

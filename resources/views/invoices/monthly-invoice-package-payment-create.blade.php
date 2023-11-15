@@ -1,5 +1,7 @@
 @extends('layouts.app')
-
+@push('page_css')
+    <link rel="stylesheet" href="{{ asset('plugins/sweetalert2/sweetalert2.min.css') }}"/>
+@endpush
 @section('content')
     <section class="content-header">
         <div class="container-fluid">
@@ -25,7 +27,7 @@
                 <h3 class="card-title">Invoice Pay
                 </h3>
             </div>
-            {!! Form::open(['route' => 'invoices.store','id'=>'non-package-invoice-package-form','id' => 'payment-form']) !!}
+
 
             <div class="card-body">
 
@@ -42,23 +44,28 @@
                 </div>
             </div>
             <div class="card-footer">
-                {!! Form::submit('Subscribe', ['class' => 'btn btn-primary','id'=>'btnPay']) !!}
+                @if(empty($subscriptionId))
+                    {!! Form::button('Subscribe', ['class' => 'btn btn-primary','id'=>'btnPay']) !!}
+                @else
+                    {!! Form::button('Cancel Subscription', ['class' => 'btn btn-primary','id'=>'cancel-subscription']) !!}
+                @endif
+
                 <a href="{{ route('invoices.index') }}" class="btn btn-default"> Cancel </a>
             </div>
 
-            {!! Form::close() !!}
         </div>
     </div>
     @push('page_scripts')
+        <script src="{{ asset('plugins/sweetalert2/sweetalert2.min.js') }}"></script>
         <script src="https://js.stripe.com/v3/"></script>
         <script>
             @if(!empty($stripeKey))
             let stripe = Stripe('{{  $stripeKey ?? config('services.stripe.key') }}');
             @endif
-            let invoiceStripePaymentUrl = '{{ route('client.stripe-subscribe') }}';
 
-
-            $(document).on("submit", "#payment-form", function (e) {
+            @if(empty($subscriptionId))
+            let subscribeMonthlyPackage = '{{ route('client.stripe-monthly-subscription') }}';
+            $(document).on("click", "#btnPay", function (e) {
                 e.preventDefault();
                 let paymentMode = $('#payment-mode').find(":selected").val()
 
@@ -70,8 +77,9 @@
                 };
 
                 if (paymentMode === 'stripe') {
-                    $.post(invoiceStripePaymentUrl, payloadData)
+                    $.post(subscribeMonthlyPackage, payloadData)
                         .done((result) => {
+                            toastr.success(result.message);
                             let sessionId = result.data.sessionId;
                             stripe
                                 .redirectToCheckout({
@@ -80,14 +88,58 @@
                                 .then(function (result) {
                                     ToggleBtnLoader(btnSubmitEle);
                                 });
+
                         })
                         .catch((error) => {
-                            toastr.error(error.message);
+                            let response = error.responseJSON
+                            toastr.error(response.message);
                             ToggleBtnLoader(btnSubmitEle);
                         });
                 }
                 ToggleBtnLoader(btnSubmitEle);
             });
+            @else
+            let cancelMonthlySubscription = '{{ route('client.stripe-cancel-monthly-subscription') }}';
+            $(document).on("click", "#cancel-subscription", function (e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Are you sure you want to cancel subscription?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, cancel subscription!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let paymentMode = $('#payment-mode').find(":selected").val()
+
+                        let btnSubmitEle = $("#cancel-subscription");
+                        ToggleBtnLoader(btnSubmitEle);
+                        let payloadData = {
+                            _token: "{{ csrf_token() }}",
+                            monthlyInvoicePackageId: "{{ $monthlyInvoicePackageId }}",
+                        };
+
+                        if (paymentMode === 'stripe') {
+                            $.post(cancelMonthlySubscription, payloadData)
+                                .done((result) => {
+                                    toastr.success(result.message);
+                                    location.reload();
+
+                                })
+                                .catch((error) => {
+                                    let response = error.responseJSON
+                                    toastr.error(response.message);
+                                    ToggleBtnLoader(btnSubmitEle);
+                                });
+                        }
+                        ToggleBtnLoader(btnSubmitEle);
+                    }
+                });
+
+            });
+            @endif
         </script>
     @endpush
 @endsection

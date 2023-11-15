@@ -823,11 +823,16 @@ if (! function_exists('getInvoiceCodeFromInvoiceableType')) {
     }
 }
 if (! function_exists('setStripeApiKey')) {
-    function setStripeApiKey()
+    function setStripeApiKey($getClient=false)
     {
         $stripeSecretKey = config('services.stripe.secret_key');
         //        $stripeSecret = getSettingValue('stripe_secret');
-        isset($stripeSecret) ? Stripe::setApiKey($stripeSecret) : Stripe::setApiKey($stripeSecretKey);
+        if (!$getClient){
+            isset($stripeSecret) ? Stripe::setApiKey($stripeSecret) : Stripe::setApiKey($stripeSecretKey);
+
+        }else{
+            return new \Stripe\StripeClient($stripeSecret??$stripeSecretKey);
+        }
     }
 }
 if (! function_exists('getSettingValue')) {
@@ -931,5 +936,12 @@ if (! function_exists('getStripeCustomerIdForLoggedInUser')) {
             $user->save();
             return $customer->id;
         }
+    }
+}
+if (!function_exists('getCurrentMonthUsageFromMonthlyPackage')){
+    function getCurrentMonthUsage(MonthlyInvoicePackage $invoicePackage,$MonthlyInvoicePackageId=null)
+    {
+       $totalTimeInSeconds = getTotalChargedTimeFromMonthlyInvoicePackageInSeconds($invoicePackage);
+       dd($totalTimeInSeconds);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Mail\ClientMakePaymentMail;
 use App\Models\Invoice;
+use App\Models\MonthlyInvoiceSubscription;
 use App\Models\NonInvoicePackage;
 use App\Models\Payment;
 use App\Models\StudentTutoringPackage;
@@ -28,7 +29,7 @@ class StripeRepository
         $amountPaidInLastSession = $sessionData['amount_total'] / 100;
         $reference = $sessionData['client_reference_id'];
         $reference = explode('-', $reference);
-        $type = $reference[0];
+        $invoiceType = $reference[0];
         $invoiceId = $reference[1];
         $userId = $reference[2];
         $authGuard = $reference[3];
@@ -120,5 +121,22 @@ class StripeRepository
             throw new UnprocessableEntityHttpException($e->getMessage());
         }
 
+    }
+
+    public function stripeSubscriptionPaymentSuccessfullyCompleted(array $sessionData)
+    {
+        \Log::channel('stripe_success')->info('stripeSubscriptionPaymentSuccessfullyCompleted', $sessionData);
+        setStripeApiKey();
+        $clientReference = $sessionData['client_reference_id'];
+        $clientReference = explode('-', $clientReference);
+        $invoiceType = $clientReference[0];
+        $monthlyInvoiceId = $clientReference[1];
+        $userId = $clientReference[2];
+        $authGuard = $clientReference[3];
+        $monthlyInvoiceSubscription = MonthlyInvoiceSubscription::where('monthly_invoice_package_id',$monthlyInvoiceId)->firstOrFail();
+        if ($monthlyInvoiceSubscription->payment_gateway == 'stripe' ) {
+            $monthlyInvoiceSubscription->subscription_id = $sessionData['subscription'];
+            $monthlyInvoiceSubscription->save();
+        }
     }
 }
