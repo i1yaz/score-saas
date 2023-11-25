@@ -145,7 +145,12 @@ class StripeController extends AppBaseController
         $monthlyInvoicePackage = MonthlyInvoicePackage::select(['monthly_invoice_packages.id','monthly_invoice_packages.hourly_rate','monthly_invoice_subscriptions.subscription_id','monthly_invoice_subscriptions.stripe_price_id','monthly_invoice_package_id'])
             ->join('monthly_invoice_subscriptions','monthly_invoice_subscriptions.monthly_invoice_package_id','monthly_invoice_packages.id')
             ->where('monthly_invoice_package_id',$request->monthlyInvoicePackageId)->first();
-
+        if (!empty($monthlyInvoicePackage->subscription_id)){
+            $subscription = Subscription::retrieve($monthlyInvoicePackage->subscription_id);
+            if ($subscription->id===$monthlyInvoicePackage->subscription_id){
+                return response()->json(['message'=>'Subscription Already Created'],409);
+            }
+        }
         $userId = \Auth::id() ?? 'none';
         $guard = \Auth::guard()->name ?? 'none';
         $monthlyInvoiceSubscription = MonthlyInvoiceSubscription::where('monthly_invoice_package_id',$request->monthlyInvoicePackageId)->first();
@@ -212,15 +217,14 @@ class StripeController extends AppBaseController
     }
     public function webhooks(Request $request){
         $payload = $request->all();
+        \Log::channel('stripe_success')->info('Stripe webhook',$request->all());
         if($payload['type'] === 'checkout.session.completed'){
             if ($payload['data']['object']['mode'] === 'subscription'){
-                \Log::channel('stripe_success')->info('checkout.session.completed',$request->all());
                 $sessionData = $payload['data']['object'];
                 $this->stripeRepository->stripeSubscriptionPaymentSuccessfullyCompleted($sessionData);
                 return response('success',200);
             }
             if ($payload['data']['object']['mode'] === 'payment'){
-                \Log::channel('stripe_success')->info('checkout.session.completed',$request->all());
                 $sessionData = $payload['data']['object'];
                 $this->stripeRepository->stripePaymentSuccessfulyCompleted($sessionData);
                 return response('success',200);
@@ -228,7 +232,6 @@ class StripeController extends AppBaseController
 
         }
         if ($payload['type']==='charge.refunded'){
-            \Log::channel('stripe_success')->info('charge.refunded',$request->all());
             $this->stripeRepository->stripeRefundPayment($request->all());
             return response('success',200);
 
@@ -242,14 +245,14 @@ class StripeController extends AppBaseController
             if (!empty($monthlyInvoiceSubscription->subscription_id)){
                 setStripeApiKey();
                 $subscription = Subscription::retrieve($monthlyInvoiceSubscription->subscription_id);
-                if ($subscription->id===$monthlyInvoiceSubscription->subscription_id){
+                if ($subscription->id===$monthlyInvoiceSubscription->subscription_id && $subscription->status === 'active'){
                     $subscription->cancel();
-                    $monthlyInvoiceSubscription->subscription_id = null;
+                    $monthlyInvoiceSubscription->is_active = false;
                     $monthlyInvoiceSubscription->save();
                     return response()->json(['message'=>'Subscription has been Cancelled'],200);
                 }
             }
         }
-        return response()->json(['message'=>'Subscription Not Found'],404);
+        return response()->json(['message'=>'Subscription Not Found or Already canceled'],404);
     }
 }

@@ -14,7 +14,8 @@ class Session extends Model
     const CANCELED_COMPLETION_CODE = 4;
 
     const PARTIAL_COMPLETION_CODE = 2;
-
+    const UN_BILLED = false;
+    const BILLED = true;
     protected $fillable = [
         'student_tutoring_package_id',
         'monthly_invoice_package_id',

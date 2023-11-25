@@ -19,7 +19,6 @@ use App\Http\Controllers\TaxController;
 use App\Http\Controllers\TutorController;
 use App\Http\Controllers\TutoringLocationController;
 use App\Http\Controllers\TutoringPackageTypeController;
-use App\Models\Payment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -191,12 +190,10 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], functio
     Route::get('get-new-line-item', [LineItemController::class, 'getNewLineItem'])->name('get-new-line-item');
 
     //Payments
-
     Route::get('payments', [PaymentController::class, 'index'])->name('payments.index')->middleware(['permission:payment-index']);
     Route::post('payment/stripe', [StripeController::class, 'createSession'])->name('client.stripe-payment');
     Route::post('payment/stripe-subscribe', [StripeController::class, 'createSessionForSubscription'])->name('client.stripe-monthly-subscription');
     Route::post('payment/stripe-cancel-subscription', [StripeController::class, 'cancelMonthlyInvoicePackageSubscription'])->name('client.stripe-cancel-monthly-subscription');
-
     Route::get('payments/create', [PaymentController::class, 'create'])->name('payments.create')->middleware(['permission:payment-create']);
     Route::post('payments', [PaymentController::class, 'store'])->name('payments.store')->middleware(['permission:payment-create']);
     Route::get('payments/{payment}', [PaymentController::class, 'show'])->name('payments.show')->middleware(['permission:payment-show']);

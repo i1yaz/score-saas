@@ -199,7 +199,8 @@ class InvoiceController extends AppBaseController
         if ($request->type === 'monthly-invoice-package'){
             $invoice = $this->invoiceRepository->showMonthlyInvoicePackage($invoice);
             $monthlyInvoicePackage = MonthlyInvoicePackage::select(['id','hourly_rate'])->findOrFail($invoice->monthly_invoice_package_id);
-            $subscription = MonthlyInvoiceSubscription::select('subscription_id')->where('monthly_invoice_package_id', $invoice->monthly_invoice_package_id)->firstOrFail();
+            $subscription = MonthlyInvoiceSubscription::select(['subscription_id','is_active'])->where('monthly_invoice_package_id', $invoice->monthly_invoice_package_id)->firstOrFail();
+
             $price = (getTotalInvoicePriceFromMonthlyInvoicePackage($monthlyInvoicePackage));
             return view('invoices.monthly-invoice-package-payment-create', [
                 'monthlyInvoicePackageId' => $invoice->monthly_invoice_package_id,
@@ -207,6 +208,7 @@ class InvoiceController extends AppBaseController
                 'paymentModes' => $paymentModes,
                 'subscriptionAmount' => $price,
                 'subscriptionId' => $subscription->subscription_id,
+                'isActive' => $subscription->is_active,
                 ]);
         }
     }

@@ -108,11 +108,12 @@ class SessionController extends Controller
 
         if (Str::startsWith($input['tutoring_package_id'], StudentTutoringPackage::PREFIX_START)) {
             $input['student_tutoring_package_id'] = getOriginalStudentTutoringPackageIdFromCode($input['tutoring_package_id']);
+            $input['is_billed'] = Session::BILLED;
 
         }
         if (Str::startsWith($input['tutoring_package_id'], MonthlyInvoicePackage::PREFIX_START)) {
             $input['monthly_invoice_package_id'] = getOriginalMonthlyInvoicePackageIdFromCode($input['tutoring_package_id']);
-            $monthlyInvoicePackage = MonthlyInvoicePackage::where('id', $input['monthly_invoice_package_id'])->firstOrFail();
+            MonthlyInvoicePackage::where('id', $input['monthly_invoice_package_id'])->firstOrFail();
         }
         if (isset($input['session_completion_code']) && (int) $input['session_completion_code'] === Session::PARTIAL_COMPLETION_CODE) {
             if (isset($input['charge_for_missed_time']) && (int) $input['charge_for_missed_time'] == Session::PARTIAL_COMPLETION_CODE) {
