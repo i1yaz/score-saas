@@ -32,25 +32,31 @@
             <div class="card-body">
 
                 <div class="row">
-                    <!-- Id Field -->
-                    <div class="form-group col-sm-12 col-md-6">
-                        {!! Form::label('final_amount', 'Payable Amount:') !!}
-                        {!! Form::input('text','final_amount',($subscriptionAmount),['readonly'=>'readonly','class' => 'form-control']) !!}
-                    </div>
-                    <div class="form-group col-sm-12 col-md-6">
-                        {!! Form::label('payment_mode', 'Payment Mode:') !!}
-                        {!! Form::select('payment_mode',$paymentModes??[],null,['class' => 'form-control','id'=>'payment-mode']) !!}
-                    </div>
+                    @if(empty($subscriptionId) && !$isActive)
+                        <!-- Id Field -->
+                        <div class="form-group col-sm-12 col-md-6">
+                            {!! Form::label('final_amount', 'Payable Amount:') !!}
+                            {!! Form::input('text','final_amount',($subscriptionAmount),['readonly'=>'readonly','class' => 'form-control']) !!}
+                        </div>
+                        <div class="form-group col-sm-12 col-md-6">
+                            {!! Form::label('payment_mode', 'Payment Mode:') !!}
+                            {!! Form::select('payment_mode',$paymentModes??[],null,['class' => 'form-control','id'=>'payment-mode']) !!}
+                        </div>
+                    @else
+                        <div class="alert alert-warning alert-dismissible" style="width: 100%">
+                            <h5><i class="icon fas fa-exclamation-triangle"></i> Subscription Ended!</h5>
+                            The subscription has been ended. Thanks.
+                        </div>
+                    @endif
+
                 </div>
             </div>
             <div class="card-footer">
                 @if(empty($subscriptionId))
                     {!! Form::button('Subscribe', ['class' => 'btn btn-primary','id'=>'btnPay']) !!}
-                @else
+                @elseif($isActive)
                     {!! Form::button('Cancel Subscription', ['class' => 'btn btn-primary','id'=>'cancel-subscription']) !!}
                 @endif
-
-                <a href="{{ route('invoices.index') }}" class="btn btn-default"> Cancel </a>
             </div>
 
         </div>
@@ -96,7 +102,6 @@
                             ToggleBtnLoader(btnSubmitEle);
                         });
                 }
-                ToggleBtnLoader(btnSubmitEle);
             });
             @else
             let cancelMonthlySubscription = '{{ route('client.stripe-cancel-monthly-subscription') }}';
@@ -134,7 +139,6 @@
                                     ToggleBtnLoader(btnSubmitEle);
                                 });
                         }
-                        ToggleBtnLoader(btnSubmitEle);
                     }
                 });
 
