@@ -19,6 +19,9 @@ use App\Http\Controllers\TaxController;
 use App\Http\Controllers\TutorController;
 use App\Http\Controllers\TutoringLocationController;
 use App\Http\Controllers\TutoringPackageTypeController;
+use App\Models\MonthlyInvoicePackage;
+use App\Models\MonthlyInvoiceSubscription;
+use App\Models\Session;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -42,6 +45,27 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::get('usage', function (){
+    $monthlyPackages = MonthlyInvoicePackage::select(['monthly_invoice_packages.id'])
+        ->with(['sessions'])
+        ->join('monthly_invoice_subscriptions', function ($join){
+            $join->on('monthly_invoice_subscriptions.monthly_invoice_package_id', '=', 'monthly_invoice_packages.id')
+                ->where('monthly_invoice_subscriptions.is_active', MonthlyInvoiceSubscription::ACTIVE);
+        })
+        ->whereHas('sessions', function ($q){
+            $q->select(['id','monthly_invoice_package_id','scheduled_date','start_time','end_time','session_completion_code','attended_duration',
+                'charged_missed_session','attended_start_time','attended_end_time','charge_missed_time','is_billed'])->where('sessions.is_billed', Session::UN_BILLED);
+        })->get();
+    foreach ($monthlyPackages as $monthlyPackage ){
+        $totalTimeInSeconds = 0;
+        foreach ($monthlyPackage->sessions as $session){
+            $totalTimeInSeconds += getTotalChargedTimeOfSessionFromSessionInSeconds($session);
+        }
+        $totalTimeInHours = $totalTimeInSeconds / 3600;
+        dump($totalTimeInSeconds.'-'.$totalTimeInHours);
+    }
 });
 
 Route::get('invoice/{invoice}/public-view/{type?}', [InvoiceController::class, 'showPublicInvoice']);

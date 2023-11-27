@@ -12,4 +12,6 @@ class MonthlyInvoiceSubscription extends Model
     const STATUS_ACTIVE = 1;
     const STATUS_INACTIVE = 1;
     const MONTHLY_INVOICE_FREQUENCY = 'monthly';
+    const ACTIVE = true;
+    const INACTIVE = false;
 }
