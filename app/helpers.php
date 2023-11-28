@@ -846,7 +846,7 @@ if (! function_exists('getSettingValue')) {
             return $settingValues[$key];
         }
         /** @var Setting $setting */
-        $setting = Setting::where('key', '=', $keyName)->first();
+        // $setting = Setting::where('key', '=', $keyName)->first();
         $settingValues[$key] = $setting->value;
 
         return $setting->value;
