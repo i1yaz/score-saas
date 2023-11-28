@@ -61,7 +61,7 @@
 
                 <tr>
                     <td><strong> Discounted Amount</strong></td>
-                    <td>{{getDiscountedAmount($studentTutoringPackage->hourly_rate,$studentTutoringPackage->hours, $studentTutoringPackage->discount, $studentTutoringPackage->discount_type)}}</td>
+                    <td>{{getDiscountedAmount($studentTutoringPackage->hourly_rate,$studentTutoringPackage->hours, $studentTutoringPackage->discount??0, $studentTutoringPackage->discount_type)}}</td>
                 </tr>
                 @if($studentTutoringPackage->discount_type == \App\Models\StudentTutoringPackage::PERCENTAGE_DISCOUNT)
                     <tr>
@@ -72,9 +72,15 @@
                 <tr>
                     <td><strong> Final Price</strong></td>
                     <td>
-                        <strong>{{getPriceFromHoursAndHourlyWithDiscount($studentTutoringPackage->hours, $studentTutoringPackage->hourly_rate, $studentTutoringPackage->discount, $studentTutoringPackage->discount_type)}}</strong>
+                        <strong>{{getPriceFromHoursAndHourlyWithDiscount($studentTutoringPackage->hours, $studentTutoringPackage->hourly_rate, $studentTutoringPackage->discount??0, $studentTutoringPackage->discount_type)}}</strong>
                     </td>
                 </tr>
+{{--                <tr>--}}
+
+{{--                    <td colspan="2" style="text-align: center">--}}
+{{--                        <a href="#" class="btn btn-warning">Make Payment</a>--}}
+{{--                    </td>--}}
+{{--                </tr>--}}
                 </tbody>
             </table>
         </div>
@@ -132,7 +138,7 @@
                 <tr>
                     <td><strong> Invoice Total</strong></td>
                     <td>
-                        <strong>{{getPriceFromHoursAndHourlyWithDiscount($studentTutoringPackage->hourly_rate,$studentTutoringPackage->hours, $studentTutoringPackage->discount, $studentTutoringPackage->discount_type)}}</strong>
+                        <strong>{{getPriceFromHoursAndHourlyWithDiscount($studentTutoringPackage->hourly_rate,$studentTutoringPackage->hours, $studentTutoringPackage->discount??0, $studentTutoringPackage->discount_type)}}</strong>
                     </td>
                 </tr>
                 </tbody>
@@ -214,7 +220,14 @@
                             <td>{{ $session->internal_notes}}</td>
                             <td>{{ $session->completion_code_name}}</td>
                             <td>{{ formatTimeFromSeconds(getTotalChargedSessionTimeFromSessionInSeconds($session))}}</td>
-                            <td>{{ formatTimeFromSeconds(getTotalChargedMissedSessionTimeFromSessionInSeconds($session))}} </td>
+                            <td>
+                                @php $time = formatTimeFromSeconds(getTotalChargedMissedSessionTimeFromSessionInSeconds($session)) ;@endphp
+                                @if($time ==="00h:00m")
+                                    <span class="badge badge-success">{{$time}}</span>
+                                @else
+                                    <span class="badge badge-danger">{{$time}}</span>
+                                @endif
+                            </td>
                             <td>{{ getTotalChargedTimeInHoursSecondsMinutesFromSession($session)}}</td>
                             <td>{{ formatAmountWithCurrency(getTutorHourlyRateForStudentTutoringPackage($studentTutoringPackage,$session->tutor_id))}}</td>
                             <td>{{ formatAmountWithCurrency(0)}}</td>

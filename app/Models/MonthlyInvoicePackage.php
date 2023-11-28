@@ -3,24 +3,34 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
-class MonthlyInvoicePackage extends Model
+class MonthlyInvoicePackage extends BaseModel
 {
     use HasFactory;
+
     public $table = 'monthly_invoice_packages';
+
     const CODE_START = 4000;
+
     const PREFIX_START = 'M';
+
     const FLAT_DISCOUNT = 1;
 
     const PERCENTAGE_DISCOUNT = 2;
-    public $fillable = [
+
+    const SUBSCRIPTION_ACTIVE=1;
+    const SUBSCRIPTION_INACTIVE=0;
+
+
+    protected $fillable = [
         'student_id',
         'notes',
         'internal_notes',
         'start_date',
+        'due_date',
         'hourly_rate',
         'tutor_hourly_rate',
         'tutoring_location_id',
@@ -38,7 +48,10 @@ class MonthlyInvoicePackage extends Model
         'notes' => 'string',
         'internal_notes' => 'string',
         'start_date' => 'date',
-        'tutoring_location_id' => 'integer'
+        'tutoring_location_id' => 'integer',
+        'is_score_guaranteed' => 'boolean',
+        'is_free' => 'boolean',
+        'due_date' => 'date',
     ];
 
     public static array $rules = [
@@ -46,16 +59,19 @@ class MonthlyInvoicePackage extends Model
         'notes' => 'nullable|string',
         'internal_notes' => 'nullable|string',
         'start_date' => 'nullable|date',
-        'hourly_rate' => 'required|integer',
-        'tutor_hourly_rate' => 'required|integer',
-        'tutoring_location_id' => 'required|integer'
+        'due_date' => 'nullable|date',
+        'hourly_rate' => 'required|decimal:0,2',
+        'tutor_hourly_rate' => 'required|decimal:0,2',
+        'tutoring_location_id' => 'required|integer|exists:tutoring_locations,id',
     ];
+
     public static array $messages = [
         'student_id.required' => 'Student is required',
         'student_id.integer' => 'Student must be an integer',
         'notes.string' => 'Notes must be a string',
         'internal_notes.string' => 'Internal notes must be a string',
         'start_date.date' => 'Start date must be a date',
+        'due_date.date' => 'Due date must be a date',
         'hourly_rate.required' => 'Hourly rate is required',
         'hourly_rate.integer' => 'Hourly rate must be an integer',
         'tutor_hourly_rate.required' => 'Tutor hourly rate is required',
@@ -68,6 +84,7 @@ class MonthlyInvoicePackage extends Model
         'tutor_ids.exists' => 'Tutor does not exist',
 
     ];
+
     /**
      *------------------------------------------------------------------
      * Relationships
@@ -91,5 +108,9 @@ class MonthlyInvoicePackage extends Model
     public function sessions(): HasMany
     {
         return $this->hasMany(Session::class, 'monthly_invoice_package_id', 'id');
+    }
+    public function invoice(): MorphOne
+    {
+        return $this->morphOne(Invoice::class, 'invoiceable');
     }
 }

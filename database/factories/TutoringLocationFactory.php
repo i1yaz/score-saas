@@ -16,7 +16,7 @@ class TutoringLocationFactory extends Factory
             'auth_guard' => 'web',
             'added_by' => 1,
             'created_at' => now(),
-            'updated_at' => now()
+            'updated_at' => now(),
         ];
     }
 }

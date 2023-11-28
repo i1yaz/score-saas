@@ -13,28 +13,31 @@ class Tax extends Model
         'name',
         'value',
         'auth_guard',
-        'added_by'
+        'added_by',
     ];
 
     protected $casts = [
         'id' => 'integer',
         'name' => 'string',
-        'value' => 'decimal:2'
+        'value' => 'decimal:2',
     ];
+
     const FLAT_DISCOUNT = 1;
 
     const PERCENTAGE_DISCOUNT = 2;
 
     public static array $rules = [
-        'name' => ['required','string'],
-        'value' => ['required','numeric']
+        'name' => ['required', 'string'],
+        'value' => ['required', 'numeric'],
     ];
+
     public static array $messages = [
         'name.required' => 'Line item name is required',
         'name.string' => 'Line Item name must be string',
         'value.required' => 'Percentage is required',
-        'value.string' => 'Percentage must be numeric'
+        'value.string' => 'Percentage must be numeric',
     ];
+
     /**
      *------------------------------------------------------------------
      * Scopes

@@ -4,16 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateLineItemRequest;
 use App\Http\Requests\UpdateLineItemRequest;
-use App\Http\Controllers\AppBaseController;
 use App\Models\LineItem;
 use App\Models\Tax;
 use App\Repositories\LineItemRepository;
-use Illuminate\Http\Request;
 use Flash;
+use Illuminate\Http\Request;
 
 class LineItemController extends AppBaseController
 {
-    /** @var LineItemRepository $lineItemRepository*/
+    /** @var LineItemRepository */
     private $lineItemRepository;
 
     public function __construct(LineItemRepository $lineItemRepo)
@@ -127,14 +126,17 @@ class LineItemController extends AppBaseController
 
         return redirect(route('line-items.index'));
     }
-    public function getNewLineItem(Request $request){
+
+    public function getNewLineItem(Request $request)
+    {
         $nextId = $request->nextId;
-        $taxes = Tax::active()->select(['id','name','value'])->get();
-        $items = LineItem::active()->select(['id','name','price'])->get();
+        $taxes = Tax::active()->select(['id', 'name', 'value'])->get();
+        $items = LineItem::active()->select(['id', 'name', 'price'])->get();
+
         return response()->json([
             'status' => 'success',
             'message' => 'Line Item added',
-            'html' => view('line_items.line-item',['taxes' => $taxes,'items' => $items,'id' => $nextId])->render()
+            'html' => view('line_items.line-item', ['taxes' => $taxes, 'items' => $items, 'id' => $nextId])->render(),
         ]);
     }
 }

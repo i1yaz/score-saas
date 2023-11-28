@@ -32,6 +32,11 @@ class CreateInvoiceRequest extends FormRequest
         return [
             'client_id.required' => 'Client is required',
             'due_date.required' => 'Due date is required',
+            'due_date.date' => 'Due date must be a valid date',
+            'due_date.after_or_equal' => 'Due date must be after or equal to today',
+            'item_id.required' => 'Item is required',
+            'item_id.array' => 'Item must be an array',
+            'item_id.min' => 'Item must have at least one item',
         ];
     }
 }

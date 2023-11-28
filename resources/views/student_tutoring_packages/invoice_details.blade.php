@@ -4,13 +4,13 @@
     <!-- Due Date Field -->
     <div class="form-group col-sm-6">
         {!! Form::label('due_date', 'Due Date:') !!}
-        {!! Form::text('due_date', null, ['class' => 'form-control date-input']) !!}
+        {!! Form::text('due_date', isset($invoice)? $invoice->due_date?->format('m/d/Y'):null, ['class' => 'form-control date-input']) !!}
     </div>
 
     <!-- General Description Field -->
     <div class="form-group col-sm-6">
         {!! Form::label('general_description', 'General Description:') !!}
-        {!! Form::text('general_description', null, ['class' => 'form-control']) !!}
+        {!! Form::text('general_description', isset($invoice)?$invoice->general_description:null, ['class' => 'form-control']) !!}
     </div>
 
     <!-- General Description Field -->
@@ -19,11 +19,11 @@
 
         <div class="radio">
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="email_to_parent" id="send-email-to-parent-yes" value="1" >
+                <input class="form-check-input" type="radio" name="email_to_parent" id="send-email-to-parent-yes" value="1" @if(!empty($invoice) && $invoice->email_to_parent===true) checked @endif >
                 <label class="form-check-label" for="send-email-to-parent-yes"><strong>  YES</strong></label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="email_to_parent" id="send-email-to-parent-no" value="0" checked>
+                <input class="form-check-input" type="radio" name="email_to_parent" id="send-email-to-parent-no" value="0" @if(!empty($invoice) && $invoice->email_to_parent===true)  @else checked @endif>
                 <label class="form-check-label" for="send-email-to-parent-no"><strong>  NO</strong></label>
             </div>
 
@@ -32,7 +32,7 @@
     <!-- Detailed Description Field -->
     <div class="form-group col-sm-6">
         {!! Form::label('detailed_description', 'Detailed Description:') !!}
-        {!! Form::textarea('detailed_description', null, ['class' => 'form-control']) !!}
+        {!! Form::textarea('detailed_description', isset($invoice)?$invoice->detailed_description:null, ['class' => 'form-control']) !!}
     </div>
 </div>
 

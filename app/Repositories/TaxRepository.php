@@ -3,13 +3,12 @@
 namespace App\Repositories;
 
 use App\Models\Tax;
-use App\Repositories\BaseRepository;
 
 class TaxRepository extends BaseRepository
 {
     protected $fieldSearchable = [
         'name',
-        'value'
+        'value',
     ];
 
     public function getFieldsSearchable(): array
@@ -21,5 +20,4 @@ class TaxRepository extends BaseRepository
     {
         return Tax::class;
     }
-
 }

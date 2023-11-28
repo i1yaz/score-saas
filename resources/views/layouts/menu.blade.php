@@ -74,7 +74,7 @@
 @permission('student_tutoring_package-index')
 <li class="nav-item">
     <a href="{{ route('student-tutoring-packages.index') }}" class="nav-link {{ Request::is('student-tutoring-packages*') ? 'active' : '' }}">
-        <i class="nav-icon fas fa-table"></i>
+        <i class="nav-icon  fas fa-cubes"></i>
         <p>Tutoring Packages</p>
     </a>
 </li>
@@ -83,7 +83,7 @@
 @permission('monthly_invoice_package-index')
 <li class="nav-item">
     <a href="{{ route('monthly-invoice-packages.index') }}" class="nav-link {{ Request::is('monthly-invoice-packages*') ? 'active' : '' }}">
-        <i class="nav-icon fas fa-home"></i>
+        <i class="nav-icon fas fa-table"></i>
         <p style="white-space: nowrap;">Monthly Invoice Packages</p>
     </a>
 </li>
@@ -100,14 +100,22 @@
 @permission('session-index')
 <li class="nav-item">
     <a href="{{ route('sessions.index') }}" class="nav-link {{ Request::is('session*') ? 'active' : '' }}">
-        <i class="nav-icon fas fa-calendar"></i>
+        <i class="nav-icon  far fa-calendar-alt"></i>
         <p>Sessions</p>
     </a>
 </li>
 @endpermission
+@permission('payment-index')
+<li class="nav-item">
+    <a href="{{ route('payments.index') }}" class="nav-link {{ Request::is('payments*') ? 'active' : '' }}">
+        <i class="nav-icon fas fa-money-check-alt"></i>
+        <p>Payments</p>
+    </a>
+</li>
+@endpermission
 @permission(['tutoring_package_type-index','subject-index','tutoring_location-index','school-index','invoice_package_type-index','client-index','tax-index','line_item-index'])
-<li class="nav-item {{Request::is(['tutoring-package-types*','subjects*','tutoring-locations*'])?'menu-is-opening menu-open active':''}}">
-    <a href="#" class="nav-link {{Request::is(['tutoring-package-types*','subjects*','tutoring-locations*'])?'active':''}}">
+<li class="nav-item {{Request::is(['tutoring-package-types*','subjects*','tutoring-locations*','schools*','invoice-package-types*','taxes*','line-items*','clients*'])?'menu-is-opening menu-open active':''}}">
+    <a href="#" class="nav-link {{Request::is(['tutoring-package-types*','subjects*','tutoring-locations*','schools*','invoice-package-types*','taxes*','line-items*','clients*'])?'active':''}}">
         <i class="nav-icon fas fa-cog"></i>
         <p>
             Settings
@@ -143,13 +151,13 @@
             </a>
         </li>
         @endpermission
-        @permission('invoice_package_type-index')
-        <li class="nav-item">
-            <a href="{{ route('invoice-package-types.index') }}" class="nav-link {{ Request::is('invoice-package-types*') ? 'active' : '' }}">
-                <p>Invoice Package Types</p>
-            </a>
-        </li>
-        @endpermission
+{{--        @permission('invoice_package_type-index')--}}
+{{--        <li class="nav-item">--}}
+{{--            <a href="{{ route('invoice-package-types.index') }}" class="nav-link {{ Request::is('invoice-package-types*') ? 'active' : '' }}">--}}
+{{--                <p>Invoice Package Types</p>--}}
+{{--            </a>--}}
+{{--        </li>--}}
+{{--        @endpermission--}}
         @permission('tax-index')
         <li class="nav-item">
             <a href="{{ route('taxes.index') }}" class="nav-link {{ Request::is('taxes*') ? 'active' : '' }}">

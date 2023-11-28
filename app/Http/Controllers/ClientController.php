@@ -7,9 +7,9 @@ use App\Http\Requests\CreateClientRequest;
 use App\Http\Requests\UpdateClientRequest;
 use App\Mail\ClientRegisteredMail;
 use App\Repositories\ClientRepository;
+use Flash;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Flash;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +19,7 @@ use Illuminate\Support\Str;
 
 class ClientController extends AppBaseController
 {
-    /** @var ClientRepository $clientRepository*/
+    /** @var ClientRepository */
     private $clientRepository;
 
     public function __construct(ClientRepository $clientRepo)
@@ -69,7 +69,11 @@ class ClientController extends AppBaseController
             $user->addRole('client');
             DB::commit();
             $input['password'] = App::environment(['production']) ? $passwordString : 'abcd1234';
-            Mail::to($user)->send(new ClientRegisteredMail($input));
+            try {
+                Mail::to($user)->send(new ClientRegisteredMail($input));
+            } catch (\Exception $e) {
+                report($e);
+            }
             \Laracasts\Flash\Flash::success('Parent saved successfully.');
 
             return redirect(route('clients.index'));

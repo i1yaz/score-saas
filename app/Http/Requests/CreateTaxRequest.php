@@ -26,6 +26,7 @@ class CreateTaxRequest extends FormRequest
     {
         return Tax::$rules;
     }
+
     public function messages()
     {
         return Tax::$messages;

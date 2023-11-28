@@ -4,15 +4,15 @@ namespace App\Policies;
 
 use App\Models\Session;
 use App\Models\Tutor;
-use Illuminate\Foundation\Auth\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Auth;
 
 class SessionPolicy
 {
     use HandlesAuthorization;
 
-    public function before(\Illuminate\Foundation\Auth\User $user)
+    public function before(User $user)
     {
         //['super-admin','admin','student','parent','tutor','proctor','client','developer']
 
@@ -33,6 +33,7 @@ class SessionPolicy
         if ($user->hasRole(['tutor']) && $user instanceof Tutor) {
             return $user->id === $session->tutor_id;
         }
+
         return false;
 
     }
@@ -48,6 +49,7 @@ class SessionPolicy
         if ($user->hasRole(['tutor']) && $user instanceof Tutor) {
             return $user->id === $session->tutor_id;
         }
+
         return false;
 
     }
@@ -57,6 +59,7 @@ class SessionPolicy
         if ($user->hasRole(['tutor']) && $user instanceof Tutor) {
             return $user->id === $session->tutor_id;
         }
+
         return false;
 
     }

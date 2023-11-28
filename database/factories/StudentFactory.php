@@ -5,7 +5,6 @@ namespace Database\Factories;
 use App\Models\ParentUser;
 use App\Models\School;
 use App\Models\Student;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
@@ -29,15 +28,14 @@ class StudentFactory extends Factory
             'email_known' => $this->faker->boolean,
             'testing_accommodation' => $this->faker->boolean,
             'testing_accommodation_nature' => $this->faker->word(),
-            'official_baseline_act_score' => $this->faker->numberBetween(100,500),
-            'official_baseline_sat_score' => $this->faker->numberBetween(100,500),
+            'official_baseline_act_score' => $this->faker->numberBetween(100, 500),
+            'official_baseline_sat_score' => $this->faker->numberBetween(100, 500),
             'test_anxiety_challenge' => $this->faker->boolean(),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
             'status' => $this->faker->boolean(),
             'auth_guard' => 'web',
-            'added_by' => 1
+            'added_by' => 1,
         ];
     }
 }
-

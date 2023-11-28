@@ -31,12 +31,12 @@ class UpdateStudentTutoringPackageRequest extends FormRequest
             'tutor_ids' => ['required', 'array', 'min:1'],
             'subject_ids' => ['required', 'array', 'min:1'],
             'tutoring_location_id' => ['required'],
-            'internal_notes' => ['string'],
+            'internal_notes' => ['nullable', 'string'],
             'hours' => ['required', 'numeric', 'min:1'],
-            'hourly_rate' => ['required', 'numeric', 'min:1'],
+            'hourly_rate' => ['required', 'decimal:0,2', 'min:1'],
             'discount_type' => ['required'],
             'start_date' => ['required'],
-            'tutor_hourly_rate' => ['numeric', 'min:1', new StudentTutoringPackageHourlyRateRule],
+            'tutor_hourly_rate' => ['nullable', 'decimal:0,2', 'min:1', new StudentTutoringPackageHourlyRateRule],
         ];
     }
 

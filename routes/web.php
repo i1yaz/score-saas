@@ -8,6 +8,8 @@ use App\Http\Controllers\LineItemController;
 use App\Http\Controllers\MonthlyInvoicePackageController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\ParentController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PaymentGateways\StripeController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\StudentController;
@@ -17,6 +19,9 @@ use App\Http\Controllers\TaxController;
 use App\Http\Controllers\TutorController;
 use App\Http\Controllers\TutoringLocationController;
 use App\Http\Controllers\TutoringPackageTypeController;
+use App\Models\MonthlyInvoicePackage;
+use App\Models\MonthlyInvoiceSubscription;
+use App\Models\Session;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -41,9 +46,34 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('invoice/{invoice}/public-view/{type?}',[InvoiceController::class,'showPublicInvoice']);
+
+Route::get('usage', function (){
+    $monthlyPackages = MonthlyInvoicePackage::select(['monthly_invoice_packages.id'])
+        ->with(['sessions'])
+        ->join('monthly_invoice_subscriptions', function ($join){
+            $join->on('monthly_invoice_subscriptions.monthly_invoice_package_id', '=', 'monthly_invoice_packages.id')
+                ->where('monthly_invoice_subscriptions.is_active', MonthlyInvoiceSubscription::ACTIVE);
+        })
+        ->whereHas('sessions', function ($q){
+            $q->select(['id','monthly_invoice_package_id','scheduled_date','start_time','end_time','session_completion_code','attended_duration',
+                'charged_missed_session','attended_start_time','attended_end_time','charge_missed_time','is_billed'])->where('sessions.is_billed', Session::UN_BILLED);
+        })->get();
+    foreach ($monthlyPackages as $monthlyPackage ){
+        $totalTimeInSeconds = 0;
+        foreach ($monthlyPackage->sessions as $session){
+            $totalTimeInSeconds += getTotalChargedTimeOfSessionFromSessionInSeconds($session);
+        }
+        $totalTimeInHours = $totalTimeInSeconds / 3600;
+        dump($totalTimeInSeconds.'-'.$totalTimeInHours);
+    }
+});
+
+Route::get('invoice/{invoice}/public-view/{type?}', [InvoiceController::class, 'showPublicInvoice']);
 Auth::routes(['register' => false]);
 Route::get('admin/login', [LoginController::class, 'showAdminLoginForm'])->name('admin.login');
+Route::get('payment/success', [PaymentController::class, 'success'])->name('payment-success');
+Route::get('payment/failed', [PaymentController::class, 'failed'])->name('payment-failed');
+Route::post('stripe-webhooks',[StripeController::class,'webhooks'])->name('stripe-webhooks');
 
 Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -139,8 +169,6 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], functio
     Route::patch('invoices/{invoice}', [InvoiceController::class, 'update'])->name('invoices.update')->middleware(['permission:invoice-edit']);
     Route::delete('invoices/{invoice}', [InvoiceController::class, 'destroy'])->name('invoices.destroy')->middleware(['permission:invoice-destroy']);
 
-    Route::post('stripe-payment', [StripeController::class, 'createSession'])->name('client.stripe-payment');
-
     //Sessions
     Route::get('sessions', [SessionController::class, 'index'])->name('sessions.index')->middleware(['permission:session-index']);
     Route::get('sessions/create', [SessionController::class, 'create'])->name('sessions.create')->middleware(['permission:session-create']);
@@ -184,4 +212,16 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], functio
     Route::patch('line-items/{line_item}', [LineItemController::class, 'update'])->name('line-items.update')->middleware(['permission:line_item-edit']);
     Route::delete('line-items/{line_item}', [LineItemController::class, 'destroy'])->name('line-items.destroy')->middleware(['permission:line_item-destroy']);
     Route::get('get-new-line-item', [LineItemController::class, 'getNewLineItem'])->name('get-new-line-item');
+
+    //Payments
+    Route::get('payments', [PaymentController::class, 'index'])->name('payments.index')->middleware(['permission:payment-index']);
+    Route::post('payment/stripe', [StripeController::class, 'createSession'])->name('client.stripe-payment');
+    Route::post('payment/stripe-subscribe', [StripeController::class, 'createSessionForSubscription'])->name('client.stripe-monthly-subscription');
+    Route::post('payment/stripe-cancel-subscription', [StripeController::class, 'cancelMonthlyInvoicePackageSubscription'])->name('client.stripe-cancel-monthly-subscription');
+    Route::get('payments/create', [PaymentController::class, 'create'])->name('payments.create')->middleware(['permission:payment-create']);
+    Route::post('payments', [PaymentController::class, 'store'])->name('payments.store')->middleware(['permission:payment-create']);
+    Route::get('payments/{payment}', [PaymentController::class, 'show'])->name('payments.show')->middleware(['permission:payment-show']);
+    //    Route::get('payments/{payment}/edit', [PaymentController::class, 'edit'])->name('payments.edit')->middleware(['permission:payment-edit']);
+    //    Route::patch('payments/{payment}', [PaymentController::class, 'update'])->name('payments.update')->middleware(['permission:payment-edit']);
+    //    Route::delete('payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy')->middleware(['permission:payment-destroy']);
 });

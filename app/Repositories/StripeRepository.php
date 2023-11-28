@@ -4,105 +4,139 @@ namespace App\Repositories;
 
 use App\Mail\ClientMakePaymentMail;
 use App\Models\Invoice;
+use App\Models\MonthlyInvoiceSubscription;
+use App\Models\NonInvoicePackage;
 use App\Models\Payment;
-use App\Models\Transaction;
+use App\Models\StudentTutoringPackage;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use Stripe\Checkout\Session;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class StripeRepository
 {
-    public function clientPaymentSuccess($sessionId): void
+    public function stripePaymentSuccessfulyCompleted(array $sessionData)
     {
         setStripeApiKey();
-        $sessionData = Session::retrieve($sessionId);
 
-        $stripeID = $sessionData->id;
-        $paymentStatus = $sessionData->payment_status;
-        $invoiceId = $sessionData->client_reference_id;
+        if (empty($sessionData)) {
+            throw new UnprocessableEntityHttpException('Session not found');
+        }
 
-        /** @var Invoice $invoice */
-        $invoice = Invoice::with(['payments', 'client'])->findOrFail($invoiceId);
+        $stripeID = $sessionData['id'];
+        $amountPaidInLastSession = $sessionData['amount_total'] / 100;
+        $reference = $sessionData['client_reference_id'];
+        $reference = explode('-', $reference);
+        $invoiceType = $reference[0];
+        $invoiceId = $reference[1];
+        $userId = $reference[2];
+        $authGuard = $reference[3];
 
-        $amount = (getInvoiceCurrencyCode($invoice->currency_id) != 'JPY') ? $sessionData->amount_total / 100 : $sessionData->amount_total;
-        $transactionNotes = $sessionData->metadata->description ?? '';
+        $invoice = Invoice::query()
+            ->select(['invoices.id as invoice_id', 'invoiceable_type', 'invoiceable_id'])
+            ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount ELSE 0 END) AS amount_paid')
+            ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount_refunded ELSE 0 END) AS amount_refunded')
+            ->leftJoin('payments', 'payments.invoice_id', '=', 'invoices.id')
+            ->findOrFail($invoiceId);
+        $paymentStatus = Payment::PENDING;
+        if ($invoice->invoiceable_type == NonInvoicePackage::class) {
+            $nonInvoicePackage = NonInvoicePackage::findOrFail($invoice->invoiceable_id);
+            if (($amountPaidInLastSession + $invoice->paid_amount) == $nonInvoicePackage->final_amount) {
+                $paymentStatus = Payment::PAID;
+            } else {
+                $paymentStatus = Payment::PARTIAL_PAYMENT;
+            }
 
-        $userId = Auth::check() ? getLogInUserId() : $invoice->client->user_id;
+        }
+        if ($invoice->invoiceable_type == StudentTutoringPackage::class) {
+            $studentTutoringPackage = StudentTutoringPackage::findOrFail($invoice->invoiceable_id);
+            $payable_amount = cleanAmountWithCurrencyFormat(getPriceFromHoursAndHourlyWithDiscount($studentTutoringPackage->hourly_rate, $studentTutoringPackage->hours, $studentTutoringPackage->discount, $studentTutoringPackage->discount_type));
 
-        $transactionData = [
+            if (($amountPaidInLastSession + $invoice->paid_amount) == $payable_amount) {
+                $paymentStatus = Payment::PAID;
+            } else {
+                $paymentStatus = Payment::PARTIAL_PAYMENT;
+            }
+
+        }
+
+        $paymentTransactionData = [
+            'invoice_id' => $invoiceId,
+            'payment_gateway_id' => 1,
             'transaction_id' => $stripeID,
-            'amount' => $amount,
-            'user_id' => $userId,
-            'status' => $paymentStatus,
-            'meta' => $sessionData->toArray(),
+            'amount' => $amountPaidInLastSession,
+            'paid_by_id' => $userId,
+            'paid_by_modal' => getAuthModelFromGuard($authGuard),
+            'payment_intent' => $sessionData['payment_intent'],
         ];
 
         try {
             DB::beginTransaction();
-
-            $invoice = Invoice::with('payments')->findOrFail($invoiceId);
-            if ($invoice->status == Payment::PARTIALLYPAYMENT) {
-                $totalAmount = ($invoice->final_amount - $invoice->payments->sum('amount'));
-            } else {
-                $totalAmount = $invoice->final_amount;
-            }
-
-            $transaction = Transaction::create($transactionData);
-            $PaymentData = [
-                'invoice_id' => $invoiceId,
-                'amount' => $amount,
-                'payment_mode' => Payment::STRIPE,
-                'payment_date' => Carbon::now(),
-                'transaction_id' => $transaction->id,
-                'notes' => $transactionNotes,
-                'is_approved' => Payment::APPROVED,
-            ];
-
-            // update invoice bill
-
-            $invoicePayment = Payment::create($PaymentData);
-
-            if (round($totalAmount, 2) == $amount) {
-                $invoice->status = Payment::FULLPAYMENT;
-                $invoice->save();
-            } else {
-                if (round($totalAmount, 2) != $amount) {
-                    $invoice->status = Payment::PARTIALLYPAYMENT;
-                    $invoice->save();
-                }
-            }
-            $this->saveNotification($PaymentData, $invoice);
-            $invoiceData = [];
-            $invoiceData['amount'] = $PaymentData['amount'];
-            $invoiceData['payment_date'] = $PaymentData['payment_date'];
-            $invoiceData['invoice_id'] = $invoice->id;
-            $invoiceData['invoice'] = $invoice;
-
-            $admins = User::whereHasRole(['super-admin'])->get(['email']);
-            $admins = $admins->pluck('email')->toArray();
-            Mail::to($admins)->send(new ClientMakePaymentMail($invoiceData));
+            Payment::create($paymentTransactionData);
+            DB::table('invoices')
+                ->where('id', $invoiceId)
+                ->update(
+                    [
+                        'paid_status' => $paymentStatus,
+                        'fully_paid_at' => $paymentStatus === Invoice::PAID ? Carbon::now() : null,
+                        'updated_at' => Carbon::now(),
+                    ]
+                );
 
             DB::commit();
+
         } catch (Exception $e) {
+            report($e);
             DB::rollBack();
             throw new UnprocessableEntityHttpException($e->getMessage());
         }
+        $admins = User::whereHasRole(['super-admin'])->get(['email']);
+        $admins = $admins->pluck('email')->toArray();
+        try {
+            Mail::to($admins)->send(new ClientMakePaymentMail($paymentTransactionData));
+        } catch (Exception $e) {
+            report($e);
+        }
+
+        return $sessionData;
     }
 
-    public function saveNotification($input, $invoice)
+    public function stripeRefundPayment(array $refundAmountData)
     {
-        $adminUserId = getAdminUser()->id;
-        $invoice = Invoice::find($input['invoice_id']);
-        $title = 'Payment '.getInvoiceCurrencyIcon($invoice->currency_id).$input['amount'].' received successfully for #'.$invoice->invoice_id.'.';
-        addNotification([
-            Notification::NOTIFICATION_TYPE['Invoice Payment'],
-            $adminUserId,
-            $title,
-        ]);
+        DB::beginTransaction();
+        try {
+            $refundAmountData = $refundAmountData['data']['object'];
+            $payment = Payment::where('payment_intent',$refundAmountData['payment_intent'])->firstOrFail();
+            $RefundedPayment = $payment->replicate();
+            $RefundedPayment->amount = 0;
+            $RefundedPayment->amount_refunded = $refundAmountData['amount_refunded']/100;
+            $RefundedPayment->save();
+            Invoice::where('id',$payment->invoice_id)->update(['paid_status'=>Invoice::PARTIAL_PAYMENT]);
+            DB::commit();
+        }catch (Exception $e){
+            DB::rollBack();
+            report($e);
+            throw new UnprocessableEntityHttpException($e->getMessage());
+        }
+
+    }
+
+    public function stripeSubscriptionPaymentSuccessfullyCompleted(array $sessionData)
+    {
+        \Log::channel('stripe_success')->info('stripeSubscriptionPaymentSuccessfullyCompleted', $sessionData);
+        setStripeApiKey();
+        $clientReference = $sessionData['client_reference_id'];
+        $clientReference = explode('-', $clientReference);
+        $invoiceType = $clientReference[0];
+        $monthlyInvoiceId = $clientReference[1];
+        $userId = $clientReference[2];
+        $authGuard = $clientReference[3];
+        $monthlyInvoiceSubscription = MonthlyInvoiceSubscription::where('monthly_invoice_package_id',$monthlyInvoiceId)->firstOrFail();
+        if ($monthlyInvoiceSubscription->payment_gateway == 'stripe' ) {
+            $monthlyInvoiceSubscription->subscription_id = $sessionData['subscription'];
+            $monthlyInvoiceSubscription->save();
+        }
     }
 }

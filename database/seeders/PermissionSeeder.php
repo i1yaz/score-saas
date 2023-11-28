@@ -6,8 +6,6 @@ use App\Models\Permission;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
-
-
 class PermissionSeeder extends Seeder
 {
     public function run()
@@ -19,7 +17,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Show all parents',
                 'resource' => 'Parent',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'parent-create',
@@ -27,7 +25,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Create or add a new parent',
                 'resource' => 'Parent',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'parent-edit',
@@ -35,7 +33,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Edit parent Details',
                 'resource' => 'Parent',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'parent-show',
@@ -43,7 +41,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Show parent detail',
                 'resource' => 'Parent',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'parent-destroy',
@@ -51,7 +49,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Delete parent',
                 'resource' => 'Parent',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'student-index',
@@ -59,7 +57,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Show all students',
                 'resource' => 'Student',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'student-create',
@@ -67,7 +65,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Create or add a new student',
                 'resource' => 'Student',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'student-edit',
@@ -75,7 +73,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Student Edit',
                 'resource' => 'Student',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'student-show',
@@ -83,7 +81,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Show student detail',
                 'resource' => 'Student',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'student-destroy',
@@ -91,7 +89,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Delete student',
                 'resource' => 'Student',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'school-index',
@@ -99,7 +97,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Show all schools',
                 'resource' => 'School',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'school-create',
@@ -107,7 +105,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Create or add a new school',
                 'resource' => 'School',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'school-edit',
@@ -115,7 +113,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Edit school detail',
                 'resource' => 'School',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'school-show',
@@ -123,7 +121,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Show school detail',
                 'resource' => 'School',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'school-destroy',
@@ -131,7 +129,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Delete school',
                 'resource' => 'School',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'tutor-index',
@@ -139,7 +137,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Tutor Index',
                 'resource' => 'Tutor',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'tutor-create',
@@ -147,7 +145,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Create or add a new tutor',
                 'resource' => 'Tutor',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'tutor-edit',
@@ -155,7 +153,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Edit tutor detail',
                 'resource' => 'Tutor',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'tutor-show',
@@ -163,7 +161,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Show tutor detail',
                 'resource' => 'Tutor',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'tutor-destroy',
@@ -171,7 +169,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Delete tutor',
                 'resource' => 'Tutor',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'proctor-index',
@@ -179,7 +177,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Show all proctors',
                 'resource' => 'Proctor',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'proctor-create',
@@ -187,7 +185,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Create or add a new proctor',
                 'resource' => 'Proctor',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'proctor-edit',
@@ -195,7 +193,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Edit proctor detail',
                 'resource' => 'Proctor',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'proctor-show',
@@ -203,7 +201,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Show proctor detail',
                 'resource' => 'Proctor',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'proctor-destroy',
@@ -211,7 +209,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Delete proctor',
                 'resource' => 'Proctor',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'student_tutoring_package-index',
@@ -219,7 +217,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Show all packages',
                 'resource' => 'Student Tutoring Package',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'student_tutoring_package-create',
@@ -227,7 +225,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Create or add a new package',
                 'resource' => 'Student Tutoring Package',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'student_tutoring_package-edit',
@@ -235,7 +233,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Edit package detail',
                 'resource' => 'Student Tutoring Package',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'student_tutoring_package-show',
@@ -243,7 +241,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Show package detail',
                 'resource' => 'Student Tutoring Package',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'student_tutoring_package-destroy',
@@ -251,7 +249,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Delete package',
                 'resource' => 'Student Tutoring Package',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'subject-index',
@@ -259,7 +257,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Show all subjects',
                 'resource' => 'Subject',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'subject-create',
@@ -267,7 +265,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Create or add a new subject',
                 'resource' => 'Subject',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'subject-edit',
@@ -275,7 +273,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Edit subject detail',
                 'resource' => 'Subject',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'subject-show',
@@ -283,7 +281,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Show subject detail',
                 'resource' => 'Subject',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'subject-destroy',
@@ -291,7 +289,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Delete subject',
                 'resource' => 'Subject',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'tutoring_location-index',
@@ -299,7 +297,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Show all tutoring locations',
                 'resource' => 'Tutoring Location',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'tutoring_location-create',
@@ -307,7 +305,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Create or add a new tutoring location',
                 'resource' => 'Tutoring Location',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'tutoring_location-edit',
@@ -315,7 +313,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Edit tutoring location detail',
                 'resource' => 'Tutoring Location',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'tutoring_location-show',
@@ -323,7 +321,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Show tutoring location detail',
                 'resource' => 'Tutoring Location',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'tutoring_location-destroy',
@@ -331,7 +329,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Delete tutoring location',
                 'resource' => 'Tutoring Location',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'tutoring_package_type-index',
@@ -339,7 +337,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Show all tutoring package types',
                 'resource' => 'Tutoring Package Type',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'tutoring_package_type-create',
@@ -347,7 +345,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Create or add a new package type',
                 'resource' => 'Tutoring Package Type',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'tutoring_package_type-edit',
@@ -355,7 +353,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Edit tutoring package type detail',
                 'resource' => 'Tutoring Package Type',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'tutoring_package_type-show',
@@ -363,7 +361,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Show tutoring package type detail',
                 'resource' => 'Tutoring Package Type',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'tutoring_package_type-destroy',
@@ -371,7 +369,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Delete tutoring package type',
                 'resource' => 'Tutoring Package Type',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'package_type-index',
@@ -379,7 +377,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Show all package types',
                 'resource' => 'Package Type',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'package_type-create',
@@ -387,7 +385,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Create or add a new package type',
                 'resource' => 'Package Type',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'package_type-edit',
@@ -395,7 +393,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Edit package type detail',
                 'resource' => 'Package Type',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'package_type-show',
@@ -403,7 +401,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Show package type detail',
                 'resource' => 'Package Type',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'package_type-destroy',
@@ -411,7 +409,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Delete package type',
                 'resource' => 'Package Type',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'invoice_package_type-index',
@@ -419,7 +417,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Show all package types',
                 'resource' => 'Invoice Package Type',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'invoice_package_type-create',
@@ -427,7 +425,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Create or add a new invoice package type',
                 'resource' => 'Invoice Package Type',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'invoice_package_type-edit',
@@ -435,7 +433,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Edit invoice package type detail',
                 'resource' => 'Invoice Package Type',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'invoice_package_type-show',
@@ -443,7 +441,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Show invoice package type detail',
                 'resource' => 'Invoice Package Type',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'invoice_package_type-destroy',
@@ -451,7 +449,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Delete invoice package type',
                 'resource' => 'Invoice Package Type',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'invoice-index',
@@ -459,7 +457,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Show all invoices',
                 'resource' => 'Invoice',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'invoice-create',
@@ -467,7 +465,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Create or add a new invoice',
                 'resource' => 'Invoice',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'invoice-edit',
@@ -475,7 +473,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Edit invoice detail',
                 'resource' => 'Invoice',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'invoice-show',
@@ -483,7 +481,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Show invoice detail',
                 'resource' => 'Invoice',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'invoice-destroy',
@@ -491,7 +489,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Delete invoice',
                 'resource' => 'Invoice',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'invoice-pay',
@@ -499,7 +497,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Pay invoice',
                 'resource' => 'Invoice',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'tutor_dashboard-index',
@@ -507,7 +505,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Tutor Dashboard',
                 'resource' => 'Others',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'session-index',
@@ -515,7 +513,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Session Index',
                 'resource' => 'Session',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'session-create',
@@ -523,7 +521,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Session Create',
                 'resource' => 'Session',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'session-show',
@@ -531,7 +529,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Session Show',
                 'resource' => 'Session',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'session-edit',
@@ -539,7 +537,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Session Edit',
                 'resource' => 'Session',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'session-destroy',
@@ -547,7 +545,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Session Destroy',
                 'resource' => 'Session',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'super_admin-dashboard',
@@ -555,7 +553,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Super Admin Dashboard',
                 'resource' => 'Super Admin Dashboard',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'monthly_invoice_package-index',
@@ -563,7 +561,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Show all Monthly Invoice Packages',
                 'resource' => 'Monthly Invoice Package',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'monthly_invoice_package-create',
@@ -571,7 +569,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Create or add a new Monthly Invoice Package',
                 'resource' => 'Monthly Invoice Package',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'monthly_invoice_package-edit',
@@ -579,7 +577,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Edit Monthly Invoice Package detail',
                 'resource' => 'Monthly Invoice Package',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'monthly_invoice_package-show',
@@ -587,7 +585,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Show Monthly Invoice Package detail',
                 'resource' => 'Monthly Invoice Package',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'monthly_invoice_package-destroy',
@@ -595,7 +593,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Delete Monthly Invoice Package',
                 'resource' => 'Monthly Invoice Package',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'non_package_invoice-create',
@@ -603,15 +601,15 @@ class PermissionSeeder extends Seeder
                 'description' => 'Non package invoice create',
                 'resource' => 'Others',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'client-index',
-                'display_name' => 'Session Index',
-                'description' => 'Session Index',
-                'resource' => 'Session',
+                'display_name' => 'Client Index',
+                'description' => 'Client Index',
+                'resource' => 'Client',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'client-create',
@@ -619,7 +617,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Client Create',
                 'resource' => 'Client',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'client-show',
@@ -627,7 +625,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Client Show',
                 'resource' => 'Client',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'client-edit',
@@ -635,7 +633,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Client Edit',
                 'resource' => 'Client',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'client-destroy',
@@ -643,7 +641,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Client Destroy',
                 'resource' => 'Client',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             //Taxes
             [
@@ -652,7 +650,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Tax Index',
                 'resource' => 'Tax',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'tax-create',
@@ -660,7 +658,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Tax Create',
                 'resource' => 'Tax',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'tax-show',
@@ -668,7 +666,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Tax Show',
                 'resource' => 'Tax',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'tax-edit',
@@ -676,7 +674,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Tax Edit',
                 'resource' => 'Tax',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'tax-destroy',
@@ -684,7 +682,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'Tax Destroy',
                 'resource' => 'Tax',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             //LineItems
             [
@@ -693,7 +691,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'LineItem Index',
                 'resource' => 'LineItem',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'line_item-create',
@@ -701,7 +699,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'LineItem Create',
                 'resource' => 'LineItem',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'line_item-show',
@@ -709,7 +707,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'LineItem Show',
                 'resource' => 'LineItem',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'line_item-edit',
@@ -717,7 +715,7 @@ class PermissionSeeder extends Seeder
                 'description' => 'LineItem Edit',
                 'resource' => 'LineItem',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'line_item-destroy',
@@ -725,7 +723,48 @@ class PermissionSeeder extends Seeder
                 'description' => 'LineItem Destroy',
                 'resource' => 'LineItem',
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
+            ],
+            //Taxes
+            [
+                'name' => 'payment-index',
+                'display_name' => 'Payment Index',
+                'description' => 'Payment Index',
+                'resource' => 'Payment',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'payment-create',
+                'display_name' => 'Payment Create',
+                'description' => 'Payment Create',
+                'resource' => 'Payment',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'payment-show',
+                'display_name' => 'Payment Show',
+                'description' => 'Payment Show',
+                'resource' => 'Payment',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'payment-edit',
+                'display_name' => 'Payment Edit',
+                'description' => 'Payment Edit',
+                'resource' => 'Payment',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'payment-destroy',
+                'display_name' => 'Payment Destroy',
+                'description' => 'Payment Destroy',
+                'resource' => 'Payment',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
         ]);
     }

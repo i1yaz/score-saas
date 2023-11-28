@@ -14,25 +14,27 @@ class LineItem extends Model
         'name',
         'price',
         'auth_guard',
-        'added_by'
+        'added_by',
     ];
 
     protected $casts = [
         'id' => 'integer',
         'name' => 'string',
-        'price' => 'string'
+        'price' => 'string',
     ];
 
     public static array $rules = [
-        'name' => ['required','string'],
-        'price' => ['required','numeric']
+        'name' => ['required', 'string'],
+        'price' => ['required', 'numeric'],
     ];
+
     public static array $messages = [
         'name.required' => 'Line item name is required',
         'name.string' => 'Line Item name must be string',
         'price.required' => 'Price is required',
-        'price.string' => 'Price must be numeric'
+        'price.string' => 'Price must be numeric',
     ];
+
     /**
      *------------------------------------------------------------------
      * Scopes
@@ -47,6 +49,7 @@ class LineItem extends Model
     {
         $query->where('status', false);
     }
+
     /**
      *------------------------------------------------------------------
      * Relations

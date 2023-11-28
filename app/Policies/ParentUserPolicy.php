@@ -33,8 +33,14 @@ class ParentUserPolicy
     public function view(User $user, ParentUser $parent): bool
     {
 
-        if (Auth::user()->hasRole(['student', 'parent'])) {
-            return $user->id == $parent->id || $user->parent_id == $parent->id;
+        if (Auth::user()->hasRole(['student'])) {
+            return $user->parent_id == $parent->id;
+        }
+        if (Auth::user()->hasRole(['parent'])) {
+            return $user->id == $parent->id;
+        }
+        if (Auth::user()->hasRole(['tutor'])) {
+            return $user->id == $parent->tutor_id;
         }
 
         return false;
@@ -42,10 +48,12 @@ class ParentUserPolicy
 
     public function update(User $user, ParentUser $parent): bool
     {
-        if (Auth::user()->hasRole(['parent'])) {
-            return $user->id == $parent->id || $user->parent_id == $parent->id;
+        if (Auth::user()->hasRole(['student'])) {
+            return $user->parent_id == $parent->id;
         }
-
+        if (Auth::user()->hasRole(['parent'])) {
+            return $user->id == $parent->id;
+        }
         return false;
     }
 }

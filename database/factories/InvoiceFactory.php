@@ -15,7 +15,7 @@ class InvoiceFactory extends Factory
     public function definition(): array
     {
         return [
-            'invoice_package_type_id' =>InvoicePackageType::factory(),
+            'invoice_package_type_id' => InvoicePackageType::factory(),
             'due_date' => Carbon::now()->addWeek(),
             'fully_paid_at' => Carbon::now(),
             'general_description' => $this->faker->text(),
@@ -23,7 +23,7 @@ class InvoiceFactory extends Factory
             'email_to_parent' => $this->faker->unique()->safeEmail(),
             'email_to_student' => $this->faker->unique()->safeEmail(),
             'amount_paid' => $this->faker->randomFloat(),
-            'paid_status' => $this->faker->randomElement([Invoice::DRAFT,Invoice::PENDING,Invoice::PARTIAL_PAYMENT,Invoice::PAID,Invoice::VOID]),
+            'paid_status' => $this->faker->randomElement([Invoice::DRAFT, Invoice::PENDING, Invoice::PARTIAL_PAYMENT, Invoice::PAID, Invoice::VOID]),
             'paid_by_modal' => ParentUser::class,
             'paid_by_id' => $this->faker->randomNumber(),
             'invoiceable_type' => $this->faker->word(),

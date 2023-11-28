@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\InvoicePackageType;
 use Carbon\Carbon;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class InvoicePackageTypeSeeder extends Seeder
@@ -17,47 +16,29 @@ class InvoicePackageTypeSeeder extends Seeder
 
         InvoicePackageType::insert([
             [
+                'id' => 1,
                 'name' => 'Tutoring Package',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
                 'auth_guard' => 'web',
-                'added_by' => 1
+                'added_by' => 1,
             ],
             [
+                'id' => 2,
                 'name' => 'Monthly Invoice Tutoring',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
                 'auth_guard' => 'web',
-                'added_by' => 1
+                'added_by' => 1,
             ],
             [
-                'name' => 'Mock Test',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-                'auth_guard' => 'web',
-                'added_by' => 1
-            ],
-            [
-                'name' => 'At Home Sessions',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-                'auth_guard' => 'web',
-                'added_by' => 1
-            ],
-            [
+                'id' => 3,
                 'name' => 'Non Package Invoice',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
                 'auth_guard' => 'web',
-                'added_by' => 1
+                'added_by' => 1,
             ],
-            [
-                'name' => 'Other',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-                'auth_guard' => 'web',
-                'added_by' => 1
-            ]
         ]);
     }
 }

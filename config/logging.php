@@ -72,7 +72,20 @@ return [
             'days' => 14,
             'replace_placeholders' => true,
         ],
-
+        'stripe_success' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/webhooks-success/stripe-success.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => 60,
+            'replace_placeholders' => true,
+        ],
+        'stripe_failure' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/webhooks-failed/stripe-failure.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => 60,
+            'replace_placeholders' => true,
+        ],
         'slack' => [
             'driver' => 'slack',
             'url' => env('LOG_SLACK_WEBHOOK_URL'),

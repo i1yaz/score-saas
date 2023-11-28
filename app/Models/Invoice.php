@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class Invoice extends Model
+class Invoice extends BaseModel
 {
     use HasFactory;
+
     public $table = 'invoices';
 
     public const DRAFT = 0;
@@ -24,8 +26,11 @@ class Invoice extends Model
     const ID_START = 1000;
 
     const PREFIX_START = 'INV-';
+
     const FLAT_DISCOUNT = 1;
+
     const PERCENTAGE_DISCOUNT = 2;
+
     public $fillable = [
         'invoice_package_type_id',
         'due_date',
@@ -34,7 +39,6 @@ class Invoice extends Model
         'detailed_description',
         'email_to_parent',
         'email_to_student',
-        'amount_paid',
         'amount_remaining',
         'paid_status',
         'paid_by_modal',
@@ -42,7 +46,7 @@ class Invoice extends Model
         'invoiceable_type',
         'invoiceable_id',
         'auth_guard',
-        'added_by'
+        'added_by',
     ];
 
     protected $casts = [
@@ -59,11 +63,14 @@ class Invoice extends Model
         'paid_by_id' => 'integer',
         'invoiceable_type' => 'string',
         'invoiceable_id' => 'integer',
+        'due_date' => 'date',
     ];
 
     public static array $rules = [
         'client_id' => 'required',
-        'due_date' => 'required',
+        'due_date' => ['required', 'date', 'after_or_equal:today'],
+        'item_id' => ['required', 'array', 'min:1'],
+
     ];
 
     /**
@@ -85,5 +92,14 @@ class Invoice extends Model
     {
         return $this->belongsToMany(LineItem::class, 'invoice_line_item')
             ->withPivot(['tax_ids', 'price', 'qty', 'tax_amount', 'final_amount', 'status', 'auth_guard', 'added_by']);
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
+    }
+    public function invoiceable(): MorphTo
+    {
+        return $this->morphTo();
     }
 }

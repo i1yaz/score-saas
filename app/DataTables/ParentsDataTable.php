@@ -16,19 +16,34 @@ class ParentsDataTable implements IDataTables
             'family_code' => 'id',
         ];
         $order = $columns[$order] ?? $order;
-        $parents = ParentUser::query()->select(['id', 'email', 'first_name', 'last_name', 'status', 'phone', 'created_at']);
+        $parents = ParentUser::query()
+            ->select(
+                [
+                    'parents.id', 'parents.email', 'parents.first_name', 'parents.last_name', 'parents.status', 'parents.phone', 'parents.created_at',
+                    'student_tutoring_package_tutor.tutor_id', 'monthly_invoice_package_tutor.tutor_id',
+                ])
+            ->leftJoin('students', 'parents.id', '=', 'students.parent_id')
+            ->leftJoin('student_tutoring_packages', 'student_tutoring_packages.student_id', '=', 'students.id')
+            ->leftJoin('monthly_invoice_packages', 'monthly_invoice_packages.student_id', '=', 'students.id')
+            ->leftJoin('student_tutoring_package_tutor', 'student_tutoring_package_tutor.student_tutoring_package_id', '=', 'student_tutoring_packages.id')
+            ->leftJoin('monthly_invoice_package_tutor', 'monthly_invoice_package_tutor.monthly_invoice_package_id', '=', 'monthly_invoice_packages.id');
         $parents = static::getModelQueryBySearch($search, $parents);
         $parents = $parents->offset($start)
             ->limit($limit)
             ->orderBy($order, $dir);
-
         return $parents->get();
 
     }
 
     public static function totalFilteredRecords(mixed $search): int
     {
-        $students = ParentUser::query()->select(['id']);
+        $students = ParentUser::query()
+            ->select(['tutors.id'])
+            ->leftJoin('students', 'parents.id', '=', 'students.parent_id')
+            ->leftJoin('student_tutoring_packages', 'student_tutoring_packages.student_id', '=', 'students.id')
+            ->leftJoin('monthly_invoice_packages', 'monthly_invoice_packages.student_id', '=', 'students.id')
+            ->leftJoin('student_tutoring_package_tutor', 'student_tutoring_package_tutor.student_tutoring_package_id', '=', 'student_tutoring_packages.id')
+            ->leftJoin('monthly_invoice_package_tutor', 'monthly_invoice_package_tutor.monthly_invoice_package_id', '=', 'monthly_invoice_packages.id');
         $students = static::getModelQueryBySearch($search, $students);
 
         return $students->count();
@@ -69,13 +84,24 @@ class ParentsDataTable implements IDataTables
         if (Auth::user()->hasRole('student') && Auth::user() instanceof Student) {
             $records = $records->where('id', Auth::user()->parent_id);
         }
+        if (Auth::user()->hasRole('tutor')){
+            $records = $records->where(function ($q){
+                $q->where('student_tutoring_package_tutor.tutor_id', Auth::id())
+                    ->orWhere('monthly_invoice_package_tutor.tutor_id', Auth::id());
+            });
+        }
 
         return $records;
     }
 
     public static function totalRecords(): int
     {
-        $students = ParentUser::query()->select(['id']);
+        $students = ParentUser::query()->select(['tutors.id'])
+            ->leftJoin('students', 'parents.id', '=', 'students.parent_id')
+            ->leftJoin('student_tutoring_packages', 'student_tutoring_packages.student_id', '=', 'students.id')
+            ->leftJoin('monthly_invoice_packages', 'monthly_invoice_packages.student_id', '=', 'students.id')
+            ->leftJoin('student_tutoring_package_tutor', 'student_tutoring_package_tutor.student_tutoring_package_id', '=', 'student_tutoring_packages.id')
+            ->leftJoin('monthly_invoice_package_tutor', 'monthly_invoice_package_tutor.monthly_invoice_package_id', '=', 'monthly_invoice_packages.id');
         if (Auth::user()->hasRole('parent') && Auth::user() instanceof ParentUser) {
             $students = $students->where('id', Auth::id());
         }

@@ -8,6 +8,7 @@ use App\Http\Requests\CreateParentRequest;
 use App\Http\Requests\UpdateParentRequest;
 use App\Mail\ParentRegisteredMail;
 use App\Models\ParentUser;
+use App\Models\Student;
 use App\Repositories\ParentRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -33,8 +34,6 @@ class ParentController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $this->authorize('viewAny', ParentUser::class);
-
         if ($request->ajax()) {
             $columns = [
                 'family_code',
@@ -101,7 +100,12 @@ class ParentController extends AppBaseController
             $user->addRole('parent');
             DB::commit();
             $input['password'] = App::environment(['production']) ? $passwordString : 'abcd1234';
-            Mail::to($user)->send(new ParentRegisteredMail($input));
+            try {
+                Mail::to($user)->send(new ParentRegisteredMail($input));
+
+            } catch (\Exception $e) {
+                report($e);
+            }
             Flash::success('Parent saved successfully.');
 
             return redirect(route('parents.index'));
@@ -119,18 +123,53 @@ class ParentController extends AppBaseController
     /**
      * Display the specified Parent.
      */
-    public function show(ParentUser $parent)
+    public function show($id)
     {
-        $this->authorize('view', $parent);
+        $parent = ParentUser::query()
+            ->select(
+                [
+                    'parents.*'
+                ])
+            ->selectRaw(
+                'CASE WHEN student_tutoring_package_tutor.tutor_id IS NOT NULL THEN student_tutoring_package_tutor.tutor_id
+                                ELSE monthly_invoice_package_tutor.tutor_id END as tutor_id'
+            )
+            ->leftJoin('students', 'parents.id', '=', 'students.parent_id')
+            ->leftJoin('student_tutoring_packages', 'student_tutoring_packages.student_id', '=', 'students.id')
+            ->leftJoin('monthly_invoice_packages', 'monthly_invoice_packages.student_id', '=', 'students.id')
+            ->leftJoin('student_tutoring_package_tutor', 'student_tutoring_package_tutor.student_tutoring_package_id', '=', 'student_tutoring_packages.id')
+            ->leftJoin('monthly_invoice_package_tutor', 'monthly_invoice_package_tutor.monthly_invoice_package_id', '=', 'monthly_invoice_packages.id');
 
+        if (Auth::user()->hasRole('parent') && Auth::user() instanceof ParentUser) {
+            $parent = $parent->where('id', Auth::id());
+        }
+        if (Auth::user()->hasRole('student') && Auth::user() instanceof Student) {
+            $parent = $parent->where('id', Auth::user()->parent_id);
+        }
+        if (Auth::user()->hasRole('tutor')){
+            $parent = $parent->where(function ($q){
+                $q->where('student_tutoring_package_tutor.tutor_id', Auth::id())
+                    ->orWhere('monthly_invoice_package_tutor.tutor_id', Auth::id());
+            });
+        }
+        $parent = $parent->findOrFail($id);
+
+        $this->authorize('view', $parent);
         return view('parents.show')->with('parent', $parent);
     }
 
     /**
      * Show the form for editing the specified Parent.
      */
-    public function edit(ParentUser $parent)
+    public function edit($id)
     {
+        $parent = ParentUser::select(['parents.*','students.parent_id as parent_id'])
+            ->leftJoin('students', 'students.parent_id', 'parents.id');
+        if (Auth::user()->hasRole('student')) {
+            $parent = $parent->where('students.id', Auth::id());
+        }
+
+        $parent = $parent->findOrFail($id);
         $this->authorize('update', $parent);
 
         return view('parents.edit')->with('parent', $parent);
@@ -160,7 +199,7 @@ class ParentController extends AppBaseController
     public function destroy($id)
     {
         $parent = ParentUser::findOrFail($id);
-        if (!$parent) {
+        if (! $parent) {
             Flash::error('No record found.');
 
             return redirect(route('parents.index'));

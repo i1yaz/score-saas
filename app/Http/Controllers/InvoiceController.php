@@ -7,6 +7,8 @@ use App\Http\Requests\CreateInvoiceRequest;
 use App\Http\Requests\UpdateInvoiceRequest;
 use App\Models\Invoice;
 use App\Models\LineItem;
+use App\Models\MonthlyInvoicePackage;
+use App\Models\MonthlyInvoiceSubscription;
 use App\Models\Payment;
 use App\Models\Tax;
 use App\Repositories\InvoiceRepository;
@@ -33,11 +35,12 @@ class InvoiceController extends AppBaseController
                 'package',
                 'invoice_status',
                 'invoice_type',
-                'student',
-                'parent',
+                //                'student',
+                //                'parent',
                 'created_at',
                 'due_date',
                 'amount_paid',
+                'amount_remaining',
                 'fully_paid_at',
                 'action',
             ];
@@ -69,12 +72,14 @@ class InvoiceController extends AppBaseController
     public function create()
     {
         $items = LineItem::all();
-        $taxes = Tax::select(['id','name','value'])->get();
-        return view('invoices.create',['taxes'=>$taxes,'items' => $items]);
+        $taxes = Tax::select(['id', 'name', 'value'])->get();
+
+        return view('invoices.create', ['taxes' => $taxes, 'items' => $items]);
     }
 
     /**
      * Store a newly created Invoice in storage.
+     *
      * @throws \Exception
      */
     public function store(CreateInvoiceRequest $request)
@@ -82,10 +87,10 @@ class InvoiceController extends AppBaseController
         $input = $request->all();
 
         $this->invoiceRepository->create($input);
-        if ($request->ajax()){
-            Flash::success('Invoice Added successfully.');
-            return response()->json(['success'=>true,'message'=>'Invoice created successfully','redirect'=> route('invoices.index')]);
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Invoice created successfully', 'redirectTo' => route('invoices.index')]);
         }
+
         return redirect(route('invoices.index'));
     }
 
@@ -162,23 +167,55 @@ class InvoiceController extends AppBaseController
 
         return redirect(route('invoices.index'));
     }
-    public function showPaymentPage(Request $request, $invoice){
+
+    public function showPaymentPage(Request $request, $invoice)
+    {
 
         if (empty($invoice)) {
             Flash::error('Invoice not found');
 
             return redirect(route('invoices.index'));
         }
-        if ($request->type === 'non-package-invoice'){
+        $stripeKey = config('services.stripe.key');
+        $paymentModes = $this->invoiceRepository->getPaymentGateways();
+
+        if ($request->type === 'non-package-invoice') {
             $invoice = $this->invoiceRepository->showNonPackageInvoice($invoice);
-            $stripeKey = config('services.stripe.key');
-            return view('invoices.non-package-payment-create',['invoice'=>$invoice,'stripeKey' => $stripeKey]);
+
+            return view('invoices.non-package-payment-create', ['invoice' => $invoice, 'stripeKey' => $stripeKey, 'paymentModes' => $paymentModes]);
         }
-//        return view('invoices.payment-create',['invoice'=>$invoice]);
+        if ($request->type === 'tutoring-package') {
+            $invoice = $this->invoiceRepository->showTutoringPackageInvoice($invoice);
+            $totalAmount = cleanAmountWithCurrencyFormat(getPriceFromHoursAndHourlyWithDiscount($invoice->hourly_rate, $invoice->hours, $invoice->discount, $invoice->discount_type));
+            $remainingAmount = $totalAmount - $invoice->amount_paid ?? 0;
+            $remainingAmount = $remainingAmount + $invoice->amount_refunded;
+            return view('invoices.tutoring-package-payment-create', [
+                'invoice' => $invoice,
+                'stripeKey' => $stripeKey,
+                'paymentModes' => $paymentModes,
+                'totalAmount' => $totalAmount,
+                'remainingAmount' => $remainingAmount]);
+        }
+        if ($request->type === 'monthly-invoice-package'){
+            $invoice = $this->invoiceRepository->showMonthlyInvoicePackage($invoice);
+            $monthlyInvoicePackage = MonthlyInvoicePackage::select(['id','hourly_rate'])->findOrFail($invoice->monthly_invoice_package_id);
+            $subscription = MonthlyInvoiceSubscription::select(['subscription_id','is_active'])->where('monthly_invoice_package_id', $invoice->monthly_invoice_package_id)->firstOrFail();
+
+            $price = (getTotalInvoicePriceFromMonthlyInvoicePackage($monthlyInvoicePackage));
+            return view('invoices.monthly-invoice-package-payment-create', [
+                'monthlyInvoicePackageId' => $invoice->monthly_invoice_package_id,
+                'stripeKey' => $stripeKey,
+                'paymentModes' => $paymentModes,
+                'subscriptionAmount' => $price,
+                'subscriptionId' => $subscription->subscription_id,
+                'isActive' => $subscription->is_active,
+                ]);
+        }
     }
 
-    public function showPublicInvoice($invoice,$type=null){
-        if ($type=='non-package-invoice'){
+    public function showPublicInvoice($invoice, $type = null)
+    {
+        if ($type == 'non-package-invoice') {
             $invoiceData = $this->invoiceRepository->getNonPackageInvoiceData($invoice);
         }
         $invoiceData['statusArr'] = Invoice::STATUS_ARR;

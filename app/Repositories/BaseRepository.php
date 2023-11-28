@@ -14,6 +14,7 @@ abstract class BaseRepository
      * @var Model
      */
     protected $model;
+
     private bool $status;
 
     /**
@@ -111,7 +112,6 @@ abstract class BaseRepository
 
         return $model;
 
-
     }
 
     /**
@@ -162,6 +162,7 @@ abstract class BaseRepository
         $query = $this->model->newQuery();
         $model = $query->findOrFail($id);
         $model->status = ! $model->status;
+
         return $model->save();
     }
 }

@@ -32,6 +32,7 @@ class Subject extends BaseModel
     {
         return $this->belongsToMany(StudentTutoringPackage::class);
     }
+
     public function monthlyInvoicePackages(): BelongsToMany
     {
         return $this->belongsToMany(MonthlyInvoicePackage::class);

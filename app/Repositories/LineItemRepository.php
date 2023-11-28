@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Models\LineItem;
-use App\Repositories\BaseRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
@@ -11,7 +10,7 @@ class LineItemRepository extends BaseRepository
 {
     protected $fieldSearchable = [
         'name',
-        'price'
+        'price',
     ];
 
     public function getFieldsSearchable(): array
@@ -23,6 +22,7 @@ class LineItemRepository extends BaseRepository
     {
         return LineItem::class;
     }
+
     public function create(array $input): Model
     {
         $input['auth_guard'] = Auth::guard()->name;

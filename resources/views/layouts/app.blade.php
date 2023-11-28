@@ -36,14 +36,14 @@
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item dropdown user-menu">
                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
-                            <img src="https://assets.infyom.com/logo/blue_logo_150x150.png"
+                            <img src="{{asset('img/logo.svg')}}"
                                 class="user-image img-circle elevation-2" alt="User Image">
                             <span class="d-none d-md-inline">{{ Auth::user()->name }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                             <!-- User image -->
                             <li class="user-header bg-primary">
-                                <img src="https://assets.infyom.com/logo/blue_logo_150x150.png"
+                                <img src="{{asset('img/logo.svg')}}"
                                     class="img-circle elevation-2" alt="User Image">
                                 <p>
                                     {{ Auth::user()->email }}
@@ -103,13 +103,31 @@
                         $(this).attr("disabled", "disabled");
                         $(this).parents("form").submit();
                     });
+                    function ToggleBtnLoader(btnLoader) {
+
+                        let spinner = "<span class='spinner-border spinner-border-sm'></span> Processing...";
+                        console.log(!btnLoader.is(":disabled"))
+                        if (!btnLoader.is(":disabled")) {
+                            console.log("btnLoader.text", btnLoader.text());
+                            btnLoader.attr("data-old-text", btnLoader.text());
+                            btnLoader
+                                .html(spinner)
+                                .prop("disabled", true);
+                        }else{
+                            let oldText = btnLoader.attr("data-old-text")
+                            console.log("old.text", oldText);
+                            btnLoader.html(oldText).prop("disabled", false);
+                        }
+
+                    }
+
                 </script>
             @endpush
 
             <!-- Main Footer -->
             <footer class="main-footer">
                 <div class="float-right d-none d-sm-block">
-                    <b>Version</b> 3.1.0
+{{--                    <b>Version</b> 3.1.0--}}
                 </div>
                 <strong>Copyright &copy; 2014-2023 <a href="{{config('app.url')}}">{{config('app.name')}}</a></strong> All rights
                 reserved.

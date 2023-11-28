@@ -3,7 +3,6 @@
 namespace App\Mail;
 
 use App\Models\MonthlyInvoicePackage;
-use App\Models\StudentTutoringPackage;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -15,7 +14,7 @@ class ParentInvoiceMailAfterMonthlyInvoicePackageCreationMail extends Mailable i
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public MonthlyInvoicePackage $monthlyInvoicePackage)
+    public function __construct(public  $monthlyInvoicePackage)
     {
     }
 

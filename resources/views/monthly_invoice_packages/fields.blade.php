@@ -1,12 +1,12 @@
 <!-- Student Id Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('student_id', 'Student:',['class'=>'required']) !!}
-    {!! Form::select('student_id', [] ,null, ['class' => 'form-control','id'=>'student-id']) !!}
+    {!! Form::select('student_id',$selectedStudent??[] ,null, ['class' => 'form-control','id'=>'student-id']) !!}
 </div>
 <!-- Tutoring Location Id Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('tutoring_location_id', 'Tutoring Location:',['class'=> 'required']) !!}
-    {!! Form::select('tutoring_location_id', [] ,null, ['class' => 'form-control','id'=>'tutoring-location-id']) !!}
+    {!! Form::select('tutoring_location_id',  $tutoringLocation??[] ,null, ['class' => 'form-control','id'=>'tutoring-location-id']) !!}
 </div>
 <!-- Tutor Field -->
 <div class="form-group col-sm-6">
@@ -20,7 +20,7 @@
 <!-- Start Date Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('start_date', 'Start Date:') !!}
-    {!! Form::text('start_date', null, ['class' => 'form-control date-input']) !!}
+    {!! Form::text('start_date', isset($monthlyInvoicePackage)? $monthlyInvoicePackage->start_date?->format('m/d/Y'):null, ['class' => 'form-control date-input']) !!}
 </div>
 <!-- Notes Field -->
 <div class="form-group col-sm-6">
@@ -36,14 +36,14 @@
 
 <!-- Hourly Rate Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('hourly_rate', 'Hourly Rate:',['class'=> 'required']) !!}
-    {!! Form::text('hourly_rate', null, ['class' => 'form-control']) !!}
+    {!! Form::label('hourly_rate', 'Hourly Rate:',['class'=> 'required','type' => 'number', 'min' => '1', 'oninput' => "validity.valid||(value=value.replace(/[e\+\-]/gi,''))"]) !!}
+    {!! Form::number('hourly_rate', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Tutor Hourly Rate Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('tutor_hourly_rate', 'Tutor Hourly Rate:',['class'=> 'required']) !!}
-    {!! Form::text('tutor_hourly_rate', null, ['class' => 'form-control']) !!}
+    {!! Form::label('tutor_hourly_rate', 'Tutor Hourly Rate:',['class'=> 'required','type' => 'number', 'min' => '1', 'oninput' => "validity.valid||(value=value.replace(/[e\+\-]/gi,''))"]) !!}
+    {!! Form::number('tutor_hourly_rate', null, ['class' => 'form-control']) !!}
 </div>
 <!-- Discount Type Field -->
 <div class="form-group col-sm-6">
@@ -52,8 +52,8 @@
         {!!  Form::number('discount', null, ['class' => 'form-control'])  !!}
         <div class="input-group-append">
             <select class="form-control input-group-text" name="discount_type" id = 'discount-type'>
-                <option value="1" @if(isset($studentTutoringPackage) && $studentTutoringPackage->discount_type == \App\Models\StudentTutoringPackage::FLAT_DISCOUNT) selected @endif>Flat</option>
-                <option value="2" @if(isset($studentTutoringPackage) && $studentTutoringPackage->discount_type == \App\Models\StudentTutoringPackage::PERCENTAGE_DISCOUNT) selected @endif>%</option>
+                <option value="1" @if(isset($monthlyInvoicePackage) && $monthlyInvoicePackage->discount_type == \App\Models\StudentTutoringPackage::FLAT_DISCOUNT) selected @endif>Flat</option>
+                <option value="2" @if(isset($monthlyInvoicePackage) && $monthlyInvoicePackage->discount_type == \App\Models\StudentTutoringPackage::PERCENTAGE_DISCOUNT) selected @endif>%</option>
             </select>
         </div>
     </div>
@@ -69,11 +69,11 @@
     <small class="text-danger">If yes, invoice will automatically be set to paid.</small>
     <div class="radio">
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="is_score_guaranteed" id="is-score-guaranteed-yes" value="yes" >
+            <input class="form-check-input" type="radio" name="is_score_guaranteed" id="is-score-guaranteed-yes" value="yes" @if(!empty($monthlyInvoicePackage) && $monthlyInvoicePackage->is_score_guaranteed===true) checked @endif>
             <label class="form-check-label" for="is-score-guaranteed-yes"><strong>  YES</strong></label>
         </div>
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="is_score_guaranteed" id="is-score-guaranteed-no" value="no" checked>
+            <input class="form-check-input" type="radio" name="is_score_guaranteed" id="is-score-guaranteed-no" value="no" @if(!empty($monthlyInvoicePackage) && $monthlyInvoicePackage->is_score_guaranteed===true)  @else checked @endif>
             <label class="form-check-label" for="is-score-guaranteed-no"><strong>  NO</strong></label>
         </div>
 
@@ -85,21 +85,20 @@
     <small  class="text-danger">If yes, invoice will automatically be set to paid.</small>
     <div class="radio">
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="is_free" id="is-free-yes" value="yes" >
+            <input class="form-check-input" type="radio" name="is_free" id="is-free-yes" value="yes"  @if(!empty($monthlyInvoicePackage) && $monthlyInvoicePackage->is_free===true) checked @endif>
             <label class="form-check-label" for="is-free-yes"><strong>  YES</strong></label>
         </div>
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="is_free" id="is-free-no" value="no" checked>
+            <input class="form-check-input" type="radio" name="is_free" id="is-free-no" value="no"  @if(!empty($monthlyInvoicePackage) && $monthlyInvoicePackage->is_free===true)  @else checked @endif>
             <label class="form-check-label" for="is-free-no"><strong>  NO</strong></label>
         </div>
 
     </div>
 </div>
-@if(!isset($studentTutoringPackage))
-    <div class="form-group col-sm-12">
-        @include('student_tutoring_packages.invoice_details')
-    </div>
-@endif
+
+<div class="form-group col-sm-12">
+    @include('student_tutoring_packages.invoice_details',['invoice' =>$monthlyInvoicePackage->invoice??null ])
+</div>
 <div class="modal fade" id="store-subject" style="display: none;" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

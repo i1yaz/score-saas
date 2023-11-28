@@ -19,6 +19,7 @@ class Student extends Authenticatable implements LaratrustUser
     public $table = 'students';
 
     protected string $guard = 'student';
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -28,6 +29,7 @@ class Student extends Authenticatable implements LaratrustUser
         'password',
         'remember_token',
     ];
+
     public $fillable = [
         'school_id',
         'email',
@@ -72,6 +74,7 @@ class Student extends Authenticatable implements LaratrustUser
     public static $messages = [
         'school_id' => 'The school field is required.',
     ];
+
     /**
      *------------------------------------------------------------------
      * Relationships
@@ -108,5 +111,15 @@ class Student extends Authenticatable implements LaratrustUser
     protected static function booted(): void
     {
 
+    }
+
+    /**
+     *------------------------------------------------------------------
+     * Accessor
+     *------------------------------------------------------------------
+     */
+    public function getFullNameAttribute(): string
+    {
+        return "{$this->first_name}  {$this->last_name}";
     }
 }

@@ -26,7 +26,11 @@
     {!! Form::label('general_description', 'General Description:') !!}
     {!! Form::text('general_description', null, ['class' => 'form-control']) !!}
 </div>
-
+<!-- Allow Partial Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('allow_partial_payment', 'Allow Partial Payments ?') !!}
+    {!! Form::select('allow_partial_payment',['no'=>'No','yes'=>'Yes'] ,null, ['class' => 'form-control']) !!}
+</div>
 <!-- Detailed Description Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('detailed_description', 'Detailed Description:') !!}
@@ -407,6 +411,11 @@
             calculateTotal();
         });
         $(document).on('click', '.delete-item', function () {
+
+            if($('.delete-item').length === 1)
+            {
+                return false;
+            }
             let attributeId = $(this).attr('id')
             let splitId = attributeId.split("-");
             $(`#item-${splitId[2]}`).remove();

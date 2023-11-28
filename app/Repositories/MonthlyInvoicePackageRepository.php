@@ -3,12 +3,14 @@
 namespace App\Repositories;
 
 use App\Models\MonthlyInvoicePackage;
+use App\Models\MonthlyInvoiceSubscription;
 use App\Models\Session;
-use App\Models\StudentTutoringPackage;
 use App\Models\Tutor;
-use App\Repositories\BaseRepository;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Stripe\Price;
+use Stripe\StripeClient;
 
 class MonthlyInvoicePackageRepository extends BaseRepository
 {
@@ -19,7 +21,7 @@ class MonthlyInvoicePackageRepository extends BaseRepository
         'start_date',
         'hourly_rate',
         'tutor_hourly_rate',
-        'tutoring_location_id'
+        'tutoring_location_id',
     ];
 
     public function getFieldsSearchable(): array
@@ -36,10 +38,9 @@ class MonthlyInvoicePackageRepository extends BaseRepository
     {
         $input['auth_guard'] = Auth::guard()->name;
         $input['added_by'] = Auth::id();
-
         $model = $this->model->newInstance($input);
-        $model->save();
 
+        $model->save();
         return $model;
     }
 
@@ -48,11 +49,11 @@ class MonthlyInvoicePackageRepository extends BaseRepository
         return MonthlyInvoicePackage::query()
             ->with(['tutors', 'subjects'])
             ->with('sessions', function ($q) {
-                $q = $q->select('sessions.*','tutors.email as tutor_email','list_data.name as completion_code_name')
+                $q = $q->select('sessions.*', 'tutors.email as tutor_email', 'list_data.name as completion_code_name')
                     ->selectRaw("CONCAT(tutors.first_name,' ',tutors.last_name) as tutor_name")
-                    ->leftJoin('list_data',function ($q){
-                        $q->on('list_data.id','=','sessions.session_completion_code')
-                            ->where('list_data.list_id','=',Session::LIST_DATA_LIST_ID);
+                    ->leftJoin('list_data', function ($q) {
+                        $q->on('list_data.id', '=', 'sessions.session_completion_code')
+                            ->where('list_data.list_id', '=', Session::LIST_DATA_LIST_ID);
                     })
                     ->join('tutors', 'tutors.id', 'sessions.tutor_id');
                 if (Auth::user()->hasRole('tutor') && Auth::user() instanceof Tutor) {
@@ -83,5 +84,32 @@ class MonthlyInvoicePackageRepository extends BaseRepository
             ->join('invoice_package_types', 'invoice_package_types.id', 'invoices.invoice_package_type_id')
             ->where('monthly_invoice_packages.id', $id)
             ->first();
+    }
+
+    public function update(array $input, int $id)
+    {
+        $query = $this->model->newQuery();
+
+        $model = $query->findOrFail($id);
+
+        $model->fill($input);
+
+        $model->save();
+
+        return $model;
+    }
+
+    public function createStripeSubscription(MonthlyInvoicePackage $monthlyInvoicePackage,$gateway='stripe')
+    {
+        try {
+            $monthlyInvoiceSubscription = new MonthlyInvoiceSubscription();
+            $monthlyInvoiceSubscription->monthly_invoice_package_id = $monthlyInvoicePackage->id;
+            $monthlyInvoiceSubscription->payment_gateway = $gateway;
+            $monthlyInvoiceSubscription->start_date = $monthlyInvoicePackage->due_date??Carbon::today();
+            $monthlyInvoiceSubscription->save();
+            return $monthlyInvoiceSubscription;
+        }catch (\Exception $e){
+            report($e);
+        }
     }
 }

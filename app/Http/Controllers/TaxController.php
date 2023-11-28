@@ -4,18 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateTaxRequest;
 use App\Http\Requests\UpdateTaxRequest;
-use App\Http\Controllers\AppBaseController;
 use App\Models\Client;
-use App\Models\LineItem;
-use App\Models\ParentUser;
 use App\Models\Tax;
 use App\Repositories\TaxRepository;
-use Illuminate\Http\Request;
 use Flash;
+use Illuminate\Http\Request;
 
 class TaxController extends AppBaseController
 {
-    /** @var TaxRepository $taxRepository*/
+    /** @var TaxRepository */
     private $taxRepository;
 
     public function __construct(TaxRepository $taxRepo)
@@ -28,13 +25,14 @@ class TaxController extends AppBaseController
      */
     public function index(Request $request)
     {
-        if ($request->ajax()){
+        if ($request->ajax()) {
             $email = trim($request->email);
             $clients = Client::select(['clients.id as id', 'clients.email as text'])
                 ->active()
                 ->where('clients.email', 'LIKE', "%{$email}%")
                 ->limit(5)
                 ->get();
+
             return response()->json($clients->toArray());
         }
         $taxes = $this->taxRepository->paginate(10);
@@ -138,5 +136,4 @@ class TaxController extends AppBaseController
 
         return redirect(route('taxes.index'));
     }
-
 }

@@ -15,6 +15,7 @@ use Laravel\Sanctum\HasApiTokens;
 class ParentUser extends Authenticatable implements LaratrustUser
 {
     use HasApiTokens, HasFactory, HasRolesAndPermissions,Notifiable;
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -24,6 +25,7 @@ class ParentUser extends Authenticatable implements LaratrustUser
         'password',
         'remember_token',
     ];
+
     public $table = 'parents';
 
     protected string $guard = 'parent';
@@ -98,5 +100,9 @@ class ParentUser extends Authenticatable implements LaratrustUser
     public function getFamilyCodeAttribute(): string
     {
         return getFamilyCodeFromId($this->id);
+    }
+    public function getFullNameAttribute(): string
+    {
+        return "{$this->first_name}  {$this->last_name}";
     }
 }

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class TutoringPackageType extends BaseModel
 {
     use HasFactory;
+
     public $table = 'tutoring_package_types';
 
     public $fillable = [

@@ -21,16 +21,16 @@ class StudentTutoringPackageFactory extends Factory
             'tutoring_location_id' => TutoringLocation::factory(),
             'notes' => $this->faker->paragraph,
             'internal_notes' => $this->faker->paragraph,
-            'hours' => $this->faker->numberBetween(24,72),
-            'hourly_rate' => $this->faker->numberBetween(80,200),
-            'discount' => $this->faker->numberBetween(1,40),
-            'discount_type' => $this->faker->randomElement([StudentTutoringPackage::FLAT_DISCOUNT,StudentTutoringPackage::PERCENTAGE_DISCOUNT]),
-            'start_date' => Carbon::yesterday()->setTime(14,0),
-            'tutor_hourly_rate' => $this->faker->numberBetween(20,50),
+            'hours' => $this->faker->numberBetween(24, 72),
+            'hourly_rate' => $this->faker->numberBetween(80, 200),
+            'discount' => $this->faker->numberBetween(1, 40),
+            'discount_type' => $this->faker->randomElement([StudentTutoringPackage::FLAT_DISCOUNT, StudentTutoringPackage::PERCENTAGE_DISCOUNT]),
+            'start_date' => Carbon::yesterday()->setTime(14, 0),
+            'tutor_hourly_rate' => $this->faker->numberBetween(20, 50),
             'auth_guard' => 'web',
             'added_by' => 1,
             'created_at' => now(),
-            'updated_at' => now()
+            'updated_at' => now(),
         ];
     }
 }

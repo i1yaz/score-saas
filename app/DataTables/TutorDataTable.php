@@ -3,6 +3,7 @@
 namespace App\DataTables;
 
 use App\Models\ParentUser;
+use App\Models\Student;
 use App\Models\Tutor;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,21 +16,42 @@ class TutorDataTable implements IDataTables
     {
 
         $order = $columns[$order] ?? $order;
-        $tutors = Tutor::query()->select(['id', 'email', 'first_name', 'last_name', 'status', 'status', 'phone', 'start_date']);
+        $tutors = Tutor::query()
+            ->select(
+                [
+                    'tutors.id',
+                    'tutors.email',
+                    'tutors.first_name',
+                    'tutors.last_name',
+                    'tutors.status',
+                    'tutors.phone',
+                    'tutors.start_date',
+                    'student_tutoring_packages.student_id as stp_student_id',
+                    'monthly_invoice_packages.student_id as mip_student_id',
+                ])
+            ->leftJoin('student_tutoring_package_tutor', 'student_tutoring_package_tutor.tutor_id', 'tutors.id')
+            ->leftJoin('student_tutoring_packages', 'student_tutoring_packages.id', 'student_tutoring_package_tutor.student_tutoring_package_id')
+            ->leftJoin('monthly_invoice_package_tutor', 'monthly_invoice_package_tutor.tutor_id', 'tutors.id')
+            ->leftJoin('monthly_invoice_packages', 'monthly_invoice_packages.id', 'monthly_invoice_package_tutor.monthly_invoice_package_id');
+
         $tutors = static::getModelQueryBySearch($search, $tutors);
         $tutors = $tutors->offset($start)
             ->limit($limit)
             ->orderBy($order, $dir);
-
-        return $tutors->get();
+        return $tutors->groupBy('tutors.id')->get();
     }
 
     public static function totalFilteredRecords(mixed $search): int
     {
-        $tutors = Tutor::query()->select(['id']);
+        $tutors = Tutor::query()
+            ->selectRaw('count(distinct tutors.id) as total')
+            ->leftJoin('student_tutoring_package_tutor', 'student_tutoring_package_tutor.tutor_id', 'tutors.id')
+            ->leftJoin('student_tutoring_packages', 'student_tutoring_packages.id', 'student_tutoring_package_tutor.student_tutoring_package_id')
+            ->leftJoin('monthly_invoice_package_tutor', 'monthly_invoice_package_tutor.tutor_id', 'tutors.id')
+            ->leftJoin('monthly_invoice_packages', 'monthly_invoice_packages.id', 'monthly_invoice_package_tutor.monthly_invoice_package_id');
         $tutors = static::getModelQueryBySearch($search, $tutors);
-
-        return $tutors->count();
+        $tutors = $tutors->first();
+        return $tutors->total??0;
     }
 
     public static function populateRecords($records): array
@@ -61,7 +83,13 @@ class TutorDataTable implements IDataTables
             });
         }
         if (Auth::user()->hasRole('tutor') && Auth::user() instanceof Tutor) {
-            $records = $records->where('id', Auth::id());
+            $records = $records->where('tutors.id', Auth::id());
+        }
+        if (Auth::user()->hasRole('student') && Auth::user() instanceof Student) {
+            $records = $records->where(function ($q) {
+                $q->where('student_tutoring_packages.student_id', Auth::id())
+                    ->orWhere('monthly_invoice_packages.student_id', Auth::id());
+            });
         }
 
         return $records;
@@ -69,11 +97,22 @@ class TutorDataTable implements IDataTables
 
     public static function totalRecords(): int
     {
-        $tutors = Tutor::query()->select(['id']);
+        $tutors = Tutor::query()
+            ->selectRaw('count(distinct tutors.id) as total')
+            ->leftJoin('student_tutoring_package_tutor', 'student_tutoring_package_tutor.tutor_id', 'tutors.id')
+            ->leftJoin('student_tutoring_packages', 'student_tutoring_packages.id', 'student_tutoring_package_tutor.student_tutoring_package_id')
+            ->leftJoin('monthly_invoice_package_tutor', 'monthly_invoice_package_tutor.tutor_id', 'tutors.id')
+            ->leftJoin('monthly_invoice_packages', 'monthly_invoice_packages.id', 'monthly_invoice_package_tutor.monthly_invoice_package_id');
         if (Auth::user()->hasRole('tutor') && Auth::user() instanceof ParentUser) {
             $tutors = $tutors->where('id', Auth::id());
         }
-
-        return $tutors->count();
+        if (Auth::user()->hasRole('student') && Auth::user() instanceof Student) {
+            $tutors = $tutors->where(function ($q) {
+                $q->where('student_tutoring_packages.student_id', Auth::id())
+                    ->orWhere('monthly_invoice_packages.student_id', Auth::id());
+            });
+        }
+        $tutors = $tutors->first();
+        return $tutors->total??0;
     }
 }
