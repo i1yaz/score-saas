@@ -1,17 +1,23 @@
 <?php
 
+use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\MonthlyInvoicePackage;
-use App\Models\MonthlyInvoicePackageTutor;
 use App\Models\NonInvoicePackage;
+use App\Models\ParentUser;
+use App\Models\Payment;
+use App\Models\Student;
 use App\Models\StudentTutoringPackage;
 use App\Models\Tax;
 use App\Models\Tutor;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Stripe\Customer;
 use Stripe\Stripe;
 
 if (! function_exists('booleanSelect')) {
@@ -41,6 +47,7 @@ if (! function_exists('getRoleDescriptionOfLoggedInUser')) {
         if (Auth::user()->hasRole('client')) {
             return 'Client';
         }
+
         return '';
     }
 }
@@ -99,33 +106,35 @@ if (! function_exists('getOriginalMonthlyInvoicePackageIdFromCode')) {
 if (! function_exists('getOriginalPackageIdFromCode')) {
     function getOriginalPackageIdFromCode($code): string
     {
-        return str_replace([StudentTutoringPackage::PREFIX_START,MonthlyInvoicePackage::PREFIX_START], '', $code);
+        return str_replace([StudentTutoringPackage::PREFIX_START, MonthlyInvoicePackage::PREFIX_START], '', $code);
     }
 }
-if (!function_exists('getPackageCodeFromId')){
-    function getPackageCodeFromId(int $studentTutoringPackageId=null,int $monthlyInvoicePackage=null): string
+if (! function_exists('getPackageCodeFromId')) {
+    function getPackageCodeFromId(int $studentTutoringPackageId = null, int $monthlyInvoicePackage = null): string
     {
-        if (!empty($studentTutoringPackageId)){
+        if (! empty($studentTutoringPackageId)) {
             return getStudentTutoringPackageCodeFromId($studentTutoringPackageId);
         }
-        if (!empty($monthlyInvoicePackage)){
+        if (! empty($monthlyInvoicePackage)) {
             return getMonthlyInvoicePackageCodeFromId($monthlyInvoicePackage);
         }
+
         return '';
     }
 }
-if (!function_exists('getPackageCodeFromModelAndId')){
-    function getPackageCodeFromModelAndId(string $type,$id): string
+if (! function_exists('getPackageCodeFromModelAndId')) {
+    function getPackageCodeFromModelAndId(string $type, $id): string
     {
-        if ($type === StudentTutoringPackage::class){
+        if ($type === StudentTutoringPackage::class) {
             return getStudentTutoringPackageCodeFromId($id);
         }
-        if ($type === MonthlyInvoicePackage::class){
+        if ($type === MonthlyInvoicePackage::class) {
             return getMonthlyInvoicePackageCodeFromId($id);
         }
-        if ($type === NonInvoicePackage::class){
+        if ($type === NonInvoicePackage::class) {
             return getNonInvoicePackageCodeFromId($id);
         }
+
         return '';
 
     }
@@ -135,42 +144,45 @@ if (!function_exists('getPackageCodeFromModelAndId')){
         return NonInvoicePackage::PREFIX_START.($id);
     }
 }
-if (!function_exists('getPackageCodeFromModel')){
+if (! function_exists('getPackageCodeFromModel')) {
     function getPackageCodeFromModel(Model $model): string
     {
 
-        if ($model instanceof StudentTutoringPackage){
+        if ($model instanceof StudentTutoringPackage) {
             return getStudentTutoringPackageCodeFromId($model->id);
         }
-        if ($model instanceof MonthlyInvoicePackage){
+        if ($model instanceof MonthlyInvoicePackage) {
             return getMonthlyInvoicePackageCodeFromId($model->id);
         }
+
         return '';
     }
 }
-if (!function_exists('getPackageCodeFromTypeAndId')){
-    function getPackageCodeFromTypeAndId(string $type,int $id): string
+if (! function_exists('getPackageCodeFromTypeAndId')) {
+    function getPackageCodeFromTypeAndId(string $type, int $id): string
     {
 
         $type = strtolower($type);
-        if ($type =='s'){
+        if ($type == 's') {
             return getStudentTutoringPackageCodeFromId($id);
         }
-        if ($type =='m'){
+        if ($type == 'm') {
             return getMonthlyInvoicePackageCodeFromId($id);
         }
+
         return '';
     }
 }
-if (!function_exists('getPackageIdFromCode')){
+if (! function_exists('getPackageIdFromCode')) {
     function getPackageIdFromCode($code): string
     {
-        if (str_contains($code,StudentTutoringPackage::PREFIX_START)){
+        if (str_contains($code, StudentTutoringPackage::PREFIX_START)) {
             return getOriginalStudentTutoringPackageIdFromCode($code);
         }
-        if (str_contains($code,MonthlyInvoicePackage::PREFIX_START)){
+        if (str_contains($code, MonthlyInvoicePackage::PREFIX_START)) {
             return getOriginalPackageIdFromCode($code);
         }
+
         return '';
     }
 }
@@ -181,7 +193,7 @@ if (! function_exists('getInvoiceCodeFromId')) {
         return Invoice::PREFIX_START.($id);
     }
 }
-if (!function_exists('getMonthlyInvoicePackageCodeFromId')){
+if (! function_exists('getMonthlyInvoicePackageCodeFromId')) {
     function getMonthlyInvoicePackageCodeFromId(int $id): string
     {
         return MonthlyInvoicePackage::PREFIX_START.($id);
@@ -224,16 +236,16 @@ if (! function_exists('getPriceFromHoursAndHourlyWithoutDiscount')) {
     }
 }
 
-if (! function_exists('getPriceFromHoursAndHourlyWithDiscounts')) {
+if (! function_exists('getPriceFromHoursAndHourlyWithDiscount')) {
     /**
      * Get price from hourly rate and hours
      */
-    function getPriceFromHoursAndHourlyWithDiscount(float $hourlyRate, float|null $hours, int $discount = 1, int|null $discountType = 1): string
+    function getPriceFromHoursAndHourlyWithDiscount(float $hourlyRate, ?float $hours, int $discount = 1, ?int $discountType = 1): string
     {
-        if (is_null($hours)){
+        if (is_null($hours)) {
             $hours = 0;
         }
-        if (is_null($discountType)){
+        if (is_null($discountType)) {
             $discountType = 1;
         }
         $price = ($hourlyRate * $hours);
@@ -277,15 +289,20 @@ if (! function_exists('formatAmountWithCurrency')) {
     /**
      * Formats a given float number into a string with a currency Sign.
      *
-     * @param  float  $amount The float number to be formatted.
+     * @param  float|null  $amount The float number to be formatted.
+     * @param  int  $decimals
      * @return string The formatted number as a string.
      */
-    function formatAmountWithCurrency(float $amount, $decimals = 2): string
+    function formatAmountWithCurrency(?float $amount, $decimals = 2): string
     {
+        if (is_null($amount)) {
+            $amount = 0;
+        }
+
         return getCurrencySymbol().formatAmountWithoutCurrency($amount, $decimals);
     }
 }
-if(!function_exists('formatAmountWithoutCurrency')){
+if (! function_exists('formatAmountWithoutCurrency')) {
     function formatAmountWithoutCurrency(float $amount, $decimals = 2): string
     {
         return number_format($amount, 2, '.', '');
@@ -297,13 +314,13 @@ if (! function_exists('getCurrencySymbol')) {
     function getCurrencySymbol(): mixed
     {
         return '$';
-//        static $currencySymbol;
-//        /** @var Setting $currencySymbol */
-//        if (empty($currencySymbol)) {
-//            $currencySymbol = Currency::where('id', getSettingValue('current_currency'))->pluck('icon')->first();
-//        }
-//
-//        return $currencySymbol;
+        //        static $currencySymbol;
+        //        /** @var Setting $currencySymbol */
+        //        if (empty($currencySymbol)) {
+        //            $currencySymbol = Currency::where('id', getSettingValue('current_currency'))->pluck('icon')->first();
+        //        }
+        //
+        //        return $currencySymbol;
     }
 }
 if (! function_exists('cleanAmountWithCurrencyFormat')) {
@@ -323,7 +340,7 @@ if (! function_exists('formatDate')) {
         return date('m/d/Y', strtotime($date));
     }
 }
-if (!function_exists('formatTime')){
+if (! function_exists('formatTime')) {
     function formatTime($time): string
     {
         if (empty($time)) {
@@ -335,27 +352,30 @@ if (!function_exists('formatTime')){
 }
 
 if (! function_exists('getInvoiceTypeFromClass')) {
-    function getInvoiceTypeFromClass($type,$slug=false): string
+    function getInvoiceTypeFromClass($type, $slug = false): string
     {
         if ($type == StudentTutoringPackage::class) {
             $name = 'Tutoring Package';
-            if ($slug){
+            if ($slug) {
                 $name = Str::slug($name);
             }
+
             return $name;
         }
         if ($type == MonthlyInvoicePackage::class) {
             $name = 'Monthly Invoice Package';
-            if ($slug){
+            if ($slug) {
                 $name = Str::slug($name);
             }
+
             return $name;
         }
         if ($type == NonInvoicePackage::class) {
             $name = 'Non Package Invoice';
-            if ($slug){
+            if ($slug) {
                 $name = Str::slug($name);
             }
+
             return $name;
         }
     }
@@ -400,7 +420,7 @@ if (! function_exists('booleanToYesNo')) {
         }
     }
 }
-if(!function_exists('yesNoToBoolean')){
+if (! function_exists('yesNoToBoolean')) {
     function yesNoToBoolean($value)
     {
         $value = strtolower($value);
@@ -436,13 +456,14 @@ if (! function_exists('getHexColors')) {
     }
 }
 if (! function_exists('getTutorHourlyRateForStudentTutoringPackage')) {
-    function getTutorHourlyRateForStudentTutoringPackage(StudentTutoringPackage $studentTutoringPackage, Tutor|int $tutor=null): string
+    function getTutorHourlyRateForStudentTutoringPackage(StudentTutoringPackage $studentTutoringPackage, Tutor|int $tutor = null): string
     {
         if (empty($studentTutoringPackage->tutor_hourly_rate)) {
-            if ($tutor){
-                if (!$tutor instanceof Tutor){
+            if ($tutor) {
+                if (! $tutor instanceof Tutor) {
                     $tutor = Tutor::find($tutor);
                 }
+
                 return $tutor->hourly_rate;
             }
             $firstTutor = $studentTutoringPackage->tutors()->first();
@@ -455,13 +476,14 @@ if (! function_exists('getTutorHourlyRateForStudentTutoringPackage')) {
     }
 }
 if (! function_exists('getTutorHourlyRateForMonthlyInvoicePackage')) {
-    function getTutorHourlyRateForMonthlyInvoicePackage(MonthlyInvoicePackage $monthlyInvoicePackage, Tutor|int $tutor=null): string
+    function getTutorHourlyRateForMonthlyInvoicePackage(MonthlyInvoicePackage $monthlyInvoicePackage, Tutor|int $tutor = null): string
     {
         if (empty($monthlyInvoicePackage->tutor_hourly_rate)) {
-            if ($tutor){
-                if (!$tutor instanceof Tutor){
+            if ($tutor) {
+                if (! $tutor instanceof Tutor) {
                     $tutor = Tutor::find($tutor);
                 }
+
                 return $tutor->hourly_rate;
             }
             $firstTutor = $monthlyInvoicePackage->tutors()->first();
@@ -478,73 +500,94 @@ if (! function_exists('getTotalChargedTimeFromStudentTutoringPackageInSeconds'))
     {
         $sessions = \App\Models\Session::where('student_tutoring_package_id', $studentTutoringPackage->id)->get();
         $totalChargedTime = 0;
-        foreach ($sessions as $session){
+        foreach ($sessions as $session) {
             $totalChargedTime += getTotalChargedTimeInSecondsFromSession($session);
 
         }
+
         return $totalChargedTime;
     }
 }
-if (!function_exists('getTotalChargedTimeFromMonthlyInvoicePackageInSeconds')){
-    function getTotalChargedTimeFromMonthlyInvoicePackageInSeconds(MonthlyInvoicePackage $monthlyInvoicePackage): float|int
+if (! function_exists('getTotalChargedTimeFromMonthlyInvoicePackageInSeconds')) {
+    function getTotalChargedTimeFromMonthlyInvoicePackageInSeconds(MonthlyInvoicePackage $monthlyInvoicePackage,$sessions = null,string|Carbon $month=null): float|int
     {
-        $sessions = \App\Models\Session::where('monthly_invoice_package_id', $monthlyInvoicePackage->id)->get();
+
+        if (empty($sessions)){
+            $sessions = \App\Models\Session::where('monthly_invoice_package_id', $monthlyInvoicePackage->id)
+                ->whereMonth('scheduled_date',$month ?? Carbon::now()->month)
+                ->get();
+        }
         $totalChargedTime = 0;
-        foreach ($sessions as $session){
+        foreach ($sessions as $session) {
             $totalChargedTime += getTotalChargedTimeInSecondsFromSession($session);
 
         }
+
         return $totalChargedTime;
     }
 }
-if (!function_exists('getTotalInvoicePriceFromMonthlyInvoicePackage')){
+if (!function_exists('getTotalInvoicePriceForMonthlyInvoicePackageFromSessions')){
+    function getTotalInvoicePriceForMonthlyInvoicePackageFromSessions(MonthlyInvoicePackage $monthlyInvoicePackage,$sessions): string
+    {
+        $totalChargedTime = getTotalChargedTimeFromMonthlyInvoicePackageInSeconds($monthlyInvoicePackage,sessions:$sessions);
+        $hourlyRate = $monthlyInvoicePackage->hourly_rate;
+        $totalChargedTime = $totalChargedTime * ($hourlyRate / 3600);
+
+        return formatAmountWithCurrency($totalChargedTime);
+    }
+}
+if (! function_exists('getTotalInvoicePriceFromMonthlyInvoicePackage')) {
     function getTotalInvoicePriceFromMonthlyInvoicePackage(MonthlyInvoicePackage $monthlyInvoicePackage): string
     {
         $totalChargedTime = getTotalChargedTimeFromMonthlyInvoicePackageInSeconds($monthlyInvoicePackage);
         $hourlyRate = $monthlyInvoicePackage->hourly_rate;
         $totalChargedTime = $totalChargedTime * ($hourlyRate / 3600);
+
         return formatAmountWithCurrency($totalChargedTime);
     }
 }
-if (!function_exists('getTotalChargedTimeOfSessionFromSessionInSeconds')){
-    function getTotalChargedTimeOfSessionFromSessionInSeconds(\App\Models\Session $session): float|int
+if (! function_exists('getTotalChargedTimeOfSessionFromSessionInSeconds')) {
+    function getTotalChargedTimeOfSessionFromSessionInSeconds(App\Models\Session $session): float|int
     {
-        if ($session->session_completion_code === \App\Models\Session::VOID_COMPLETION_CODE || $session->session_completion_code === \App\Models\Session::CANCELED_COMPLETION_CODE){
+        if ($session->session_completion_code === \App\Models\Session::VOID_COMPLETION_CODE || $session->session_completion_code === \App\Models\Session::CANCELED_COMPLETION_CODE) {
             return 0;
         }
         $totalChargedTime = 0;
         $totalChargedTime += (strtotime($session->end_time) - strtotime($session->start_time));
-        if ($session->session_completion_code === \App\Models\Session::PARTIAL_COMPLETION_CODE && filter_var($session->charge_missed_time,FILTER_VALIDATE_BOOLEAN) === true){
-            $totalChargedTime += chargeSessionMissedTimeInSeconds($session,$totalChargedTime);
+        if ($session->session_completion_code === \App\Models\Session::PARTIAL_COMPLETION_CODE && filter_var($session->charge_missed_time, FILTER_VALIDATE_BOOLEAN) === true) {
+            $totalChargedTime += chargeSessionMissedTimeInSeconds($session, $totalChargedTime);
 
         }
+
         return $totalChargedTime;
     }
 }
-if (!function_exists('getTotalChargedTimeInHoursSecondsMinutesFromSession')){
-    function getTotalChargedTimeInHoursSecondsMinutesFromSession(\App\Models\Session $session): string
+if (! function_exists('getTotalChargedTimeInHoursSecondsMinutesFromSession')) {
+    function getTotalChargedTimeInHoursSecondsMinutesFromSession(App\Models\Session $session): string
     {
         return formatTimeFromSeconds(getTotalChargedTimeInSecondsFromSession($session));
     }
 }
-if(!function_exists('getTotalChargedTimeInSecondsFromSession')){
-    function getTotalChargedTimeInSecondsFromSession(\App\Models\Session $session): float|int
+if (! function_exists('getTotalChargedTimeInSecondsFromSession')) {
+    function getTotalChargedTimeInSecondsFromSession(App\Models\Session $session): float|int
     {
         $totalChargedSessionTime = getTotalChargedSessionTimeFromSessionInSeconds($session);
         $totalChargedMissedTime = getTotalChargedMissedSessionTimeFromSessionInSeconds($session);
+
         return $totalChargedSessionTime + $totalChargedMissedTime;
     }
 }
-if (!function_exists('formatTimeFromSeconds')){
+if (! function_exists('formatTimeFromSeconds')) {
     function formatTimeFromSeconds($seconds): string
     {
         $hours = floor($seconds / 3600);
         $minutes = floor(($seconds / 60) % 60);
         $seconds = $seconds % 60;
-        if ($seconds==0){
+        if ($seconds == 0) {
             return sprintf('%02dh:%02dm', $hours, $minutes);
 
         }
+
         return sprintf('%02dh:%02dm:%02ds', $hours, $minutes, $seconds);
     }
 }
@@ -558,14 +601,14 @@ if (! function_exists('getTotalTutorPaymentForStudentTutoringPackage')) {
 
             return formatAmountWithCurrency($totalChargedTimeInSeconds * $hourlyRateInSeconds);
         }
-        if ($hourlyRateInSeconds = ($studentTutoringPackage->tutors()->first()->hourly_rate/3600) ?? 0) {
+        if ($hourlyRateInSeconds = ($studentTutoringPackage->tutors()->first()->hourly_rate / 3600) ?? 0) {
             return formatAmountWithCurrency($totalChargedTimeInSeconds * $hourlyRateInSeconds);
         }
 
         return formatAmountWithCurrency(0);
     }
 }
-if (!function_exists('getTotalTutorPaymentForMonthlyInvoicePackage')){
+if (! function_exists('getTotalTutorPaymentForMonthlyInvoicePackage')) {
     function getTotalTutorPaymentForMonthlyInvoicePackage(MonthlyInvoicePackage $monthlyInvoicePackage)
     {
         $totalChargedTimeInSeconds = getTotalChargedTimeFromMonthlyInvoicePackageInSeconds($monthlyInvoicePackage);
@@ -586,43 +629,46 @@ if (! function_exists('getTotalHours')) {
         return $totalChargedTime;
     }
 }
-if (!function_exists('getSessionCodeFromId')) {
+if (! function_exists('getSessionCodeFromId')) {
     function getSessionCodeFromId($id): string
     {
         return \App\Models\Session::PREFIX.($id);
     }
 }
-if(!function_exists('getTotalTutorChargedAmountFromSession')) {
-    function getTotalTutorChargedAmountFromSession(\App\Models\Session $session,$package): string
+if (! function_exists('getTotalTutorChargedAmountFromSession')) {
+    function getTotalTutorChargedAmountFromSession(App\Models\Session $session, $package): string
     {
         $totalChargedTimeInSeconds = getTotalChargedTimeInSecondsFromSession($session);
-        if ($package instanceof StudentTutoringPackage){
+        if ($package instanceof StudentTutoringPackage) {
             $hourlyRate = getTutorHourlyRateForStudentTutoringPackage($package, $session->tutor_id);
         }
-        if ($package instanceof MonthlyInvoicePackage){
+        if ($package instanceof MonthlyInvoicePackage) {
             $hourlyRate = getTutorHourlyRateForMonthlyInvoicePackage($package, $session->tutor_id);
         }
 
         $totalChargedTime = $totalChargedTimeInSeconds * ($hourlyRate / 3600);
+
         return formatAmountWithCurrency($totalChargedTime);
     }
 }
-if (!function_exists('chargeSessionMissedTimeInSeconds')){
-    function chargeSessionMissedTimeInSeconds(\App\Models\Session $session,int $totalChargedTime=0): int
+if (! function_exists('chargeSessionMissedTimeInSeconds')) {
+    function chargeSessionMissedTimeInSeconds(App\Models\Session $session, int $totalChargedTime = 0): int
     {
         $totalMissedTime = 0;
-        if ((integer)$session->session_completion_code === 2 && filter_var($session->charge_missed_time,FILTER_VALIDATE_BOOLEAN) === true){
+        if (((int) $session->session_completion_code === 2 && filter_var($session->charge_missed_time, FILTER_VALIDATE_BOOLEAN) === true)||(int) $session->session_completion_code === 3) {
 
             $scheduledDate = Carbon::createFromFormat('Y-m-d H:i:s', $session->scheduled_date)->format('m/d/Y');
-            $sessionStart =  $session->start_time;
-            $sessionEnd =  $session->end_time;
+            $sessionStart = $session->start_time;
+            $sessionEnd = $session->end_time;
 
             $sessionStart = Carbon::createFromFormat('m/d/Y H:i:s', "$scheduledDate $sessionStart");
             $sessionEnd = Carbon::createFromFormat('m/d/Y H:i:s', "$scheduledDate $sessionEnd");
 
             $attendedStartTime = $session->attended_start_time;
             $attendedEndTime = $session->attended_end_time;
-
+            if ($session->session_completion_code==3){
+                $attendedStartTime = $attendedEndTime = $session->start_time;
+            }
             $attendedStartTime = Carbon::createFromFormat('m/d/Y H:i:s', "$scheduledDate $attendedStartTime");
             $attendedEndTime = Carbon::createFromFormat('m/d/Y H:i:s', "$scheduledDate $attendedEndTime");
             // Calculate missed time
@@ -633,122 +679,164 @@ if (!function_exists('chargeSessionMissedTimeInSeconds')){
             $totalMissedTime = $missedStart + $missedEnd;
             $totalMissedTime = $totalMissedTime - $totalChargedTime;
         }
+
         return $totalMissedTime;
     }
 }
-if (!function_exists('getTotalChargedSessionTimeFromSessionInSeconds')){
-    function getTotalChargedSessionTimeFromSessionInSeconds(\App\Models\Session $session): float|int
+if (! function_exists('getTotalChargedSessionTimeFromSessionInSeconds')) {
+    function getTotalChargedSessionTimeFromSessionInSeconds(App\Models\Session $session): float|int
     {
-        if ($session->session_completion_code !== \App\Models\Session::PARTIAL_COMPLETION_CODE){
+        $scheduledDate = Carbon::createFromFormat('Y-m-d H:i:s', $session->scheduled_date)->format('m/d/Y');
+        $sessionEnd = $session->end_time;
+        $sessionEnd = Carbon::createFromFormat('m/d/Y H:i:s', "$scheduledDate $sessionEnd");
+        $now = Carbon::now();
+        if ($now->lte($sessionEnd)) {
+            return 0;
+        }
+        if ($session->session_completion_code == 3) {
+            return 0;
+        }
+        if ($session->session_completion_code !== \App\Models\Session::PARTIAL_COMPLETION_CODE) {
             return getTotalChargedTimeOfSessionFromSessionInSeconds($session);
         }
         $totalChargedTime = 0;
         $totalChargedTime += (strtotime($session->attended_end_time) - strtotime($session->attended_start_time));
-        return  $totalChargedTime;
+
+        return $totalChargedTime;
     }
 }
-if (!function_exists('getTotalChargedMissedSessionTimeFromSessionInSeconds')){
-    function getTotalChargedMissedSessionTimeFromSessionInSeconds(\App\Models\Session $session): int
+if (!function_exists('isMissedTimeCharged')){
+    function isMissedTimeCharged(\App\Models\Session $session): bool
     {
-        if ($session->session_completion_code !== \App\Models\Session::PARTIAL_COMPLETION_CODE){
+        if ($session->session_completion_code == \App\Models\Session::PARTIAL_COMPLETION_CODE && filter_var($session->charge_missed_time, FILTER_VALIDATE_BOOLEAN) === true) {
+            return true;
+        }
+        if ($session->session_completion_code == 3) {
+            return true;
+        }
+        return false;
+    }
+}
+if (! function_exists('getTotalChargedMissedSessionTimeFromSessionInSeconds')) {
+    function getTotalChargedMissedSessionTimeFromSessionInSeconds(App\Models\Session $session): int
+    {
+        $scheduledDate = Carbon::createFromFormat('Y-m-d H:i:s', $session->scheduled_date)->format('m/d/Y');
+        $sessionEnd = $session->end_time;
+        $sessionEnd = Carbon::createFromFormat('m/d/Y H:i:s', "$scheduledDate $sessionEnd");
+        $now = Carbon::now();
+        if ($session->id==5004){
+//            dd($now->lte($sessionEnd)   );
+        }
+        if ($now->lte($sessionEnd)) {
             return 0;
         }
+        if (in_array($session->session_completion_code, [4,5]) || ($session->session_completion_code == 2 && filter_var($session->charge_missed_time, FILTER_VALIDATE_BOOLEAN) === false)) {
+            return 0;
+        }
+
         return chargeSessionMissedTimeInSeconds($session);
     }
 }
-if (!function_exists('isInputRequired')){
-    function isInputRequired(Model $model,$input): void
+if (! function_exists('isInputRequired')) {
+    function isInputRequired(Model $model, $input): void
     {
 
     }
 }
-if (!function_exists('getPriceFromMonthlyInvoicePackage')){
+if (! function_exists('getPriceFromMonthlyInvoicePackage')) {
     function getPriceFromMonthlyInvoicePackage(MonthlyInvoicePackage $monthlyInvoicePackage)
     {
-        \App\Models\Session::select(['id','monthly_invoice_package_id','start_time','end_time','scheduled_date','session_completion_code','attended_start_time','attended_end_time','charge_missed_time'])
-            ->where('monthly_invoice_package_id',$monthlyInvoicePackage->id)->get();
+        \App\Models\Session::select(['id', 'monthly_invoice_package_id', 'start_time', 'end_time', 'scheduled_date', 'session_completion_code', 'attended_start_time', 'attended_end_time', 'charge_missed_time'])
+            ->where('monthly_invoice_package_id', $monthlyInvoicePackage->id)->get();
     }
 }
-if (!function_exists('getDiscountedAmountOnSubtotal')){
-    function getDiscountedAmountOnSubtotal($discount_type ,$discount, $amount): float|int
+if (! function_exists('getDiscountedAmountOnSubtotal')) {
+    function getDiscountedAmountOnSubtotal($discount_type, $discount, $amount): float|int
     {
         if ($discount_type == Invoice::FLAT_DISCOUNT) {
             return formatAmountWithoutCurrency($discount);
         }
         if ($discount_type == Invoice::PERCENTAGE_DISCOUNT) {
-            return  formatAmountWithoutCurrency((($amount) * $discount) / 100);
+            return formatAmountWithoutCurrency((($amount) * $discount) / 100);
         }
 
         return formatAmountWithoutCurrency($amount);
 
     }
 }
-if (!function_exists('getTaxAmountForLine')){
-    function getTaxAmountForLine($taxes,$total ,$key): float|int
+if (! function_exists('getTaxAmountForLine')) {
+    function getTaxAmountForLine($taxes, $total, $key): float|int
     {
         $totalTax = 0;
-        foreach ($taxes as  $tax){
-            if (!empty($tax[$key])){
+        foreach ($taxes as $tax) {
+            if (! empty($tax[$key])) {
                 $tax = Tax::find($tax[$key]);
                 $totalTax = $totalTax + (($total * $tax->value) / 100);
-                $total = $total +$totalTax;
+                $total = $total + $totalTax;
             }
         }
-        return (float) $totalTax ;
+
+        return (float) $totalTax;
     }
 }
-if (!function_exists('getTaxIdsForLine')){
-    function getTaxIdsForLineInJson($taxes,$key): bool|string
+if (! function_exists('getTaxIdsForLineInJson')) {
+    function getTaxIdsForLineInJson($taxes, $key): bool|string
     {
         $taxIds = [];
-        foreach ($taxes as  $tax){
-            if (!empty($tax[$key])){
+        foreach ($taxes as $tax) {
+            if (! empty($tax[$key])) {
                 $taxIds[] = $tax[$key];
             }
         }
+
         return json_encode($taxIds);
     }
 }
-if (!function_exists('chargeTaxOnSubtotal')){
+if (! function_exists('chargeTaxOnSubtotal')) {
     function chargeTaxOnSubtotal($taxes, $total): float|int
     {
         $totalTax = 0;
-        foreach ($taxes as  $tax){
+        foreach ($taxes as $tax) {
             $tax = Tax::find($tax);
             $totalTax = $totalTax + (($total * $tax->value) / 100);
-            $total = $total +$totalTax;
+            $total = $total + $totalTax;
         }
-        return (float) $totalTax ;
+
+        return (float) $totalTax;
     }
 }
-if (!function_exists('getInvoiceCodeFromInvoiceableType')){
-    function getInvoiceCodeFromInvoiceableTypeAndId(string $model,$id): string
+if (! function_exists('getInvoiceCodeFromInvoiceableTypeAndId')) {
+    function getInvoiceCodeFromInvoiceableTypeAndId(string $model, $id): string
     {
-        if ($model === StudentTutoringPackage::class){
+        if ($model === StudentTutoringPackage::class) {
             return getStudentTutoringPackageCodeFromId($id);
         }
-        if ($model === MonthlyInvoicePackage::class){
+        if ($model === MonthlyInvoicePackage::class) {
             return getMonthlyInvoicePackageCodeFromId($id);
         }
-        if ($model === NonInvoicePackage::class){
+        if ($model === NonInvoicePackage::class) {
             return getNonInvoicePackageCodeFromId($id);
         }
+
         return '';
 
     }
 }
 if (! function_exists('setStripeApiKey')) {
-    function setStripeApiKey()
+    function setStripeApiKey($getClient=false)
     {
         $stripeSecretKey = config('services.stripe.secret_key');
-//        $stripeSecret = getSettingValue('stripe_secret');
-        isset($stripeSecret) ? Stripe::setApiKey($stripeSecret) : Stripe::setApiKey($stripeSecretKey);
+        //        $stripeSecret = getSettingValue('stripe_secret');
+        if (!$getClient){
+            isset($stripeSecret) ? Stripe::setApiKey($stripeSecret) : Stripe::setApiKey($stripeSecretKey);
+
+        }else{
+            return new \Stripe\StripeClient($stripeSecret??$stripeSecretKey);
+        }
     }
 }
 if (! function_exists('getSettingValue')) {
-    /**
-     * @return mixed
-     */
+
     function getSettingValue($keyName): mixed
     {
         $key = 'setting'.'-'.$keyName;
@@ -764,3 +852,97 @@ if (! function_exists('getSettingValue')) {
         return $setting->value;
     }
 }
+if (! function_exists('getInvoiceCurrencyCode')) {
+    function getInvoiceCurrencyCode(): string
+    {
+        return 'USD';
+    }
+}
+if (! function_exists('getAuthModelFromGuard')) {
+    function getAuthModelFromGuard(string $authGuard): string
+    {
+        if ($authGuard == 'web') {
+            return User::class;
+        }
+        if ($authGuard == 'tutor') {
+            return Tutor::class;
+        }
+        if ($authGuard == 'student') {
+            return Student::class;
+        }
+        if ($authGuard == 'parent') {
+            return ParentUser::class;
+        }
+        if ($authGuard == 'client') {
+            return Client::class;
+        }
+
+    }
+}
+
+if (! function_exists('getRemainingAmount')) {
+    function getRemainingAmount(Invoice $invoice)
+    {
+        if ($invoice->invoiceable_type == NonInvoicePackage::class) {
+            $remainingAmount = $invoice->final_amount - $invoice->amount_paid;
+            $remainingAmount = $remainingAmount + $invoice->amount_refunded;
+            return formatAmountWithCurrency($remainingAmount);
+        }
+        if ($invoice->invoiceable_type == StudentTutoringPackage::class) {
+
+            $hours = $invoice->hours;
+            $hourly_rate = $invoice->tutoring_hourly_rate;
+            $discount = $invoice->discount;
+            $discount_type = $invoice->discount_type;
+            $final_amount = cleanAmountWithCurrencyFormat(getPriceFromHoursAndHourlyWithDiscount($hourly_rate, $hours, $discount, $discount_type));
+            $final_amount = $final_amount + $invoice->amount_refunded;
+            return formatAmountWithCurrency($final_amount - $invoice->amount_paid);
+        }
+        if ($invoice->invoiceable_type == MonthlyInvoicePackage::class) {
+
+            $hours = $invoice->hours;
+            $hourly_rate = $invoice->tutoring_hourly_rate;
+            $discount = $invoice->discount;
+            $discount_type = $invoice->discount_type;
+            $final_amount = cleanAmountWithCurrencyFormat(getPriceFromHoursAndHourlyWithDiscount($hourly_rate, $hours, $discount, $discount_type));
+        }
+        return 0;
+    }
+}
+if (! function_exists('getPaymentGatewayNameFromId')) {
+    function getPaymentGatewayNameFromId($id): string
+    {
+        if ($id == Payment::STRIPE) {
+            return 'Stripe';
+        }
+        if ($id == Payment::PAYPAL) {
+            return 'PayPal';
+        }
+
+        return '';
+    }
+}
+if (! function_exists('getStripeCustomerIdFromUser')) {
+    function getStripeCustomerIdFromUser(Authenticatable $user): string
+    {
+        if (!empty($user->stripe_customer_id)) {
+            return $user->stripe_customer_id;
+        } else{
+            $customer = Customer::create([
+                'name' => Auth::user()->fullName,
+                'email' => Auth::user()->email,
+            ]);
+            $user->stripe_customer_id = $customer->id;
+            $user->save();
+            return $customer->id;
+        }
+    }
+}
+if (!function_exists('getCurrentMonthUsageFromMonthlyPackage')){
+    function getCurrentMonthUsageFromMonthlyPackage(MonthlyInvoicePackage $invoicePackage,$MonthlyInvoicePackageId=null)
+    {
+        $totalTimeInSeconds = getTotalChargedTimeFromMonthlyInvoicePackageInSeconds($invoicePackage);
+        dd($totalTimeInSeconds);
+    }
+}
+
