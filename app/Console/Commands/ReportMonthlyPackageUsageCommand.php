@@ -9,7 +9,7 @@ use Illuminate\Console\Command;
 
 class ReportMonthlyPackageUsageCommand extends Command
 {
-    protected $signature = 'report:monthly-package-usuage';
+    protected $signature = 'report:monthly-package-usage';
 
     protected $description = 'Command description';
 
@@ -25,6 +25,7 @@ class ReportMonthlyPackageUsageCommand extends Command
                 $q->select(['id','monthly_invoice_package_id','scheduled_date','start_time','end_time','session_completion_code','attended_duration',
                     'charged_missed_session','attended_start_time','attended_end_time','charge_missed_time','is_billed'])->where('sessions.is_billed', Session::UN_BILLED);
             })->get();
+            dd($monthlyPackage);
 
     }
 }

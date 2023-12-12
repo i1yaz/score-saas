@@ -141,7 +141,6 @@ class StripeController extends AppBaseController
 
     public function createSessionForSubscription(Request $request){
         setStripeApiKey();
-
         $monthlyInvoicePackage = MonthlyInvoicePackage::select(['monthly_invoice_packages.id','monthly_invoice_packages.hourly_rate','monthly_invoice_subscriptions.subscription_id','monthly_invoice_subscriptions.stripe_price_id','monthly_invoice_package_id'])
             ->join('monthly_invoice_subscriptions','monthly_invoice_subscriptions.monthly_invoice_package_id','monthly_invoice_packages.id')
             ->where('monthly_invoice_package_id',$request->monthlyInvoicePackageId)->first();
@@ -199,6 +198,12 @@ class StripeController extends AppBaseController
                     'price' =>  $monthlyInvoicePackage->stripe_price_id,
                 ]
             ],
+            'metadata' => [
+                'invoiceType' => $invoiceType,
+                'monthlyInvoicePackageId' => $request->monthlyInvoicePackageId,
+                'userId' => $userId,
+                'guard' => $guard,
+            ],
             'client_reference_id' => "{$invoiceType}-{$request->monthlyInvoicePackageId}-{$userId}-{$guard}",
         ]);
 
@@ -226,9 +231,13 @@ class StripeController extends AppBaseController
             }
             if ($payload['data']['object']['mode'] === 'payment'){
                 $sessionData = $payload['data']['object'];
-                $this->stripeRepository->stripePaymentSuccessfulyCompleted($sessionData);
+                $this->stripeRepository->stripePaymentSuccessfullyCompleted($sessionData);
                 return response('success',200);
             }
+        }
+        if($payload['type'] === 'invoice.payment_succeeded'){
+            $this->stripeRepository->stripeInvoicePaymentSuccessfullyCompleted($request->all());
+            return response('success',200);
 
         }
         if ($payload['type']==='charge.refunded'){

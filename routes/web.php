@@ -64,7 +64,7 @@ Route::get('usage', function (){
             $totalTimeInSeconds += getTotalChargedTimeOfSessionFromSessionInSeconds($session);
         }
         $totalTimeInHours = $totalTimeInSeconds / 3600;
-        dump($totalTimeInSeconds.'-'.$totalTimeInHours);
+        dump($monthlyPackage,$totalTimeInSeconds.'-'.$totalTimeInHours);
     }
 });
 

@@ -17,7 +17,7 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class StripeRepository
 {
-    public function stripePaymentSuccessfulyCompleted(array $sessionData)
+    public function stripePaymentSuccessfullyCompleted(array $sessionData)
     {
         setStripeApiKey();
 
@@ -127,16 +127,25 @@ class StripeRepository
     {
         \Log::channel('stripe_success')->info('stripeSubscriptionPaymentSuccessfullyCompleted', $sessionData);
         setStripeApiKey();
-        $clientReference = $sessionData['client_reference_id'];
-        $clientReference = explode('-', $clientReference);
-        $invoiceType = $clientReference[0];
-        $monthlyInvoiceId = $clientReference[1];
-        $userId = $clientReference[2];
-        $authGuard = $clientReference[3];
+        // $invoiceType = $sessionData['metadata']['invoiceType'];
+        $monthlyInvoiceId = $sessionData['metadata']['monthlyInvoicePackageId'];
+        // $userId = $sessionData['metadata']['userId'];
+        // $authGuard = $sessionData['metadata']['guard'];
         $monthlyInvoiceSubscription = MonthlyInvoiceSubscription::where('monthly_invoice_package_id',$monthlyInvoiceId)->firstOrFail();
         if ($monthlyInvoiceSubscription->payment_gateway == 'stripe' ) {
             $monthlyInvoiceSubscription->subscription_id = $sessionData['subscription'];
             $monthlyInvoiceSubscription->save();
+        }
+    }
+
+    public function stripeInvoicePaymentSuccessfullyCompleted(array $sessionData)
+    {
+        \Log::channel('stripe_success')->info('stripeInvoicePaymentSuccessfullyCompleted', $sessionData);
+        setStripeApiKey();
+        $subscription = $sessionData['data']['object']['subscription']??'';
+        $monthlySubscription = MonthlyInvoiceSubscription::where('subscription_id',$subscription)->first();
+        if ($monthlySubscription) {
+            
         }
     }
 }

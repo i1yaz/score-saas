@@ -47,7 +47,7 @@
     },
     "scripts": {
         "phpstan": [
-            "./vendor/bin/phpstan analyse"
+            "./vendor/bin/phpstan analyze"
         ],
         "pint":[
             "./vendor/bin/pint"
