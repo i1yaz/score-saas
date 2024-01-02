@@ -180,6 +180,8 @@ class StripeController extends AppBaseController
             $monthlyInvoiceSubscription->frequency = $stripePrice->recurring->interval;
             $monthlyInvoiceSubscription->metadata = json_encode($stripePrice);
             $monthlyInvoiceSubscription->save();
+            $subscription = \Stripe\Subscription::retrieve('subscription_id');
+            $items = $subscription->items->all();
 
         }catch (\Exception $e){
             report($e);

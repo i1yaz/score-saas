@@ -24,6 +24,8 @@ use App\Models\MonthlyInvoiceSubscription;
 use App\Models\Session;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Stripe\Price;
+use Stripe\SubscriptionItem;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,7 +50,7 @@ Route::get('/', function () {
 });
 
 Route::get('usage', function (){
-    $monthlyPackages = MonthlyInvoicePackage::select(['monthly_invoice_packages.id'])
+    $monthlyPackages = MonthlyInvoicePackage::select(['monthly_invoice_packages.id','monthly_invoice_subscriptions.subscription_id','monthly_invoice_subscriptions.stripe_item_id'])
         ->with(['sessions'])
         ->join('monthly_invoice_subscriptions', function ($join){
             $join->on('monthly_invoice_subscriptions.monthly_invoice_package_id', '=', 'monthly_invoice_packages.id')
@@ -64,8 +66,27 @@ Route::get('usage', function (){
             $totalTimeInSeconds += getTotalChargedTimeOfSessionFromSessionInSeconds($session);
         }
         $totalTimeInHours = $totalTimeInSeconds / 3600;
-        dump($monthlyPackage,$totalTimeInSeconds.'-'.$totalTimeInHours);
+        if(empty($monthlyPackage->stripe_item_id)){
+            $subscription_id = $monthlyPackage->subscription_id;
+            $price_id = $monthlyPackage->stripe_price_id;
+            $subscriptionItem = SubscriptionItem::create(
+                [
+                    'subscription' => $subscription_id,
+                    'price' => $price_id,
+                    'quantity' => $totalTimeInHours,
+                ]
+            );
+            $monthlyPackage->stripe_item_id = $subscriptionItem->id;
+            $monthlyPackage->save();
+        }else{
+            SubscriptionItem::createUsageRecord($monthlyPackage->stripe_item_id,[
+                'quantity' =>  $totalTimeInHours,
+                'action' => 'increment'
+            ]);
+        }
+
     }
+
 });
 
 Route::get('invoice/{invoice}/public-view/{type?}', [InvoiceController::class, 'showPublicInvoice']);
