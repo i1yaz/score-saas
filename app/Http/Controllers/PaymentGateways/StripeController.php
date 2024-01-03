@@ -168,7 +168,7 @@ class StripeController extends AppBaseController
                 ],
                 'currency' => 'USD',
                 'billing_scheme' => 'per_unit',
-                'unit_amount' => $monthlyInvoicePackage->hourly_rate * 100,
+                'unit_amount_decimal' => $monthlyInvoicePackage->hourly_rate * 100,
                 'recurring' => [
                     'interval' => 'day',
                     'usage_type' => 'metered'

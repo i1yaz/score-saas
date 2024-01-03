@@ -50,41 +50,54 @@ Route::get('/', function () {
 });
 
 Route::get('usage', function (){
-    $monthlyPackages = MonthlyInvoicePackage::select(['monthly_invoice_packages.id','monthly_invoice_subscriptions.subscription_id','monthly_invoice_subscriptions.stripe_item_id'])
+    setStripeApiKey();
+    $monthlyPackages = MonthlyInvoicePackage::select(['monthly_invoice_packages.id','monthly_invoice_subscriptions.subscription_id','monthly_invoice_subscriptions.stripe_item_id','monthly_invoice_subscriptions.stripe_price_id'])
         ->with(['sessions'])
         ->join('monthly_invoice_subscriptions', function ($join){
             $join->on('monthly_invoice_subscriptions.monthly_invoice_package_id', '=', 'monthly_invoice_packages.id')
-                ->where('monthly_invoice_subscriptions.is_active', MonthlyInvoiceSubscription::ACTIVE);
+                ->where(function ($q){
+                    $q->where('monthly_invoice_subscriptions.is_active', MonthlyInvoiceSubscription::ACTIVE)
+                    ->where(function ($q){
+                        $q->whereNotNull('monthly_invoice_subscriptions.subscription_id')
+                            ->where('monthly_invoice_subscriptions.subscription_id','!=','');
+                    });
+                });
         })
         ->whereHas('sessions', function ($q){
             $q->select(['id','monthly_invoice_package_id','scheduled_date','start_time','end_time','session_completion_code','attended_duration',
                 'charged_missed_session','attended_start_time','attended_end_time','charge_missed_time','is_billed'])->where('sessions.is_billed', Session::UN_BILLED);
         })->get();
+
     foreach ($monthlyPackages as $monthlyPackage ){
         $totalTimeInSeconds = 0;
         foreach ($monthlyPackage->sessions as $session){
             $totalTimeInSeconds += getTotalChargedTimeOfSessionFromSessionInSeconds($session);
         }
-        $totalTimeInHours = $totalTimeInSeconds / 3600;
-        if(empty($monthlyPackage->stripe_item_id)){
-            $subscription_id = $monthlyPackage->subscription_id;
-            $price_id = $monthlyPackage->stripe_price_id;
-            $subscriptionItem = SubscriptionItem::create(
-                [
-                    'subscription' => $subscription_id,
-                    'price' => $price_id,
-                    'quantity' => $totalTimeInHours,
-                ]
-            );
-            $monthlyPackage->stripe_item_id = $subscriptionItem->id;
-            $monthlyPackage->save();
-        }else{
-            SubscriptionItem::createUsageRecord($monthlyPackage->stripe_item_id,[
-                'quantity' =>  $totalTimeInHours,
-                'action' => 'increment'
-            ]);
+        $totalTimeInMinute = (int) $totalTimeInSeconds/60;
+        if (!empty($monthlyPackage->subscription_id)){
+            if(empty($monthlyPackage->stripe_item_id)){
+                $subscription_id = $monthlyPackage->subscription_id;
+                $price_id = $monthlyPackage->stripe_price_id;
+                $subscriptionItem = SubscriptionItem::create(
+                    [
+                        'subscription' => $subscription_id,
+                        'price' => $price_id,
+                    ]
+                );
+                $monthlyInvoiceSubscription = MonthlyInvoiceSubscription::where('subscription_id',$subscription_id)->first();
+                $monthlyInvoiceSubscription->stripe_item_id = $subscriptionItem->id;
+                $monthlyInvoiceSubscription->save();
+                SubscriptionItem::createUsageRecord($subscriptionItem->id,[
+                    'quantity' =>  $totalTimeInMinute,
+                    'action' => 'increment'
+                ]);
+            }else{
+                SubscriptionItem::createUsageRecord($monthlyPackage->stripe_item_id,[
+                    'quantity' =>  $totalTimeInMinute,
+                    'action' => 'increment'
+                ]);
+            }
         }
-
     }
 
 });
