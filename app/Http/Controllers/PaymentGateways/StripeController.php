@@ -175,13 +175,27 @@ class StripeController extends AppBaseController
                 ],
             ]);
 
+            $stripeMinutesPrice = Price::create([
+                'product_data' => [
+                    'name' => getMonthlyInvoicePackageCodeFromId($monthlyInvoicePackage->id),
+                    'statement_descriptor' => 'MIP #'.getMonthlyInvoicePackageCodeFromId($monthlyInvoicePackage->id),
+                    'unit_label' => 'Minute'
+                ],
+                'currency' => 'USD',
+                'billing_scheme' => 'per_unit',
+                'unit_amount_decimal' => ($monthlyInvoicePackage->hourly_rate/60) * 100,
+                'recurring' => [
+                    'interval' => 'day',
+                    'usage_type' => 'metered'
+                ],
+            ]);
+
             \Log::channel('stripe_success')->info('Price created successfully', json_decode(json_encode($stripePrice ,true),true));
             $monthlyInvoiceSubscription->stripe_price_id = $stripePrice->id;
+            $monthlyInvoiceSubscription->stripe_minutes_price_id = $stripeMinutesPrice->id;
             $monthlyInvoiceSubscription->frequency = $stripePrice->recurring->interval;
             $monthlyInvoiceSubscription->metadata = json_encode($stripePrice);
             $monthlyInvoiceSubscription->save();
-            $subscription = \Stripe\Subscription::retrieve('subscription_id');
-            $items = $subscription->items->all();
 
         }catch (\Exception $e){
             report($e);
@@ -198,6 +212,9 @@ class StripeController extends AppBaseController
             'line_items' => [
                 [
                     'price' =>  $monthlyInvoicePackage->stripe_price_id,
+                ],
+                [
+                    'price' =>  $monthlyInvoicePackage->stripe_minutes_price_id,
                 ]
             ],
             'metadata' => [

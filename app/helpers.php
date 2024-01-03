@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Stripe\Customer;
 use Stripe\Stripe;
+use Stripe\SubscriptionItem;
 
 if (! function_exists('booleanSelect')) {
     function booleanSelect($value): string
@@ -945,4 +946,12 @@ if (!function_exists('getCurrentMonthUsageFromMonthlyPackage')){
         dd($totalTimeInSeconds);
     }
 }
-
+if (!function_exists('createUsageRecord')){
+    function createUsageRecord($subscriptionItemId,int $hours = 0,$action = 'increment')
+    {
+        SubscriptionItem::createUsageRecord($subscriptionItemId,[
+            'quantity' =>  $hours,
+            'action' => $action
+        ]);
+    }
+}

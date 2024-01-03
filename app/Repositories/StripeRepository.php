@@ -13,6 +13,7 @@ use Exception;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Stripe\SubscriptionItem;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class StripeRepository
@@ -130,10 +131,22 @@ class StripeRepository
         // $invoiceType = $sessionData['metadata']['invoiceType'];
         $monthlyInvoiceId = $sessionData['metadata']['monthlyInvoicePackageId'];
         // $userId = $sessionData['metadata']['userId'];
-        // $authGuard = $sessionData['metadata']['guard'];
+        // $authGuard = $sessionData['metadata']['guard'];\
         $monthlyInvoiceSubscription = MonthlyInvoiceSubscription::where('monthly_invoice_package_id',$monthlyInvoiceId)->firstOrFail();
         if ($monthlyInvoiceSubscription->payment_gateway == 'stripe' ) {
+            $subscriptionItem = SubscriptionItem::all([
+                'subscription' => $sessionData['subscription'],
+                'limit' => 1,
+            ]);
+            $subscriptionItemMinutes = SubscriptionItem::create(
+                [
+                    'subscription' => $sessionData['subscription'],
+                    'price' => $monthlyInvoiceSubscription->stripe_minutes_price_id,
+                ]
+            );
             $monthlyInvoiceSubscription->subscription_id = $sessionData['subscription'];
+            $monthlyInvoiceSubscription->stripe_item_id = $subscriptionItem->data[0]->id;
+            $monthlyInvoiceSubscription->stripe_minutes_item_id = $subscriptionItemMinutes->id;
             $monthlyInvoiceSubscription->save();
         }
     }
@@ -145,7 +158,7 @@ class StripeRepository
         $subscription = $sessionData['data']['object']['subscription']??'';
         $monthlySubscription = MonthlyInvoiceSubscription::where('subscription_id',$subscription)->first();
         if ($monthlySubscription) {
-            
+
         }
     }
 }
