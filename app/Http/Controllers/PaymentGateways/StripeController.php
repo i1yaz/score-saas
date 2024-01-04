@@ -248,7 +248,7 @@ class StripeController extends AppBaseController
     }
     public function webhooks(Request $request){
         $payload = $request->all();
-//        \Log::channel('stripe_success')->info('Stripe webhook',$request->all());
+        \Log::channel('stripe_success')->info('Stripe webhook',$request->all());
         if($payload['type'] === 'checkout.session.completed'){
             if ($payload['data']['object']['mode'] === 'subscription'){
                 $sessionData = $payload['data']['object'];

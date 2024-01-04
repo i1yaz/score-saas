@@ -127,7 +127,6 @@ class StripeRepository
 
     public function stripeSubscriptionPaymentSuccessfullyCompleted(array $sessionData)
     {
-        \Log::channel('stripe_success')->info('stripeSubscriptionPaymentSuccessfullyCompleted', $sessionData);
         setStripeApiKey();
         // $invoiceType = $sessionData['metadata']['invoiceType'];
         $monthlyInvoiceId = $sessionData['metadata']['monthlyInvoicePackageId'];
@@ -154,7 +153,6 @@ class StripeRepository
 
     public function stripeInvoicePaymentSuccessfullyCompleted(array $sessionData)
     {
-//        \Log::channel('stripe_success')->info('stripeInvoicePaymentSuccessfullyCompleted', $sessionData);
         setStripeApiKey();
         $sessionObject = $sessionData['data']['object'];
         $subscription = $sessionObject['subscription']??'';
