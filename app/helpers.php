@@ -955,3 +955,19 @@ if (!function_exists('createUsageRecord')){
         ]);
     }
 }
+
+if (!function_exists('getFutureDueDate')){
+    function getFutureDueDate(Carbon $date): Carbon
+    {
+        if ($date->isPast()){
+            $due_date = $date->addMonth();
+            if ($due_date->isPast()){
+                getFutureDueDate($due_date);
+            }
+        }else{
+            $due_date = $date->unix();
+        }
+        return $due_date;
+    }
+}
+

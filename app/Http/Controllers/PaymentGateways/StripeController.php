@@ -141,9 +141,13 @@ class StripeController extends AppBaseController
 
     public function createSessionForSubscription(Request $request){
         setStripeApiKey();
-        $monthlyInvoicePackage = MonthlyInvoicePackage::select(['monthly_invoice_packages.id','monthly_invoice_packages.hourly_rate','monthly_invoice_subscriptions.subscription_id','monthly_invoice_subscriptions.stripe_price_id','monthly_invoice_package_id'])
+        $monthlyInvoicePackage = MonthlyInvoicePackage::select([
+            'monthly_invoice_packages.id','monthly_invoice_packages.hourly_rate','monthly_invoice_subscriptions.subscription_id',
+            'monthly_invoice_subscriptions.stripe_price_id','monthly_invoice_package_id','monthly_invoice_packages.due_date','monthly_invoice_packages.start_date'
+        ])
             ->join('monthly_invoice_subscriptions','monthly_invoice_subscriptions.monthly_invoice_package_id','monthly_invoice_packages.id')
             ->where('monthly_invoice_package_id',$request->monthlyInvoicePackageId)->first();
+
         if (!empty($monthlyInvoicePackage->subscription_id)){
             $subscription = Subscription::retrieve($monthlyInvoicePackage->subscription_id);
             if ($subscription->id===$monthlyInvoicePackage->subscription_id){
@@ -170,7 +174,7 @@ class StripeController extends AppBaseController
                 'billing_scheme' => 'per_unit',
                 'unit_amount_decimal' => $monthlyInvoicePackage->hourly_rate * 100,
                 'recurring' => [
-                    'interval' => 'day',
+                    'interval' => 'month',
                     'usage_type' => 'metered'
                 ],
             ]);
@@ -183,9 +187,9 @@ class StripeController extends AppBaseController
                 ],
                 'currency' => 'USD',
                 'billing_scheme' => 'per_unit',
-                'unit_amount_decimal' => ($monthlyInvoicePackage->hourly_rate/60) * 100,
+                'unit_amount_decimal' => (formatAmountWithoutCurrency($monthlyInvoicePackage->hourly_rate/60)) * 100,
                 'recurring' => [
-                    'interval' => 'day',
+                    'interval' => 'month',
                     'usage_type' => 'metered'
                 ],
             ]);
@@ -203,7 +207,7 @@ class StripeController extends AppBaseController
 
 
         $invoiceType = 3;
-
+        $due_date = getFutureDueDate($monthlyInvoicePackage->due_date);
         $session = StripeSession::create([
             'customer_email' => \Auth::user()->email,
             'success_url' => route('payment-success').'?session_id={CHECKOUT_SESSION_ID}',
@@ -216,6 +220,9 @@ class StripeController extends AppBaseController
                 [
                     'price' =>  $monthlyInvoicePackage->stripe_minutes_price_id,
                 ]
+            ],
+            "subscription_data" => [
+                "billing_cycle_anchor"=> $due_date->unix(),
             ],
             'metadata' => [
                 'invoiceType' => $invoiceType,
@@ -241,7 +248,7 @@ class StripeController extends AppBaseController
     }
     public function webhooks(Request $request){
         $payload = $request->all();
-        \Log::channel('stripe_success')->info('Stripe webhook',$request->all());
+//        \Log::channel('stripe_success')->info('Stripe webhook',$request->all());
         if($payload['type'] === 'checkout.session.completed'){
             if ($payload['data']['object']['mode'] === 'subscription'){
                 $sessionData = $payload['data']['object'];
@@ -270,8 +277,8 @@ class StripeController extends AppBaseController
     public function cancelMonthlyInvoicePackageSubscription(Request $request){
         $monthlyInvoiceSubscription = MonthlyInvoiceSubscription::where('monthly_invoice_package_id',$request->monthlyInvoicePackageId)->first();
         if ($monthlyInvoiceSubscription->payment_gateway == 'stripe' ) {
+            setStripeApiKey();
             if (!empty($monthlyInvoiceSubscription->subscription_id)){
-                setStripeApiKey();
                 $subscription = Subscription::retrieve($monthlyInvoiceSubscription->subscription_id);
                 if ($subscription->id===$monthlyInvoiceSubscription->subscription_id && $subscription->status === 'active'){
                     $subscription->cancel();

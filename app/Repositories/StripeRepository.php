@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Mail\ClientMakePaymentMail;
 use App\Models\Invoice;
+use App\Models\MonthlyInvoicePackage;
 use App\Models\MonthlyInvoiceSubscription;
 use App\Models\NonInvoicePackage;
 use App\Models\Payment;
@@ -153,12 +154,27 @@ class StripeRepository
 
     public function stripeInvoicePaymentSuccessfullyCompleted(array $sessionData)
     {
-        \Log::channel('stripe_success')->info('stripeInvoicePaymentSuccessfullyCompleted', $sessionData);
+//        \Log::channel('stripe_success')->info('stripeInvoicePaymentSuccessfullyCompleted', $sessionData);
         setStripeApiKey();
-        $subscription = $sessionData['data']['object']['subscription']??'';
-        $monthlySubscription = MonthlyInvoiceSubscription::where('subscription_id',$subscription)->first();
+        $sessionObject = $sessionData['data']['object'];
+        $subscription = $sessionObject['subscription']??'';
+        $monthlySubscription = MonthlyInvoiceSubscription::select(['monthly_invoice_subscriptions.monthly_invoice_package_id','invoices.id as invoice_id'])
+            ->join('invoices',function ($join){
+                $join->on('monthly_invoice_subscriptions.monthly_invoice_package_id','invoices.invoiceable_id')
+                    ->where('invoices.invoiceable_type',MonthlyInvoicePackage::class);
+            })
+            ->where('subscription_id',$subscription)->first();
         if ($monthlySubscription) {
-
+            $paymentTransactionData = [
+                'invoice_id' => $monthlySubscription->invoice_id,
+                'is_subscription_payment' => true,
+                'payment_gateway_id' => 1,
+                'transaction_id' => $sessionObject['charge'],
+                'amount' => $sessionObject['amount_paid'] /100,
+                'meta' => json_encode($sessionObject)
+            ];
+            Payment::create($paymentTransactionData);
+            return true;
         }
     }
 }

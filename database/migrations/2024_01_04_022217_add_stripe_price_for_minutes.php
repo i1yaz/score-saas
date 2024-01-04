@@ -14,7 +14,7 @@ return new class extends Migration {
 
     public function down(): void
     {
-        Schema::table('', function (Blueprint $table) {
+        Schema::table('monthly_invoice_subscriptions', function (Blueprint $table) {
             $table->dropColumn('stripe_minutes_price_id');
         });
     }

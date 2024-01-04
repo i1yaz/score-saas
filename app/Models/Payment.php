@@ -38,6 +38,7 @@ class Payment extends Model
         'meta',
         'paid_by_id',
         'paid_by_modal',
+        'is_subscription_payment'
     ];
 
     protected $casts = [
@@ -46,6 +47,7 @@ class Payment extends Model
         'amount' => 'float',
         'payment_gateway' => 'integer',
         'transaction_id' => 'integer',
+        'is_subscription_payment' => 'boolean'
     ];
 
     public static array $rules = [

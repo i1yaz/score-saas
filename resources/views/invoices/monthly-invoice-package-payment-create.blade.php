@@ -47,7 +47,7 @@
                 @if(empty($subscriptionId))
                     {!! Form::button('Subscribe', ['class' => 'btn btn-primary','id'=>'btnPay']) !!}
                 @else
-                    {!! Form::button('Cancel Subscription', ['class' => 'btn btn-primary','id'=>'cancel-subscription']) !!}
+                    {!! Form::button('Cancel Subscription', ['class' => 'btn btn-danger','id'=>'cancel-subscription']) !!}
                 @endif
 
                 <a href="{{ route('invoices.index') }}" class="btn btn-default"> Cancel </a>
