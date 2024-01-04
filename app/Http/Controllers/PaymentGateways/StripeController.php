@@ -284,6 +284,9 @@ class StripeController extends AppBaseController
                     $subscription->cancel();
                     $monthlyInvoiceSubscription->is_active = false;
                     $monthlyInvoiceSubscription->save();
+                    $monthlyInvoiceSubscription = MonthlyInvoicePackage::findOrFail($monthlyInvoiceSubscription->monthly_invoice_package_id);
+                    $monthlyInvoiceSubscription->status = false;
+                    $monthlyInvoiceSubscription->save();
                     return response()->json(['message'=>'Subscription has been Cancelled'],200);
                 }
             }
