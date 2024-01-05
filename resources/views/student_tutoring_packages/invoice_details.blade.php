@@ -3,7 +3,12 @@
 <div class="row">
     <!-- Due Date Field -->
     <div class="form-group col-sm-6">
-        {!! Form::label('due_date', 'Due Date:') !!}
+        @if(isset($isMonthly) && $isMonthly===true)
+            {!! Form::label('due_date', 'Billing Date:') !!}
+        @else
+            {!! Form::label('due_date', 'Due Date:') !!}
+        @endif
+
         {!! Form::text('due_date', isset($invoice)? $invoice->due_date?->format('m/d/Y'):null, ['class' => 'form-control date-input']) !!}
     </div>
 

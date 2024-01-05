@@ -97,7 +97,7 @@
 </div>
 
 <div class="form-group col-sm-12">
-    @include('student_tutoring_packages.invoice_details',['invoice' =>$monthlyInvoicePackage->invoice??null ])
+    @include('student_tutoring_packages.invoice_details',['invoice' =>$monthlyInvoicePackage->invoice??null,'isMonthly' => true ])
 </div>
 <div class="modal fade" id="store-subject" style="display: none;" aria-hidden="true">
     <div class="modal-dialog">
