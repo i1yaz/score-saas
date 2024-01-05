@@ -194,50 +194,48 @@ class StripeController extends AppBaseController
                 ],
             ]);
 
-            \Log::channel('stripe_success')->info('Price created successfully', json_decode(json_encode($stripePrice ,true),true));
             $monthlyInvoiceSubscription->stripe_price_id = $stripePrice->id;
             $monthlyInvoiceSubscription->stripe_minutes_price_id = $stripeMinutesPrice->id;
             $monthlyInvoiceSubscription->frequency = $stripePrice->recurring->interval;
             $monthlyInvoiceSubscription->metadata = json_encode($stripePrice);
             $monthlyInvoiceSubscription->save();
+            $invoiceType = 3;
+            $start_date = $monthlyInvoicePackage->start_date;
+            $session = StripeSession::create([
+                'customer_email' => \Auth::user()->email,
+                'success_url' => route('payment-success').'?session_id={CHECKOUT_SESSION_ID}',
+                'cancel_url' => route('payment-failed').'?error=payment_cancelled',
+                'mode' => 'subscription',
+                'line_items' => [
+                    [
+                        'price' =>  $monthlyInvoicePackage->stripe_price_id,
+                    ],
+                    [
+                        'price' =>  $monthlyInvoicePackage->stripe_minutes_price_id,
+                    ]
+                ],
+                "subscription_data" => [
+                    "billing_cycle_anchor"=> $start_date->unix(),
+                ],
+                'metadata' => [
+                    'invoiceType' => $invoiceType,
+                    'monthlyInvoicePackageId' => $request->monthlyInvoicePackageId,
+                    'userId' => $userId,
+                    'guard' => $guard,
+                ],
+                'client_reference_id' => "{$invoiceType}-{$request->monthlyInvoicePackageId}-{$userId}-{$guard}",
+            ]);
 
+            $result = [
+                'sessionId' => $session['id'],
+            ];
         }catch (\Exception $e){
             report($e);
+
+            return $this->sendError( 'Something went wrong. Please try again.');
         }
-
-
-        $invoiceType = 3;
-        $due_date = getFutureDueDate($monthlyInvoicePackage->due_date);
-        $session = StripeSession::create([
-            'customer_email' => \Auth::user()->email,
-            'success_url' => route('payment-success').'?session_id={CHECKOUT_SESSION_ID}',
-            'cancel_url' => route('payment-failed').'?error=payment_cancelled',
-            'mode' => 'subscription',
-            'line_items' => [
-                [
-                    'price' =>  $monthlyInvoicePackage->stripe_price_id,
-                ],
-                [
-                    'price' =>  $monthlyInvoicePackage->stripe_minutes_price_id,
-                ]
-            ],
-            "subscription_data" => [
-                "billing_cycle_anchor"=> $due_date->unix(),
-            ],
-            'metadata' => [
-                'invoiceType' => $invoiceType,
-                'monthlyInvoicePackageId' => $request->monthlyInvoicePackageId,
-                'userId' => $userId,
-                'guard' => $guard,
-            ],
-            'client_reference_id' => "{$invoiceType}-{$request->monthlyInvoicePackageId}-{$userId}-{$guard}",
-        ]);
-
-        $result = [
-            'sessionId' => $session['id'],
-        ];
-
         return $this->sendResponse($result, 'Session created successfully.');
+
     }
 
     public function handleFailedPayment(): RedirectResponse

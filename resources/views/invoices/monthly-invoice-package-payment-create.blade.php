@@ -46,8 +46,10 @@
             <div class="card-footer">
                 @if(empty($subscriptionId))
                     {!! Form::button('Subscribe', ['class' => 'btn btn-primary','id'=>'btnPay']) !!}
-                @else
+                @elseif($isActive === true)
                     {!! Form::button('Cancel Subscription', ['class' => 'btn btn-danger','id'=>'cancel-subscription']) !!}
+                @else
+                    {!! Form::button('Completed', ['class' => 'btn btn-warning','id'=>'btnCompleted']) !!}
                 @endif
 
                 <a href="{{ route('invoices.index') }}" class="btn btn-default"> Cancel </a>
@@ -139,6 +141,14 @@
 
             });
             @endif
+            $('#btnCompleted').on('click',function (e){
+                e.preventDefault();
+                Swal.fire({
+                    title: "Package Completed",
+                    text: "This package is completed. Please contact to admin!",
+                    icon: "warning",
+                });
+            })
         </script>
     @endpush
 @endsection

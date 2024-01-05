@@ -14,4 +14,7 @@ class MonthlyInvoiceSubscription extends Model
     const MONTHLY_INVOICE_FREQUENCY = 'monthly';
     const ACTIVE = true;
     const INACTIVE = false;
+    protected $casts = [
+        'is_active' => 'boolean'
+    ];
 }

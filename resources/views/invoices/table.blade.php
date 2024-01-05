@@ -13,7 +13,7 @@
                 <th>Due Date</th>
                 <th>Amount Paid</th>
                 <th>Remaining Amount</th>
-                <th>Fully Paid At</th>
+{{--                <th>Fully Paid At</th>--}}
                 <th>Action</th>
             </tr>
             </thead>
@@ -46,7 +46,7 @@
                     { data: 'due_date', name: 'due_date', orderable: true },
                     { data: 'amount_paid', name: 'amount_paid', orderable: true },
                     { data: 'amount_remaining', name: 'amount_remaining', orderable: true },
-                    { data: 'fully_paid_at', name: 'fully_paid_at', orderable: true },
+                    // { data: 'fully_paid_at', name: 'fully_paid_at', orderable: true },
                     { data: 'action', name: 'action', orderable: false },
                 ],
                 order: [[0, 'desc']]

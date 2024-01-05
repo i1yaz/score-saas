@@ -388,8 +388,23 @@ if (! function_exists('getInvoiceStatusFromId')) {
      * @param  int  $status The ID of the invoice status.
      * @return string The description of the invoice status.
      */
-    function getInvoiceStatusFromId(int $status): string
+    function getInvoiceStatusFromId(int $status,$subscriptionType = StudentTutoringPackage::class,$isActive=false,$subscriptionId='',$startDate=''): string
     {
+        if ($subscriptionType == MonthlyInvoicePackage::class){
+            if (!empty($subscriptionId) && $isActive){
+                return '<span class="badge badge-success">Subscribed</span>';
+            }
+            if (!empty($subscriptionId) && !$isActive){
+                return '<span class="badge badge-info">Unsubscribed/Completed</span>';
+            }
+            $startDate = Carbon::createFromFormat('Y-m-d',$startDate);
+            if (empty($subscriptionId) && $startDate->isPast()){
+                return '<span class="badge badge-danger">Expired</span>';
+            }
+            if (empty($subscriptionId)){
+                return '<span class="badge badge-warning">Pending for subscription</span>';
+            }
+        }
         // Check the status ID and return the corresponding description
         return match ($status) {
             Invoice::DRAFT => '<span class="badge badge-secondary">Draft</span>',
@@ -512,7 +527,10 @@ if (! function_exists('getTotalChargedTimeFromStudentTutoringPackageInSeconds'))
 if (! function_exists('getTotalChargedTimeFromMonthlyInvoicePackageInSeconds')) {
     function getTotalChargedTimeFromMonthlyInvoicePackageInSeconds(MonthlyInvoicePackage $monthlyInvoicePackage,$sessions = null,string|Carbon $month=null): float|int
     {
-
+        if ($sessions=='all' ){
+            $sessions = \App\Models\Session::where('monthly_invoice_package_id', $monthlyInvoicePackage->id)
+                ->get();
+        }
         if (empty($sessions)){
             $sessions = \App\Models\Session::where('monthly_invoice_package_id', $monthlyInvoicePackage->id)
                 ->whereMonth('scheduled_date',$month ?? Carbon::now()->month)
@@ -540,11 +558,28 @@ if (!function_exists('getTotalInvoicePriceForMonthlyInvoicePackageFromSessions')
 if (! function_exists('getTotalInvoicePriceFromMonthlyInvoicePackage')) {
     function getTotalInvoicePriceFromMonthlyInvoicePackage(MonthlyInvoicePackage $monthlyInvoicePackage): string
     {
-        $totalChargedTime = getTotalChargedTimeFromMonthlyInvoicePackageInSeconds($monthlyInvoicePackage);
+        $totalChargedTime = getTotalChargedTimeFromMonthlyInvoicePackageInSeconds($monthlyInvoicePackage,'all');
         $hourlyRate = $monthlyInvoicePackage->hourly_rate;
-        $totalChargedTime = $totalChargedTime * ($hourlyRate / 3600);
+        $totalChargedTime = getChargedAmountFromSecondsAndHourlyRate($totalChargedTime,$hourlyRate);// $totalChargedTime * ($hourlyRate / 3600);
 
         return formatAmountWithCurrency($totalChargedTime);
+    }
+}
+if (!function_exists('getChargedAmountFromSecondsAndHourlyRate')){
+    function getChargedAmountFromSecondsAndHourlyRate($seconds,$hourlyRate)
+    {
+        $totalHours = floor($seconds / 3600);
+        $totalMinutes = floor(($seconds / 60) % 60);
+        $perMinuteRate = formatAmountWithoutCurrency($hourlyRate/60);
+        $hourlyChargedAmount = $totalHours * $hourlyRate;
+        $minutesChargedAmount = $totalMinutes * $perMinuteRate;
+        return formatAmountWithoutCurrency($hourlyChargedAmount+$minutesChargedAmount);
+    }
+}
+if (!function_exists('getChargedAmountFromMinutesAndHourlyRate')){
+    function getChargedAmountFromMinutesAndHourlyRate($minutes,$hourlyRate)
+    {
+        return getChargedAmountFromSecondsAndHourlyRate($minutes*60,$hourlyRate);
     }
 }
 if (! function_exists('getTotalChargedTimeOfSessionFromSessionInSeconds')) {
@@ -612,7 +647,7 @@ if (! function_exists('getTotalTutorPaymentForStudentTutoringPackage')) {
 if (! function_exists('getTotalTutorPaymentForMonthlyInvoicePackage')) {
     function getTotalTutorPaymentForMonthlyInvoicePackage(MonthlyInvoicePackage $monthlyInvoicePackage)
     {
-        $totalChargedTimeInSeconds = getTotalChargedTimeFromMonthlyInvoicePackageInSeconds($monthlyInvoicePackage);
+        $totalChargedTimeInSeconds = getTotalChargedTimeFromMonthlyInvoicePackageInSeconds($monthlyInvoicePackage,'all');
         if (! empty($monthlyInvoicePackage->tutor_hourly_rate)) {
             $hourlyRate = getTutorHourlyRateForMonthlyInvoicePackage($monthlyInvoicePackage);
             $hourlyRateInSeconds = $hourlyRate / 3600;

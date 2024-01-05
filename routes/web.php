@@ -19,13 +19,8 @@ use App\Http\Controllers\TaxController;
 use App\Http\Controllers\TutorController;
 use App\Http\Controllers\TutoringLocationController;
 use App\Http\Controllers\TutoringPackageTypeController;
-use App\Models\MonthlyInvoicePackage;
-use App\Models\MonthlyInvoiceSubscription;
-use App\Models\Session;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Stripe\Price;
-use Stripe\SubscriptionItem;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,46 +42,6 @@ use Stripe\SubscriptionItem;
 
 Route::get('/', function () {
     return view('welcome');
-});
-
-Route::get('usage', function (){
-    setStripeApiKey();
-
-    $monthlyPackages = MonthlyInvoicePackage::select([
-        'monthly_invoice_packages.id','monthly_invoice_subscriptions.subscription_id',
-        'monthly_invoice_subscriptions.stripe_item_id','monthly_invoice_subscriptions.stripe_price_id',
-        'monthly_invoice_subscriptions.stripe_minutes_price_id','monthly_invoice_subscriptions.stripe_minutes_item_id'
-    ])
-        ->with(['sessions'])
-        ->join('monthly_invoice_subscriptions', function ($join){
-            $join->on('monthly_invoice_subscriptions.monthly_invoice_package_id', '=', 'monthly_invoice_packages.id')
-                ->where(function ($q){
-                    $q->where('monthly_invoice_subscriptions.is_active', MonthlyInvoiceSubscription::ACTIVE)
-                    ->where(function ($q){
-                        $q->whereNotNull('monthly_invoice_subscriptions.subscription_id')
-                            ->where('monthly_invoice_subscriptions.subscription_id','!=','');
-                    });
-                });
-        })
-        ->whereHas('sessions', function ($q){
-            $q->select(['id','monthly_invoice_package_id','scheduled_date','start_time','end_time','session_completion_code','attended_duration',
-                'charged_missed_session','attended_start_time','attended_end_time','charge_missed_time','is_billed'])->where('sessions.is_billed', Session::UN_BILLED);
-        })->get();
-
-    foreach ($monthlyPackages as $monthlyPackage ){
-        $totalTimeInSeconds = 0;
-        foreach ($monthlyPackage->sessions as $session){
-            $totalTimeInSeconds += getTotalChargedTimeOfSessionFromSessionInSeconds($session);
-        }
-        //get total hours and minutes from seconds
-        $totalHours = floor($totalTimeInSeconds / 3600);
-        $totalMinutes = floor(($totalTimeInSeconds / 60) % 60);
-        if (!empty($monthlyPackage->subscription_id) && !empty($monthlyPackage->stripe_item_id) && !empty($monthlyPackage->stripe_minutes_item_id)){
-            createUsageRecord($monthlyPackage->stripe_item_id,$totalHours);
-            createUsageRecord($monthlyPackage->stripe_minutes_item_id,$totalMinutes);
-        }
-    }
-
 });
 
 Route::get('invoice/{invoice}/public-view/{type?}', [InvoiceController::class, 'showPublicInvoice']);

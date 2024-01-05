@@ -51,7 +51,7 @@ class MonthlyInvoicePackage extends BaseModel
         'tutoring_location_id' => 'integer',
         'is_score_guaranteed' => 'boolean',
         'is_free' => 'boolean',
-        'due_date' => 'date',
+        'due_date' => 'date'
     ];
 
     public static array $rules = [

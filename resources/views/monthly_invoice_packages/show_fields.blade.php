@@ -76,7 +76,7 @@
 
                 <tr>
                     <td><strong>Total Charged Time</strong></td>
-                    <td>{{formatTimeFromSeconds(getTotalChargedTimeFromMonthlyInvoicePackageInSeconds($monthlyInvoicePackage))}}</td>
+                    <td>{{formatTimeFromSeconds(getTotalChargedTimeFromMonthlyInvoicePackageInSeconds($monthlyInvoicePackage,'all'))}}</td>
                 </tr>
                 <tr>
                     <td><strong>Total Tutor Payment For Package</strong></td>
