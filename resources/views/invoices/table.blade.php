@@ -9,7 +9,7 @@
                 <th>Invoice Type</th>
 {{--                <th>Student</th>--}}
 {{--                <th>Parent</th>--}}
-                <th>Created At</th>
+                <th>Start Date</th>
                 <th>Due Date</th>
                 <th>Amount Paid</th>
                 <th>Remaining Amount</th>
@@ -42,7 +42,7 @@
                     { data: 'invoice_type', name: 'invoice_type', orderable: true },
                     // { data: 'student', name: 'student', orderable: true },
                     // { data: 'parent', name: 'parent', orderable: true },
-                    { data: 'created_at', name: 'created_at', orderable: true },
+                    { data: 'start_date', name: 'created_at', orderable: true },
                     { data: 'due_date', name: 'due_date', orderable: true },
                     { data: 'amount_paid', name: 'amount_paid', orderable: true },
                     { data: 'amount_remaining', name: 'amount_remaining', orderable: true },

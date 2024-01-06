@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -58,8 +59,8 @@ class MonthlyInvoicePackage extends BaseModel
         'student_id' => 'required|integer',
         'notes' => 'nullable|string',
         'internal_notes' => 'nullable|string',
-        'start_date' => 'nullable|date',
-        'due_date' => 'nullable|date',
+        'start_date' => 'required|nullable|date',
+//        'due_date' => 'required|nullable|date',
         'hourly_rate' => 'required|decimal:0,2',
         'tutor_hourly_rate' => 'required|decimal:0,2',
         'tutoring_location_id' => 'required|integer|exists:tutoring_locations,id',
@@ -108,6 +109,14 @@ class MonthlyInvoicePackage extends BaseModel
     public function sessions(): HasMany
     {
         return $this->hasMany(Session::class, 'monthly_invoice_package_id', 'id');
+    }
+    public function LastMonthUnbilledSessions(): HasMany
+    {
+        $startDate = Carbon::now()->subMonth()->startOfMonth();
+        $endDate = Carbon::now()->subMonth()->endOfMonth();
+        return $this->hasMany(Session::class, 'monthly_invoice_package_id', 'id')
+            ->where('sessions.is_billed', Session::UN_BILLED)
+            ->whereBetween('scheduled_date', [$startDate, $endDate]);
     }
     public function invoice(): MorphOne
     {

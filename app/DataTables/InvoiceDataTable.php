@@ -122,7 +122,7 @@ class InvoiceDataTable implements IDataTables
                 $nestedData['invoice_type'] = getInvoiceTypeFromClass($invoice->invoiceable_type);
                 //                $nestedData['student'] = $invoice->student_email??$invoice->student_email_s2;
                 //                $nestedData['parent'] = $invoice->parent_email??$invoice->parent_email_p2;
-                $nestedData['created_at'] = formatDate($invoice->invoice_created_at);
+                $nestedData['start_date'] = formatDate($invoice->start_date);
                 $nestedData['due_date'] = formatDate($invoice->due_date);
                 $nestedData['amount_paid'] = formatAmountWithCurrency(($invoice->amount_paid - $invoice->amount_refunded));
                 if ($invoice->invoiceable_type===MonthlyInvoicePackage::class){

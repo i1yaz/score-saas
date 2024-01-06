@@ -36,6 +36,9 @@ class MonthlyInvoicePackageRepository extends BaseRepository
 
     public function create(array $input): Model|MonthlyInvoicePackage
     {
+        $startDate = $input['start_date'];
+        dd($startDate);
+//        Carbon::createFromFormat()
         $input['auth_guard'] = Auth::guard()->name;
         $input['added_by'] = Auth::id();
         $model = $this->model->newInstance($input);

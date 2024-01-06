@@ -4,12 +4,24 @@
     <!-- Due Date Field -->
     <div class="form-group col-sm-6">
         @if(isset($isMonthly) && $isMonthly===true)
-            {!! Form::label('due_date', 'Billing Date:') !!}
+{{--            {!! Form::label('due_date', 'Calculate Session\'s Time:',['class'=> 'required']) !!}--}}
+{{--            <div class="radio">--}}
+{{--                <div class="form-check form-check-inline">--}}
+{{--                    <input class="form-check-input" type="radio" name="submit_session_at" id="submit-session-at-yes" value="1" @if($monthlyInvoicePackage->submit_session_at===1) checked @endif >--}}
+{{--                    <label class="form-check-label" for="submit-session-at-yes"><strong>  At the End of the Month</strong></label>--}}
+{{--                </div>--}}
+{{--                <div class="form-check form-check-inline">--}}
+{{--                    <input class="form-check-input" type="radio" name="submit_session_at" id="submit-session-at-no" value="0" @if($monthlyInvoicePackage->submit_session_at===0)  checked @endif>--}}
+{{--                    <label class="form-check-label" for="submit-session-at-no"><strong>  At the start of the month (last month's session)</strong></label>--}}
+{{--                </div>--}}
+
+{{--            </div>--}}
         @else
-            {!! Form::label('due_date', 'Due Date:') !!}
+            {!! Form::label('due_date', 'Due Date:',['class'=> 'required']) !!}
+            {!! Form::text('due_date', isset($invoice)? $invoice->due_date?->format('m/d/Y'):null, ['class' => 'form-control date-input']) !!}
+
         @endif
 
-        {!! Form::text('due_date', isset($invoice)? $invoice->due_date?->format('m/d/Y'):null, ['class' => 'form-control date-input']) !!}
     </div>
 
     <!-- General Description Field -->

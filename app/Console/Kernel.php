@@ -12,7 +12,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-         $schedule->command('report:monthly-package-usage')->hourly();
+         $schedule->command('report:monthly-package-usage')
+             ->monthlyOn(1, '0:00')
+             ->everyFifteenMinutes()
+             ->appendOutputTo(storage_path('logs/scheduler.log'));;
     }
 
     /**

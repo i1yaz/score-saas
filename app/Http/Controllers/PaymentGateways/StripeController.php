@@ -201,6 +201,9 @@ class StripeController extends AppBaseController
             $monthlyInvoiceSubscription->save();
             $invoiceType = 3;
             $start_date = $monthlyInvoicePackage->start_date;
+            if ($start_date->day==1){
+                $start_date = $start_date->clone()->midDay();
+            }
             $session = StripeSession::create([
                 'customer_email' => \Auth::user()->email,
                 'success_url' => route('payment-success').'?session_id={CHECKOUT_SESSION_ID}',

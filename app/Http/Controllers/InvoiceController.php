@@ -37,7 +37,7 @@ class InvoiceController extends AppBaseController
                 'invoice_type',
                 //                'student',
                 //                'parent',
-                'created_at',
+                'start_date',
                 'due_date',
                 'amount_paid',
                 'amount_remaining',

@@ -19,7 +19,8 @@
 </div>
 <!-- Start Date Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('start_date', 'Start Date:') !!}
+    {!! Form::label('start_date', 'Start Date:',['class'=> 'required']) !!}
+    <small class="text-danger">System will also automatically charge on same date each month.</small>
     {!! Form::text('start_date', isset($monthlyInvoicePackage)? $monthlyInvoicePackage->start_date?->format('m/d/Y'):null, ['class' => 'form-control date-input']) !!}
 </div>
 <!-- Notes Field -->
