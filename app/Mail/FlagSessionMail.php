@@ -4,36 +4,18 @@ namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Spatie\MailTemplates\TemplateMailable;
 
-class FlagSessionMail extends Mailable implements ShouldQueue
+class FlagSessionMail extends TemplateMailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
+    private mixed $Package;
+
     public function __construct(protected array $session)
     {
+        $this->Package = $session['package'];
 
-    }
-
-    public function envelope(): Envelope
-    {
-        return new Envelope(
-            subject: 'Flag Session',
-        );
-    }
-
-    public function content(): Content
-    {
-        return new Content(
-            markdown: 'emails.flag-session',
-        );
-    }
-
-    public function attachments(): array
-    {
-        return [];
     }
 }

@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             InvoicePackageTypeSeeder::class,
             ListDataSeeder::class,
             InvoicePackageSeeder::class,
+            MailTemplatesSeeder::class,
             //            ClientPermissionsSeeder::class,
             //            ParentPermissionsSeeder::class,
             //            StudentPermissionsSeeder::class,

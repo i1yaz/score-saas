@@ -93,19 +93,17 @@ class SessionController extends Controller
         $tutoringPackageId = $input['tutoring_package_id'];
         if (Auth::user()->hasRole(['tutor'])) {
             if (Str::startsWith($input['tutoring_package_id'], StudentTutoringPackage::PREFIX_START)) {
-                $tutoringPackageTutor = StudentTutoringPackageTutor::where(['tutor_id' => Auth::user()->id, 'student_tutoring_package_id' => $tutoringPackageId])->first();
+                $tutoringPackageTutor = StudentTutoringPackageTutor::where(['tutor_id' => Auth::user()->id, 'student_tutoring_package_id' => getOriginalStudentTutoringPackageIdFromCode($tutoringPackageId)])->first();
             }
             if (Str::startsWith($input['tutoring_package_id'], MonthlyInvoicePackage::PREFIX_START)) {
-                $tutoringPackageTutor = MonthlyInvoicePackageTutor::where(['tutor_id' => Auth::user()->id, 'student_tutoring_package_id' => $tutoringPackageId])->first();
-            }
-
-            if (Auth::user()->hasRole(['tutor']) && ! empty($tutoringPackageTutor)) {
-                $input['tutor_id'] = Auth::user()->id;
-            } else {
-                return response()->json(['success' => false, 'message' => 'You are not allowed to create session for this student.'], 404);
+                $tutoringPackageTutor = MonthlyInvoicePackageTutor::where(['tutor_id' => Auth::user()->id, 'monthly_invoice_package_id' => getOriginalMonthlyInvoicePackageIdFromCode($tutoringPackageId)])->first();
             }
         }
-
+        if (Auth::user()->hasRole(['tutor']) && ! empty($tutoringPackageTutor)) {
+            $input['tutor_id'] = Auth::user()->id;
+        } else if(!Auth::user()->hasRole(['super-admin','admin'])){
+            return response()->json(['success' => false, 'message' => 'You are not allowed to create session for this student.'], 404);
+        }
         if (Str::startsWith($input['tutoring_package_id'], StudentTutoringPackage::PREFIX_START)) {
             $input['student_tutoring_package_id'] = getOriginalStudentTutoringPackageIdFromCode($input['tutoring_package_id']);
             $input['is_billed'] = Session::BILLED;
@@ -134,6 +132,7 @@ class SessionController extends Controller
             $admins = User::whereHasRole(['super-admin'])->get(['email']);
             $admins = $admins->pluck('email')->toArray();
             try {
+                $input['package'] = $tutoringPackageId;
                 Mail::to($admins)->send(new FlagSessionMail($input));
 
             } catch (\Exception $e) {
@@ -227,17 +226,16 @@ class SessionController extends Controller
         $tutoringPackageId = $input['tutoring_package_id'];
         if (Auth::user()->hasRole(['tutor'])) {
             if (Str::startsWith($input['tutoring_package_id'], StudentTutoringPackage::PREFIX_START)) {
-                $tutoringPackageTutor = StudentTutoringPackageTutor::where(['tutor_id' => Auth::user()->id, 'student_tutoring_package_id' => $tutoringPackageId])->first();
+                $tutoringPackageTutor = StudentTutoringPackageTutor::where(['tutor_id' => Auth::user()->id, 'student_tutoring_package_id' => getOriginalStudentTutoringPackageIdFromCode($tutoringPackageId)])->first();
             }
             if (Str::startsWith($input['tutoring_package_id'], MonthlyInvoicePackage::PREFIX_START)) {
-                $tutoringPackageTutor = MonthlyInvoicePackageTutor::where(['tutor_id' => Auth::user()->id, 'student_tutoring_package_id' => $tutoringPackageId])->first();
+                $tutoringPackageTutor = MonthlyInvoicePackageTutor::where(['tutor_id' => Auth::user()->id, 'monthly_invoice_package_id' => getOriginalMonthlyInvoicePackageIdFromCode($tutoringPackageId)])->first();
             }
-
-            if (Auth::user()->hasRole(['tutor']) && ! empty($tutoringPackageTutor)) {
-                $input['tutor_id'] = Auth::user()->id;
-            } else {
-                return response()->json(['success' => false, 'message' => 'You are not allowed to create session for this student.'], 404);
-            }
+        }
+        if (Auth::user()->hasRole(['tutor']) && ! empty($tutoringPackageTutor)) {
+            $input['tutor_id'] = Auth::user()->id;
+        } else if(!Auth::user()->hasRole(['super-admin','admin'])){
+            return response()->json(['success' => false, 'message' => 'You are not allowed to create session for this student.'], 404);
         }
         if (Str::startsWith($input['tutoring_package_id'], StudentTutoringPackage::PREFIX_START)) {
             $input['student_tutoring_package_id '] = getPackageCodeFromModel($input['tutoring_package_id']);

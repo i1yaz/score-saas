@@ -766,6 +766,30 @@ class PermissionSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
+            [
+                'name' => 'email_templates-index',
+                'display_name' => 'Email Templates Index',
+                'description' => 'Email Templates Index',
+                'resource' => 'Email Templates',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'email_templates-show',
+                'display_name' => 'Email Templates Show',
+                'description' => 'Email Templates Show',
+                'resource' => 'Email Templates',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'email_templates-edit',
+                'display_name' => 'Email Templates Edit',
+                'description' => 'Email Templates Edit',
+                'resource' => 'Email Templates',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]
         ]);
     }
 }

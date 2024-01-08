@@ -200,4 +200,11 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], functio
     //    Route::get('payments/{payment}/edit', [PaymentController::class, 'edit'])->name('payments.edit')->middleware(['permission:payment-edit']);
     //    Route::patch('payments/{payment}', [PaymentController::class, 'update'])->name('payments.update')->middleware(['permission:payment-edit']);
     //    Route::delete('payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy')->middleware(['permission:payment-destroy']);
+
+    //Email Templates
+    Route::get('email-templates',[App\Http\Controllers\EmailTemplateController::class,'index'])->name('email-templates.index')->middleware(['permission:email_templates-index']);
+    Route::get('email-templates/{email_templates}',[App\Http\Controllers\EmailTemplateController::class,'show'])->name('email-templates.show')->middleware(['permission:email_templates-show']);
+    Route::get('email-templates/{email_templates}/edit',[App\Http\Controllers\EmailTemplateController::class,'edit'])->name('email-templates.edit')->middleware(['permission:email_templates-edit']);
+    Route::patch('email-templates/{email_templates}',[App\Http\Controllers\EmailTemplateController::class,'update'])->name('email-templates.update')->middleware(['permission:email_templates-edit']);
+
 });
