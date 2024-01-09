@@ -206,5 +206,6 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], functio
     Route::get('email-templates/{email_templates}',[App\Http\Controllers\EmailTemplateController::class,'show'])->name('email-templates.show')->middleware(['permission:email_templates-show']);
     Route::get('email-templates/{email_templates}/edit',[App\Http\Controllers\EmailTemplateController::class,'edit'])->name('email-templates.edit')->middleware(['permission:email_templates-edit']);
     Route::patch('email-templates/{email_templates}',[App\Http\Controllers\EmailTemplateController::class,'update'])->name('email-templates.update')->middleware(['permission:email_templates-edit']);
+    Route::patch('email-templates/upload-image',[App\Http\Controllers\EmailTemplateController::class,'uploadImage'])->name('email-templates.upload-image')->middleware(['permission:email_templates-edit']);
 
 });

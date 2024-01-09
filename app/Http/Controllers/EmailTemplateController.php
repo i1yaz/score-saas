@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Spatie\MailTemplates\Models\MailTemplate;
 
 class EmailTemplateController extends Controller
@@ -32,5 +33,13 @@ class EmailTemplateController extends Controller
             'text_template' => 'required',
         ]));
         return redirect()->route('email_templates.index')->with('success','Email template updated successfully');
+    }
+    public function uploadImage(Request $request)
+    {
+        $image = $request->file('image');
+        $tenant = getCurrentTenant();
+        $imageName = $tenant .'_'. $request->template_id.'.' . $image->getClientOriginalExtension();
+        storeFile('email-images',$image);
+        return response()->json(['url' => asset('email-images/' . $imageName)]);
     }
 }

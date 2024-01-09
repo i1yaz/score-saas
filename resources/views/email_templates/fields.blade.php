@@ -66,6 +66,9 @@
                 callbacks: {
                     onFocus: function() {
                         previousFocus = this.id;
+                    },
+                    onImageUpload: function(files) {
+                        uploadImage(files[0]);
                     }
                 }
             });
@@ -75,5 +78,26 @@
             e.preventDefault()
             previousFocus = this.id;
         })
+
+        function uploadImage(file) {
+            let formData = new FormData();
+            formData.append("image", file);
+            formData.append("_token", "{{ csrf_token() }}")
+            formData.append("template_id", "{{ $template->id }}")
+
+            $.ajax({
+                url: '{{route('email-templates.upload-image')}}',
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    $('#html-template').summernote('editor.insertImage', response.url);
+                },
+                error: function(error) {
+                    console.error('Image upload failed: ', error);
+                }
+            });
+        }
     </script>
 @endpush

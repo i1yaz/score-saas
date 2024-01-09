@@ -1006,3 +1006,9 @@ if (!function_exists('getFutureDueDate')){
     }
 }
 
+if (!function_exists('getCurrentTenant')){
+    function getCurrentTenant(): int
+    {
+        return 1;
+    }
+}
