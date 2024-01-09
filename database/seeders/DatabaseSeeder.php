@@ -24,9 +24,9 @@ class DatabaseSeeder extends Seeder
             ListDataSeeder::class,
             InvoicePackageSeeder::class,
             MailTemplatesSeeder::class,
-            //            ClientPermissionsSeeder::class,
-            //            ParentPermissionsSeeder::class,
-            //            StudentPermissionsSeeder::class,
+            ClientPermissionsSeeder::class,
+            ParentPermissionsSeeder::class,
+            StudentPermissionsSeeder::class,
         ]);
 
         $user = User::create([
