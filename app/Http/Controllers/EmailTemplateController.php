@@ -2,8 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\SessionSubmittedMail;
+use App\Models\Session;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 use Spatie\MailTemplates\Models\MailTemplate;
+use Faker\Factory as Faker;
 
 class EmailTemplateController extends Controller
 {
@@ -25,21 +31,77 @@ class EmailTemplateController extends Controller
     }
     public function update($template)
     {
-        $template = MailTemplate::findOrFail($template);
-        $template->update(request()->validate([
+        request()->validate([
             'name' => 'required',
             'subject' => 'required',
-            'html_template' => 'required',
-            'text_template' => 'required',
-        ]));
-        return redirect()->route('email_templates.index')->with('success','Email template updated successfully');
+            'html_template' => 'required'
+        ]);
+
+        $template = MailTemplate::findOrFail($template);
+        $input = request()->all();
+        $input['text_template'] = strip_tags($input['html_template']);
+        unset($input['files']);
+        $template->update($input);
+        return redirect()->route('email-templates.index')->with('success','Email template updated successfully');
     }
     public function uploadImage(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|size:500',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()->first()], 400);
+        }
+
         $image = $request->file('image');
         $tenant = getCurrentTenant();
-        $imageName = $tenant .'_'. $request->template_id.'.' . $image->getClientOriginalExtension();
-        storeFile('email-images',$image);
-        return response()->json(['url' => asset('email-images/' . $imageName)]);
+        $imageName = time().'.' . $image->getClientOriginalExtension();
+        $path = "pictures/email-images/tenant-{$tenant}/{$request->template_id}";
+        storeFile($path,$image,$imageName);
+        return response()->json(['url' => asset("{$path}/{$imageName}")]);
+    }
+
+    public function send(Request $request,$template_id)
+    {
+        $request->validate([
+            'email' => 'required|email'
+        ]);
+        $template = MailTemplate::findOrFail($template_id);
+        $data = $this->getEmailData($template_id);
+        $mailable = $template->mailable;
+        Mail::to($request->email)->send(new $mailable($data));
+        return redirect()->route('email-templates.index')->with('success','Email sent successfully');
+    }
+    public function getEmailData($template_id){
+        $faker = Faker::create($template_id);
+        $data = [];
+        if ($template_id==1){
+            $data['invoiceId'] = $faker->randomNumber(5);
+            $data['payment_gateway_id'] ='Stripe' ;
+            $data['stripeID'] = 'stripe_id'. $faker->randomNumber(5);
+            $data['amountPaidInLastSession'] = $faker->randomFloat(2, 0, 1000);
+        }
+        if ($template_id==2){
+            $data['first_name'] = $faker->firstName;
+            $data['last_name'] = $faker->lastName;
+            $data['email'] = $faker->email;
+        }
+        if ($template_id==3){
+            $data['package'] = $faker->randomNumber(5);
+        }
+        if (in_array($template_id,[4,5,6,7,8])){
+            return [];
+        }
+
+        if ($template_id==9){
+            $data['time'] = "1h:30m";
+            $data['student_email'] = $faker->email;
+            $data['student_first_name'] =$faker->firstName;
+            $data['student_last_name'] = $faker->lastName;
+            $data['bill_amount'] = $faker->randomFloat(2, 0, 1000);
+            $data['start_date'] = Carbon::now()->format('Y-m-d');
+        }
+        return $data;
     }
 }

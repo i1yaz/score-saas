@@ -12,7 +12,7 @@ class ParentInvoiceMailAfterStudentTutoringPackageCreation extends TemplateMaila
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public StudentTutoringPackage $studentTutoringPackage)
+    public function __construct(array  $studentTutoringPackage)
     {
     }
 }

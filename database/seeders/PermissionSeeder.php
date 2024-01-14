@@ -789,7 +789,15 @@ class PermissionSeeder extends Seeder
                 'resource' => 'Email Templates',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
-            ]
+            ],
+            [
+                'name' => 'email_templates-send',
+                'display_name' => 'Email Templates Send',
+                'description' => 'Email Templates Send',
+                'resource' => 'Email Templates',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
         ]);
     }
 }

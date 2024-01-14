@@ -11,9 +11,9 @@ class FlagSessionMail extends TemplateMailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    private mixed $package;
+    public mixed $package = 334445;
 
-    public function __construct(protected array $session)
+    public function __construct(array $session)
     {
         $this->package = $session['package'];
 

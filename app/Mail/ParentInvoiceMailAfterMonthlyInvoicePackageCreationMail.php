@@ -11,7 +11,7 @@ class ParentInvoiceMailAfterMonthlyInvoicePackageCreationMail extends TemplateMa
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public  $monthlyInvoicePackage)
+    public function __construct(array  $monthlyInvoicePackage)
     {
     }
 

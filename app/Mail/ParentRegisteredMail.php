@@ -14,7 +14,7 @@ class ParentRegisteredMail extends TemplateMailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public function __construct(protected array $data)
+    public function __construct( array $data)
     {
     }
 }

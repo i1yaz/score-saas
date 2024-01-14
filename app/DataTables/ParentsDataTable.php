@@ -79,10 +79,10 @@ class ParentsDataTable implements IDataTables
         }
 
         if (Auth::user()->hasRole('parent') && Auth::user() instanceof ParentUser) {
-            $records = $records->where('id', Auth::id());
+            $records = $records->where('parents.id', Auth::id());
         }
         if (Auth::user()->hasRole('student') && Auth::user() instanceof Student) {
-            $records = $records->where('id', Auth::user()->parent_id);
+            $records = $records->where('parents.id', Auth::user()->parent_id);
         }
         if (Auth::user()->hasRole('tutor')){
             $records = $records->where(function ($q){
@@ -106,7 +106,7 @@ class ParentsDataTable implements IDataTables
             $students = $students->where('id', Auth::id());
         }
         if (Auth::user()->hasRole('student') && Auth::user() instanceof Student) {
-            $students = $students->where('id', Auth::user()->parent_id);
+            $students = $students->where('parents.id', Auth::user()->parent_id);
         }
 
         return $students->count();
