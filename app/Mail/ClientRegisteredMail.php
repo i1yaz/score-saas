@@ -4,38 +4,21 @@ namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Spatie\MailTemplates\TemplateMailable;
 
-class ClientRegisteredMail extends Mailable implements ShouldQueue
+class ClientRegisteredMail extends TemplateMailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public function __construct(protected array $data)
-    {
-    }
+    public mixed $first_name;
+    public mixed $last_name;
+    public mixed $email;
 
-    public function envelope(): Envelope
+    public function __construct(array $data)
     {
-        return new Envelope(
-            subject: 'Client Registered',
-        );
-    }
-
-    public function content(): Content
-    {
-        return new Content(
-            markdown: 'emails.client-registered',
-            with: [
-                'password' => $this->data['password'],
-            ]
-        );
-    }
-
-    public function attachments(): array
-    {
-        return [];
+        $this->first_name = $data['first_name'];
+        $this->last_name = $data['last_name'];
+        $this->email = $data['email'];
     }
 }

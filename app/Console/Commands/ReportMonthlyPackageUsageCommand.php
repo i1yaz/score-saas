@@ -2,11 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Mail\SessionSubmittedMail;
 use App\Models\MonthlyInvoicePackage;
 use App\Models\MonthlyInvoiceSubscription;
 use App\Models\Session;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Mail;
 
 class ReportMonthlyPackageUsageCommand extends Command
 {
@@ -22,7 +24,9 @@ class ReportMonthlyPackageUsageCommand extends Command
             $monthlyPackages = MonthlyInvoicePackage::select([
                 'monthly_invoice_packages.id', 'monthly_invoice_subscriptions.subscription_id',
                 'monthly_invoice_subscriptions.stripe_item_id', 'monthly_invoice_subscriptions.stripe_price_id',
-                'monthly_invoice_subscriptions.stripe_minutes_price_id', 'monthly_invoice_subscriptions.stripe_minutes_item_id'
+                'monthly_invoice_subscriptions.stripe_minutes_price_id', 'monthly_invoice_subscriptions.stripe_minutes_item_id',
+                'students.email as student_email','students.first_name as student_first_name','students.last_name as student_last_name',
+                'monthly_invoice_packages.hourly_rate','monthly_invoice_packages.start_date'
             ])
                 ->with(['LastMonthUnbilledSessions'])
                 ->join('monthly_invoice_subscriptions', function ($join) {
@@ -35,6 +39,7 @@ class ReportMonthlyPackageUsageCommand extends Command
                                 });
                         });
                 })
+                ->join('students','monthly_invoice_packages.student_id','students.id')
                 ->get();
 
             foreach ($monthlyPackages as $monthlyPackage) {
@@ -51,6 +56,17 @@ class ReportMonthlyPackageUsageCommand extends Command
                     createUsageRecord($monthlyPackage->stripe_minutes_item_id, $totalMinutes, 'set');
                     Session::whereIn('id', $billedSessions)->update(['is_billed' => true]);
                 }
+                $hoursAmount = (float) formatAmountWithoutCurrency($monthlyPackage->hourly_rate * $totalHours);
+                $minutesAmount = (float) (formatAmountWithoutCurrency($monthlyPackage->hourly_rate/60)) * $totalMinutes;
+                $input = [
+                    'time' => "{$totalHours}:{$totalMinutes}",
+                    'student_email' => $monthlyPackage->student_email,
+                    'student_first_name' => $monthlyPackage->student_first_name,
+                    'student_last_name' => $monthlyPackage->student_last_name,
+                    'bill_amount' => $hoursAmount + $minutesAmount,
+                    'start_time' => $monthlyPackage->start_date
+                ];
+                Mail::to($monthlyPackage->student_email)->send(new SessionSubmittedMail($input));
             }
             $this->info('Report generated successfully at '. $now->toDateTimeString() .'-'.Carbon::now()->toDateTimeString());
         }

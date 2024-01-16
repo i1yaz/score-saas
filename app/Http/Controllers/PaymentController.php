@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\ParentsDataTable;
+use App\DataTables\PaymentsDataTable;
+use App\DataTables\StudentTutoringPackageDataTable;
 use App\Http\Requests\CreatePaymentRequest;
 use App\Http\Requests\UpdatePaymentRequest;
 use App\Repositories\PaymentRepository;
@@ -25,10 +28,36 @@ class PaymentController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $payments = $this->paymentRepository->paginate(10);
+        if ($request->ajax()) {
+            $columns = [
+                'invoice_code',
+                'invoice_type',
+                'package_code',
+                'amount',
+                'date',
+                'payment_gateway'
+            ];
+            $limit = $request->input('length');
+            $start = $request->input('start');
+            $order = $columns[$request->input('order.0.column')];
+            $dir = $request->input('order.0.dir');
+            $search = $request->input('search');
+            $totalData = PaymentsDataTable::totalRecords();
+            $studentTutoringPackages = PaymentsDataTable::sortAndFilterRecords($search, $start, $limit, $order, $dir);
+            $totalFiltered = PaymentsDataTable::totalFilteredRecords($search);
+            $data = PaymentsDataTable::populateRecords($studentTutoringPackages);
+            $json_data = [
+                'draw' => intval($request->input('draw')),
+                'recordsTotal' => intval($totalData),
+                'recordsFiltered' => intval($totalFiltered),
+                'data' => $data,
+            ];
 
-        return view('payments.index')
-            ->with('payments', $payments);
+            return response()->json($json_data);
+
+        }
+
+        return view('payments.index');
     }
 
     /**
@@ -36,7 +65,7 @@ class PaymentController extends AppBaseController
      */
     public function create()
     {
-        return view('payments.create');
+
     }
 
     /**
@@ -44,13 +73,7 @@ class PaymentController extends AppBaseController
      */
     public function store(CreatePaymentRequest $request)
     {
-        $input = $request->all();
 
-        $payment = $this->paymentRepository->create($input);
-
-        Flash::success('Payment saved successfully.');
-
-        return redirect(route('payments.index'));
     }
 
     /**
@@ -74,15 +97,7 @@ class PaymentController extends AppBaseController
      */
     public function edit($id)
     {
-        $payment = $this->paymentRepository->find($id);
 
-        if (empty($payment)) {
-            Flash::error('Payment not found');
-
-            return redirect(route('payments.index'));
-        }
-
-        return view('payments.edit')->with('payment', $payment);
     }
 
     /**
@@ -90,19 +105,7 @@ class PaymentController extends AppBaseController
      */
     public function update($id, UpdatePaymentRequest $request)
     {
-        $payment = $this->paymentRepository->find($id);
 
-        if (empty($payment)) {
-            Flash::error('Payment not found');
-
-            return redirect(route('payments.index'));
-        }
-
-        $payment = $this->paymentRepository->update($request->all(), $id);
-
-        Flash::success('Payment updated successfully.');
-
-        return redirect(route('payments.index'));
     }
 
     /**
@@ -112,19 +115,7 @@ class PaymentController extends AppBaseController
      */
     public function destroy($id)
     {
-        $payment = $this->paymentRepository->find($id);
 
-        if (empty($payment)) {
-            Flash::error('Payment not found');
-
-            return redirect(route('payments.index'));
-        }
-
-        $this->paymentRepository->delete($id);
-
-        Flash::success('Payment deleted successfully.');
-
-        return redirect(route('payments.index'));
     }
 
     public function success(Request $request)

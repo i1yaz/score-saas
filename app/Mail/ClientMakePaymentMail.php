@@ -4,35 +4,23 @@ namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Spatie\MailTemplates\TemplateMailable;
 
-class ClientMakePaymentMail extends Mailable implements ShouldQueue
+class ClientMakePaymentMail extends TemplateMailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public function __construct(protected array $invoiceData)
-    {
-    }
+    public mixed $invoice_id;
+    public mixed $payment_gateway;
+    public mixed $transaction_id;
+    public mixed $amount;
 
-    public function envelope(): Envelope
+    public function __construct(array $invoiceData)
     {
-        return new Envelope(
-            subject: 'Client Make Payment',
-        );
-    }
-
-    public function content(): Content
-    {
-        return new Content(
-            markdown: 'emails.client-make-payment',
-        );
-    }
-
-    public function attachments(): array
-    {
-        return [];
+            $this->invoice_id = $invoiceData['invoiceId'];
+            $this->payment_gateway = $invoiceData['payment_gateway_id']==1 ? 'Stripe' : $invoiceData['payment_gateway_id'];
+            $this->transaction_id = $invoiceData['stripeID'];
+            $this->amount = $invoiceData['amountPaidInLastSession'];
     }
 }

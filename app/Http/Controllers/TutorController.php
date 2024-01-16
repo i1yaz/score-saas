@@ -193,13 +193,14 @@ class TutorController extends AppBaseController
     private function storePictureOrResume(Request $request, Tutor|TutorRepository|Model $tutor): void
     {
         $input = [];
+        $tenant = getCurrentTenant();
         if ($request->has('picture')) {
             deleteFile($tutor->picture);
-            $input['picture'] = storeFile("pictures/tutors/{$tutor->id}", $request->file('picture'));
+            $input['picture'] = storeFile("pictures/tenant-{$tenant}/tutors/{$tutor->id}", $request->file('picture'));
         }
         if ($request->has('resume')) {
             deleteFile($tutor->resume);
-            $input['resume'] = storeFile("resume/tutors/{$tutor->id}", $request->file('resume'));
+            $input['resume'] = storeFile("resume/tenant-{$tenant}/tutors/{$tutor->id}", $request->file('resume'));
         }
         if ($request->has('picture') || $request->has('resume')) {
             $this->tutorRepository->update($input, $tutor->id);
