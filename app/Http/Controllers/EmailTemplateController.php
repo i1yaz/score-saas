@@ -77,10 +77,10 @@ class EmailTemplateController extends Controller
         $faker = Faker::create($template_id);
         $data = [];
         if ($template_id==1){
-            $data['invoiceId'] = $faker->randomNumber(5);
+            $data['invoice_id'] = $faker->randomNumber(5);
             $data['payment_gateway_id'] ='Stripe' ;
-            $data['stripeID'] = 'stripe_id'. $faker->randomNumber(5);
-            $data['amountPaidInLastSession'] = $faker->randomFloat(2, 0, 1000);
+            $data['transaction_id'] = 'stripe_id'. $faker->randomNumber(5);
+            $data['amount'] = $faker->randomFloat(2, 0, 1000);
         }
         if ($template_id==2){
             $data['first_name'] = $faker->firstName;
@@ -100,7 +100,7 @@ class EmailTemplateController extends Controller
             $data['student_first_name'] =$faker->firstName;
             $data['student_last_name'] = $faker->lastName;
             $data['bill_amount'] = $faker->randomFloat(2, 0, 1000);
-            $data['start_date'] = Carbon::now()->format('Y-m-d');
+            $data['start_time'] = Carbon::now()->format('Y-m-d');
         }
         return $data;
     }
