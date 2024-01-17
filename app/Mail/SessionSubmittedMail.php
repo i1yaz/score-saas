@@ -27,7 +27,7 @@ class SessionSubmittedMail extends TemplateMailable implements ShouldQueue
         $this->student_first_name = $data['student_first_name'];
         $this->student_last_name = $data['student_last_name'];
         $this->bill_amount = $data['bill_amount'];
-        $this->payment_charge_date = $data['start_date'];
+        $this->payment_charge_date = $data['start_time'];
     }
 
 }
