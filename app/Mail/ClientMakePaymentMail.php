@@ -18,9 +18,9 @@ class ClientMakePaymentMail extends TemplateMailable implements ShouldQueue
 
     public function __construct(array $invoiceData)
     {
-            $this->invoice_id = $invoiceData['invoiceId'];
+            $this->invoice_id = $invoiceData['invoice_id'];
             $this->payment_gateway = $invoiceData['payment_gateway_id']==1 ? 'Stripe' : $invoiceData['payment_gateway_id'];
-            $this->transaction_id = $invoiceData['stripeID'];
-            $this->amount = $invoiceData['amountPaidInLastSession'];
+            $this->transaction_id = $invoiceData['transaction_id'];
+            $this->amount = $invoiceData['amount'];
     }
 }
