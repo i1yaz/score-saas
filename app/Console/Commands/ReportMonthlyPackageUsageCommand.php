@@ -55,26 +55,26 @@ class ReportMonthlyPackageUsageCommand extends Command
                     createUsageRecord($monthlyPackage->stripe_item_id, $totalHours, 'set');
                     createUsageRecord($monthlyPackage->stripe_minutes_item_id, $totalMinutes, 'set');
                     Session::whereIn('id', $billedSessions)->update(['is_billed' => true]);
+                    $hoursAmount = (float) formatAmountWithoutCurrency($monthlyPackage->hourly_rate * $totalHours);
+                    $minutesAmount = (float) (formatAmountWithoutCurrency($monthlyPackage->hourly_rate/60)) * $totalMinutes;
+                    $input = [
+                        'time' => "{$totalHours}:{$totalMinutes}",
+                        'student_email' => $monthlyPackage->student_email,
+                        'student_first_name' => $monthlyPackage->student_first_name,
+                        'student_last_name' => $monthlyPackage->student_last_name,
+                        'bill_amount' => $hoursAmount + $minutesAmount,
+                        'start_time' => $monthlyPackage->start_date
+                    ];
+                    Mail::to($monthlyPackage->student_email)->send(new SessionSubmittedMail($input));
+                    $this->info('Report generated successfully at '. $now->toDateTimeString() .'-'.Carbon::now()->toDateTimeString().' for package '.$monthlyPackage->id??'nothing');
                 }
-                $hoursAmount = (float) formatAmountWithoutCurrency($monthlyPackage->hourly_rate * $totalHours);
-                $minutesAmount = (float) (formatAmountWithoutCurrency($monthlyPackage->hourly_rate/60)) * $totalMinutes;
-                $input = [
-                    'time' => "{$totalHours}:{$totalMinutes}",
-                    'student_email' => $monthlyPackage->student_email,
-                    'student_first_name' => $monthlyPackage->student_first_name,
-                    'student_last_name' => $monthlyPackage->student_last_name,
-                    'bill_amount' => $hoursAmount + $minutesAmount,
-                    'start_time' => $monthlyPackage->start_date
-                ];
-                Mail::to($monthlyPackage->student_email)->send(new SessionSubmittedMail($input));
-                $this->info('Report generated successfully at '. $now->toDateTimeString() .'-'.Carbon::now()->toDateTimeString().' for package '.$monthlyPackage->id??'nothing');
+
             }
-            $this->info('Command executed at '. $now->toDateTimeString());
 
         }else{
             $this->info('Nothing to report at '. $now->toDateTimeString());
 
         }
-
+        $this->info('Command executed at '. $now->toDateTimeString());
     }
 }
