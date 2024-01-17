@@ -67,8 +67,10 @@ class ReportMonthlyPackageUsageCommand extends Command
                     'start_time' => $monthlyPackage->start_date
                 ];
                 Mail::to($monthlyPackage->student_email)->send(new SessionSubmittedMail($input));
+                $this->info('Report generated successfully at '. $now->toDateTimeString() .'-'.Carbon::now()->toDateTimeString().' for package '.$monthlyPackage->id??'nothing');
             }
-            $this->info('Report generated successfully at '. $now->toDateTimeString() .'-'.Carbon::now()->toDateTimeString().' for package '.$monthlyPackage->id??'nothing');
+            $this->info('Command executed at '. $now->toDateTimeString());
+
         }else{
             $this->info('Nothing to report at '. $now->toDateTimeString());
 
