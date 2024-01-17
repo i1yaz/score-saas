@@ -174,7 +174,7 @@ class StripeController extends AppBaseController
                 'billing_scheme' => 'per_unit',
                 'unit_amount_decimal' => $monthlyInvoicePackage->hourly_rate * 100,
                 'recurring' => [
-                    'interval' => 'month',
+                    'interval' => config('services.stripe.subscription_interval'),
                     'usage_type' => 'metered'
                 ],
             ]);
@@ -189,7 +189,7 @@ class StripeController extends AppBaseController
                 'billing_scheme' => 'per_unit',
                 'unit_amount_decimal' => (formatAmountWithoutCurrency($monthlyInvoicePackage->hourly_rate/60)) * 100,
                 'recurring' => [
-                    'interval' => 'month',
+                    'interval' =>  config('services.stripe.subscription_interval'),
                     'usage_type' => 'metered'
                 ],
             ]);

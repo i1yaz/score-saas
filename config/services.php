@@ -34,5 +34,6 @@ return [
         'key' => env('STRIPE_KEY'),
         'secret_key' => env('STRIPE_SECRET'),
         'webhook_secret_key' => env('STRIPE_WEBHOOK_SECRET_KEY'),
+        'subscription_interval' => env('STRIPE_SUBSCRIPTION_INTERVAL','month')
     ],
 ];

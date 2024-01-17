@@ -112,6 +112,13 @@ class MonthlyInvoicePackage extends BaseModel
     }
     public function LastMonthUnbilledSessions(): HasMany
     {
+        if (\App::environment(['local'])){
+            $startDate = Carbon::now()->subDay()->startOfDay();
+            $endDate = Carbon::now()->subDay()->endOfDay();
+            return $this->hasMany(Session::class, 'monthly_invoice_package_id', 'id')
+                ->where('sessions.is_billed', Session::UN_BILLED)
+                ->whereBetween('scheduled_date', [$startDate, $endDate]);
+        }
         $startDate = Carbon::now()->subMonth()->startOfMonth();
         $endDate = Carbon::now()->subMonth()->endOfMonth();
         return $this->hasMany(Session::class, 'monthly_invoice_package_id', 'id')

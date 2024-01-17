@@ -19,7 +19,7 @@ class ReportMonthlyPackageUsageCommand extends Command
     public function handle(): void
     {
         $now = Carbon::now();
-        if ($now->day==1) {
+        if ($now->day==1 || \App::environment(['local'])) {
             setStripeApiKey();
             $monthlyPackages = MonthlyInvoicePackage::select([
                 'monthly_invoice_packages.id', 'monthly_invoice_subscriptions.subscription_id',
@@ -69,8 +69,10 @@ class ReportMonthlyPackageUsageCommand extends Command
                 Mail::to($monthlyPackage->student_email)->send(new SessionSubmittedMail($input));
             }
             $this->info('Report generated successfully at '. $now->toDateTimeString() .'-'.Carbon::now()->toDateTimeString());
+        }else{
+            $this->info('Nothing to report at '. $now->toDateTimeString());
+
         }
-        $this->info('Nothing to report at '. $now->toDateTimeString());
 
     }
 }
