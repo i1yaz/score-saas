@@ -68,7 +68,7 @@ class ReportMonthlyPackageUsageCommand extends Command
                 ];
                 Mail::to($monthlyPackage->student_email)->send(new SessionSubmittedMail($input));
             }
-            $this->info('Report generated successfully at '. $now->toDateTimeString() .'-'.Carbon::now()->toDateTimeString());
+            $this->info('Report generated successfully at '. $now->toDateTimeString() .'-'.Carbon::now()->toDateTimeString().' for package '.$monthlyPackage->id??'nothing');
         }else{
             $this->info('Nothing to report at '. $now->toDateTimeString());
 
