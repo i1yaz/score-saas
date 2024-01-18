@@ -16,6 +16,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Laracasts\Flash\Flash;
 use Stripe\Checkout\Session as StripeSession;
+use Stripe\Exception\ApiErrorException;
 use Stripe\PaymentIntent;
 use Stripe\Price;
 use Stripe\Subscription;
@@ -178,7 +179,7 @@ class StripeController extends AppBaseController
                     'usage_type' => 'metered'
                 ],
             ]);
-
+            sleep(1);
             $stripeMinutesPrice = Price::create([
                 'product_data' => [
                     'name' => getMonthlyInvoicePackageCodeFromId($monthlyInvoicePackage->id),
@@ -193,7 +194,7 @@ class StripeController extends AppBaseController
                     'usage_type' => 'metered'
                 ],
             ]);
-
+            sleep(1);
             $monthlyInvoiceSubscription->stripe_price_id = $stripePrice->id;
             $monthlyInvoiceSubscription->stripe_minutes_price_id = $stripeMinutesPrice->id;
             $monthlyInvoiceSubscription->frequency = $stripePrice->recurring->interval;
@@ -247,6 +248,10 @@ class StripeController extends AppBaseController
 
         return redirect()->route('client.invoices.index');
     }
+
+    /**
+     * @throws ApiErrorException
+     */
     public function webhooks(Request $request){
         $payload = $request->all();
         \Log::channel('stripe_success')->info('Stripe webhook',$request->all());
@@ -270,7 +275,11 @@ class StripeController extends AppBaseController
         if ($payload['type']==='charge.refunded'){
             $this->stripeRepository->stripeRefundPayment($request->all());
             return response('success',200);
-
+        }
+        if ($payload['type']==='invoice.created'){
+            $client = setStripeApiKey(true);
+            $client->invoices->finalizeInvoice($payload['data']['object']['id']);
+            return response('success',200);
 
         }
         return response('webhook processing failed',500);
