@@ -43,7 +43,7 @@
 
 <!-- Tutor Hourly Rate Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('tutor_hourly_rate', 'Tutor Hourly Rate:',['class'=> 'required','type' => 'number', 'min' => '1', 'oninput' => "validity.valid||(value=value.replace(/[e\+\-]/gi,''))"]) !!}
+    {!! Form::label('tutor_hourly_rate', 'Tutor Hourly Rate:',['type' => 'number', 'min' => '1', 'oninput' => "validity.valid||(value=value.replace(/[e\+\-]/gi,''))"]) !!}
     {!! Form::number('tutor_hourly_rate', null, ['class' => 'form-control']) !!}
 </div>
 <!-- Discount Type Field -->

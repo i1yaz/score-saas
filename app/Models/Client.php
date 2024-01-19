@@ -50,7 +50,6 @@ class Client extends Authenticatable implements LaratrustUser
         'last_name' => 'required|string|min:2|max:255',
         'email' => 'required|email|unique:clients',
         'password' => 'required|string|min:8|max:255',
-        'address' => 'required|string',
     ];
 
     /**

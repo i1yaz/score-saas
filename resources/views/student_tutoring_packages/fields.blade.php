@@ -1,18 +1,18 @@
 <!-- Student Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('student_id', 'Student:') !!}
+    {!! Form::label('student_id', 'Student:',['class' => 'required']) !!}
     {!! Form::select('student_id',$selectedStudent??[],null, ['class' => 'form-control','id'=>'student-id']) !!}
 </div>
 
 <!-- Tutoring Package Type Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('tutoring_package_type_id', 'Tutoring Package Type:') !!}
+    {!! Form::label('tutoring_package_type_id', 'Tutoring Package Type:',['class' => 'required']) !!}
     {!! Form::select('tutoring_package_type_id', $tutoringPackageType??[],null, ['class' => 'form-control','id'=>'tutoring-package-type-id']) !!}
 </div>
 
 <!-- Tutor Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('tutor-id', 'Tutor:') !!}
+    {!! Form::label('tutor-id', 'Tutor:',['class' => 'required']) !!}
     <select class="form-control" name="tutor_ids[]" multiple="multiple" id='tutor-id'>
         @foreach ($selectedTutors??[] as $id => $selectedTutorEmail)
             <option selected="selected"  value="{{$id}}" >{{$selectedTutorEmail}}</option>
@@ -22,7 +22,7 @@
 </div>
 <!-- Tutoring Location Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('tutoring_location_id', 'Tutoring Location:') !!}
+    {!! Form::label('tutoring_location_id', 'Tutoring Location:',['class' => 'required']) !!}
     {!! Form::select('tutoring_location_id', $tutoringLocation??[],null, ['class' => 'form-control','id'=>'tutoring-location-id']) !!}
 </div>
 <!-- Notes Field -->
@@ -45,7 +45,7 @@
 
 <!-- Hourly Rate Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('hourly_rate', 'Hourly Rate:') !!}
+    {!! Form::label('hourly_rate', 'Hourly Rate:',['class' => 'required']) !!}
     {!! Form::number('hourly_rate', null, ['class' => 'form-control','id'=>'hourly-rate','type' => 'number', 'min' => '1', 'oninput' => "validity.valid||(value=value.replace(/[e\+\-]/gi,''))"]) !!}
 </div>
 
@@ -72,7 +72,7 @@
 
 <!-- Start Date Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('start_date', 'Start Date:') !!}
+    {!! Form::label('start_date', 'Start Date:',['class' => 'required']) !!}
     {!! Form::text('start_date', isset($studentTutoringPackage)? $studentTutoringPackage->start_date?->format('m/d/Y'):null, ['class' => 'form-control date-input']) !!}
 </div>
 

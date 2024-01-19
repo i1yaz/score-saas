@@ -18,22 +18,23 @@
     </p>
 </div>
 <div class="form-group col-sm-6">
-    {!! Form::label('student_tutoring_package_id', 'Tutoring Package:') !!}
+    {!! Form::label('student_tutoring_package_id', 'Tutoring Package:', ['class' => 'required']) !!}
     {!! Form::select('student_tutoring_package_id',  $selectedTutoringPackage??[], null, ['class' => 'form-control select2','id'=>'tutoring-package-id']) !!}
 </div>
+
 <!-- Session Fields -->
 <div class="form-group col-sm-6">
     <div class="row" style="padding-left: 8px">
         <div class="form-group">
-            {!! Form::label('scheduled_date', 'Session Date:') !!}
+            {!! Form::label('scheduled_date', 'Session Date:', ['class' => 'required']) !!}
             {!! Form::text('scheduled_date', null, ['class' => 'form-control date-input col-sm-11']) !!}
         </div>
         <div class="form-group">
-            {!! Form::label('start_time', 'Start Time:') !!}
+            {!! Form::label('start_time', 'Start Time:', ['class' => 'required']) !!}
             {!! Form::time('start_time', null, ['class' => 'form-control  col-sm-11','type'=>'time']) !!}
         </div>
         <div class="form-group">
-            {!! Form::label('end_time', 'End Time:') !!}
+            {!! Form::label('end_time', 'End Time:', ['class' => 'required']) !!}
             {!! Form::time('end_time', null, ['class' => 'form-control col-sm-11','type'=>'time']) !!}
         </div>
     </div>
@@ -42,6 +43,13 @@
 
 <div class="form-group col-sm-12">
     <div class="row">
+        @role(['super-admin','admin'])
+        <!-- Tutor Field -->
+        <div class="form-group col-sm-6">
+            {!! Form::label('tutor-id', 'Tutor:',[ 'class' => 'required']) !!}
+            {!! Form::select('tutor_id', [],null, ['class' => 'form-control select2','id'=>'tutor-id']) !!}
+        </div>
+        @endrole
         <div class="form-group col-sm-6">
             {!! Form::label('tutoring_location_id', 'Location:') !!}
             {!! Form::select('tutoring_location_id', $selectedLocation??[], null, ['class' => 'form-control select2 ','id'=>'location-id']) !!}
@@ -131,7 +139,9 @@
 </div>
 @push('page_scripts')
     <script>
+
         $(document).ready(function () {
+            $("#scheduled_date").datepicker("setDate", new Date());
             $("#location-id").select2({
                 theme: 'bootstrap4',
                 dropdownAutoWidth: true, width: 'auto',
@@ -208,4 +218,6 @@
         }
 
     </script>
+    @include('sessions.includes.tutors_select2js',['strict'=>true])
+
 @endpush

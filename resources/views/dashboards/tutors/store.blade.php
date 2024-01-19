@@ -27,13 +27,13 @@
                         </p>
                     </div>
                     <div class="form-group col-sm-12">
-                        {!! Form::label('tutoring_package_id', 'Tutoring Package:') !!}
+                        {!! Form::label('tutoring_package_id', 'Tutoring Package:' ,[ 'class' => 'required']) !!}
                         {!! Form::select('tutoring_package_id', [], null, ['class' => 'form-control select2 ','id'=>'tutoring-package-id']) !!}
                     </div>
                     @role(['super-admin','admin'])
                     <!-- Tutor Field -->
                     <div class="form-group col-sm-12">
-                        {!! Form::label('tutor-id', 'Tutor:') !!}
+                        {!! Form::label('tutor-id', 'Tutor:',[ 'class' => 'required']) !!}
                         {!! Form::select('tutor_id', [],null, ['class' => 'form-control select2','id'=>'tutor-id']) !!}
                     </div>
                     @endrole
@@ -42,15 +42,15 @@
                     <div class="form-group col-sm-12">
                         <div class="row" style="padding-left: 8px">
                             <div class="form-group flex-child">
-                                {!! Form::label('scheduled_date', 'Session Date:') !!}
+                                {!! Form::label('scheduled_date', 'Session Date:' ,[ 'class' => 'required']) !!}
                                 {!! Form::text('scheduled_date', null, ['class' => 'form-control date-input col-sm-11']) !!}
                             </div>
                             <div class="form-group flex-child">
-                                {!! Form::label('start_time', 'Start Time:') !!}
+                                {!! Form::label('start_time', 'Start Time:' ,[ 'class' => 'required']) !!}
                                 {!! Form::time('start_time', null, ['class' => 'form-control  col-sm-11','type'=>'time']) !!}
                             </div>
                             <div class="form-group flex-child">
-                                {!! Form::label('end_time', 'End Time:') !!}
+                                {!! Form::label('end_time', 'End Time:' ,[ 'class' => 'required']) !!}
                                 {!! Form::time('end_time', null, ['class' => 'form-control col-sm-11','type'=>'time']) !!}
                             </div>
                         </div>
@@ -59,7 +59,7 @@
                     <div class="form-group col-sm-12">
                         <div class="row">
                             <div class="form-group col-sm-6">
-                                {!! Form::label('tutoring_location_id', 'Location:') !!}
+                                {!! Form::label('tutoring_location_id', 'Location:',[ 'class' => 'required']) !!}
                                 {!! Form::select('tutoring_location_id', [], null, ['class' => 'form-control select2 ','id'=>'location-id']) !!}
                             </div>
                             <!-- Completion Code -->
@@ -71,15 +71,15 @@
                                 <div class="row" style="padding-left: 8px">
 
                                     <div class="form-group flex-child d-none attended-session-time">
-                                        {!! Form::label('attended_start_time', 'Attended Session start time') !!}
+                                        {!! Form::label('attended_start_time', 'Attended Session start time', [ 'class' => 'required']) !!}
                                         {!! Form::time('attended_start_time', null, ['class' => 'form-control col-sm-11','type'=>'time']) !!}
                                     </div>
                                     <div class="form-group flex-child d-none attended-session-time">
-                                        {!! Form::label('attended_end_time', 'Attended Session end time ') !!}
+                                        {!! Form::label('attended_end_time', 'Attended Session end time ', [ 'class' => 'required']) !!}
                                         {!! Form::time('attended_end_time', null, ['class' => 'form-control col-sm-11','type'=>'time']) !!}
                                     </div>
                                     <div class="form-group flex-child d-none attended-session-time">
-                                        {!! Form::label('charge_for_missed_time','Charge for missed time') !!}
+                                        {!! Form::label('charge_for_missed_time','Charge for missed time', [ 'class' => 'required']) !!}
                                         {!! Form::select('charge_for_missed_time',[1=>'No',2=>'Yes'],null, ['class' => 'form-control col-sm-11','id'=>'charge-missed-time', 'onChange'=>'chargeMissedTime()']) !!}
                                     </div>
                                 </div>
@@ -113,15 +113,15 @@
                             <div class="form-group col-sm-12 w-100">
                                 {!! Form::label('student_parent_session_notes', 'Student parent session notes:') !!}
                                 <small style="display: block">Viewable by parent & student.</small>
-                                {!! Form::textarea('student_parent_session_notes', null, ['class' => 'form-control date-input col-sm-11']) !!}
+                                {!! Form::textarea('student_parent_session_notes', null, ['class' => 'form-control col-sm-11']) !!}
                             </div>
                             <div class="form-group col-sm-12 w-100">
                                 {!! Form::label('homework', 'Homework:') !!}
-                                {!! Form::textarea('homework', null, ['class' => 'form-control date-input col-sm-11']) !!}
+                                {!! Form::textarea('homework', null, ['class' => 'form-control col-sm-11']) !!}
                             </div>
                             <div class="form-group col-sm-12 w-100">
                                 {!! Form::label('internal_notes', 'Tutor internal_notes:') !!}
-                                {!! Form::textarea('internal_notes', null, ['class' => 'form-control date-input col-sm-11']) !!}
+                                {!! Form::textarea('internal_notes', null, ['class' => 'form-control col-sm-11']) !!}
                             </div>
                             <div class="form-group col-sm-12 w-100">
                                 {!! Form::label('flag_session', 'Flag this Session ? ') !!}

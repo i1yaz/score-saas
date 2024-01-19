@@ -8,7 +8,7 @@
             ajax: {
                 url: "{{route('tutor-email-ajax')}}",
                 dataType: "json",
-                delay: 250,
+                delay: 500,
                 data: function (params) {
                     return {
                         strict:"{{$strict??false}}",

@@ -24,6 +24,7 @@ class TutoringPackageType extends BaseModel
     ];
 
     public static array $rules = [
+        'name' => ['required', 'string', 'max:255'],
         'hours' => ['sometimes', 'numeric', 'gt:0'],
     ];
 }

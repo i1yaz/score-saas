@@ -22,6 +22,6 @@ class TutoringLocation extends BaseModel
     ];
 
     public static array $rules = [
-
+        'name' => 'required|string|max:255',
     ];
 }

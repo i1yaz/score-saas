@@ -101,7 +101,32 @@
                     $('.date-input').datepicker()
                     $("input[type='submit']").on("click", function (e) {
                         $(this).attr("disabled", "disabled");
-                        $(this).parents("form").submit();
+
+                        var formData = $(this).parents("form").serialize();
+
+                        $.ajax({
+                            type: "POST",
+                            url: $(this).parents("form").attr("action"),
+                            data: formData,
+                            success: function(response) {
+                                toastr.success(response.message);
+                                window.location = response.redirectTo
+                            },
+                            error: function(xhr, status, error) {
+
+                                if (xhr.status === 422) {
+                                    $.each(xhr.responseJSON.errors, function (key, item) {
+                                        toastr.error(item[0]);
+                                    });
+                                } else if(xhr.status === 404){
+                                    let response = xhr.responseJSON
+                                    toastr.error(response.message);
+                                } else {
+                                    toastr.error("something went wrong");
+                                }
+                                $("input[type='submit']").attr("disabled", false);
+                            }
+                        });
                     });
                     function ToggleBtnLoader(btnLoader) {
 

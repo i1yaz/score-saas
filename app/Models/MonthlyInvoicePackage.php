@@ -62,7 +62,7 @@ class MonthlyInvoicePackage extends BaseModel
         'start_date' => 'required|nullable|date',
 //        'due_date' => 'required|nullable|date',
         'hourly_rate' => 'required|decimal:0,2',
-        'tutor_hourly_rate' => 'required|decimal:0,2',
+        'tutor_hourly_rate' => 'nullable|decimal:0,2',
         'tutoring_location_id' => 'required|integer|exists:tutoring_locations,id',
     ];
 

@@ -300,6 +300,7 @@ class StudentTutoringPackageController extends AppBaseController
 
     public function tutorEmailAjax(Request $request)
     {
+
         $email = trim($request->email);
         $tutoring_package_id = trim($request->tutoring_package_id);
         $strict = (bool) $request->strict;

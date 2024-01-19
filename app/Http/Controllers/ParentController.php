@@ -106,6 +106,9 @@ class ParentController extends AppBaseController
             } catch (\Exception $e) {
                 report($e);
             }
+            if ($request->ajax()) {
+                return response()->json(['success' => true, 'message' => 'Parent saved successfully.', 'redirectTo' => route('parent.index')]);
+            }
             Flash::success('Parent saved successfully.');
 
             return redirect(route('parents.index'));

@@ -106,11 +106,11 @@ class StudentController extends AppBaseController
             } catch (\Exception $exception) {
                 report($exception);
             }
+            Flash::success('Student saved successfully.');
+
             if ($request->ajax()) {
                 return response()->json(['success' => true, 'message' => 'Student saved successfully.', 'redirectTo' => route('students.index')]);
             }
-            Flash::success('Student saved successfully.');
-
             return redirect(route('students.index'));
         } catch (QueryException $queryException) {
             DB::rollBack();

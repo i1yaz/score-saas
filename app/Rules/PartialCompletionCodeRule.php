@@ -21,7 +21,6 @@ class PartialCompletionCodeRule implements ValidationRule
         $endTime = date('H:i', strtotime(request()->end_time));
         $startTime = Carbon::createFromFormat('m/d/Y H:i', "$scheduledDate $startTime");
         $endTime = Carbon::createFromFormat('m/d/Y H:i', "$scheduledDate $endTime");
-
         $attendedStartTime = date('H:i', strtotime(request()->attended_start_time));
         $attendedEndTime = date('H:i', strtotime(request()->attended_end_time));
         if ((int) $completionCode === 2) {
