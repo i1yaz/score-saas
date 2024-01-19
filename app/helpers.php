@@ -994,14 +994,17 @@ if (!function_exists('createUsageRecord')){
 if (!function_exists('getFutureDueDate')){
     function getFutureDueDate(Carbon $date): Carbon
     {
-        if ($date->isPast()){
-            $due_date = $date->addMonth();
-            if ($due_date->isPast()){
-                getFutureDueDate($due_date);
+        if ($date->isPast()) {
+            $due_date = $date->addHour();
+            if ($due_date->isNextDay()) {
+                $due_date = $due_date->endOfDay();
             }
-        }else{
-            $due_date = $date->unix();
+
+            return getFutureDueDate($due_date);
+        } else {
+            $due_date = $date;
         }
+
         return $due_date;
     }
 }

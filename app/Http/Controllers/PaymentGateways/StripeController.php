@@ -202,8 +202,11 @@ class StripeController extends AppBaseController
             $monthlyInvoiceSubscription->save();
             $invoiceType = 3;
             $start_date = $monthlyInvoicePackage->start_date;
-            if ($start_date->day==1){
-                $start_date = $start_date->clone()->midDay();
+
+            if ($monthlyInvoicePackage->start_date->startOfDay()->eq(Carbon::now()->startOfDay())){
+                if ($monthlyInvoicePackage->start_date->isPast()){
+                    $start_date = getFutureDueDate($monthlyInvoicePackage->start_date);
+                }
             }
             $session = StripeSession::create([
                 'customer_email' => \Auth::user()->email,
@@ -212,10 +215,10 @@ class StripeController extends AppBaseController
                 'mode' => 'subscription',
                 'line_items' => [
                     [
-                        'price' =>  $monthlyInvoicePackage->stripe_price_id,
+                        'price' => $stripePrice->id,
                     ],
                     [
-                        'price' =>  $monthlyInvoicePackage->stripe_minutes_price_id,
+                        'price' =>  $stripeMinutesPrice->id,
                     ]
                 ],
                 "subscription_data" => [
