@@ -133,6 +133,8 @@ class PaymentController extends AppBaseController
     public function failed(Request $request)
     {
         Log::channel('stripe_failure')->info('Something happened!');
-        dd($request->all());
+        Flash::error('Checkout sessions failed.Please try again');
+
+        return redirect(route('invoices.index'));
     }
 }
