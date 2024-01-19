@@ -160,12 +160,6 @@ class InvoiceDataTable implements IDataTables
                     ->orWhere('s2.parent_id', Auth::id());
             });
         }
-        if (Auth::user()->hasRole('client') && Auth::user() instanceof ParentUser) {
-            $records = $records->where(function ($q) {
-                $q->where('s1.parent_id', Auth::id())
-                    ->orWhere('s2.parent_id', Auth::id());
-            });
-        }
         if (Auth::user()->hasRole('student') && Auth::user() instanceof Student) {
             $records = $records->where(function ($q) {
                 $q->where('student_tutoring_packages.student_id', Auth::id())

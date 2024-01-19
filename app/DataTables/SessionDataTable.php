@@ -2,7 +2,9 @@
 
 namespace App\DataTables;
 
+use App\Models\ParentUser;
 use App\Models\Session;
+use App\Models\Student;
 use App\Models\Tutor;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -65,7 +67,17 @@ class SessionDataTable implements IDataTables
 
     public static function totalFilteredRecords(mixed $search): int
     {
-        $sessions = Session::query()->select(['id']);
+        $sessions = Session::query()->select(['id'])
+            ->leftJoin('student_tutoring_packages', 'student_tutoring_packages.id', '=', 'sessions.student_tutoring_package_id')
+            ->leftJoin('monthly_invoice_packages', 'monthly_invoice_packages.id', '=', 'sessions.monthly_invoice_package_id')
+            ->leftJoin('tutoring_locations', 'tutoring_locations.id', '=', 'sessions.tutoring_location_id')
+            ->leftJoin('list_data', function ($join) {
+                $join->on('list_data.id', '=', 'sessions.session_completion_code')
+                    ->where('list_data.list_id', '=', Session::LIST_DATA_LIST_ID);
+            })
+            ->leftJoin('tutors', 'tutors.id', '=', 'sessions.tutor_id')
+            ->leftJoin('students as s1', 's1.id', '=', 'student_tutoring_packages.student_id')
+            ->leftJoin('students as s2', 's2.id', '=', 'monthly_invoice_packages.student_id');
         $sessions = static::getModelQueryBySearch($search, $sessions, true);
 
         return $sessions->count();
@@ -105,6 +117,22 @@ class SessionDataTable implements IDataTables
                     ->orWhere('sessions.id', 'like', "%{$search}%")
                     ->orWhere('student_tutoring_package_id', 'like', "%{$search}%");
             });
+        }
+        if (Auth::user()->hasRole('student') && Auth::user() instanceof Student) {
+            $records = $records->where('s1.id', Auth::id())
+                ->orWhere('s2.id', Auth::id());
+
+        }
+        if (Auth::user()->hasRole('parent') && Auth::user() instanceof ParentUser) {
+            $children = Student::select(['id'])->where('parent_id', Auth::id())->get();
+            if ($children->isEmpty()){
+                $children = [];
+            }else{
+                $children = $children->pluck('id')->toArray();
+            }
+            $records = $records->whereIn('s1.id',$children)
+                ->orWhereIn('s2.id', $children);
+
         }
         if (Auth::user()->hasRole('tutor') && Auth::user() instanceof Tutor) {
             $records = $records->where('sessions.tutor_id', Auth::id());

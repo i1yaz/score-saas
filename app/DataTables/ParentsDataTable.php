@@ -30,7 +30,8 @@ class ParentsDataTable implements IDataTables
         $parents = static::getModelQueryBySearch($search, $parents);
         $parents = $parents->offset($start)
             ->limit($limit)
-            ->orderBy($order, $dir);
+            ->orderBy($order, $dir)
+            ->groupBy('parents.id');
         return $parents->get();
 
     }
@@ -103,7 +104,7 @@ class ParentsDataTable implements IDataTables
             ->leftJoin('student_tutoring_package_tutor', 'student_tutoring_package_tutor.student_tutoring_package_id', '=', 'student_tutoring_packages.id')
             ->leftJoin('monthly_invoice_package_tutor', 'monthly_invoice_package_tutor.monthly_invoice_package_id', '=', 'monthly_invoice_packages.id');
         if (Auth::user()->hasRole('parent') && Auth::user() instanceof ParentUser) {
-            $students = $students->where('id', Auth::id());
+            $students = $students->where('parents.id', Auth::id());
         }
         if (Auth::user()->hasRole('student') && Auth::user() instanceof Student) {
             $students = $students->where('parents.id', Auth::user()->parent_id);

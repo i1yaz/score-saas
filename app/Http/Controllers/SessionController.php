@@ -72,7 +72,6 @@ class SessionController extends Controller
 
     public function create()
     {
-        //        $this->authorize('create', Session::class);
         $listData = Cache::remember('list_data_session_completion_codes', 60 * 60 * 24, function () {
             return ListData::select(['id', 'name'])->where('list_id', Session::LIST_DATA_LIST_ID)->get();
         });

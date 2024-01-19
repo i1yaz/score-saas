@@ -85,6 +85,18 @@ class TutorDataTable implements IDataTables
         if (Auth::user()->hasRole('tutor') && Auth::user() instanceof Tutor) {
             $records = $records->where('tutors.id', Auth::id());
         }
+        if (Auth::user()->hasRole('parent') && Auth::user() instanceof ParentUser) {
+            $records = $records->where(function ($q) {
+                $students = Student::select(['id'])->where('parent_id', Auth::id())->get();
+                if ($students->isEmpty()){
+                    $students = [];
+                }else{
+                    $students = $students->pluck('id')->toArray();
+                }
+                $q->whereIn('student_tutoring_packages.student_id', $students)
+                    ->orWhereIn('monthly_invoice_packages.student_id', $students);
+            });
+        }
         if (Auth::user()->hasRole('student') && Auth::user() instanceof Student) {
             $records = $records->where(function ($q) {
                 $q->where('student_tutoring_packages.student_id', Auth::id())

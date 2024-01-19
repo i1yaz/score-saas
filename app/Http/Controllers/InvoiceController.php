@@ -29,6 +29,7 @@ class InvoiceController extends AppBaseController
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', \Auth::user());
         if ($request->ajax()) {
             $columns = [
                 'invoice_id',
@@ -85,7 +86,6 @@ class InvoiceController extends AppBaseController
     public function store(CreateInvoiceRequest $request)
     {
         $input = $request->all();
-
         $this->invoiceRepository->create($input);
         if ($request->ajax()) {
             return response()->json(['success' => true, 'message' => 'Invoice created successfully', 'redirectTo' => route('invoices.index')]);
@@ -100,7 +100,7 @@ class InvoiceController extends AppBaseController
     public function show($id)
     {
         $invoice = $this->invoiceRepository->show($id);
-
+        $this->authorize('view', $invoice);
         if (empty($invoice)) {
             Flash::error('Invoice not found');
 
