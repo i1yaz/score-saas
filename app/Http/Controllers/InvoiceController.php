@@ -205,7 +205,7 @@ class InvoiceController extends AppBaseController
                 Flash::info("This Package is completed. Please contact to the admin!");
                 return redirect(route('invoices.index'));
             }
-            if ($monthlyInvoicePackage->start_date->isPast()){
+            if ($monthlyInvoicePackage->start_date->endOfDay()->isPast()){
                 Flash::error("This Package is expired. Please contact to the admin!");
                 return redirect(route('invoices.index'));
             }

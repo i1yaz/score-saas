@@ -397,7 +397,7 @@ if (! function_exists('getInvoiceStatusFromId')) {
             if (!empty($subscriptionId) && !$isActive){
                 return '<span class="badge badge-info">Unsubscribed/Completed</span>';
             }
-            $startDate = Carbon::createFromFormat('Y-m-d',$startDate);
+            $startDate = Carbon::createFromFormat('Y-m-d',$startDate)->endOfDay();
             if (empty($subscriptionId) && $startDate->isPast()){
                 return '<span class="badge badge-danger">Expired</span>';
             }
