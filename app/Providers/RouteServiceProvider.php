@@ -41,7 +41,10 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/acl.php'));
             Route::middleware('web')
                 ->group(base_path('routes/dashboards/tutor.php'));
-
+            Route::middleware('web')
+                ->group(base_path('routes/dashboards/student.php'));
+            Route::middleware('web')
+                ->group(base_path('routes/dashboards/parent.php'));
             if (App::environment(['local'])) {
                 Route::middleware('web')
                     ->group(base_path('routes/infyome.php'));

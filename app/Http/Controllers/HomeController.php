@@ -30,6 +30,12 @@ class HomeController extends Controller
         if (Auth::user()->hasRole('tutor')) {
             return redirect()->route('tutor-dashboard.index');
         }
+        if (Auth::user()->hasRole('student')) {
+            return redirect()->route('student-dashboard.index');
+        }
+        if (Auth::user()->hasRole('parent')) {
+            return redirect()->route('parent-dashboard.index');
+        }
         $students = Student::query()->selectRaw(
             'SUM(CASE WHEN `status` = 1 THEN 1 ELSE 0 END) AS active_students,
                        SUM(CASE WHEN `status` = 0 THEN 1 ELSE 0 END) AS inactive_students'
