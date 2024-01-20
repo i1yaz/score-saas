@@ -61,8 +61,8 @@
                                     <tr>
                                         <td>{!! $route['name'] !!}</td>
                                         <td>{!! $route['url'] !!}</td>
-                                        <td>{!! $route['controller'] !!}</td>
-                                        <td>{!! $route['middleware'] !!}</td>
+                                        <td>{!! $route['controller']??'' !!}</td>
+                                        <td>{!! $route['middleware']??'' !!}</td>
                                         <td>{!! $route['methods'] !!}</td>
                                         @if (config('infyom.routes_explorer.collections.api_calls_count'))
                                             <td>{!! $route['count'] !!}</td>

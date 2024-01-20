@@ -35,11 +35,13 @@
     {!! Form::text('secondary_phone', null, ['class' => 'form-control']) !!}
 </div>
 
-<!-- Secondary Phone Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('hourly_rate', 'Hourly Rate:', ['class' => 'required']) !!}
-    {!! Form::number('hourly_rate', null, ['class' => 'form-control','min'=>0]) !!}
-</div>
+@if(Auth::user()->hasRole(['admin','super-admin']))
+    <!-- Secondary Hourly Rate Field -->
+    <div class="form-group col-sm-6">
+        {!! Form::label('hourly_rate', 'Hourly Rate:', ['class' => 'required']) !!}
+        {!! Form::number('hourly_rate', null, ['class' => 'form-control','min'=>0]) !!}
+    </div>
+@endif
 
 <!-- Picture Field -->
 <div class="form-group col-sm-6">

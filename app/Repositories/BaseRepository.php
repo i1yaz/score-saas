@@ -136,7 +136,10 @@ abstract class BaseRepository
         $query = $this->model->newQuery();
 
         $model = $query->findOrFail($id);
-
+        if (!Auth::user()->hasRole(['super-admin', 'admin'])) {
+            unset($input['status']);
+            unset($input['hourly_rate']);
+        }
         $model->fill($input);
         $model->save();
 

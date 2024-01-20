@@ -81,6 +81,7 @@ class TutorController extends AppBaseController
      */
     public function store(CreateTutorRequest $request)
     {
+
         DB::beginTransaction();
         try {
             $input = $request->all();

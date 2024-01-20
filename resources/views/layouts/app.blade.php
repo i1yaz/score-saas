@@ -110,7 +110,12 @@
                             data: formData,
                             success: function(response) {
                                 toastr.success(response.message);
-                                window.location = response.redirectTo
+                                if (typeof response.redirectTo !== 'undefined') {
+                                    window.location = response.redirectTo
+
+                                } else {
+                                    $("input[type='submit']").attr("disabled", false);
+                                }
                             },
                             error: function(xhr, status, error) {
 
@@ -131,16 +136,13 @@
                     function ToggleBtnLoader(btnLoader) {
 
                         let spinner = "<span class='spinner-border spinner-border-sm'></span> Processing...";
-                        console.log(!btnLoader.is(":disabled"))
                         if (!btnLoader.is(":disabled")) {
-                            console.log("btnLoader.text", btnLoader.text());
                             btnLoader.attr("data-old-text", btnLoader.text());
                             btnLoader
                                 .html(spinner)
                                 .prop("disabled", true);
                         }else{
                             let oldText = btnLoader.attr("data-old-text")
-                            console.log("old.text", oldText);
                             btnLoader.html(oldText).prop("disabled", false);
                         }
 

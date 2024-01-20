@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
+use Laracasts\Flash\Flash;
 use Laratrust\Helper;
 
 class RolesController
@@ -112,7 +113,14 @@ class RolesController
         $role->syncPermissions($request->get('permissions') ?? []);
 
         Session::flash('laratrust-success', 'Role updated successfully');
-
+        Flash::success('Role updated successfully');
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Role updated successfully',
+                'redirectTo' => route('acl.roles.index'),
+            ]);
+        }
         return redirect(route('acl.roles.index'));
     }
 

@@ -36,6 +36,7 @@ class TutorPolicy
 
     public function create(Authenticatable $user): bool
     {
+        abort(403, getRoleOfLoggedInUser() . 's do not have access to create tutor');
     }
 
     public function update(Authenticatable $user, Tutor $tutor): bool
