@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Cache;
 use Laratrust\Contracts\LaratrustUser;
 use Laratrust\Traits\HasRolesAndPermissions;
 use Laravel\Sanctum\HasApiTokens;
@@ -20,6 +21,13 @@ class Student extends Authenticatable implements LaratrustUser
 
     protected string $guard = 'student';
 
+    protected static function boot(): void
+    {
+        parent::boot();
+        static::saved(function ($model) {
+            Cache::forget('students_count');
+        });
+    }
     /**
      * The attributes that should be hidden for serialization.
      *

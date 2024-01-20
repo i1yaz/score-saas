@@ -1015,3 +1015,85 @@ if (!function_exists('getCurrentTenant')){
         return 1;
     }
 }
+if (!function_exists('getLastThirtyDays')){
+    function getLastThirtyDays(): array
+    {
+        $today = Carbon::now();
+        $lastThirtyDays = [];
+        for ($i = 0; $i < 30; $i++) {
+            $lastThirtyDays[] = $today->copy()->subDays($i)->format('d M');
+        }
+        return array_reverse($lastThirtyDays);
+    }
+}
+if (!function_exists('getLastThirtyDaySessionCountDateWise')){
+    function getLastThirtyDaySessionCountDateWise(): array
+    {
+        $today = Carbon::now()->toDateString();
+        $thirtyDaysAgo = Carbon::now()->subDays(29)->toDateString();
+        $sessionCounts = DB::table('sessions')
+            ->leftJoin(
+                DB::raw("(SELECT DISTINCT scheduled_date FROM sessions WHERE scheduled_date BETWEEN '{$thirtyDaysAgo}' AND '{$today}') AS dates"),
+                'sessions.scheduled_date',
+                '=',
+                'dates.scheduled_date'
+            )
+            ->selectRaw('Date(dates.scheduled_date) as session_date, COALESCE(COUNT(sessions.id), 0) as count')
+            ->groupBy('session_date')
+            ->orderBy('session_date', 'desc')
+            ->get();
+        $sessionCounts = $sessionCounts->pluck('count', 'session_date')->toArray();
+        $lastThirtyDays = [];
+        $today = Carbon::now();
+        for ($i = 0; $i < 30; $i++) {
+            $lastThirtyDays[] = $today->copy()->subDays($i)->toDateString();
+        }
+        $result = [];
+        foreach (array_reverse($lastThirtyDays) as $date){
+            $result[] = $sessionCounts[$date] ?? 0;
+        }
+        return $result;
+    }
+}
+if (!function_exists('getWeeklySessionCount')){
+    function getWeeklySessionCount(array $allSessions)
+    {
+        $allSessions = array_reverse($allSessions);
+        $count=0;
+        for ($i=0;$i<7;$i++){
+            $count+=$allSessions[$i];
+        }
+
+        return $count;
+    }
+}
+if (!function_exists('getTwelveMonthsName')){
+    function getTwelveMonthsName(): array
+    {
+        $months = [];
+        $today = Carbon::now();
+        for ($i = 0; $i < 12; $i++) {
+            $months[] = $today->copy()->subMonths($i)->format('M');
+        }
+        return array_reverse($months);
+    }
+}
+if (!function_exists('getOneYearEarning')){
+    function getOneYearEarning(): array
+    {
+        $earnings = DB::table('payments')
+            ->selectRaw("SUBSTRING(UPPER(MONTHNAME(created_at)), 1, 3) as month, SUM(amount - amount_refunded) as earned_amount")
+            ->whereBetween('created_at', [Carbon::now()->subMonths(11)->startOfMonth(), Carbon::now()->endOfMonth()])
+            ->groupBy(DB::raw('YEAR(created_at)'), DB::raw('MONTH(created_at)'))
+            ->orderBy(DB::raw('YEAR(created_at)'), 'asc')
+            ->orderBy(DB::raw('MONTH(created_at)'), 'asc')
+            ->get();
+        $earnings = $earnings->pluck('earned_amount','month')->toArray();
+        $lastTwelveMonths = getTwelveMonthsName();
+        $result = [];
+        foreach ($lastTwelveMonths as $month){
+            $result[] = $earnings[strtoupper($month)] ?? 0;
+        }
+        return $result; //do not reverse because the months area already revered
+    }
+}

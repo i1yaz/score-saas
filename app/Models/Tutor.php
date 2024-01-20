@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Cache;
 use Laratrust\Contracts\LaratrustUser;
 use Laratrust\Traits\HasRolesAndPermissions;
 use Laravel\Sanctum\HasApiTokens;
@@ -16,7 +17,13 @@ class Tutor extends Authenticatable implements LaratrustUser
     use HasApiTokens, HasFactory, HasRolesAndPermissions,Notifiable;
 
     protected string $guard = 'tutors';
-
+    protected static function boot(): void
+    {
+        parent::boot();
+        static::saved(function ($model) {
+            Cache::forget('tutor_count');
+        });
+    }
     public $table = 'tutors';
 
     /**
