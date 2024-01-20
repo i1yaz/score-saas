@@ -1029,19 +1029,22 @@ if (!function_exists('getLastThirtyDays')){
 if (!function_exists('getLastThirtyDaySessionCountDateWise')){
     function getLastThirtyDaySessionCountDateWise(): array
     {
-        $today = Carbon::now()->toDateString();
-        $thirtyDaysAgo = Carbon::now()->subDays(29)->toDateString();
-        $sessionCounts = DB::table('sessions')
-            ->leftJoin(
-                DB::raw("(SELECT DISTINCT scheduled_date FROM sessions WHERE scheduled_date BETWEEN '{$thirtyDaysAgo}' AND '{$today}') AS dates"),
-                'sessions.scheduled_date',
-                '=',
-                'dates.scheduled_date'
-            )
-            ->selectRaw('Date(dates.scheduled_date) as session_date, COALESCE(COUNT(sessions.id), 0) as count')
-            ->groupBy('session_date')
-            ->orderBy('session_date', 'desc')
-            ->get();
+
+        $sessionCounts = Cache::rememberForever('session_count',function (){
+            $today = Carbon::now()->toDateString();
+            $thirtyDaysAgo = Carbon::now()->subDays(29)->toDateString();
+            return \App\Models\Session::query()
+                ->leftJoin(
+                    DB::raw("(SELECT DISTINCT scheduled_date FROM sessions WHERE scheduled_date BETWEEN '{$thirtyDaysAgo}' AND '{$today}') AS dates"),
+                    'sessions.scheduled_date',
+                    '=',
+                    'dates.scheduled_date'
+                )
+                ->selectRaw('Date(dates.scheduled_date) as session_date, COALESCE(COUNT(sessions.id), 0) as count')
+                ->groupBy('session_date')
+                ->orderBy('session_date', 'desc')
+                ->get();
+        });
         $sessionCounts = $sessionCounts->pluck('count', 'session_date')->toArray();
         $lastThirtyDays = [];
         $today = Carbon::now();
@@ -1081,13 +1084,15 @@ if (!function_exists('getTwelveMonthsName')){
 if (!function_exists('getOneYearEarning')){
     function getOneYearEarning(): array
     {
-        $earnings = DB::table('payments')
-            ->selectRaw("SUBSTRING(UPPER(MONTHNAME(created_at)), 1, 3) as month, SUM(amount - amount_refunded) as earned_amount")
-            ->whereBetween('created_at', [Carbon::now()->subMonths(11)->startOfMonth(), Carbon::now()->endOfMonth()])
-            ->groupBy(DB::raw('YEAR(created_at)'), DB::raw('MONTH(created_at)'))
-            ->orderBy(DB::raw('YEAR(created_at)'), 'asc')
-            ->orderBy(DB::raw('MONTH(created_at)'), 'asc')
-            ->get();
+        $earnings = Cache::rememberForever('earning_sum',function (){
+            return Payment::query()
+                ->selectRaw("SUBSTRING(UPPER(MONTHNAME(created_at)), 1, 3) as month, SUM(amount - amount_refunded) as earned_amount")
+                ->whereBetween('created_at', [Carbon::now()->subMonths(11)->startOfMonth(), Carbon::now()->endOfMonth()])
+                ->groupBy(DB::raw('YEAR(created_at)'), DB::raw('MONTH(created_at)'))
+                ->orderBy(DB::raw('YEAR(created_at)'), 'asc')
+                ->orderBy(DB::raw('MONTH(created_at)'), 'asc')
+                ->get();
+        });
         $earnings = $earnings->pluck('earned_amount','month')->toArray();
         $lastTwelveMonths = getTwelveMonthsName();
         $result = [];

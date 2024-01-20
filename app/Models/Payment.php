@@ -3,9 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class Payment extends Model
 {
+    protected static function boot(): void
+    {
+        parent::boot();
+        static::saved(function ($model) {
+            Cache::forget('earning_sum');
+        });
+    }
     const STRIPE = '1';
 
     const PAYPAL = '2';

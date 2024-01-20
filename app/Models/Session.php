@@ -4,11 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class Session extends Model
 {
     use HasFactory;
-
+    protected static function boot(): void
+    {
+        parent::boot();
+        static::saved(function ($model) {
+            Cache::forget('session_count');
+        });
+    }
     const VOID_COMPLETION_CODE = 5;
 
     const CANCELED_COMPLETION_CODE = 4;
