@@ -19,6 +19,6 @@ class TutorDashboardController extends AppBaseController
             $completionCodes[$data->id] = $data->name;
         }
 
-        return view('dashboards.tutors.index', compact('completionCodes'));
+        return view('dashboards.tutor.index', compact('completionCodes'));
     }
 }

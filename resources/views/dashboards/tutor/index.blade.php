@@ -1,46 +1,46 @@
 @extends('layouts.app')
 @push('page_css')
     <style>
-        .feedback-emojis{
+        .feedback-emojis {
             width: 30px;
             height: 30px;
         }
     </style>
 @endpush
 @section('content')
-<section class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1></h1>
-            </div>
-            <div class="col-sm-6">
-
-            </div>
-        </div>
-    </div>
-</section>
-
-<div class="content px-3">
-
-    @include('flash::message')
-
-    <div class="clearfix"></div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card card-primary">
-                <div class="card-header">
-                    <h3 class="card-title">Dashboard</h3>
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1></h1>
                 </div>
-                <div id="session-calendar">
+                <div class="col-sm-6">
+
                 </div>
             </div>
         </div>
+    </section>
+
+    <div class="content px-3">
+
+        @include('flash::message')
+
+        <div class="clearfix"></div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Dashboard</h3>
+                    </div>
+                    <div id="session-calendar">
+                    </div>
+                </div>
+            </div>
+        </div>
+        @include('dashboards.tutor.store')
+        @include('dashboards.tutor.show')
     </div>
-    @include('dashboards.tutors.store')
-    @include('dashboards.tutors.show')
-</div>
 @endsection
 @push('page_scripts')
 
@@ -48,15 +48,15 @@
         const calendarEl = document.getElementById('session-calendar');
         let calendar;
         $(document).ready(function () {
-             calendar = new FullCalendar.Calendar(calendarEl, {
+            calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
                     right: 'dayGridMonth'
                 },
-                selectable:true,
-                lazyFetching:true,
+                selectable: true,
+                lazyFetching: true,
                 events: "{{route('sessions.index')}}",
                 eventClick: function (calEvent) {
                     var sessionId = calEvent.event.id;
@@ -94,7 +94,7 @@
                     });
 
                 },
-                dateClick: function (start,end,allDays) {
+                dateClick: function (start, end, allDays) {
                     $('#session-store').modal('show');
                     $('#scheduled_date').datepicker('setDate', new Date(start.dateStr));
 
@@ -118,7 +118,7 @@
                         $.each(xhr.responseJSON.errors, function (key, item) {
                             toastr.error(item[0]);
                         });
-                    } else if(xhr.status === 404){
+                    } else if (xhr.status === 404) {
                         let response = xhr.responseJSON
                         toastr.error(response.message);
                     } else {
@@ -190,7 +190,7 @@
                 }
             });
         });
-        $('#session-completion-code').on('change',function (e){
+        $('#session-completion-code').on('change', function (e) {
             console.log()
         })
 
