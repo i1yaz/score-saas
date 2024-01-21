@@ -26,7 +26,7 @@ class ParentPermissionsSeeder extends Seeder
             'session-show',
             'payment-index',
             'payment-show',
-            'parent-dashboard'
+            'parent-dashboard',
         ])->get();
 
         $parent = Role::where('name', 'parent')->first();

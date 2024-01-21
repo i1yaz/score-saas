@@ -14,6 +14,7 @@ class Payment extends Model
             Cache::forget('earning_sum');
         });
     }
+
     const STRIPE = '1';
 
     const PAYPAL = '2';
@@ -46,7 +47,7 @@ class Payment extends Model
         'meta',
         'paid_by_id',
         'paid_by_modal',
-        'is_subscription_payment'
+        'is_subscription_payment',
     ];
 
     protected $casts = [
@@ -55,7 +56,7 @@ class Payment extends Model
         'amount' => 'float',
         'payment_gateway' => 'integer',
         'transaction_id' => 'integer',
-        'is_subscription_payment' => 'boolean'
+        'is_subscription_payment' => 'boolean',
     ];
 
     public static array $rules = [

@@ -33,7 +33,7 @@ class CreateFailedSubscriptions extends Command
             ->select(['monthly_invoice_packages.*'])
             ->leftJoin('monthly_invoice_subscriptions', 'monthly_invoice_subscriptions.monthly_invoice_package_id', '=', 'monthly_invoice_packages.id')
             ->whereNull('monthly_invoice_subscriptions.monthly_invoice_package_id')
-            ->whereDate('monthly_invoice_packages.created_at',  Carbon::today())
+            ->whereDate('monthly_invoice_packages.created_at', Carbon::today())
             ->get();
         if ($monthlyInvoiceSubscriptions->isEmpty()) {
             $this->info('No failed subscriptions found');
@@ -43,12 +43,12 @@ class CreateFailedSubscriptions extends Command
             try {
                 $monthlyInvoiceSubscriptionResponse = $monthlyInvoiceRepo->createStripeSubscription($monthlyInvoiceSubscription);
                 if ($monthlyInvoiceSubscriptionResponse instanceof MonthlyInvoiceSubscription) {
-                    $this->info('Subscription for invoice package id ' . $monthlyInvoiceSubscription->id . ' created successfully');
+                    $this->info('Subscription for invoice package id '.$monthlyInvoiceSubscription->id.' created successfully');
                 } else {
-                    $this->error('Subscription for invoice package id ' . $monthlyInvoiceSubscription->id . ' failed');
+                    $this->error('Subscription for invoice package id '.$monthlyInvoiceSubscription->id.' failed');
                 }
-            }catch (\Exception $exception) {
-                $this->error('Subscription for invoice package id ' . $monthlyInvoiceSubscription->id . ' failed');
+            } catch (\Exception $exception) {
+                $this->error('Subscription for invoice package id '.$monthlyInvoiceSubscription->id.' failed');
                 $this->error($exception->getMessage());
             }
 

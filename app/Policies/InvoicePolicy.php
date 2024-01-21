@@ -7,7 +7,6 @@ use App\Models\ParentUser;
 use App\Models\Student;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Support\Facades\Auth;
 
 class InvoicePolicy
 {
@@ -29,6 +28,7 @@ class InvoicePolicy
         if ($user->hasRole(['student']) && $user instanceof Student) {
             return $invoice->student_id == $user->id;
         }
+
         return false;
     }
 

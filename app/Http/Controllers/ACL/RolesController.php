@@ -121,6 +121,7 @@ class RolesController
                 'redirectTo' => route('acl.roles.index'),
             ]);
         }
+
         return redirect(route('acl.roles.index'));
     }
 

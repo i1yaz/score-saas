@@ -2,7 +2,6 @@
 
 namespace App\Mail;
 
-use App\Models\StudentTutoringPackage;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\SerializesModels;
@@ -12,7 +11,7 @@ class ParentInvoiceMailAfterStudentTutoringPackageCreation extends TemplateMaila
 {
     use Queueable, SerializesModels;
 
-    public function __construct(array  $studentTutoringPackage)
+    public function __construct(array $studentTutoringPackage)
     {
     }
 }

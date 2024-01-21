@@ -11,7 +11,7 @@ class TutorRegistrationMail extends TemplateMailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public function __construct( array $data)
+    public function __construct(array $data)
     {
     }
 }

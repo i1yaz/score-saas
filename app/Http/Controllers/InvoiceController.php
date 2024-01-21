@@ -42,7 +42,7 @@ class InvoiceController extends AppBaseController
                 'due_date',
                 'amount_paid',
                 'amount_remaining',
-//                'fully_paid_at',
+                //                'fully_paid_at',
                 'action',
             ];
             $limit = $request->input('length');
@@ -189,6 +189,7 @@ class InvoiceController extends AppBaseController
             $totalAmount = cleanAmountWithCurrencyFormat(getPriceFromHoursAndHourlyWithDiscount($invoice->hourly_rate, $invoice->hours, $invoice->discount, $invoice->discount_type));
             $remainingAmount = $totalAmount - $invoice->amount_paid ?? 0;
             $remainingAmount = $remainingAmount + $invoice->amount_refunded;
+
             return view('invoices.tutoring-package-payment-create', [
                 'invoice' => $invoice,
                 'stripeKey' => $stripeKey,
@@ -196,20 +197,23 @@ class InvoiceController extends AppBaseController
                 'totalAmount' => $totalAmount,
                 'remainingAmount' => $remainingAmount]);
         }
-        if ($request->type === 'monthly-invoice-package'){
+        if ($request->type === 'monthly-invoice-package') {
             $invoice = $this->invoiceRepository->showMonthlyInvoicePackage($invoice);
-            $monthlyInvoicePackage = MonthlyInvoicePackage::select(['id','hourly_rate','start_date'])->findOrFail($invoice->monthly_invoice_package_id);
-            $subscription = MonthlyInvoiceSubscription::select(['subscription_id','is_active'])->where('monthly_invoice_package_id', $invoice->monthly_invoice_package_id)->firstOrFail();
+            $monthlyInvoicePackage = MonthlyInvoicePackage::select(['id', 'hourly_rate', 'start_date'])->findOrFail($invoice->monthly_invoice_package_id);
+            $subscription = MonthlyInvoiceSubscription::select(['subscription_id', 'is_active'])->where('monthly_invoice_package_id', $invoice->monthly_invoice_package_id)->firstOrFail();
 
-            if (!empty($subscription->subscription_id) && $subscription->is_active===false){
-                Flash::info("This Package is completed. Please contact to the admin!");
+            if (! empty($subscription->subscription_id) && $subscription->is_active === false) {
+                Flash::info('This Package is completed. Please contact to the admin!');
+
                 return redirect(route('invoices.index'));
             }
-            if ($monthlyInvoicePackage->start_date->endOfDay()->isPast()){
-                Flash::error("This Package is expired. Please contact to the admin!");
+            if ($monthlyInvoicePackage->start_date->endOfDay()->isPast()) {
+                Flash::error('This Package is expired. Please contact to the admin!');
+
                 return redirect(route('invoices.index'));
             }
             $price = (getTotalInvoicePriceFromMonthlyInvoicePackage($monthlyInvoicePackage));
+
             return view('invoices.monthly-invoice-package-payment-create', [
                 'monthlyInvoicePackageId' => $invoice->monthly_invoice_package_id,
                 'stripeKey' => $stripeKey,
@@ -217,7 +221,7 @@ class InvoiceController extends AppBaseController
                 'subscriptionAmount' => $price,
                 'subscriptionId' => $subscription->subscription_id,
                 'isActive' => $subscription->is_active,
-                ]);
+            ]);
         }
     }
 

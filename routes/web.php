@@ -49,7 +49,7 @@ Auth::routes(['register' => false]);
 Route::get('admin/login', [LoginController::class, 'showAdminLoginForm'])->name('admin.login');
 Route::get('payment/success', [PaymentController::class, 'success'])->name('payment-success');
 Route::get('payment/failed', [PaymentController::class, 'failed'])->name('payment-failed');
-Route::post('stripe-webhooks',[StripeController::class,'webhooks'])->name('stripe-webhooks');
+Route::post('stripe-webhooks', [StripeController::class, 'webhooks'])->name('stripe-webhooks');
 
 Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -202,11 +202,11 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], functio
     //    Route::delete('payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy')->middleware(['permission:payment-destroy']);
 
     //Email Templates
-    Route::get('email-templates',[App\Http\Controllers\EmailTemplateController::class,'index'])->name('email-templates.index')->middleware(['permission:email_templates-index']);
-    Route::get('email-templates/{email_templates}',[App\Http\Controllers\EmailTemplateController::class,'show'])->name('email-templates.show')->middleware(['permission:email_templates-show']);
-    Route::get('email-templates/{email_templates}/edit',[App\Http\Controllers\EmailTemplateController::class,'edit'])->name('email-templates.edit')->middleware(['permission:email_templates-edit']);
-    Route::patch('email-templates/{email_templates}',[App\Http\Controllers\EmailTemplateController::class,'update'])->name('email-templates.update')->middleware(['permission:email_templates-edit']);
-    Route::post('email-templates/upload-image',[App\Http\Controllers\EmailTemplateController::class,'uploadImage'])->name('email-templates.upload-image')->middleware(['permission:email_templates-edit']);
-    Route::post('email-templates/{email_templates}/send',[App\Http\Controllers\EmailTemplateController::class,'send'])->name('email-templates.send')->middleware(['permission:email_templates-send']);
+    Route::get('email-templates', [App\Http\Controllers\EmailTemplateController::class, 'index'])->name('email-templates.index')->middleware(['permission:email_templates-index']);
+    Route::get('email-templates/{email_templates}', [App\Http\Controllers\EmailTemplateController::class, 'show'])->name('email-templates.show')->middleware(['permission:email_templates-show']);
+    Route::get('email-templates/{email_templates}/edit', [App\Http\Controllers\EmailTemplateController::class, 'edit'])->name('email-templates.edit')->middleware(['permission:email_templates-edit']);
+    Route::patch('email-templates/{email_templates}', [App\Http\Controllers\EmailTemplateController::class, 'update'])->name('email-templates.update')->middleware(['permission:email_templates-edit']);
+    Route::post('email-templates/upload-image', [App\Http\Controllers\EmailTemplateController::class, 'uploadImage'])->name('email-templates.upload-image')->middleware(['permission:email_templates-edit']);
+    Route::post('email-templates/{email_templates}/send', [App\Http\Controllers\EmailTemplateController::class, 'send'])->name('email-templates.send')->middleware(['permission:email_templates-send']);
 
 });

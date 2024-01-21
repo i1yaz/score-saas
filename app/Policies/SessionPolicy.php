@@ -6,7 +6,6 @@ use App\Models\Session;
 use App\Models\Tutor;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User;
-use Illuminate\Support\Facades\Auth;
 
 class SessionPolicy
 {

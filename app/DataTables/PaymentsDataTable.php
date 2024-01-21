@@ -2,7 +2,6 @@
 
 namespace App\DataTables;
 
-use App\DataTables\IDataTables;
 use App\Models\Client;
 use App\Models\MonthlyInvoicePackage;
 use App\Models\NonInvoicePackage;
@@ -16,11 +15,10 @@ use Illuminate\Support\Facades\Auth;
 
 class PaymentsDataTable implements IDataTables
 {
-
     public static function sortAndFilterRecords(mixed $search, mixed $start, mixed $limit, string $order, mixed $dir): Collection|array
     {
         $columns = [
-            'invoice_code' => 'invoices.id' ,
+            'invoice_code' => 'invoices.id',
         ];
         $order = $columns[$order] ?? $order;
         $payments = Payment::query()
@@ -30,7 +28,7 @@ class PaymentsDataTable implements IDataTables
                     'invoices.invoiceable_id',
                     'invoices.invoiceable_type',
                     'payments.amount',
-                    'payments.created_at'
+                    'payments.created_at',
                 ])
             ->join('invoices', 'invoices.id', 'payments.invoice_id')
             ->leftJoin('student_tutoring_packages', function ($q) {
@@ -55,6 +53,7 @@ class PaymentsDataTable implements IDataTables
         $payments = $payments->offset($start)
             ->limit($limit)
             ->orderBy($order, $dir);
+
         return $payments->get();
     }
 
@@ -85,13 +84,14 @@ class PaymentsDataTable implements IDataTables
             ->leftJoin('parents as p2', 's2.parent_id', '=', 'p2.id');
 
         $payments = static::getModelQueryBySearch($search, $payments);
+
         return $payments->count();
     }
 
     public static function populateRecords($records): array
     {
         $data = [];
-        foreach ($records as $payment){
+        foreach ($records as $payment) {
             $nestedData['invoice_code'] = getInvoiceCodeFromId($payment->invoice_id);
             $nestedData['invoice_type'] = getInvoiceTypeFromClass($payment->invoiceable_type);
             $nestedData['package_code'] = getPackageCodeFromModelAndId($payment->invoiceable_type, $payment->invoiceable_id);
@@ -100,6 +100,7 @@ class PaymentsDataTable implements IDataTables
             $nestedData['payment_gateway'] = 'Stripe';
             $data[] = $nestedData;
         }
+
         return $data;
     }
 
@@ -133,6 +134,7 @@ class PaymentsDataTable implements IDataTables
             });
 
         }
+
         return $records;
     }
 
@@ -189,6 +191,7 @@ class PaymentsDataTable implements IDataTables
             });
 
         }
+
         return $records->count();
     }
 }

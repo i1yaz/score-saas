@@ -30,7 +30,7 @@ class TutorRepository extends BaseRepository
 
     public function find(int $id, array $columns = ['*'])
     {
-          $tutor = Tutor::query()
+        $tutor = Tutor::query()
             ->select(
                 [
                     'tutors.id',
@@ -55,6 +55,6 @@ class TutorRepository extends BaseRepository
             ->groupBy('tutors.id')
             ->first();
 
-          return $tutor;
+        return $tutor;
     }
 }

@@ -98,6 +98,7 @@ class Invoice extends BaseModel
     {
         return $this->hasMany(Payment::class);
     }
+
     public function invoiceable(): MorphTo
     {
         return $this->morphTo();

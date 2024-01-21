@@ -131,7 +131,7 @@ class ParentController extends AppBaseController
         $parent = ParentUser::query()
             ->select(
                 [
-                    'parents.*'
+                    'parents.*',
                 ])
             ->selectRaw(
                 'CASE WHEN student_tutoring_package_tutor.tutor_id IS NOT NULL THEN student_tutoring_package_tutor.tutor_id
@@ -149,8 +149,8 @@ class ParentController extends AppBaseController
         if (Auth::user()->hasRole('student') && Auth::user() instanceof Student) {
             $parent = $parent->where('id', Auth::user()->parent_id);
         }
-        if (Auth::user()->hasRole('tutor')){
-            $parent = $parent->where(function ($q){
+        if (Auth::user()->hasRole('tutor')) {
+            $parent = $parent->where(function ($q) {
                 $q->where('student_tutoring_package_tutor.tutor_id', Auth::id())
                     ->orWhere('monthly_invoice_package_tutor.tutor_id', Auth::id());
             });
@@ -158,6 +158,7 @@ class ParentController extends AppBaseController
         $parent = $parent->findOrFail($id);
 
         $this->authorize('view', $parent);
+
         return view('parents.show')->with('parent', $parent);
     }
 
@@ -166,7 +167,7 @@ class ParentController extends AppBaseController
      */
     public function edit($id)
     {
-        $parent = ParentUser::select(['parents.*','students.parent_id as parent_id'])
+        $parent = ParentUser::select(['parents.*', 'students.parent_id as parent_id'])
             ->leftJoin('students', 'students.parent_id', 'parents.id');
         if (Auth::user()->hasRole('student')) {
             $parent = $parent->where('students.id', Auth::id());

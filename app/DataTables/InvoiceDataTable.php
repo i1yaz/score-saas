@@ -110,32 +110,32 @@ class InvoiceDataTable implements IDataTables
     public static function populateRecords($records): array
     {
         $data = [];
-        $monthlyInvoicePackageIds = $records->where('invoiceable_type', MonthlyInvoicePackage::class)->pluck('invoiceable_id')??null;
+        $monthlyInvoicePackageIds = $records->where('invoiceable_type', MonthlyInvoicePackage::class)->pluck('invoiceable_id') ?? null;
         $allSessions = Session::whereIn('monthly_invoice_package_id', $monthlyInvoicePackageIds)
-            ->whereMonth('scheduled_date',Carbon::now()->month)
+            ->whereMonth('scheduled_date', Carbon::now()->month)
             ->get();
         if (! empty($records)) {
             foreach ($records as $invoice) {
                 $nestedData['invoice_id'] = getInvoiceCodeFromId($invoice->invoice_id);
                 $nestedData['package'] = getPackageCodeFromModelAndId($invoice->invoiceable_type, $invoice->invoiceable_id);
-                $nestedData['invoice_status'] = getInvoiceStatusFromId($invoice->invoice_status,$invoice->invoiceable_type,$invoice->is_active,$invoice->subscription_id,$invoice->start_date);
+                $nestedData['invoice_status'] = getInvoiceStatusFromId($invoice->invoice_status, $invoice->invoiceable_type, $invoice->is_active, $invoice->subscription_id, $invoice->start_date);
                 $nestedData['invoice_type'] = getInvoiceTypeFromClass($invoice->invoiceable_type);
                 //                $nestedData['student'] = $invoice->student_email??$invoice->student_email_s2;
                 //                $nestedData['parent'] = $invoice->parent_email??$invoice->parent_email_p2;
                 $nestedData['start_date'] = formatDate($invoice->start_date);
                 $nestedData['due_date'] = formatDate($invoice->due_date);
                 $nestedData['amount_paid'] = formatAmountWithCurrency(($invoice->amount_paid - $invoice->amount_refunded));
-                if ($invoice->invoiceable_type===MonthlyInvoicePackage::class){
-                    $sessions = $allSessions->where('monthly_invoice_package_id',$invoice->invoiceable_id);
+                if ($invoice->invoiceable_type === MonthlyInvoicePackage::class) {
+                    $sessions = $allSessions->where('monthly_invoice_package_id', $invoice->invoiceable_id);
                     $chargedTime = 0;
-                    foreach ($sessions as $session){
+                    foreach ($sessions as $session) {
                         $chargedTime = getTotalChargedTimeInSecondsFromSession($session);
                     }
-                    $nestedData['amount_remaining'] = Carbon::now()->monthName." Bill ". formatAmountWithCurrency(($chargedTime/3600) * $invoice->monthly_hourly_rate) ;
-                }else{
+                    $nestedData['amount_remaining'] = Carbon::now()->monthName.' Bill '.formatAmountWithCurrency(($chargedTime / 3600) * $invoice->monthly_hourly_rate);
+                } else {
                     $nestedData['amount_remaining'] = getRemainingAmount($invoice);
                 }
-//                $nestedData['fully_paid_at'] = $invoice->fully_paid_at;
+                //                $nestedData['fully_paid_at'] = $invoice->fully_paid_at;
                 $nestedData['action'] = view('invoices.actions', ['invoice' => $invoice, 'type' => getInvoiceTypeFromClass($invoice->invoiceable_type, true)])->render();
                 $data[] = $nestedData;
             }

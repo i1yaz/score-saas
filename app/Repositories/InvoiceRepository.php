@@ -48,30 +48,30 @@ class InvoiceRepository extends BaseRepository
 
         $invoice = Invoice::query()
             ->select(
-            [
-                'invoices.id as invoice_id', 'invoices.paid_status as invoice_status', 'invoices.invoiceable_type', 'student_tutoring_packages.student_id',
-                's1.parent_id as parent_id',
-                's1.id as student_id',
-                's1.email as student_email',
-                's2.parent_id as parent_id',
-                's2.id as student_id',
-                's2.email as student_email',
-                'p1.id as student_id',
-                'p1.email as parent_email',
-                'p2.id as student_id',
-                'p2.email as parent_email',
-                'invoices.created_at as invoice_created_at',
-                'invoices.due_date', 'student_tutoring_packages.hourly_rate', 'student_tutoring_packages.hours', 'student_tutoring_packages.discount',
-                'student_tutoring_packages.discount_type',
-                'invoices.fully_paid_at',
-                'invoices.general_description',
-                'invoices.detailed_description',
-                'invoices.paid_status as invoice_status',
-                'tutoring_package_types.name as tutoring_package_type_name',
-                'monthly_invoice_packages.hourly_rate', 'monthly_invoice_packages.discount',
-                'monthly_invoice_packages.discount_type',
-                'clients.email as client_email',
-            ])
+                [
+                    'invoices.id as invoice_id', 'invoices.paid_status as invoice_status', 'invoices.invoiceable_type', 'student_tutoring_packages.student_id',
+                    's1.parent_id as parent_id',
+                    's1.id as student_id',
+                    's1.email as student_email',
+                    's2.parent_id as parent_id',
+                    's2.id as student_id',
+                    's2.email as student_email',
+                    'p1.id as student_id',
+                    'p1.email as parent_email',
+                    'p2.id as student_id',
+                    'p2.email as parent_email',
+                    'invoices.created_at as invoice_created_at',
+                    'invoices.due_date', 'student_tutoring_packages.hourly_rate', 'student_tutoring_packages.hours', 'student_tutoring_packages.discount',
+                    'student_tutoring_packages.discount_type',
+                    'invoices.fully_paid_at',
+                    'invoices.general_description',
+                    'invoices.detailed_description',
+                    'invoices.paid_status as invoice_status',
+                    'tutoring_package_types.name as tutoring_package_type_name',
+                    'monthly_invoice_packages.hourly_rate', 'monthly_invoice_packages.discount',
+                    'monthly_invoice_packages.discount_type',
+                    'clients.email as client_email',
+                ])
             ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount ELSE 0 END) AS amount_paid')
             ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount_refunded ELSE 0 END) AS amount_refunded')
             ->leftJoin('student_tutoring_packages', function ($q) {
@@ -93,7 +93,7 @@ class InvoiceRepository extends BaseRepository
             ->leftJoin('parents as p2', 's2.parent_id', '=', 'p2.id')
             ->where('invoices.id', $id);
         if (Auth::user()->hasRole('parent') && Auth::user() instanceof ParentUser) {
-            $invoice = $invoice->where(function ($q){
+            $invoice = $invoice->where(function ($q) {
                 return $q->where('s1.parent_id', Auth::id())
                     ->orWhere('s2.parent_id', Auth::id());
 
@@ -103,11 +103,11 @@ class InvoiceRepository extends BaseRepository
             $invoice = $invoice
                 ->where(function ($q) {
                     $q->where('s1.id', Auth::id());
-//                        ->WhereRaw('CASE WHEN s1.parent_id IS NULL THEN true ELSE false END');
+                    //                        ->WhereRaw('CASE WHEN s1.parent_id IS NULL THEN true ELSE false END');
                 })
                 ->orWhere(function ($q) {
                     $q->where('s2.id', Auth::id());
-//                        ->WhereRaw('CASE WHEN s2.parent_id IS NULL THEN true ELSE false END');
+                    //                        ->WhereRaw('CASE WHEN s2.parent_id IS NULL THEN true ELSE false END');
                 });
 
         }
@@ -115,9 +115,10 @@ class InvoiceRepository extends BaseRepository
             $invoice = $invoice->where('non_invoice_packages.client_id', Auth::id());
         }
         $invoice = $invoice->first();
-        if (empty($invoice->invoice_id)){
+        if (empty($invoice->invoice_id)) {
             abort(403, 'Unauthorized action.');
         }
+
         return $invoice;
     }
 
@@ -267,14 +268,15 @@ class InvoiceRepository extends BaseRepository
         if (Auth::user()->hasRole('client') && Auth::user() instanceof Client) {
             $invoice = $invoice->where('non_invoice_packages.client_id', Auth::id());
         }
-        if (!Auth::user()->hasRole(['super-admin','admin','client'])) {
+        if (! Auth::user()->hasRole(['super-admin', 'admin', 'client'])) {
             abort(403, 'Unauthorized action.');
         }
         $invoice = $invoice->where('invoices.id', $id)->first();
 
-        if (empty($invoice->invoice_id)){
+        if (empty($invoice->invoice_id)) {
             abort(403, 'Unauthorized action.');
         }
+
         return $invoice;
     }
 
@@ -325,9 +327,10 @@ class InvoiceRepository extends BaseRepository
         }
 
         $invoice = $invoice->where('invoices.id', $id)->first();
-        if (empty($invoice->invoice_id)){
+        if (empty($invoice->invoice_id)) {
             abort(403, 'Unauthorized action.');
         }
+
         return $invoice;
     }
 
@@ -349,7 +352,7 @@ class InvoiceRepository extends BaseRepository
         $invoice = Invoice::query()->select(
             [
                 'invoices.id as invoice_id',
-                'monthly_invoice_packages.id as monthly_invoice_package_id'
+                'monthly_invoice_packages.id as monthly_invoice_package_id',
             ])
             ->leftJoin('payments', 'payments.invoice_id', 'invoices.id')
             ->leftJoin('monthly_invoice_packages', function ($q) {
@@ -370,9 +373,10 @@ class InvoiceRepository extends BaseRepository
         }
 
         $invoice = $invoice->where('invoices.id', $id)->first();
-        if (empty($invoice->invoice_id)){
+        if (empty($invoice->invoice_id)) {
             abort(403, 'Unauthorized action.');
         }
+
         return $invoice;
     }
 }

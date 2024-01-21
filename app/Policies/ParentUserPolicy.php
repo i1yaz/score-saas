@@ -46,6 +46,7 @@ class ParentUserPolicy
         if (Auth::user()->hasRole(['parent'])) {
             return $user->id == $parent->id;
         }
+
         return false;
     }
 }

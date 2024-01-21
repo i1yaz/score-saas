@@ -28,6 +28,7 @@ class Student extends Authenticatable implements LaratrustUser
             Cache::forget('students_count');
         });
     }
+
     /**
      * The attributes that should be hidden for serialization.
      *

@@ -32,6 +32,7 @@ class ParentsDataTable implements IDataTables
             ->limit($limit)
             ->orderBy($order, $dir)
             ->groupBy('parents.id');
+
         return $parents->get();
 
     }
@@ -85,8 +86,8 @@ class ParentsDataTable implements IDataTables
         if (Auth::user()->hasRole('student') && Auth::user() instanceof Student) {
             $records = $records->where('parents.id', Auth::user()->parent_id);
         }
-        if (Auth::user()->hasRole('tutor')){
-            $records = $records->where(function ($q){
+        if (Auth::user()->hasRole('tutor')) {
+            $records = $records->where(function ($q) {
                 $q->where('student_tutoring_package_tutor.tutor_id', Auth::id())
                     ->orWhere('monthly_invoice_package_tutor.tutor_id', Auth::id());
             });

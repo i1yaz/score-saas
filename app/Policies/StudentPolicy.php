@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 class StudentPolicy
 {
     use HandlesAuthorization;
+
     //Before method is inside the AuthServiceProvider
     public function viewAny(User $user): bool
     {
@@ -43,6 +44,7 @@ class StudentPolicy
 
         return false;
     }
+
     public function update(User $user, Student $student): bool
     {
         if (Auth::user()->hasRole(['tutor'])) {
@@ -61,6 +63,7 @@ class StudentPolicy
         if (Auth::user()->hasRole(['parent'])) {
             return $user->id == $student->parent_id;
         }
+
         return false;
     }
 }

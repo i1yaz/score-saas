@@ -111,6 +111,7 @@ class StudentController extends AppBaseController
             if ($request->ajax()) {
                 return response()->json(['success' => true, 'message' => 'Student saved successfully.', 'redirectTo' => route('students.index')]);
             }
+
             return redirect(route('students.index'));
         } catch (QueryException $queryException) {
             DB::rollBack();
@@ -127,7 +128,7 @@ class StudentController extends AppBaseController
      */
     public function show($student)
     {
-        $student = Student::select(['students.id as student_id', 'students.parent_id','students.email as student_email', 'students.first_name as first_name',
+        $student = Student::select(['students.id as student_id', 'students.parent_id', 'students.email as student_email', 'students.first_name as first_name',
             'students.last_name as last_name', 'students.status as status', 'parents.email as parent_email', 'schools.name as school_name',
             'students.testing_accommodation', 'students.testing_accommodation_nature', 'students.official_baseline_act_score', 'students.official_baseline_sat_score',
             'students.test_anxiety_challenge', 'students.created_at as student_created_at',

@@ -110,14 +110,14 @@ class StripeRepository
         DB::beginTransaction();
         try {
             $refundAmountData = $refundAmountData['data']['object'];
-            $payment = Payment::where('payment_intent',$refundAmountData['payment_intent'])->firstOrFail();
+            $payment = Payment::where('payment_intent', $refundAmountData['payment_intent'])->firstOrFail();
             $RefundedPayment = $payment->replicate();
             $RefundedPayment->amount = 0;
-            $RefundedPayment->amount_refunded = $refundAmountData['amount_refunded']/100;
+            $RefundedPayment->amount_refunded = $refundAmountData['amount_refunded'] / 100;
             $RefundedPayment->save();
-            Invoice::where('id',$payment->invoice_id)->update(['paid_status'=>Invoice::PARTIAL_PAYMENT]);
+            Invoice::where('id', $payment->invoice_id)->update(['paid_status' => Invoice::PARTIAL_PAYMENT]);
             DB::commit();
-        }catch (Exception $e){
+        } catch (Exception $e) {
             DB::rollBack();
             report($e);
             throw new UnprocessableEntityHttpException($e->getMessage());
@@ -132,8 +132,8 @@ class StripeRepository
         $monthlyInvoiceId = $sessionData['metadata']['monthlyInvoicePackageId'];
         // $userId = $sessionData['metadata']['userId'];
         // $authGuard = $sessionData['metadata']['guard'];\
-        $monthlyInvoiceSubscription = MonthlyInvoiceSubscription::where('monthly_invoice_package_id',$monthlyInvoiceId)->firstOrFail();
-        if ($monthlyInvoiceSubscription->payment_gateway == 'stripe' ) {
+        $monthlyInvoiceSubscription = MonthlyInvoiceSubscription::where('monthly_invoice_package_id', $monthlyInvoiceId)->firstOrFail();
+        if ($monthlyInvoiceSubscription->payment_gateway == 'stripe') {
             $subscriptionItem = SubscriptionItem::all([
                 'subscription' => $sessionData['subscription'],
                 'limit' => 1,
@@ -155,23 +155,24 @@ class StripeRepository
     {
         setStripeApiKey();
         $sessionObject = $sessionData['data']['object'];
-        $subscription = $sessionObject['subscription']??'';
-        $monthlySubscription = MonthlyInvoiceSubscription::select(['monthly_invoice_subscriptions.monthly_invoice_package_id','invoices.id as invoice_id'])
-            ->join('invoices',function ($join){
-                $join->on('monthly_invoice_subscriptions.monthly_invoice_package_id','invoices.invoiceable_id')
-                    ->where('invoices.invoiceable_type',MonthlyInvoicePackage::class);
+        $subscription = $sessionObject['subscription'] ?? '';
+        $monthlySubscription = MonthlyInvoiceSubscription::select(['monthly_invoice_subscriptions.monthly_invoice_package_id', 'invoices.id as invoice_id'])
+            ->join('invoices', function ($join) {
+                $join->on('monthly_invoice_subscriptions.monthly_invoice_package_id', 'invoices.invoiceable_id')
+                    ->where('invoices.invoiceable_type', MonthlyInvoicePackage::class);
             })
-            ->where('subscription_id',$subscription)->first();
+            ->where('subscription_id', $subscription)->first();
         if ($monthlySubscription) {
             $paymentTransactionData = [
                 'invoice_id' => $monthlySubscription->invoice_id,
                 'is_subscription_payment' => true,
                 'payment_gateway_id' => 1,
                 'transaction_id' => $sessionObject['charge'],
-                'amount' => $sessionObject['amount_paid'] /100,
-                'meta' => json_encode($sessionObject)
+                'amount' => $sessionObject['amount_paid'] / 100,
+                'meta' => json_encode($sessionObject),
             ];
             Payment::create($paymentTransactionData);
+
             return true;
         }
     }

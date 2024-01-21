@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Permission;
 use App\Models\Role;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class TutorPermissionsSeeder extends Seeder
@@ -14,7 +13,7 @@ class TutorPermissionsSeeder extends Seeder
      */
     public function run(): void
     {
-        $permissions = Permission::whereIn('name',[
+        $permissions = Permission::whereIn('name', [
             'parent-index',
             'parent-show',
             'student-index',
@@ -26,7 +25,7 @@ class TutorPermissionsSeeder extends Seeder
             'session-index',
             'session-create',
             'session-show',
-            'session-edit'
+            'session-edit',
         ])->get();
         $tutor = Role::where('name', 'tutor')->first();
         $tutor->givePermissions($permissions);

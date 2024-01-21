@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\DataTables\ParentsDataTable;
 use App\DataTables\PaymentsDataTable;
-use App\DataTables\StudentTutoringPackageDataTable;
 use App\Http\Requests\CreatePaymentRequest;
 use App\Http\Requests\UpdatePaymentRequest;
 use App\Repositories\PaymentRepository;
@@ -35,7 +33,7 @@ class PaymentController extends AppBaseController
                 'package_code',
                 'amount',
                 'date',
-                'payment_gateway'
+                'payment_gateway',
             ];
             $limit = $request->input('length');
             $start = $request->input('start');

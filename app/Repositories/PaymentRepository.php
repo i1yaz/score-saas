@@ -2,22 +2,12 @@
 
 namespace App\Repositories;
 
-use App\Mail\ClientMakePaymentMail;
-use App\Models\Invoice;
 use App\Models\MonthlyInvoicePackage;
 use App\Models\NonInvoicePackage;
 use App\Models\Payment;
 use App\Models\StudentTutoringPackage;
-use App\Models\User;
-use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
-use Stripe\Checkout\Session;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class PaymentRepository extends BaseRepository
 {
@@ -37,7 +27,6 @@ class PaymentRepository extends BaseRepository
     {
         return Payment::class;
     }
-
 
     /**
      * Paginate records for scaffold.

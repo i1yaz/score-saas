@@ -11,6 +11,7 @@ class School extends BaseModel
     use HasFactory;
 
     public $table = 'schools';
+
     protected static function boot(): void
     {
         parent::boot();
@@ -18,6 +19,7 @@ class School extends BaseModel
             Cache::forget('school_count');
         });
     }
+
     public $fillable = [
         'name',
         'address',
@@ -32,7 +34,7 @@ class School extends BaseModel
     ];
 
     public static array $rules = [
-        'name' => ['required', 'string', 'max:255']
+        'name' => ['required', 'string', 'max:255'],
     ];
 
     /**

@@ -12,7 +12,9 @@ class ClientRegisteredMail extends TemplateMailable implements ShouldQueue
     use Queueable, SerializesModels;
 
     public mixed $first_name;
+
     public mixed $last_name;
+
     public mixed $email;
 
     public function __construct(array $data)

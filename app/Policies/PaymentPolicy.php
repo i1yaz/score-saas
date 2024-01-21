@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class PaymentPolicy
 {
     use HandlesAuthorization;
+
     //Before method is inside the AuthServiceProvider
     public function viewAny(Authenticatable $user): bool
     {

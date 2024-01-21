@@ -22,9 +22,9 @@ class MonthlyInvoicePackage extends BaseModel
 
     const PERCENTAGE_DISCOUNT = 2;
 
-    const SUBSCRIPTION_ACTIVE=1;
-    const SUBSCRIPTION_INACTIVE=0;
+    const SUBSCRIPTION_ACTIVE = 1;
 
+    const SUBSCRIPTION_INACTIVE = 0;
 
     protected $fillable = [
         'student_id',
@@ -52,7 +52,7 @@ class MonthlyInvoicePackage extends BaseModel
         'tutoring_location_id' => 'integer',
         'is_score_guaranteed' => 'boolean',
         'is_free' => 'boolean',
-        'due_date' => 'date'
+        'due_date' => 'date',
     ];
 
     public static array $rules = [
@@ -60,7 +60,7 @@ class MonthlyInvoicePackage extends BaseModel
         'notes' => 'nullable|string',
         'internal_notes' => 'nullable|string',
         'start_date' => 'required|nullable|date',
-//        'due_date' => 'required|nullable|date',
+        //        'due_date' => 'required|nullable|date',
         'hourly_rate' => 'required|decimal:0,2',
         'tutor_hourly_rate' => 'nullable|decimal:0,2',
         'tutoring_location_id' => 'required|integer|exists:tutoring_locations,id',
@@ -110,21 +110,25 @@ class MonthlyInvoicePackage extends BaseModel
     {
         return $this->hasMany(Session::class, 'monthly_invoice_package_id', 'id');
     }
+
     public function LastMonthUnbilledSessions(): HasMany
     {
-        if (\App::environment(['local'])){
+        if (\App::environment(['local'])) {
             $startDate = Carbon::now()->subDay()->startOfDay();
             $endDate = Carbon::now()->subDay()->endOfDay();
+
             return $this->hasMany(Session::class, 'monthly_invoice_package_id', 'id')
                 ->where('sessions.is_billed', Session::UN_BILLED)
                 ->whereBetween('scheduled_date', [$startDate, $endDate]);
         }
         $startDate = Carbon::now()->subMonth()->startOfMonth();
         $endDate = Carbon::now()->subMonth()->endOfMonth();
+
         return $this->hasMany(Session::class, 'monthly_invoice_package_id', 'id')
             ->where('sessions.is_billed', Session::UN_BILLED)
             ->whereBetween('scheduled_date', [$startDate, $endDate]);
     }
+
     public function invoice(): MorphOne
     {
         return $this->morphOne(Invoice::class, 'invoiceable');

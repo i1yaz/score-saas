@@ -38,6 +38,7 @@ class TutorDataTable implements IDataTables
         $tutors = $tutors->offset($start)
             ->limit($limit)
             ->orderBy($order, $dir);
+
         return $tutors->groupBy('tutors.id')->get();
     }
 
@@ -51,7 +52,8 @@ class TutorDataTable implements IDataTables
             ->leftJoin('monthly_invoice_packages', 'monthly_invoice_packages.id', 'monthly_invoice_package_tutor.monthly_invoice_package_id');
         $tutors = static::getModelQueryBySearch($search, $tutors);
         $tutors = $tutors->first();
-        return $tutors->total??0;
+
+        return $tutors->total ?? 0;
     }
 
     public static function populateRecords($records): array
@@ -88,9 +90,9 @@ class TutorDataTable implements IDataTables
         if (Auth::user()->hasRole('parent') && Auth::user() instanceof ParentUser) {
             $records = $records->where(function ($q) {
                 $students = Student::select(['id'])->where('parent_id', Auth::id())->get();
-                if ($students->isEmpty()){
+                if ($students->isEmpty()) {
                     $students = [];
-                }else{
+                } else {
                     $students = $students->pluck('id')->toArray();
                 }
                 $q->whereIn('student_tutoring_packages.student_id', $students)
@@ -125,6 +127,7 @@ class TutorDataTable implements IDataTables
             });
         }
         $tutors = $tutors->first();
-        return $tutors->total??0;
+
+        return $tutors->total ?? 0;
     }
 }

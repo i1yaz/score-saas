@@ -117,7 +117,7 @@ class RegisterController extends Controller
      * The user has been registered.
      *
      * @param  mixed  $user
-     * @return bool|User   $user
+     * @return bool|User $user
      */
     protected function registered(Request $request, $user)
     {

@@ -100,7 +100,7 @@ class SessionController extends Controller
         }
         if (Auth::user()->hasRole(['tutor']) && ! empty($tutoringPackageTutor)) {
             $input['tutor_id'] = Auth::user()->id;
-        } else if(!Auth::user()->hasRole(['super-admin','admin'])){
+        } elseif (! Auth::user()->hasRole(['super-admin', 'admin'])) {
             return response()->json(['success' => false, 'message' => 'You are not allowed to create session for this student.'], 404);
         }
         if (Str::startsWith($input['tutoring_package_id'], StudentTutoringPackage::PREFIX_START)) {
@@ -233,7 +233,7 @@ class SessionController extends Controller
         }
         if (Auth::user()->hasRole(['tutor']) && ! empty($tutoringPackageTutor)) {
             $input['tutor_id'] = Auth::user()->id;
-        } else if(!Auth::user()->hasRole(['super-admin','admin'])){
+        } elseif (! Auth::user()->hasRole(['super-admin', 'admin'])) {
             return response()->json(['success' => false, 'message' => 'You are not allowed to create session for this student.'], 404);
         }
         if (Str::startsWith($input['tutoring_package_id'], StudentTutoringPackage::PREFIX_START)) {

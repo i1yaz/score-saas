@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Gate;
 use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\MonthlyInvoicePackage;
@@ -22,6 +21,7 @@ use App\Policies\StudentPolicy;
 use App\Policies\studentTutoringPackagePolicy;
 use App\Policies\TutorPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {

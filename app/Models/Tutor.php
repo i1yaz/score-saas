@@ -17,6 +17,7 @@ class Tutor extends Authenticatable implements LaratrustUser
     use HasApiTokens, HasFactory, HasRolesAndPermissions,Notifiable;
 
     protected string $guard = 'tutors';
+
     protected static function boot(): void
     {
         parent::boot();
@@ -24,6 +25,7 @@ class Tutor extends Authenticatable implements LaratrustUser
             Cache::forget('tutor_count');
         });
     }
+
     public $table = 'tutors';
 
     /**

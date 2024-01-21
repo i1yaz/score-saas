@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class MonthlyInvoicePackagePolicy
 {
     use HandlesAuthorization;
+
     public function before(Authenticatable $user)
     {
         //['super-admin','admin','student','parent','tutor','proctor','client','developer']
@@ -17,10 +18,11 @@ class MonthlyInvoicePackagePolicy
         if (Auth::user()->hasRole(['super-admin', 'admin'])) {
             return true;
         }
-        if (Auth::user()->hasRole([ 'tutor','proctor','client','developer'])) {
-            abort(403, getRoleOfLoggedInUser() . 's do not have access to Monthly Invoice Packages');
+        if (Auth::user()->hasRole(['tutor', 'proctor', 'client', 'developer'])) {
+            abort(403, getRoleOfLoggedInUser().'s do not have access to Monthly Invoice Packages');
         }
     }
+
     public function viewAny(Authenticatable $user): bool
     {
 
@@ -31,6 +33,7 @@ class MonthlyInvoicePackagePolicy
         if ($monthlyInvoicePackage->student_id == Auth::user()->id) {
             return true;
         }
+
         return false;
     }
 
@@ -43,6 +46,7 @@ class MonthlyInvoicePackagePolicy
         if ($monthlyInvoicePackage->student_id == Auth::user()->id) {
             return true;
         }
+
         return false;
     }
 
@@ -51,6 +55,7 @@ class MonthlyInvoicePackagePolicy
         if ($monthlyInvoicePackage->student_id == Auth::user()->id) {
             return true;
         }
+
         return false;
     }
 

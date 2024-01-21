@@ -125,12 +125,12 @@ class SessionDataTable implements IDataTables
         }
         if (Auth::user()->hasRole('parent') && Auth::user() instanceof ParentUser) {
             $children = Student::select(['id'])->where('parent_id', Auth::id())->get();
-            if ($children->isEmpty()){
+            if ($children->isEmpty()) {
                 $children = [];
-            }else{
+            } else {
                 $children = $children->pluck('id')->toArray();
             }
-            $records = $records->whereIn('s1.id',$children)
+            $records = $records->whereIn('s1.id', $children)
                 ->orWhereIn('s2.id', $children);
 
         }

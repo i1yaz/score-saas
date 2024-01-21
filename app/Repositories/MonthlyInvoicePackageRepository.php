@@ -9,8 +9,6 @@ use App\Models\Tutor;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
-use Stripe\Price;
-use Stripe\StripeClient;
 
 class MonthlyInvoicePackageRepository extends BaseRepository
 {
@@ -41,6 +39,7 @@ class MonthlyInvoicePackageRepository extends BaseRepository
         $model = $this->model->newInstance($input);
 
         $model->save();
+
         return $model;
     }
 
@@ -99,16 +98,17 @@ class MonthlyInvoicePackageRepository extends BaseRepository
         return $model;
     }
 
-    public function createStripeSubscription(MonthlyInvoicePackage $monthlyInvoicePackage,$gateway='stripe')
+    public function createStripeSubscription(MonthlyInvoicePackage $monthlyInvoicePackage, $gateway = 'stripe')
     {
         try {
             $monthlyInvoiceSubscription = new MonthlyInvoiceSubscription();
             $monthlyInvoiceSubscription->monthly_invoice_package_id = $monthlyInvoicePackage->id;
             $monthlyInvoiceSubscription->payment_gateway = $gateway;
-            $monthlyInvoiceSubscription->start_date = $monthlyInvoicePackage->due_date??Carbon::today();
+            $monthlyInvoiceSubscription->start_date = $monthlyInvoicePackage->due_date ?? Carbon::today();
             $monthlyInvoiceSubscription->save();
+
             return $monthlyInvoiceSubscription;
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             report($e);
         }
     }

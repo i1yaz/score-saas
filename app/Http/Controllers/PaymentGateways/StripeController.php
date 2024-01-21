@@ -8,7 +8,6 @@ use App\Models\MonthlyInvoicePackage;
 use App\Models\MonthlyInvoiceSubscription;
 use App\Models\NonInvoicePackage;
 use App\Models\StudentTutoringPackage;
-use App\Models\User;
 use App\Repositories\StripeRepository;
 use Carbon\Carbon;
 use Exception;
@@ -17,7 +16,6 @@ use Illuminate\Http\Request;
 use Laracasts\Flash\Flash;
 use Stripe\Checkout\Session as StripeSession;
 use Stripe\Exception\ApiErrorException;
-use Stripe\PaymentIntent;
 use Stripe\Price;
 use Stripe\Subscription;
 
@@ -66,7 +64,7 @@ class StripeController extends AppBaseController
         if ($invoice->invoiceable_type == NonInvoicePackage::class) {
             $invoiceType = 3;
             $payable_amount = $invoice->final_amount - $invoice->amount_paid;
-            $payable_amount = $payable_amount + $invoice->amount_refunded??0;
+            $payable_amount = $payable_amount + $invoice->amount_refunded ?? 0;
             $userEmail = NonInvoicePackage::query()
                 ->select(['clients.email'])
                 ->leftJoin('clients', 'clients.id', '=', 'non_invoice_packages.client_id')
@@ -84,7 +82,7 @@ class StripeController extends AppBaseController
 
             $packageCode = getStudentTutoringPackageCodeFromId($invoice->invoiceable_id);
             $payable_amount = $payable_amount - $invoice->amount_paid;
-            $payable_amount = $payable_amount + $invoice->amount_refunded??0;
+            $payable_amount = $payable_amount + $invoice->amount_refunded ?? 0;
         }
         $amount = null;
         if (filter_var($invoice->nip_allow_partial_payment, FILTER_VALIDATE_BOOLEAN) || filter_var($invoice->stp_allow_partial_payment, FILTER_VALIDATE_BOOLEAN)) {
@@ -140,28 +138,29 @@ class StripeController extends AppBaseController
         }
     }
 
-    public function createSessionForSubscription(Request $request){
+    public function createSessionForSubscription(Request $request)
+    {
         setStripeApiKey();
         $monthlyInvoicePackage = MonthlyInvoicePackage::select([
-            'monthly_invoice_packages.id','monthly_invoice_packages.hourly_rate','monthly_invoice_subscriptions.subscription_id',
-            'monthly_invoice_subscriptions.stripe_price_id','monthly_invoice_package_id','monthly_invoice_packages.due_date','monthly_invoice_packages.start_date'
+            'monthly_invoice_packages.id', 'monthly_invoice_packages.hourly_rate', 'monthly_invoice_subscriptions.subscription_id',
+            'monthly_invoice_subscriptions.stripe_price_id', 'monthly_invoice_package_id', 'monthly_invoice_packages.due_date', 'monthly_invoice_packages.start_date',
         ])
-            ->join('monthly_invoice_subscriptions','monthly_invoice_subscriptions.monthly_invoice_package_id','monthly_invoice_packages.id')
-            ->where('monthly_invoice_package_id',$request->monthlyInvoicePackageId)->first();
+            ->join('monthly_invoice_subscriptions', 'monthly_invoice_subscriptions.monthly_invoice_package_id', 'monthly_invoice_packages.id')
+            ->where('monthly_invoice_package_id', $request->monthlyInvoicePackageId)->first();
 
-        if (!empty($monthlyInvoicePackage->subscription_id)){
+        if (! empty($monthlyInvoicePackage->subscription_id)) {
             $subscription = Subscription::retrieve($monthlyInvoicePackage->subscription_id);
-            if ($subscription->id===$monthlyInvoicePackage->subscription_id){
-                return response()->json(['message'=>'Subscription Already Created'],409);
+            if ($subscription->id === $monthlyInvoicePackage->subscription_id) {
+                return response()->json(['message' => 'Subscription Already Created'], 409);
             }
         }
         $userId = \Auth::id() ?? 'none';
         $guard = \Auth::guard()->name ?? 'none';
-        $monthlyInvoiceSubscription = MonthlyInvoiceSubscription::where('monthly_invoice_package_id',$request->monthlyInvoicePackageId)->first();
-        if (!empty($monthlyInvoiceSubscription->subscription_id)){
+        $monthlyInvoiceSubscription = MonthlyInvoiceSubscription::where('monthly_invoice_package_id', $request->monthlyInvoicePackageId)->first();
+        if (! empty($monthlyInvoiceSubscription->subscription_id)) {
             $subscription = Subscription::retrieve($monthlyInvoiceSubscription->subscription_id);
-            if ($subscription->id===$monthlyInvoiceSubscription->subscription_id){
-                return response()->json(['message'=>'Subscription Already Created'],409);
+            if ($subscription->id === $monthlyInvoiceSubscription->subscription_id) {
+                return response()->json(['message' => 'Subscription Already Created'], 409);
             }
         }
         try {
@@ -169,14 +168,14 @@ class StripeController extends AppBaseController
                 'product_data' => [
                     'name' => getMonthlyInvoicePackageCodeFromId($monthlyInvoicePackage->id),
                     'statement_descriptor' => 'MIP #'.getMonthlyInvoicePackageCodeFromId($monthlyInvoicePackage->id),
-                    'unit_label' => 'hour session'
+                    'unit_label' => 'hour session',
                 ],
                 'currency' => 'USD',
                 'billing_scheme' => 'per_unit',
                 'unit_amount_decimal' => $monthlyInvoicePackage->hourly_rate * 100,
                 'recurring' => [
                     'interval' => config('services.stripe.subscription_interval'),
-                    'usage_type' => 'metered'
+                    'usage_type' => 'metered',
                 ],
             ]);
             sleep(1);
@@ -184,14 +183,14 @@ class StripeController extends AppBaseController
                 'product_data' => [
                     'name' => getMonthlyInvoicePackageCodeFromId($monthlyInvoicePackage->id),
                     'statement_descriptor' => 'MIP #'.getMonthlyInvoicePackageCodeFromId($monthlyInvoicePackage->id),
-                    'unit_label' => 'Minute'
+                    'unit_label' => 'Minute',
                 ],
                 'currency' => 'USD',
                 'billing_scheme' => 'per_unit',
-                'unit_amount_decimal' => (formatAmountWithoutCurrency($monthlyInvoicePackage->hourly_rate/60)) * 100,
+                'unit_amount_decimal' => (formatAmountWithoutCurrency($monthlyInvoicePackage->hourly_rate / 60)) * 100,
                 'recurring' => [
-                    'interval' =>  config('services.stripe.subscription_interval'),
-                    'usage_type' => 'metered'
+                    'interval' => config('services.stripe.subscription_interval'),
+                    'usage_type' => 'metered',
                 ],
             ]);
             sleep(1);
@@ -203,8 +202,8 @@ class StripeController extends AppBaseController
             $invoiceType = 3;
             $start_date = $monthlyInvoicePackage->start_date;
 
-            if ($monthlyInvoicePackage->start_date->startOfDay()->eq(Carbon::now()->startOfDay())){
-                if ($monthlyInvoicePackage->start_date->isPast()){
+            if ($monthlyInvoicePackage->start_date->startOfDay()->eq(Carbon::now()->startOfDay())) {
+                if ($monthlyInvoicePackage->start_date->isPast()) {
                     $start_date = getFutureDueDate($monthlyInvoicePackage->start_date);
                 }
             }
@@ -218,11 +217,11 @@ class StripeController extends AppBaseController
                         'price' => $stripePrice->id,
                     ],
                     [
-                        'price' =>  $stripeMinutesPrice->id,
-                    ]
+                        'price' => $stripeMinutesPrice->id,
+                    ],
                 ],
-                "subscription_data" => [
-                    "billing_cycle_anchor"=> $start_date->unix(),
+                'subscription_data' => [
+                    'billing_cycle_anchor' => $start_date->unix(),
                 ],
                 'metadata' => [
                     'invoiceType' => $invoiceType,
@@ -236,11 +235,12 @@ class StripeController extends AppBaseController
             $result = [
                 'sessionId' => $session['id'],
             ];
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             report($e);
 
-            return $this->sendError( 'Something went wrong. Please try again.');
+            return $this->sendError('Something went wrong. Please try again.');
         }
+
         return $this->sendResponse($result, 'Session created successfully.');
 
     }
@@ -255,55 +255,66 @@ class StripeController extends AppBaseController
     /**
      * @throws ApiErrorException
      */
-    public function webhooks(Request $request){
+    public function webhooks(Request $request)
+    {
         $payload = $request->all();
-        \Log::channel('stripe_success')->info('Stripe webhook',$request->all());
-        if($payload['type'] === 'checkout.session.completed'){
-            if ($payload['data']['object']['mode'] === 'subscription'){
+        \Log::channel('stripe_success')->info('Stripe webhook', $request->all());
+        if ($payload['type'] === 'checkout.session.completed') {
+            if ($payload['data']['object']['mode'] === 'subscription') {
                 $sessionData = $payload['data']['object'];
                 $this->stripeRepository->stripeSubscriptionPaymentSuccessfullyCompleted($sessionData);
-                return response('success',200);
+
+                return response('success', 200);
             }
-            if ($payload['data']['object']['mode'] === 'payment'){
+            if ($payload['data']['object']['mode'] === 'payment') {
                 $sessionData = $payload['data']['object'];
                 $this->stripeRepository->stripePaymentSuccessfullyCompleted($sessionData);
-                return response('success',200);
+
+                return response('success', 200);
             }
         }
-        if($payload['type'] === 'invoice.payment_succeeded'){
+        if ($payload['type'] === 'invoice.payment_succeeded') {
             $this->stripeRepository->stripeInvoicePaymentSuccessfullyCompleted($request->all());
-            return response('success',200);
+
+            return response('success', 200);
 
         }
-        if ($payload['type']==='charge.refunded'){
+        if ($payload['type'] === 'charge.refunded') {
             $this->stripeRepository->stripeRefundPayment($request->all());
-            return response('success',200);
+
+            return response('success', 200);
         }
-        if ($payload['type']==='invoice.created'){
+        if ($payload['type'] === 'invoice.created') {
             $client = setStripeApiKey(true);
             $client->invoices->finalizeInvoice($payload['data']['object']['id']);
-            return response('success',200);
+
+            return response('success', 200);
 
         }
-        return response('webhook processing failed',500);
+
+        return response('webhook processing failed', 500);
     }
-    public function cancelMonthlyInvoicePackageSubscription(Request $request){
-        $monthlyInvoiceSubscription = MonthlyInvoiceSubscription::where('monthly_invoice_package_id',$request->monthlyInvoicePackageId)->first();
-        if ($monthlyInvoiceSubscription->payment_gateway == 'stripe' ) {
+
+    public function cancelMonthlyInvoicePackageSubscription(Request $request)
+    {
+        $monthlyInvoiceSubscription = MonthlyInvoiceSubscription::where('monthly_invoice_package_id', $request->monthlyInvoicePackageId)->first();
+        if ($monthlyInvoiceSubscription->payment_gateway == 'stripe') {
             setStripeApiKey();
-            if (!empty($monthlyInvoiceSubscription->subscription_id)){
+            if (! empty($monthlyInvoiceSubscription->subscription_id)) {
                 $subscription = Subscription::retrieve($monthlyInvoiceSubscription->subscription_id);
-                if ($subscription->id===$monthlyInvoiceSubscription->subscription_id && $subscription->status === 'active'){
+                if ($subscription->id === $monthlyInvoiceSubscription->subscription_id && $subscription->status === 'active') {
                     $subscription->cancel();
                     $monthlyInvoiceSubscription->is_active = false;
                     $monthlyInvoiceSubscription->save();
                     $monthlyInvoiceSubscription = MonthlyInvoicePackage::findOrFail($monthlyInvoiceSubscription->monthly_invoice_package_id);
                     $monthlyInvoiceSubscription->status = false;
                     $monthlyInvoiceSubscription->save();
-                    return response()->json(['message'=>'Subscription has been Cancelled'],200);
+
+                    return response()->json(['message' => 'Subscription has been Cancelled'], 200);
                 }
             }
         }
-        return response()->json(['message'=>'Subscription Not Found or Already canceled'],404);
+
+        return response()->json(['message' => 'Subscription Not Found or Already canceled'], 404);
     }
 }

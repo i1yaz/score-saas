@@ -12,9 +12,10 @@ class StudentRegistrationMail extends TemplateMailable implements ShouldQueue
     use Queueable, SerializesModels;
 
     public $password;
+
     public mixed $email;
 
-    public function __construct( array $data)
+    public function __construct(array $data)
     {
         $this->password = $data['password'];
         $this->email = $data['email'];

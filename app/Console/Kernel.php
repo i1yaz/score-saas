@@ -12,16 +12,16 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        if (\App::environment(['local'])){
+        if (\App::environment(['local'])) {
             $schedule->command('report:monthly-package-usage')
                 ->everyFifteenMinutes()
                 ->appendOutputTo(storage_path('logs/scheduler.log'));
-        }else{
+        } else {
             $schedule->command('report:monthly-package-usage')
                 ->monthlyOn(1, '0:00')
                 ->everyFifteenMinutes()
                 ->appendOutputTo(storage_path('logs/scheduler.log'));
-        };
+        }
 
     }
 

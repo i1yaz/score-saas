@@ -3,14 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\DataTables\MonthlyInvoicePackageDataTable;
-use App\Http\Controllers\PaymentGateways\StripeController;
 use App\Http\Requests\CreateMonthlyInvoicePackageRequest;
 use App\Http\Requests\UpdateMonthlyInvoicePackageRequest;
 use App\Mail\ParentInvoiceMailAfterMonthlyInvoicePackageCreationMail;
-use App\Models\Invoice;
 use App\Models\MonthlyInvoicePackage;
 use App\Models\Student;
-use App\Models\StudentTutoringPackage;
 use App\Models\Subject;
 use App\Repositories\InvoiceRepository;
 use App\Repositories\MonthlyInvoicePackageRepository;
@@ -161,7 +158,7 @@ class MonthlyInvoicePackageController extends AppBaseController
     {
         $monthlyInvoicePackage = MonthlyInvoicePackage::query()
             ->select(['monthly_invoice_packages.*', 'students.email as student_email',  'tutoring_locations.name as tutoring_location_name'])
-            ->with(['subjects', 'tutors','invoice'])
+            ->with(['subjects', 'tutors', 'invoice'])
             ->join('students', 'students.id', '=', 'monthly_invoice_packages.student_id')
             ->join('tutoring_locations', 'tutoring_locations.id', '=', 'monthly_invoice_packages.tutoring_location_id')
             ->find($id);
@@ -198,6 +195,7 @@ class MonthlyInvoicePackageController extends AppBaseController
         $this->authorize('update', $monthlyInvoicePackage);
         if (empty($monthlyInvoicePackage)) {
             Flash::error('Monthly Invoice Package not found');
+
             return redirect(route('monthlyInvoicePackages.index'));
         }
 
@@ -212,7 +210,7 @@ class MonthlyInvoicePackageController extends AppBaseController
             $subjects = $input['subject_ids'];
             unset($input['tutor_ids'],$input['subject_ids']);
 
-            $monthlyInvoicePackage = $this->monthlyInvoicePackageRepository->update($input,$id);
+            $monthlyInvoicePackage = $this->monthlyInvoicePackageRepository->update($input, $id);
             $monthlyInvoicePackage->tutors()->sync($tutors);
             $monthlyInvoicePackage->subjects()->sync($subjects);
             $this->invoiceRepository->createOrUpdateInvoiceForMonthlyPackage($monthlyInvoicePackage, $input);

@@ -25,7 +25,7 @@ class StudentPermissionsSeeder extends Seeder
             'session-show',
             'payment-index',
             'payment-show',
-            'student-dashboard'
+            'student-dashboard',
         ])->get();
 
         $student = Role::where('name', 'student')->first();

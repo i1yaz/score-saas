@@ -111,7 +111,7 @@ if (! function_exists('getOriginalPackageIdFromCode')) {
     }
 }
 if (! function_exists('getPackageCodeFromId')) {
-    function getPackageCodeFromId(int $studentTutoringPackageId = null, int $monthlyInvoicePackage = null): string
+    function getPackageCodeFromId(?int $studentTutoringPackageId = null, ?int $monthlyInvoicePackage = null): string
     {
         if (! empty($studentTutoringPackageId)) {
             return getStudentTutoringPackageCodeFromId($studentTutoringPackageId);
@@ -202,7 +202,7 @@ if (! function_exists('getMonthlyInvoicePackageCodeFromId')) {
 }
 
 if (! function_exists('storeFile')) {
-    function storeFile(string $path, File|UploadedFile $file, string $name = null): string
+    function storeFile(string $path, File|UploadedFile $file, ?string $name = null): string
     {
         if (! empty($name)) {
             return Storage::putFileAs($path, $file, $name);
@@ -267,10 +267,10 @@ if (! function_exists('getDiscountedAmount')) {
     /**
      * Calculate the discounted amount based on the hourly rate, hours, and discount type.
      *
-     * @param  float  $hourlyRate The hourly rate for the service.
-     * @param  float  $hours The number of hours for the service.
-     * @param  float  $discount The discount amount (default = 0).
-     * @param  int  $discountType The type of discount (default = 0).
+     * @param  float  $hourlyRate  The hourly rate for the service.
+     * @param  float  $hours  The number of hours for the service.
+     * @param  float  $discount  The discount amount (default = 0).
+     * @param  int  $discountType  The type of discount (default = 0).
      * @return string The discounted amount as a formatted string.
      */
     function getDiscountedAmount(float $hourlyRate, float $hours, float $discount = 0, int $discountType = 1): string
@@ -290,7 +290,7 @@ if (! function_exists('formatAmountWithCurrency')) {
     /**
      * Formats a given float number into a string with a currency Sign.
      *
-     * @param  float|null  $amount The float number to be formatted.
+     * @param  float|null  $amount  The float number to be formatted.
      * @param  int  $decimals
      * @return string The formatted number as a string.
      */
@@ -385,26 +385,27 @@ if (! function_exists('getInvoiceStatusFromId')) {
     /**
      * Get the status of an invoice based on its ID.
      *
-     * @param  int  $status The ID of the invoice status.
+     * @param  int  $status  The ID of the invoice status.
      * @return string The description of the invoice status.
      */
-    function getInvoiceStatusFromId(int $status,$subscriptionType = StudentTutoringPackage::class,$isActive=false,$subscriptionId='',$startDate=''): string
+    function getInvoiceStatusFromId(int $status, $subscriptionType = StudentTutoringPackage::class, $isActive = false, $subscriptionId = '', $startDate = ''): string
     {
-        if ($subscriptionType == MonthlyInvoicePackage::class){
-            if (!empty($subscriptionId) && $isActive){
+        if ($subscriptionType == MonthlyInvoicePackage::class) {
+            if (! empty($subscriptionId) && $isActive) {
                 return '<span class="badge badge-success">Subscribed</span>';
             }
-            if (!empty($subscriptionId) && !$isActive){
+            if (! empty($subscriptionId) && ! $isActive) {
                 return '<span class="badge badge-info">Unsubscribed/Completed</span>';
             }
-            $startDate = Carbon::createFromFormat('Y-m-d',$startDate)->endOfDay();
-            if (empty($subscriptionId) && $startDate->isPast()){
+            $startDate = Carbon::createFromFormat('Y-m-d', $startDate)->endOfDay();
+            if (empty($subscriptionId) && $startDate->isPast()) {
                 return '<span class="badge badge-danger">Expired</span>';
             }
-            if (empty($subscriptionId)){
+            if (empty($subscriptionId)) {
                 return '<span class="badge badge-warning">Pending for subscription</span>';
             }
         }
+
         // Check the status ID and return the corresponding description
         return match ($status) {
             Invoice::DRAFT => '<span class="badge badge-secondary">Draft</span>',
@@ -472,7 +473,7 @@ if (! function_exists('getHexColors')) {
     }
 }
 if (! function_exists('getTutorHourlyRateForStudentTutoringPackage')) {
-    function getTutorHourlyRateForStudentTutoringPackage(StudentTutoringPackage $studentTutoringPackage, Tutor|int $tutor = null): string
+    function getTutorHourlyRateForStudentTutoringPackage(StudentTutoringPackage $studentTutoringPackage, Tutor|int|null $tutor = null): string
     {
         if (empty($studentTutoringPackage->tutor_hourly_rate)) {
             if ($tutor) {
@@ -492,7 +493,7 @@ if (! function_exists('getTutorHourlyRateForStudentTutoringPackage')) {
     }
 }
 if (! function_exists('getTutorHourlyRateForMonthlyInvoicePackage')) {
-    function getTutorHourlyRateForMonthlyInvoicePackage(MonthlyInvoicePackage $monthlyInvoicePackage, Tutor|int $tutor = null): string
+    function getTutorHourlyRateForMonthlyInvoicePackage(MonthlyInvoicePackage $monthlyInvoicePackage, Tutor|int|null $tutor = null): string
     {
         if (empty($monthlyInvoicePackage->tutor_hourly_rate)) {
             if ($tutor) {
@@ -525,15 +526,15 @@ if (! function_exists('getTotalChargedTimeFromStudentTutoringPackageInSeconds'))
     }
 }
 if (! function_exists('getTotalChargedTimeFromMonthlyInvoicePackageInSeconds')) {
-    function getTotalChargedTimeFromMonthlyInvoicePackageInSeconds(MonthlyInvoicePackage $monthlyInvoicePackage,$sessions = null,string|Carbon $month=null): float|int
+    function getTotalChargedTimeFromMonthlyInvoicePackageInSeconds(MonthlyInvoicePackage $monthlyInvoicePackage, $sessions = null, string|Carbon|null $month = null): float|int
     {
-        if ($sessions=='all' ){
+        if ($sessions == 'all') {
             $sessions = \App\Models\Session::where('monthly_invoice_package_id', $monthlyInvoicePackage->id)
                 ->get();
         }
-        if (empty($sessions)){
+        if (empty($sessions)) {
             $sessions = \App\Models\Session::where('monthly_invoice_package_id', $monthlyInvoicePackage->id)
-                ->whereMonth('scheduled_date',$month ?? Carbon::now()->month)
+                ->whereMonth('scheduled_date', $month ?? Carbon::now()->month)
                 ->get();
         }
         $totalChargedTime = 0;
@@ -545,10 +546,10 @@ if (! function_exists('getTotalChargedTimeFromMonthlyInvoicePackageInSeconds')) 
         return $totalChargedTime;
     }
 }
-if (!function_exists('getTotalInvoicePriceForMonthlyInvoicePackageFromSessions')){
-    function getTotalInvoicePriceForMonthlyInvoicePackageFromSessions(MonthlyInvoicePackage $monthlyInvoicePackage,$sessions): string
+if (! function_exists('getTotalInvoicePriceForMonthlyInvoicePackageFromSessions')) {
+    function getTotalInvoicePriceForMonthlyInvoicePackageFromSessions(MonthlyInvoicePackage $monthlyInvoicePackage, $sessions): string
     {
-        $totalChargedTime = getTotalChargedTimeFromMonthlyInvoicePackageInSeconds($monthlyInvoicePackage,sessions:$sessions);
+        $totalChargedTime = getTotalChargedTimeFromMonthlyInvoicePackageInSeconds($monthlyInvoicePackage, sessions: $sessions);
         $hourlyRate = $monthlyInvoicePackage->hourly_rate;
         $totalChargedTime = $totalChargedTime * ($hourlyRate / 3600);
 
@@ -558,28 +559,29 @@ if (!function_exists('getTotalInvoicePriceForMonthlyInvoicePackageFromSessions')
 if (! function_exists('getTotalInvoicePriceFromMonthlyInvoicePackage')) {
     function getTotalInvoicePriceFromMonthlyInvoicePackage(MonthlyInvoicePackage $monthlyInvoicePackage): string
     {
-        $totalChargedTime = getTotalChargedTimeFromMonthlyInvoicePackageInSeconds($monthlyInvoicePackage,'all');
+        $totalChargedTime = getTotalChargedTimeFromMonthlyInvoicePackageInSeconds($monthlyInvoicePackage, 'all');
         $hourlyRate = $monthlyInvoicePackage->hourly_rate;
-        $totalChargedTime = getChargedAmountFromSecondsAndHourlyRate($totalChargedTime,$hourlyRate);// $totalChargedTime * ($hourlyRate / 3600);
+        $totalChargedTime = getChargedAmountFromSecondsAndHourlyRate($totalChargedTime, $hourlyRate); // $totalChargedTime * ($hourlyRate / 3600);
 
         return formatAmountWithCurrency($totalChargedTime);
     }
 }
-if (!function_exists('getChargedAmountFromSecondsAndHourlyRate')){
-    function getChargedAmountFromSecondsAndHourlyRate($seconds,$hourlyRate)
+if (! function_exists('getChargedAmountFromSecondsAndHourlyRate')) {
+    function getChargedAmountFromSecondsAndHourlyRate($seconds, $hourlyRate)
     {
         $totalHours = floor($seconds / 3600);
         $totalMinutes = floor(($seconds / 60) % 60);
-        $perMinuteRate = formatAmountWithoutCurrency($hourlyRate/60);
+        $perMinuteRate = formatAmountWithoutCurrency($hourlyRate / 60);
         $hourlyChargedAmount = $totalHours * $hourlyRate;
         $minutesChargedAmount = $totalMinutes * $perMinuteRate;
-        return formatAmountWithoutCurrency($hourlyChargedAmount+$minutesChargedAmount);
+
+        return formatAmountWithoutCurrency($hourlyChargedAmount + $minutesChargedAmount);
     }
 }
-if (!function_exists('getChargedAmountFromMinutesAndHourlyRate')){
-    function getChargedAmountFromMinutesAndHourlyRate($minutes,$hourlyRate)
+if (! function_exists('getChargedAmountFromMinutesAndHourlyRate')) {
+    function getChargedAmountFromMinutesAndHourlyRate($minutes, $hourlyRate)
     {
-        return getChargedAmountFromSecondsAndHourlyRate($minutes*60,$hourlyRate);
+        return getChargedAmountFromSecondsAndHourlyRate($minutes * 60, $hourlyRate);
     }
 }
 if (! function_exists('getTotalChargedTimeOfSessionFromSessionInSeconds')) {
@@ -647,7 +649,7 @@ if (! function_exists('getTotalTutorPaymentForStudentTutoringPackage')) {
 if (! function_exists('getTotalTutorPaymentForMonthlyInvoicePackage')) {
     function getTotalTutorPaymentForMonthlyInvoicePackage(MonthlyInvoicePackage $monthlyInvoicePackage)
     {
-        $totalChargedTimeInSeconds = getTotalChargedTimeFromMonthlyInvoicePackageInSeconds($monthlyInvoicePackage,'all');
+        $totalChargedTimeInSeconds = getTotalChargedTimeFromMonthlyInvoicePackageInSeconds($monthlyInvoicePackage, 'all');
         if (! empty($monthlyInvoicePackage->tutor_hourly_rate)) {
             $hourlyRate = getTutorHourlyRateForMonthlyInvoicePackage($monthlyInvoicePackage);
             $hourlyRateInSeconds = $hourlyRate / 3600;
@@ -691,7 +693,7 @@ if (! function_exists('chargeSessionMissedTimeInSeconds')) {
     function chargeSessionMissedTimeInSeconds(App\Models\Session $session, int $totalChargedTime = 0): int
     {
         $totalMissedTime = 0;
-        if (((int) $session->session_completion_code === 2 && filter_var($session->charge_missed_time, FILTER_VALIDATE_BOOLEAN) === true)||(int) $session->session_completion_code === 3) {
+        if (((int) $session->session_completion_code === 2 && filter_var($session->charge_missed_time, FILTER_VALIDATE_BOOLEAN) === true) || (int) $session->session_completion_code === 3) {
 
             $scheduledDate = Carbon::createFromFormat('Y-m-d H:i:s', $session->scheduled_date)->format('m/d/Y');
             $sessionStart = $session->start_time;
@@ -702,7 +704,7 @@ if (! function_exists('chargeSessionMissedTimeInSeconds')) {
 
             $attendedStartTime = $session->attended_start_time;
             $attendedEndTime = $session->attended_end_time;
-            if ($session->session_completion_code==3){
+            if ($session->session_completion_code == 3) {
                 $attendedStartTime = $attendedEndTime = $session->start_time;
             }
             $attendedStartTime = Carbon::createFromFormat('m/d/Y H:i:s', "$scheduledDate $attendedStartTime");
@@ -741,7 +743,7 @@ if (! function_exists('getTotalChargedSessionTimeFromSessionInSeconds')) {
         return $totalChargedTime;
     }
 }
-if (!function_exists('isMissedTimeCharged')){
+if (! function_exists('isMissedTimeCharged')) {
     function isMissedTimeCharged(\App\Models\Session $session): bool
     {
         if ($session->session_completion_code == \App\Models\Session::PARTIAL_COMPLETION_CODE && filter_var($session->charge_missed_time, FILTER_VALIDATE_BOOLEAN) === true) {
@@ -750,6 +752,7 @@ if (!function_exists('isMissedTimeCharged')){
         if ($session->session_completion_code == 3) {
             return true;
         }
+
         return false;
     }
 }
@@ -760,13 +763,13 @@ if (! function_exists('getTotalChargedMissedSessionTimeFromSessionInSeconds')) {
         $sessionEnd = $session->end_time;
         $sessionEnd = Carbon::createFromFormat('m/d/Y H:i:s', "$scheduledDate $sessionEnd");
         $now = Carbon::now();
-        if ($session->id==5004){
-//            dd($now->lte($sessionEnd)   );
+        if ($session->id == 5004) {
+            //            dd($now->lte($sessionEnd)   );
         }
         if ($now->lte($sessionEnd)) {
             return 0;
         }
-        if (in_array($session->session_completion_code, [4,5]) || ($session->session_completion_code == 2 && filter_var($session->charge_missed_time, FILTER_VALIDATE_BOOLEAN) === false)) {
+        if (in_array($session->session_completion_code, [4, 5]) || ($session->session_completion_code == 2 && filter_var($session->charge_missed_time, FILTER_VALIDATE_BOOLEAN) === false)) {
             return 0;
         }
 
@@ -859,15 +862,15 @@ if (! function_exists('getInvoiceCodeFromInvoiceableTypeAndId')) {
     }
 }
 if (! function_exists('setStripeApiKey')) {
-    function setStripeApiKey($getClient=false)
+    function setStripeApiKey($getClient = false)
     {
         $stripeSecretKey = config('services.stripe.secret_key');
         //        $stripeSecret = getSettingValue('stripe_secret');
-        if (!$getClient){
+        if (! $getClient) {
             isset($stripeSecret) ? Stripe::setApiKey($stripeSecret) : Stripe::setApiKey($stripeSecretKey);
 
-        }else{
-            return new \Stripe\StripeClient($stripeSecret??$stripeSecretKey);
+        } else {
+            return new \Stripe\StripeClient($stripeSecret ?? $stripeSecretKey);
         }
     }
 }
@@ -922,6 +925,7 @@ if (! function_exists('getRemainingAmount')) {
         if ($invoice->invoiceable_type == NonInvoicePackage::class) {
             $remainingAmount = $invoice->final_amount - $invoice->amount_paid;
             $remainingAmount = $remainingAmount + $invoice->amount_refunded;
+
             return formatAmountWithCurrency($remainingAmount);
         }
         if ($invoice->invoiceable_type == StudentTutoringPackage::class) {
@@ -932,6 +936,7 @@ if (! function_exists('getRemainingAmount')) {
             $discount_type = $invoice->discount_type;
             $final_amount = cleanAmountWithCurrencyFormat(getPriceFromHoursAndHourlyWithDiscount($hourly_rate, $hours, $discount, $discount_type));
             $final_amount = $final_amount + $invoice->amount_refunded;
+
             return formatAmountWithCurrency($final_amount - $invoice->amount_paid);
         }
         if ($invoice->invoiceable_type == MonthlyInvoicePackage::class) {
@@ -942,6 +947,7 @@ if (! function_exists('getRemainingAmount')) {
             $discount_type = $invoice->discount_type;
             $final_amount = cleanAmountWithCurrencyFormat(getPriceFromHoursAndHourlyWithDiscount($hourly_rate, $hours, $discount, $discount_type));
         }
+
         return 0;
     }
 }
@@ -961,37 +967,38 @@ if (! function_exists('getPaymentGatewayNameFromId')) {
 if (! function_exists('getStripeCustomerIdFromUser')) {
     function getStripeCustomerIdFromUser(Authenticatable $user): string
     {
-        if (!empty($user->stripe_customer_id)) {
+        if (! empty($user->stripe_customer_id)) {
             return $user->stripe_customer_id;
-        } else{
+        } else {
             $customer = Customer::create([
                 'name' => Auth::user()->fullName,
                 'email' => Auth::user()->email,
             ]);
             $user->stripe_customer_id = $customer->id;
             $user->save();
+
             return $customer->id;
         }
     }
 }
-if (!function_exists('getCurrentMonthUsageFromMonthlyPackage')){
-    function getCurrentMonthUsageFromMonthlyPackage(MonthlyInvoicePackage $invoicePackage,$MonthlyInvoicePackageId=null)
+if (! function_exists('getCurrentMonthUsageFromMonthlyPackage')) {
+    function getCurrentMonthUsageFromMonthlyPackage(MonthlyInvoicePackage $invoicePackage, $MonthlyInvoicePackageId = null)
     {
         $totalTimeInSeconds = getTotalChargedTimeFromMonthlyInvoicePackageInSeconds($invoicePackage);
         dd($totalTimeInSeconds);
     }
 }
-if (!function_exists('createUsageRecord')){
-    function createUsageRecord($subscriptionItemId,int $hours = 0,$action = 'increment')
+if (! function_exists('createUsageRecord')) {
+    function createUsageRecord($subscriptionItemId, int $hours = 0, $action = 'increment')
     {
-        SubscriptionItem::createUsageRecord($subscriptionItemId,[
-            'quantity' =>  $hours,
-            'action' => $action
+        SubscriptionItem::createUsageRecord($subscriptionItemId, [
+            'quantity' => $hours,
+            'action' => $action,
         ]);
     }
 }
 
-if (!function_exists('getFutureDueDate')){
+if (! function_exists('getFutureDueDate')) {
     function getFutureDueDate(Carbon $date): Carbon
     {
         if ($date->isPast()) {
@@ -1009,13 +1016,13 @@ if (!function_exists('getFutureDueDate')){
     }
 }
 
-if (!function_exists('getCurrentTenant')){
+if (! function_exists('getCurrentTenant')) {
     function getCurrentTenant(): int
     {
         return 1;
     }
 }
-if (!function_exists('getLastThirtyDays')){
+if (! function_exists('getLastThirtyDays')) {
     function getLastThirtyDays(): array
     {
         $today = Carbon::now();
@@ -1023,16 +1030,18 @@ if (!function_exists('getLastThirtyDays')){
         for ($i = 0; $i < 30; $i++) {
             $lastThirtyDays[] = $today->copy()->subDays($i)->format('d M');
         }
+
         return array_reverse($lastThirtyDays);
     }
 }
-if (!function_exists('getLastThirtyDaySessionCountDateWise')){
+if (! function_exists('getLastThirtyDaySessionCountDateWise')) {
     function getLastThirtyDaySessionCountDateWise(): array
     {
 
-        $sessionCounts = Cache::rememberForever('session_count',function (){
+        $sessionCounts = Cache::rememberForever('session_count', function () {
             $today = Carbon::now()->toDateString();
             $thirtyDaysAgo = Carbon::now()->subDays(29)->toDateString();
+
             return \App\Models\Session::query()
                 ->leftJoin(
                     DB::raw("(SELECT DISTINCT scheduled_date FROM sessions WHERE scheduled_date BETWEEN '{$thirtyDaysAgo}' AND '{$today}') AS dates"),
@@ -1052,25 +1061,26 @@ if (!function_exists('getLastThirtyDaySessionCountDateWise')){
             $lastThirtyDays[] = $today->copy()->subDays($i)->toDateString();
         }
         $result = [];
-        foreach (array_reverse($lastThirtyDays) as $date){
+        foreach (array_reverse($lastThirtyDays) as $date) {
             $result[] = $sessionCounts[$date] ?? 0;
         }
+
         return $result;
     }
 }
-if (!function_exists('getWeeklySessionCount')){
+if (! function_exists('getWeeklySessionCount')) {
     function getWeeklySessionCount(array $allSessions)
     {
         $allSessions = array_reverse($allSessions);
-        $count=0;
-        for ($i=0;$i<7;$i++){
-            $count+=$allSessions[$i];
+        $count = 0;
+        for ($i = 0; $i < 7; $i++) {
+            $count += $allSessions[$i];
         }
 
         return $count;
     }
 }
-if (!function_exists('getTwelveMonthsName')){
+if (! function_exists('getTwelveMonthsName')) {
     function getTwelveMonthsName(): array
     {
         $months = [];
@@ -1078,27 +1088,29 @@ if (!function_exists('getTwelveMonthsName')){
         for ($i = 0; $i < 12; $i++) {
             $months[] = $today->copy()->subMonths($i)->format('M');
         }
+
         return array_reverse($months);
     }
 }
-if (!function_exists('getOneYearEarning')){
+if (! function_exists('getOneYearEarning')) {
     function getOneYearEarning(): array
     {
-        $earnings = Cache::rememberForever('earning_sum',function (){
+        $earnings = Cache::rememberForever('earning_sum', function () {
             return Payment::query()
-                ->selectRaw("SUBSTRING(UPPER(MONTHNAME(created_at)), 1, 3) as month, SUM(amount - amount_refunded) as earned_amount")
+                ->selectRaw('SUBSTRING(UPPER(MONTHNAME(created_at)), 1, 3) as month, SUM(amount - amount_refunded) as earned_amount')
                 ->whereBetween('created_at', [Carbon::now()->subMonths(11)->startOfMonth(), Carbon::now()->endOfMonth()])
                 ->groupBy(DB::raw('YEAR(created_at)'), DB::raw('MONTH(created_at)'))
                 ->orderBy(DB::raw('YEAR(created_at)'), 'asc')
                 ->orderBy(DB::raw('MONTH(created_at)'), 'asc')
                 ->get();
         });
-        $earnings = $earnings->pluck('earned_amount','month')->toArray();
+        $earnings = $earnings->pluck('earned_amount', 'month')->toArray();
         $lastTwelveMonths = getTwelveMonthsName();
         $result = [];
-        foreach ($lastTwelveMonths as $month){
+        foreach ($lastTwelveMonths as $month) {
             $result[] = $earnings[strtoupper($month)] ?? 0;
         }
+
         return $result; //do not reverse because the months area already revered
     }
 }
