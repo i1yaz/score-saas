@@ -30,25 +30,27 @@ if (! function_exists('booleanSelect')) {
 if (! function_exists('getRoleDescriptionOfLoggedInUser')) {
     function getRoleDescriptionOfLoggedInUser(): string
     {
-        if (Auth::user()->hasRole('super-admin')) {
-            return 'Super Admin';
-        }
-        if (Auth::user()->hasRole('admin')) {
-            return 'Admin';
-        }
-        if (Auth::user()->hasRole('student')) {
-            return 'Student';
-        }
-        if (Auth::user()->hasRole('parent')) {
-            return 'Parent';
-        }
-        if (Auth::user()->hasRole('tutor')) {
-            return 'Tutor';
-        }
-        if (Auth::user()->hasRole('client')) {
-            return 'Client';
-        }
+        if (Auth::check()) {
 
+            if (Auth::user()->hasRole('super-admin')) {
+                return 'Super Admin';
+            }
+            if (Auth::user()->hasRole('admin')) {
+                return 'Admin';
+            }
+            if (Auth::user()->hasRole('student')) {
+                return 'Student';
+            }
+            if (Auth::user()->hasRole('parent')) {
+                return 'Parent';
+            }
+            if (Auth::user()->hasRole('tutor')) {
+                return 'Tutor';
+            }
+            if (Auth::user()->hasRole('client')) {
+                return 'Client';
+            }
+        }
         return '';
     }
 }

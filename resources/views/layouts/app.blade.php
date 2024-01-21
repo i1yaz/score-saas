@@ -38,17 +38,21 @@
                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
                             <img src="{{asset('img/logo.svg')}}"
                                 class="user-image img-circle elevation-2" alt="User Image">
-                            <span class="d-none d-md-inline">{{ Auth::user()->name }}</span>
+                            @if(\Auth::check())
+                                <span class="d-none d-md-inline">{{ Auth::user()->name }}</span>
+                            @endif
                         </a>
                         <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                             <!-- User image -->
                             <li class="user-header bg-primary">
                                 <img src="{{asset('img/logo.svg')}}"
                                     class="img-circle elevation-2" alt="User Image">
+                                @if(\Auth::check())
                                 <p>
                                     {{ Auth::user()->email }}
                                     <small>Member since {{ Auth::user()->created_at->format('M. Y') }}</small>
                                 </p>
+                                @endif
                             </li>
                             <!-- Menu Footer-->
                             <li class="user-footer">
