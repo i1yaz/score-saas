@@ -11,15 +11,7 @@ use Illuminate\Support\Facades\Auth;
 class SessionPolicy
 {
     use HandlesAuthorization;
-
-    public function before(User $user)
-    {
-        //['super-admin','admin','student','parent','tutor','proctor','client','developer']
-
-        if (Auth::user()->hasRole(['super-admin', 'admin'])) {
-            return true;
-        }
-    }
+    //Before method is inside the AuthServiceProvider
 
     public function viewAny(User $user): bool
     {

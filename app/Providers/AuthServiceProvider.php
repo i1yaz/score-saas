@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-// use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Gate;
 use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\MonthlyInvoicePackage;
@@ -48,6 +48,11 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Gate::before(function ($user, $ability) {
+
+            if (\Auth::user()->hasRole(['super-admin', 'admin'])) {
+                return true;
+            }
+        });
     }
 }
