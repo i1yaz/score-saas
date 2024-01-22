@@ -51,7 +51,11 @@ class ReportMonthlyPackageUsageCommand extends Command
                 }
                 $totalHours = floor($totalTimeInSeconds / 3600);
                 $totalMinutes = floor(($totalTimeInSeconds / 60) % 60);
-                if (! empty($monthlyPackage->subscription_id) && ! empty($monthlyPackage->stripe_item_id) && ! empty($monthlyPackage->stripe_minutes_item_id)) {
+                if (! empty($monthlyPackage->subscription_id)
+                    && ! empty($monthlyPackage->stripe_item_id)
+                    && ! empty($monthlyPackage->stripe_minutes_item_id)
+                    && ! ($totalHours+$totalMinutes ) == 0
+                ) {
                     createUsageRecord($monthlyPackage->stripe_item_id, $totalHours, 'set');
                     createUsageRecord($monthlyPackage->stripe_minutes_item_id, $totalMinutes, 'set');
                     Session::whereIn('id', $billedSessions)->update(['is_billed' => true]);
