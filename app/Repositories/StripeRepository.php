@@ -167,7 +167,7 @@ class StripeRepository
                 'invoice_id' => $monthlySubscription->invoice_id,
                 'is_subscription_payment' => true,
                 'payment_gateway_id' => 1,
-                'transaction_id' => $sessionObject['charge'],
+                'transaction_id' => $sessionObject['charge']??'zero_invoice',
                 'amount' => $sessionObject['amount_paid'] / 100,
                 'meta' => json_encode($sessionObject),
             ];
