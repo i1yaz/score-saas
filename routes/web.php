@@ -39,7 +39,10 @@ use Illuminate\Support\Facades\Route;
 //Route::get('packages/{package}/edit',[App\Http\Controllers\SchoolController::class,'edit'])->name('packages.edit')->middleware(['permission:package-edit']);
 //Route::patch('packages/{package}',[App\Http\Controllers\SchoolController::class,'update'])->name('packages.update')->middleware(['permission:package-edit']);
 //Route::delete('packages/{package}',[App\Http\Controllers\SchoolController::class,'destroy'])->name('packages.destroy')->middleware(['permission:package-destroy']);
-
+Route::get('/installment', function () {
+    $installmentGenerator = new \App\Helpers\InstallmentsGenerator(1000.56,0,4);
+    dd( $installmentGenerator->getMonthlyInstallment(12),$installmentGenerator->getFutureAmount(3));
+});
 Route::get('/', function () {
     return view('welcome');
 });
