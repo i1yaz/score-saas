@@ -37,7 +37,7 @@ class StudentTutoringPackageRepository extends BaseRepository
 
     public function create(array $input): Model|StudentTutoringPackage
     {
-        $input['allow_partial_payment'] = yesNoToBoolean($input['allow_partial_payment']);
+//        $input['allow_partial_payment'] = yesNoToBoolean($input['allow_partial_payment']);
         $input['auth_guard'] = Auth::guard()->name;
         $input['added_by'] = Auth::id();
 
