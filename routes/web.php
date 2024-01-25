@@ -44,9 +44,9 @@ Route::get('/installment', function () {
 
     // Given values
     $principalAmount = 10000;
-    $annualInterestRate = 20;
+    $annualInterestRate = 0;
     $numberOfInstallments = 12;
-
+dd( MonthlyInstallments::calculate($principalAmount,$annualInterestRate,$numberOfInstallments));
 // Calculate monthly interest rate
     $monthlyInterestRate = ($annualInterestRate / 12) / 100;
 

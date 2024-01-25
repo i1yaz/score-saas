@@ -41,11 +41,10 @@ class MonthlyInstallments
         }
         $emi = self::calculateReducingRateEMI($principalAmount,$annualInterestRate,$numberOfInstallments);
         $monthlyInterestRate = self::calculateMonthlyInterestRate($annualInterestRate);
+        $openingBalance = $principalAmount;
         for ($i = 1; $i <= $numberOfInstallments; $i++) {
-
-            $openingBalance = $principalAmount;
-            $interest =  ceil($openingBalance * $monthlyInterestRate);
-            $principalRepayment = ($i === $numberOfInstallments) ? $openingBalance : ceil($emi - $interest);
+            $interest =  $openingBalance * $monthlyInterestRate;
+            $principalRepayment = ($i === $numberOfInstallments) ? $openingBalance : $emi - $interest;
             $closingBalance = $openingBalance - $principalRepayment;
             $payments[$i] = MonthlyInstallments::create(
                 $i,
@@ -55,6 +54,7 @@ class MonthlyInstallments
                 self::floatNumber($emi),
                 self::floatNumber($closingBalance)
             );
+            $openingBalance = $closingBalance;
         }
 
         return $payments;
@@ -87,7 +87,7 @@ class MonthlyInstallments
             return ($principalAmount/$numberOfInstallments);
         }
         $monthlyInterestRate = self::calculateMonthlyInterestRate($annualInterestRate);
-        return self::floatNumber($principalAmount * ($monthlyInterestRate * pow(1 + $monthlyInterestRate, $numberOfInstallments)) / (pow(1 + $monthlyInterestRate, $numberOfInstallments) - 1));
+        return round($principalAmount * ($monthlyInterestRate * pow(1 + $monthlyInterestRate, $numberOfInstallments)) / (pow(1 + $monthlyInterestRate, $numberOfInstallments) - 1),2);
     }
     private static function calculateMonthlyInterestRate($annualInterestRate): float|int
     {
