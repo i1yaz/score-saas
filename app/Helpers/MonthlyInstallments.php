@@ -39,31 +39,43 @@ class MonthlyInstallments
         if (0 >= $numberOfInstallments) {
             throw new InvalidArgumentException('Number of payments must be greater than 0');
         }
-        $emi = self::calculateReducingRateEMI($principalAmount,$annualInterestRate,$numberOfInstallments);
+        $equatedMonthlyInstallment = self::calculateReducingRateEMI($principalAmount,$annualInterestRate,$numberOfInstallments);
         $monthlyInterestRate = self::calculateMonthlyInterestRate($annualInterestRate);
         $openingBalance = $principalAmount;
-        $amountPaid = 0;
-        for ($i = 1; $i <= $numberOfInstallments; $i++) {
+        if ($annualInterestRate === self::floatNumber(0)){
+            return self::generateZeroInterestRateInstallments($numberOfInstallments,$monthlyInterestRate,$equatedMonthlyInstallment,$annualInterestRate,$openingBalance);
+        }else{
+            return self::generateInstallments($numberOfInstallments,$monthlyInterestRate,$equatedMonthlyInstallment,$annualInterestRate,$openingBalance);
+        }
 
+    }
+    private static function generateZeroInterestRateInstallments($numberOfInstallments,$monthlyInterestRate,$equatedMonthlyInstallment,$annualInterestRate,$openingBalance):array
+    {
+        $amountPaid=0;
+        $payments=[];
+        for ($i = 1; $i <= $numberOfInstallments; $i++) {
             $interest =  self::floatNumber($openingBalance * $monthlyInterestRate);
-            $principalRepayment =  self::floatNumber($emi - $interest);
+            $equatedMonthlyInstallment = ceil($equatedMonthlyInstallment);
+            $principalRepayment =  ceil(self::floatNumber($equatedMonthlyInstallment - $interest));
             $closingBalance = self::floatNumber($openingBalance - $principalRepayment);
-            if ($numberOfInstallments === $i && $closingBalance > 0 && $annualInterestRate==0) {
-                $emi = $emi + $closingBalance;
-                $closingBalance = 0;
+            if($numberOfInstallments === $i && $closingBalance < 0){
+                $equatedMonthlyInstallment = $equatedMonthlyInstallment + $closingBalance;
+                $closingBalance = $closingBalance + abs($closingBalance);
+            }else if ($numberOfInstallments === $i && $closingBalance > 0) {
+                $equatedMonthlyInstallment = $equatedMonthlyInstallment - $closingBalance;
+                $closingBalance = $closingBalance + abs($closingBalance);
             }
             $payments[$i] = MonthlyInstallments::create(
                 $i,
                 $openingBalance,
                 $interest,
                 $principalRepayment,
-                $emi,
+                $equatedMonthlyInstallment,
                 $closingBalance
             );
-            $amountPaid = $amountPaid + $emi;
+            $amountPaid = $amountPaid + $equatedMonthlyInstallment;
             $openingBalance =$closingBalance;
         }
-
         return $payments;
     }
 
@@ -77,20 +89,20 @@ class MonthlyInstallments
         return round($number, 2);
     }
 
-    private static function create($month, $openingBalance, $interest, $principalRepayment, $emi, $closingBalance): MonthlyInstallments
+    private static function create($month, $openingBalance, $interest, $principalRepayment, $equatedMonthlyInstallment, $closingBalance): MonthlyInstallments
     {
         $payment = new self();
         $payment->month = $month;
         $payment->openingBalance = $openingBalance;
         $payment->interest = $interest;
         $payment->principalRepayment = $principalRepayment;
-        $payment->amountToBePaid = $emi;
+        $payment->amountToBePaid = $equatedMonthlyInstallment;
         $payment->closingBalance = $closingBalance;
         return $payment;
     }
     private static function calculateReducingRateEMI($principalAmount, $annualInterestRate, $numberOfInstallments): float
     {
-        if ($annualInterestRate < 1){
+        if ($annualInterestRate === self::floatNumber(0)){
             return self::floatNumber($principalAmount/$numberOfInstallments);
         }
         $monthlyInterestRate = self::calculateMonthlyInterestRate($annualInterestRate);
@@ -99,6 +111,36 @@ class MonthlyInstallments
     private static function calculateMonthlyInterestRate($annualInterestRate): float|int
     {
         return ($annualInterestRate / 12) / 100;
+    }
+
+    private static function generateInstallments(int $numberOfInstallments, float|int $monthlyInterestRate, float $equatedMonthlyInstallment, float $annualInterestRate, float $openingBalance): array
+    {
+        $amountPaid=0;
+        $payments=[];
+        for ($i = 1; $i <= $numberOfInstallments; $i++) {
+            $interest =  round($openingBalance * $monthlyInterestRate);
+            $equatedMonthlyInstallment = round($equatedMonthlyInstallment);
+            $principalRepayment =  round(self::floatNumber($equatedMonthlyInstallment - $interest));
+            $closingBalance = self::floatNumber($openingBalance - $principalRepayment);
+//            if($numberOfInstallments === $i && $closingBalance < 0){
+//                $equatedMonthlyInstallment = $equatedMonthlyInstallment + $closingBalance;
+//                $closingBalance = $closingBalance + abs($closingBalance);
+//            }else if ($numberOfInstallments === $i && $closingBalance > 0) {
+//                $equatedMonthlyInstallment = $equatedMonthlyInstallment - $closingBalance;
+//                $closingBalance = $closingBalance + abs($closingBalance);
+//            }
+            $payments[$i] = MonthlyInstallments::create(
+                $i,
+                $openingBalance,
+                $interest,
+                $principalRepayment,
+                $equatedMonthlyInstallment,
+                $closingBalance
+            );
+            $amountPaid = $amountPaid + $equatedMonthlyInstallment;
+            $openingBalance =$closingBalance;
+        }
+        return $payments;
     }
 
 }
