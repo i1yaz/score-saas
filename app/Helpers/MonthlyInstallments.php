@@ -27,8 +27,8 @@ class MonthlyInstallments
             throw new InvalidArgumentException('Invalid type of method argument');
         }
 
-        $principalAmount = floatval($principalAmount);
-        $annualInterestRate = floatval($annualInterestRate);
+        $principalAmount = self::floatNumber($principalAmount);
+        $annualInterestRate = self::floatNumber($annualInterestRate);
         if ($annualInterestRate < 0){
             throw new InvalidArgumentException('Interest rate must be 0 or more.');
         }
@@ -42,19 +42,26 @@ class MonthlyInstallments
         $emi = self::calculateReducingRateEMI($principalAmount,$annualInterestRate,$numberOfInstallments);
         $monthlyInterestRate = self::calculateMonthlyInterestRate($annualInterestRate);
         $openingBalance = $principalAmount;
+        $amountPaid = 0;
         for ($i = 1; $i <= $numberOfInstallments; $i++) {
-            $interest =  $openingBalance * $monthlyInterestRate;
-            $principalRepayment = ($i === $numberOfInstallments) ? $openingBalance : $emi - $interest;
-            $closingBalance = $openingBalance - $principalRepayment;
+
+            $interest =  self::floatNumber($openingBalance * $monthlyInterestRate);
+            $principalRepayment =  self::floatNumber($emi - $interest);
+            $closingBalance = self::floatNumber($openingBalance - $principalRepayment);
+            if ($numberOfInstallments === $i && $closingBalance > 0 && $annualInterestRate==0) {
+                $emi = $emi + $closingBalance;
+                $closingBalance = 0;
+            }
             $payments[$i] = MonthlyInstallments::create(
                 $i,
-                self::floatNumber($openingBalance),
-                self::floatNumber($interest),
-                self::floatNumber($principalRepayment),
-                self::floatNumber($emi),
-                self::floatNumber($closingBalance)
+                $openingBalance,
+                $interest,
+                $principalRepayment,
+                $emi,
+                $closingBalance
             );
-            $openingBalance = $closingBalance;
+            $amountPaid = $amountPaid + $emi;
+            $openingBalance =$closingBalance;
         }
 
         return $payments;
@@ -67,7 +74,7 @@ class MonthlyInstallments
      */
     private static function floatNumber($number): float
     {
-        return (float)number_format((float)$number, 2, '.', '');
+        return round($number, 2);
     }
 
     private static function create($month, $openingBalance, $interest, $principalRepayment, $emi, $closingBalance): MonthlyInstallments
@@ -84,10 +91,10 @@ class MonthlyInstallments
     private static function calculateReducingRateEMI($principalAmount, $annualInterestRate, $numberOfInstallments): float
     {
         if ($annualInterestRate < 1){
-            return ($principalAmount/$numberOfInstallments);
+            return self::floatNumber($principalAmount/$numberOfInstallments);
         }
         $monthlyInterestRate = self::calculateMonthlyInterestRate($annualInterestRate);
-        return round($principalAmount * ($monthlyInterestRate * pow(1 + $monthlyInterestRate, $numberOfInstallments)) / (pow(1 + $monthlyInterestRate, $numberOfInstallments) - 1),2);
+        return $principalAmount * ($monthlyInterestRate * pow(1 + $monthlyInterestRate, $numberOfInstallments)) / (pow(1 + $monthlyInterestRate, $numberOfInstallments) - 1);
     }
     private static function calculateMonthlyInterestRate($annualInterestRate): float|int
     {

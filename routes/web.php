@@ -43,8 +43,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/installment', function () {
 
     // Given values
-    $principalAmount = 10000;
-    $annualInterestRate = 0;
+    $principalAmount = 1000;
+    $annualInterestRate = 10;
     $numberOfInstallments = 12;
 dd( MonthlyInstallments::calculate($principalAmount,$annualInterestRate,$numberOfInstallments));
 // Calculate monthly interest rate
