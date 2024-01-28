@@ -35,6 +35,9 @@
                         d.search = $('input[type="search"]').val();
                     }
                 },
+                fnInitComplete: function () {
+
+                },
                 columns: [
                     { data: 'invoice_id', name: 'invoice_id', orderable: true },
                     { data: 'package', name: 'package', orderable: false },

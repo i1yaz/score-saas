@@ -44,9 +44,11 @@ Route::get('/installment', function () {
 
     // Given values
     $principalAmount = 1000;
-    $annualInterestRate = 20;
+    $annualInterestRate = 0;
     $numberOfInstallments = 12;
     $installments = MonthlyInstallments::calculate($principalAmount,$annualInterestRate,$numberOfInstallments);
+
+    dd($installments);
     return view('welcome',compact('installments'));
 
 // Calculate monthly interest rate
@@ -172,6 +174,7 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], functio
     Route::delete('invoice-package-types/{invoice_package_type}', [InvoicePackageTypeController::class, 'destroy'])->name('invoice-package-types.destroy')->middleware(['permission:invoice_package_type-destroy']);
     //Invoices
     Route::get('invoices', [InvoiceController::class, 'index'])->name('invoices.index')->middleware(['permission:invoice-index']);
+    Route::post('invoices/{invoice}/create-installments', [InvoiceController::class, 'createInstallments'])->name('invoices.create-installments')->middleware(['permission:invoice-installments']);
     Route::get('invoices/create', [InvoiceController::class, 'create'])->name('invoices.create')->middleware(['permission:invoice-create']);
     Route::post('invoices', [InvoiceController::class, 'store'])->name('invoices.store')->middleware(['permission:invoice-create']);
     Route::get('invoices/{invoice}/pay/{type?}', [InvoiceController::class, 'showPaymentPage'])->name('invoices.pay')->middleware(['permission:invoice-pay']);
