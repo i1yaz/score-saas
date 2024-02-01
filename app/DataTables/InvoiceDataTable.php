@@ -136,7 +136,7 @@ class InvoiceDataTable implements IDataTables
                     $nestedData['amount_remaining'] = getRemainingAmount($invoice);
                 }
                 //                $nestedData['fully_paid_at'] = $invoice->fully_paid_at;
-                $nestedData['action'] = view('invoices.actions', ['invoice' => $invoice, 'type' => getInvoiceTypeFromClass($invoice->invoiceable_type, true),'remainingAmount'=>$nestedData['amount_remaining']])->render();
+                $nestedData['action'] = view('invoices.actions', ['invoice' => $invoice, 'type' => getInvoiceTypeFromClass($invoice->invoiceable_type, true), 'remainingAmount' => $nestedData['amount_remaining']])->render();
                 $data[] = $nestedData;
             }
         }

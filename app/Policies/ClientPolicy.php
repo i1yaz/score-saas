@@ -30,9 +30,9 @@ class ClientPolicy
         return false;
     }
 
-    public function create(Authenticatable $user): bool
-    {
-    }
+    //    public function create(Authenticatable $user): bool
+    //    {
+    //    }
 
     public function update(Authenticatable $user, Client $client): bool
     {
@@ -43,15 +43,15 @@ class ClientPolicy
         return false;
     }
 
-    public function delete(Authenticatable $user, Client $client): bool
-    {
-    }
-
-    public function restore(Authenticatable $user, Client $client): bool
-    {
-    }
-
-    public function forceDelete(Authenticatable $user, Client $client): bool
-    {
-    }
+    //    public function delete(Authenticatable $user, Client $client): bool
+    //    {
+    //    }
+    //
+    //    public function restore(Authenticatable $user, Client $client): bool
+    //    {
+    //    }
+    //
+    //    public function forceDelete(Authenticatable $user, Client $client): bool
+    //    {
+    //    }
 }

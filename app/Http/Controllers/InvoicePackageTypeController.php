@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateInvoicePackageTypeRequest;
 use App\Http\Requests\UpdateInvoicePackageTypeRequest;
 use App\Repositories\InvoicePackageTypeRepository;
-use Flash;
 use Illuminate\Http\Request;
+use Laracasts\Flash\Flash;
 
 class InvoicePackageTypeController extends AppBaseController
 {

@@ -21,6 +21,7 @@ use App\Policies\StudentPolicy;
 use App\Policies\studentTutoringPackagePolicy;
 use App\Policies\TutorPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
@@ -50,7 +51,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         Gate::before(function ($user, $ability) {
 
-            if (\Auth::user()->hasRole(['super-admin', 'admin'])) {
+            if (Auth::user()->hasRole(['super-admin', 'admin'])) {
                 return true;
             }
         });

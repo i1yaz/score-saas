@@ -23,10 +23,10 @@ class studentTutoringPackagePolicy
         }
     }
 
-    public function viewAny(Authenticatable $user): bool
-    {
-
-    }
+    //    public function viewAny(Authenticatable $user): bool
+    //    {
+    //
+    //    }
 
     public function view(Authenticatable $user, StudentTutoringPackage $studentTutoringPackage): bool
     {
@@ -37,9 +37,9 @@ class studentTutoringPackagePolicy
         return false;
     }
 
-    public function create(Authenticatable $user): bool
-    {
-    }
+    //    public function create(Authenticatable $user): bool
+    //    {
+    //    }
 
     public function update(Authenticatable $user, StudentTutoringPackage $studentTutoringPackage): bool
     {
@@ -59,11 +59,11 @@ class studentTutoringPackagePolicy
         return false;
     }
 
-    public function restore(Authenticatable $user, StudentTutoringPackage $studentTutoringPackage): bool
-    {
-    }
-
-    public function forceDelete(Authenticatable $user, StudentTutoringPackage $studentTutoringPackage): bool
-    {
-    }
+    //    public function restore(Authenticatable $user, StudentTutoringPackage $studentTutoringPackage): bool
+    //    {
+    //    }
+    //
+    //    public function forceDelete(Authenticatable $user, StudentTutoringPackage $studentTutoringPackage): bool
+    //    {
+    //    }
 }

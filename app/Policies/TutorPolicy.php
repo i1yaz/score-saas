@@ -23,10 +23,10 @@ class TutorPolicy
         }
     }
 
-    public function viewAny(Authenticatable $user): bool
-    {
-
-    }
+    //    public function viewAny(Authenticatable $user): bool
+    //    {
+    //
+    //    }
 
     public function view(Authenticatable $user, Tutor $tutor): bool
     {
@@ -51,15 +51,15 @@ class TutorPolicy
         return false;
     }
 
-    public function delete(Authenticatable $user, Tutor $tutor): bool
-    {
-    }
-
-    public function restore(Authenticatable $user, Tutor $tutor): bool
-    {
-    }
-
-    public function forceDelete(Authenticatable $user, Tutor $tutor): bool
-    {
-    }
+    //    public function delete(Authenticatable $user, Tutor $tutor): bool
+    //    {
+    //    }
+    //
+    //    public function restore(Authenticatable $user, Tutor $tutor): bool
+    //    {
+    //    }
+    //
+    //    public function forceDelete(Authenticatable $user, Tutor $tutor): bool
+    //    {
+    //    }
 }

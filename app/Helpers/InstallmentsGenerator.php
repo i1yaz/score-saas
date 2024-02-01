@@ -2,12 +2,10 @@
 
 namespace App\Helpers;
 
-
 use Exception;
 
 class InstallmentsGenerator
 {
-
     private $taxes;
 
     private $amount;
@@ -95,7 +93,9 @@ class InstallmentsGenerator
     /**
      * get
      * Return the installments array
+     *
      * @return array
+     *
      * @author Lucas Colette
      */
     public function get()
@@ -103,8 +103,9 @@ class InstallmentsGenerator
 
         $installments = [];
 
-        if (count($this->getTaxes()) == 0)
+        if (count($this->getTaxes()) == 0) {
             return null;
+        }
 
         for ($i = 1; $i <= count($this->getTaxes()); $i++) {
 
@@ -134,21 +135,21 @@ class InstallmentsGenerator
                 $amountFormated = sprintf('%s %s', $this->getSymbol(), number_format($total, 2, ',', '.'));
 
                 $data = [
-                    'amount' => (float)number_format($total, 2, '.', ''),
+                    'amount' => (float) number_format($total, 2, '.', ''),
                     'amount_formated' => $amountFormated,
-                    'base_value' => (float)number_format($this->getAmount(), 2, '.', ''),
+                    'base_value' => (float) number_format($this->getAmount(), 2, '.', ''),
                     'tax' => $this->getTaxes()[$key]['tax'],
                     'tax_value' => $taxValue,
-                    'discount_percent' => (float)number_format($discount, 2, '.', ''),
-                    'discount_value' => (float)number_format($discountValue, 2, '.', ''),
+                    'discount_percent' => (float) number_format($discount, 2, '.', ''),
+                    'discount_value' => (float) number_format($discountValue, 2, '.', ''),
                     'discount_value_formated' => $discountValueFormated,
                     'installment' => $installment,
-                    'installment_value' => (float)number_format($installmentValue, 2, '.', ''),
+                    'installment_value' => (float) number_format($installmentValue, 2, '.', ''),
                     'installment_value_formated' => $installmentValueFormated,
                     'text' => sprintf('%sx de %s %s', $installment, $installmentValueFormated, $taxText),
                     'text_with_tax' => sprintf('%sx de %s', $installment, $installmentValueFormated),
-                    'text_discount_percent' => $discount > 0 ? ceil($discount) . ' Cash discount on card' : null,
-                    'text_discount' => $discount > 0 ? $totalFormated . ' Cash payment on card' : null
+                    'text_discount_percent' => $discount > 0 ? ceil($discount).' Cash discount on card' : null,
+                    'text_discount' => $discount > 0 ? $totalFormated.' Cash payment on card' : null,
                 ];
 
                 array_push($installments, $data);
@@ -172,8 +173,9 @@ class InstallmentsGenerator
             'text_discount' => $installments[0]['text_discount'],
         ];
 
-        if ($this->getShowList())
+        if ($this->getShowList()) {
             $arr['installments'] = $installments;
+        }
 
         return $arr;
 
@@ -182,18 +184,16 @@ class InstallmentsGenerator
     /**
      * getValuesByInstallment
      * Return the indexes by installment number
-     * @param int $installment
-     * @return array
+     *
      * @throws Exception
      */
     public function getValuesByInstallment(int $installment): array
     {
 
-        if (isset($this->get()['installments'][$installment - 1]))
+        if (isset($this->get()['installments'][$installment - 1])) {
             return $this->get()['installments'][$installment - 1];
+        }
 
         throw new Exception('Invalid installment', E_USER_ERROR);
-
     }
-
 }

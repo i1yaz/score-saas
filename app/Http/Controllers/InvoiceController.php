@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\DataTables\InvoiceDataTable;
-use App\Helpers\InstallmentsGenerator;
 use App\Helpers\MonthlyInstallments;
 use App\Http\Requests\CreateInstallments;
 use App\Http\Requests\CreateInvoiceRequest;
@@ -17,8 +16,9 @@ use App\Models\StudentTutoringPackage;
 use App\Models\Tax;
 use App\Repositories\InvoiceRepository;
 use Carbon\Carbon;
-use Flash;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Laracasts\Flash\Flash;
 
 class InvoiceController extends AppBaseController
 {
@@ -34,7 +34,7 @@ class InvoiceController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $this->authorize('viewAny', \Auth::user());
+        $this->authorize('viewAny', Auth::user());
         if ($request->ajax()) {
             $columns = [
                 'invoice_id',
@@ -232,21 +232,21 @@ class InvoiceController extends AppBaseController
 
     public function showPublicInvoice($invoice, $type = null)
     {
-        if ($type == 'non-package-invoice') {
-            $invoiceData = $this->invoiceRepository->getNonPackageInvoiceData($invoice);
-        }
-        $invoiceData['statusArr'] = Invoice::STATUS_ARR;
-        $invoiceData['status'] = $invoice->status;
-        unset($invoiceData['statusArr'][Invoice::DRAFT]);
-        $invoiceData['paymentType'] = Payment::PAYMENT_TYPE;
-        $invoiceData['paymentMode'] = $this->invoiceRepository->getPaymentGateways();
-        $invoiceData['stripeKey'] = getSettingValue('stripe_key');
-        $invoiceData['userLang'] = $invoice->client->user->language;
-
-        return view('invoices.public-invoice.public_view')->with($invoiceData);
+        //        if ($type == 'non-package-invoice') {
+        //            $invoiceData = $this->invoiceRepository->getNonPackageInvoiceData($invoice);
+        //        }
+        //        $invoiceData['statusArr'] = Invoice::STATUS_ARR;
+        //        $invoiceData['status'] = $invoice->status;
+        //        unset($invoiceData['statusArr'][Invoice::DRAFT]);
+        //        $invoiceData['paymentType'] = Payment::PAYMENT_TYPE;
+        //        $invoiceData['paymentMode'] = $this->invoiceRepository->getPaymentGateways();
+        //        $invoiceData['stripeKey'] = getSettingValue('stripe_key');
+        //        $invoiceData['userLang'] = $invoice->client->user->language;
+        //
+        //        return view('invoices.public-invoice.public_view')->with($invoiceData);
     }
 
-    public function createInstallments(CreateInstallments $request,$invoiceId)
+    public function createInstallments(CreateInstallments $request, $invoiceId)
     {
 
         $invoice = Invoice::select([
@@ -256,13 +256,13 @@ class InvoiceController extends AppBaseController
             'student_tutoring_packages.hours',
             'student_tutoring_packages.hourly_rate',
             'student_tutoring_packages.discount_type',
-            'student_tutoring_packages.start_date'
+            'student_tutoring_packages.start_date',
         ])
-            ->join('student_tutoring_packages', function ($query){
+            ->join('student_tutoring_packages', function ($query) {
                 $query->on('student_tutoring_packages.id', '=', 'invoices.invoiceable_id')
                     ->where('invoices.invoiceable_type', '=', StudentTutoringPackage::class);
             })
-            ->where('invoices.id','=' ,$invoiceId)->firstOrFail();
+            ->where('invoices.id', '=', $invoiceId)->firstOrFail();
 
         $this->authorize('createInstallments', $invoice);
 

@@ -10,10 +10,12 @@ use App\Models\ParentUser;
 use App\Models\Student;
 use App\Models\StudentTutoringPackage;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Laracasts\Flash\Flash;
+use Throwable;
 
 class InvoiceRepository extends BaseRepository
 {
@@ -176,7 +178,7 @@ class InvoiceRepository extends BaseRepository
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception|Throwable
      */
     public function create(array $input): NonInvoicePackage
     {
@@ -213,10 +215,9 @@ class InvoiceRepository extends BaseRepository
             $tax2Ids = json_encode($input['tax2_id']);
         }
         $totalFinalAmount = $totalFinalAmount + $taxOnSubtotal;
-
+        $nonPackageInvoice = new NonInvoicePackage();
         DB::beginTransaction();
         try {
-            $nonPackageInvoice = new NonInvoicePackage();
             $nonPackageInvoice->client_id = $input['client_id'];
             $nonPackageInvoice->tax2_ids = $tax2Ids ?? null;
             $nonPackageInvoice->discount_amount = $discountedAmountOnSubtotal;
@@ -241,14 +242,13 @@ class InvoiceRepository extends BaseRepository
             $invoice->items()->sync($data);
             DB::commit();
             Flash::success('Invoice saved successfully.');
-
-            return $nonPackageInvoice;
         } catch (QueryException $queryException) {
             DB::rollBack();
             report($queryException);
             Flash::error('something went wrong');
         }
 
+        return $nonPackageInvoice;
     }
 
     public function showNonPackageInvoice($id)

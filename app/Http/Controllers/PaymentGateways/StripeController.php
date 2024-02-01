@@ -13,6 +13,8 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Laracasts\Flash\Flash;
 use Stripe\Checkout\Session as StripeSession;
 use Stripe\Exception\ApiErrorException;
@@ -99,8 +101,8 @@ class StripeController extends AppBaseController
         $invoiceId = $invoice->invoice_id;
         $invoiceCode = getInvoiceCodeFromId($invoiceId);
         $packageType = getInvoiceTypeFromClass($invoice->invoiceable_type);
-        $userId = \Auth::id() ?? 'none';
-        $guard = \Auth::guard()->name ?? 'none';
+        $userId = Auth::id() ?? 'none';
+        $guard = Auth::guard()->name ?? 'none';
         try {
             setStripeApiKey();
             $session = StripeSession::create([
@@ -154,8 +156,8 @@ class StripeController extends AppBaseController
                 return response()->json(['message' => 'Subscription Already Created'], 409);
             }
         }
-        $userId = \Auth::id() ?? 'none';
-        $guard = \Auth::guard()->name ?? 'none';
+        $userId = Auth::id() ?? 'none';
+        $guard = Auth::guard()->name ?? 'none';
         $monthlyInvoiceSubscription = MonthlyInvoiceSubscription::where('monthly_invoice_package_id', $request->monthlyInvoicePackageId)->first();
         if (! empty($monthlyInvoiceSubscription->subscription_id)) {
             $subscription = Subscription::retrieve($monthlyInvoiceSubscription->subscription_id);
@@ -208,7 +210,7 @@ class StripeController extends AppBaseController
                 }
             }
             $session = StripeSession::create([
-                'customer_email' => \Auth::user()->email,
+                'customer_email' => Auth::user()->email,
                 'success_url' => route('payment-success').'?session_id={CHECKOUT_SESSION_ID}',
                 'cancel_url' => route('payment-failed').'?error=payment_cancelled',
                 'mode' => 'subscription',
@@ -258,7 +260,7 @@ class StripeController extends AppBaseController
     public function webhooks(Request $request)
     {
         $payload = $request->all();
-        \Log::channel('stripe_success')->info('Stripe webhook', $request->all());
+        Log::channel('stripe_success')->info('Stripe webhook', $request->all());
         if ($payload['type'] === 'checkout.session.completed') {
             if ($payload['data']['object']['mode'] === 'subscription') {
                 $sessionData = $payload['data']['object'];
@@ -274,7 +276,7 @@ class StripeController extends AppBaseController
             }
         }
         if ($payload['type'] === 'invoice.payment_succeeded') {
-            $this->stripeRepository->stripeInvoicePaymentSuccessfullyCompleted($request->all());
+            $this->stripeRepository->stripeInvoicePaymentSuccessfullyfCompleted($request->all());
 
             return response('success', 200);
 

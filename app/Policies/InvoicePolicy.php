@@ -18,6 +18,8 @@ class InvoicePolicy
         if ($user->hasRole(['parent', 'student'])) {
             return true;
         }
+
+        return false;
     }
 
     public function view(Authenticatable $user, Invoice $invoice): bool
@@ -32,23 +34,23 @@ class InvoicePolicy
         return false;
     }
 
-    public function create(Authenticatable $user): bool
-    {
-    }
-
-    public function update(Authenticatable $user, Invoice $invoice): bool
-    {
-    }
-
-    public function delete(Authenticatable $user, Invoice $invoice): bool
-    {
-    }
-
-    public function restore(Authenticatable $user, Invoice $invoice): bool
-    {
-    }
-
-    public function forceDelete(Authenticatable $user, Invoice $invoice): bool
-    {
-    }
+    //    public function create(Authenticatable $user): bool
+    //    {
+    //    }
+    //
+    //    public function update(Authenticatable $user, Invoice $invoice): bool
+    //    {
+    //    }
+    //
+    //    public function delete(Authenticatable $user, Invoice $invoice): bool
+    //    {
+    //    }
+    //
+    //    public function restore(Authenticatable $user, Invoice $invoice): bool
+    //    {
+    //    }
+    //
+    //    public function forceDelete(Authenticatable $user, Invoice $invoice): bool
+    //    {
+    //    }
 }

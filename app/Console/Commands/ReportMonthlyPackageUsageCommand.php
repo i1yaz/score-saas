@@ -8,6 +8,7 @@ use App\Models\MonthlyInvoiceSubscription;
 use App\Models\Session;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Mail;
 
 class ReportMonthlyPackageUsageCommand extends Command
@@ -19,7 +20,7 @@ class ReportMonthlyPackageUsageCommand extends Command
     public function handle(): void
     {
         $now = Carbon::now();
-        if ($now->day == 1 || \App::environment(['local'])) {
+        if ($now->day == 1 || App::environment(['local'])) {
             setStripeApiKey();
             $monthlyPackages = MonthlyInvoicePackage::select([
                 'monthly_invoice_packages.id', 'monthly_invoice_subscriptions.subscription_id',
@@ -54,7 +55,7 @@ class ReportMonthlyPackageUsageCommand extends Command
                 if (! empty($monthlyPackage->subscription_id)
                     && ! empty($monthlyPackage->stripe_item_id)
                     && ! empty($monthlyPackage->stripe_minutes_item_id)
-                    && ! ($totalHours+$totalMinutes ) == 0
+                    && ! ($totalHours + $totalMinutes) == 0
                 ) {
                     createUsageRecord($monthlyPackage->stripe_item_id, $totalHours, 'set');
                     createUsageRecord($monthlyPackage->stripe_minutes_item_id, $totalMinutes, 'set');
