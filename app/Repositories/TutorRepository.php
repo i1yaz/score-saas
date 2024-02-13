@@ -33,13 +33,7 @@ class TutorRepository extends BaseRepository
         $tutor = Tutor::query()
             ->select(
                 [
-                    'tutors.id',
-                    'tutors.email',
-                    'tutors.first_name',
-                    'tutors.last_name',
-                    'tutors.status',
-                    'tutors.phone',
-                    'tutors.start_date',
+                    'tutors.*',
                 ])
             ->selectRaw('CASE WHEN s1.id IS NOT NULL THEN s1.id ELSE s2.id END as student_id')
             ->selectRaw('CASE WHEN p1.id IS NOT NULL THEN p1.id ELSE p2.id END as parent_id')
