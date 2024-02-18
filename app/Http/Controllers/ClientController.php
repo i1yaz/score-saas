@@ -7,6 +7,7 @@ use App\Http\Requests\CreateClientRequest;
 use App\Http\Requests\UpdateClientRequest;
 use App\Mail\ClientRegisteredMail;
 use App\Repositories\ClientRepository;
+use Flash;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -15,7 +16,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
-use Laracasts\Flash\Flash;
 
 class ClientController extends AppBaseController
 {

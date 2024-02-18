@@ -15,13 +15,13 @@ use App\Models\TutoringLocation;
 use App\Models\TutoringPackageType;
 use App\Repositories\InvoiceRepository;
 use App\Repositories\StudentTutoringPackageRepository;
+use Flash;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
-use Laracasts\Flash\Flash;
 
 class StudentTutoringPackageController extends AppBaseController
 {

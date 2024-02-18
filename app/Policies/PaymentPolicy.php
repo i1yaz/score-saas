@@ -17,8 +17,6 @@ class PaymentPolicy
         if (! (Auth::user()->hasRole(['super-admin', 'admin', 'client', 'student', 'parent']))) {
             return false;
         }
-
-        return true;
     }
 
     public function view(Authenticatable $user, Payment $payment): bool
@@ -26,8 +24,6 @@ class PaymentPolicy
         if (! (Auth::user()->hasRole(['super-admin', 'admin', 'client', 'student', 'parent']))) {
             return false;
         }
-
-        return true;
     }
 
     public function create(Authenticatable $user): bool
@@ -35,8 +31,6 @@ class PaymentPolicy
         if (! (Auth::user()->hasRole(['super-admin', 'admin', 'client', 'student', 'parent']))) {
             return false;
         }
-
-        return true;
     }
 
     public function update(Authenticatable $user, Payment $payment): bool
@@ -44,8 +38,6 @@ class PaymentPolicy
         if (! (Auth::user()->hasRole(['super-admin', 'admin', 'client', 'student', 'parent']))) {
             return false;
         }
-
-        return true;
     }
 
     public function delete(Authenticatable $user, Payment $payment): bool
@@ -53,8 +45,6 @@ class PaymentPolicy
         if (! (Auth::user()->hasRole(['super-admin', 'admin', 'client', 'student', 'parent']))) {
             return false;
         }
-
-        return true;
     }
 
     public function restore(Authenticatable $user, Payment $payment): bool
@@ -62,8 +52,6 @@ class PaymentPolicy
         if (! (Auth::user()->hasRole(['super-admin', 'admin', 'client', 'student', 'parent']))) {
             return false;
         }
-
-        return true;
     }
 
     public function forceDelete(Authenticatable $user, Payment $payment): bool
@@ -71,7 +59,5 @@ class PaymentPolicy
         if (! (Auth::user()->hasRole(['super-admin', 'admin', 'client', 'student', 'parent']))) {
             return false;
         }
-
-        return true;
     }
 }

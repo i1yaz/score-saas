@@ -9,7 +9,7 @@ use {{ config('laravel_generator.namespace.request') }}\UpdateUserRequest;
 use {{ config('laravel_generator.namespace.repository') }}\UserRepository;
 use {{ config('laravel_generator.namespace.controller') }}\AppBaseController;
 use Illuminate\Http\Request;
-use Laracasts\Flash\Flash;
+use Flash;
 use Hash;
 
 class UserController extends AppBaseController

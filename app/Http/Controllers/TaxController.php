@@ -7,8 +7,8 @@ use App\Http\Requests\UpdateTaxRequest;
 use App\Models\Client;
 use App\Models\Tax;
 use App\Repositories\TaxRepository;
+use Flash;
 use Illuminate\Http\Request;
-use Laracasts\Flash\Flash;
 
 class TaxController extends AppBaseController
 {

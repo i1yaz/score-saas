@@ -23,10 +23,10 @@ class MonthlyInvoicePackagePolicy
         }
     }
 
-    //    public function viewAny(Authenticatable $user): bool
-    //    {
-    //
-    //    }
+    public function viewAny(Authenticatable $user): bool
+    {
+
+    }
 
     public function view(Authenticatable $user, MonthlyInvoicePackage $monthlyInvoicePackage): bool
     {
@@ -37,9 +37,9 @@ class MonthlyInvoicePackagePolicy
         return false;
     }
 
-    //    public function create(Authenticatable $user): bool
-    //    {
-    //    }
+    public function create(Authenticatable $user): bool
+    {
+    }
 
     public function update(Authenticatable $user, MonthlyInvoicePackage $monthlyInvoicePackage): bool
     {
@@ -59,11 +59,11 @@ class MonthlyInvoicePackagePolicy
         return false;
     }
 
-    //    public function restore(Authenticatable $user, MonthlyInvoicePackage $monthlyInvoicePackage): bool
-    //    {
-    //    }
-    //
-    //    public function forceDelete(Authenticatable $user, MonthlyInvoicePackage $monthlyInvoicePackage): bool
-    //    {
-    //    }
+    public function restore(Authenticatable $user, MonthlyInvoicePackage $monthlyInvoicePackage): bool
+    {
+    }
+
+    public function forceDelete(Authenticatable $user, MonthlyInvoicePackage $monthlyInvoicePackage): bool
+    {
+    }
 }

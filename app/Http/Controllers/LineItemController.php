@@ -7,8 +7,8 @@ use App\Http\Requests\UpdateLineItemRequest;
 use App\Models\LineItem;
 use App\Models\Tax;
 use App\Repositories\LineItemRepository;
+use Flash;
 use Illuminate\Http\Request;
-use Laracasts\Flash\Flash;
 
 class LineItemController extends AppBaseController
 {

@@ -51,7 +51,6 @@ if (! function_exists('getRoleDescriptionOfLoggedInUser')) {
                 return 'Client';
             }
         }
-
         return '';
     }
 }

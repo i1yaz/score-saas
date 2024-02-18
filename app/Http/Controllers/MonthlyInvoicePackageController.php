@@ -11,11 +11,11 @@ use App\Models\Student;
 use App\Models\Subject;
 use App\Repositories\InvoiceRepository;
 use App\Repositories\MonthlyInvoicePackageRepository;
+use Flash;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use Laracasts\Flash\Flash;
 
 class MonthlyInvoicePackageController extends AppBaseController
 {

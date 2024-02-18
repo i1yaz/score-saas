@@ -6,9 +6,9 @@ use App\DataTables\PaymentsDataTable;
 use App\Http\Requests\CreatePaymentRequest;
 use App\Http\Requests\UpdatePaymentRequest;
 use App\Repositories\PaymentRepository;
+use Flash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Laracasts\Flash\Flash;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class PaymentController extends AppBaseController

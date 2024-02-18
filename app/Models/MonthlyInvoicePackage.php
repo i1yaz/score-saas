@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Support\Facades\App;
 
 class MonthlyInvoicePackage extends BaseModel
 {
@@ -114,7 +113,7 @@ class MonthlyInvoicePackage extends BaseModel
 
     public function LastMonthUnbilledSessions(): HasMany
     {
-        if (App::environment(['local'])) {
+        if (\App::environment(['local'])) {
             $startDate = Carbon::now()->subDay()->startOfDay();
             $endDate = Carbon::now()->subDay()->endOfDay();
 
@@ -127,7 +126,7 @@ class MonthlyInvoicePackage extends BaseModel
 
         return $this->hasMany(Session::class, 'monthly_invoice_package_id', 'id')
             ->where('sessions.is_billed', Session::UN_BILLED)
-            ->whereBetweenf('scheduled_date', [$startDate, $endDate]);
+            ->whereBetween('scheduled_date', [$startDate, $endDate]);
     }
 
     public function invoice(): MorphOne
