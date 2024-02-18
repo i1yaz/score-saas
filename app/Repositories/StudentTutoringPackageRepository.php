@@ -37,7 +37,6 @@ class StudentTutoringPackageRepository extends BaseRepository
 
     public function create(array $input): Model|StudentTutoringPackage
     {
-//        $input['allow_partial_payment'] = yesNoToBoolean($input['allow_partial_payment']);
         $input['auth_guard'] = Auth::guard()->name;
         $input['added_by'] = Auth::id();
 
@@ -49,7 +48,6 @@ class StudentTutoringPackageRepository extends BaseRepository
 
     public function update(array $input, int $id)
     {
-        $input['allow_partial_payment'] = yesNoToBoolean($input['allow_partial_payment']);
         $query = $this->model->newQuery();
 
         $model = $query->findOrFail($id);

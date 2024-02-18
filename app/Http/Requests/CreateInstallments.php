@@ -22,7 +22,7 @@ class CreateInstallments extends FormRequest
     public function rules(): array
     {
         return [
-            'due_date' => 'required|date|after_or_equal:today',
+            'due_date' => 'required|between:1,30',
             'installments' => 'required|integer|min:1',
         ];
     }

@@ -1,6 +1,6 @@
 
 <div class='btn-group float-right'>
-    @if($invoice->invoiceable_type===\App\Models\StudentTutoringPackage::class)
+    @if($invoice->invoiceable_type===\App\Models\StudentTutoringPackage::class && $invoice->has_installments==false)
         @permission('invoice-installments')
         <a href="#" data-toggle="modal" data-target="#create-installments" class='btn btn-default'>
             <i class="fa fa-bars" aria-hidden="true"></i>
@@ -16,7 +16,7 @@
                             <span aria-hidden="true">×</span>
                         </button>
                     </div>
-                    <form action="{{ route('invoices.create-installments', [$invoice->invoice_id]) }}" method="post">
+                    <form action="{{ route('invoices.create-installments', [$invoice->invoice_id]) }}" method="get" id="create-installments-{{$invoice->invoice_id}}">
                         @csrf
                         <div class="modal-body">
                             <!-- Amount Field -->
@@ -36,7 +36,7 @@
                         </div>
                         <div class="modal-footer justify-content-between">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save changes</button>
+                            <button type="submit" class="btn btn-primary create-installments">Create</button>
                         </div>
                     </form>
                 </div>

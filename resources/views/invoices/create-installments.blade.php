@@ -23,13 +23,16 @@
                     Create Installments
                 </h3>
             </div>
-            {!! Form::open(['route' => 'invoices.store','id'=>'non-package-invoice-package-form']) !!}
+{{--            {!! Form::open(['route' => ['invoices.store-installments','invoice'=>$invoiceId]]) !!}--}}
 
+            {!! Form::model( ['route' => ['invoices.store-installments', $invoiceId], 'method' => 'post']) !!}
+            <input type="hidden" name="due_date" value="{{$due_date}}" >
+            <input type="hidden" name="installments" value="{{$installmentsCount}}" >
             <div class="card-body table-responsive p-0">
                 <table class="table table-hover text-nowrap">
                     <thead>
                         <tr>
-                            <th>Month</th>
+                            <th>Sr#</th>
                             <th>Date</th>
                             <th>Amount</th>
                             <th>Remaining</th>
@@ -39,7 +42,7 @@
                     @foreach($installments as $installment)
                         <tr>
                             <td>{{$installment->month}}</td>
-                            <td>10</td>
+                            <td>{{$installment->dueDate}}</td>
                             <td>{{$installment->amountToBePaid}}</td>
                             <td>{{$installment->closingBalance}}</td>
                         </tr>
@@ -48,7 +51,7 @@
                 </table>
             </div>
             <div class="card-footer">
-                {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
+                {!! Form::submit('Save', ['class' => 'btn btn-primary','id'=>'store-installments']) !!}
                 <a href="{{ route('invoices.index') }}" class="btn btn-default"> Cancel </a>
             </div>
 

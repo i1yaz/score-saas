@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 
+use Carbon\Carbon;
 use InvalidArgumentException;
 
 class MonthlyInstallments
@@ -13,6 +14,7 @@ class MonthlyInstallments
     public float $principalRepayment;
     public float $closingBalance;
     public float $amountToBePaid;
+    public string $dueDate;
 
     /**
      * @param float $principalAmount
@@ -21,7 +23,7 @@ class MonthlyInstallments
      *
      * @return array|MonthlyInstallments[]
      */
-    public static function calculate(float $principalAmount, float $annualInterestRate, int $numberOfInstallments): array
+    public static function calculate(float $principalAmount, float $annualInterestRate, int $numberOfInstallments,$dueDate): array
     {
         if (!is_numeric($principalAmount) || !is_numeric($annualInterestRate)) {
             throw new InvalidArgumentException('Invalid type of method argument');
@@ -43,13 +45,13 @@ class MonthlyInstallments
         $monthlyInterestRate = self::calculateMonthlyInterestRate($annualInterestRate);
         $openingBalance = $principalAmount;
         if ($annualInterestRate === self::floatNumber(0)){
-            return self::generateZeroInterestRateInstallments($numberOfInstallments,$monthlyInterestRate,$equatedMonthlyInstallment,$annualInterestRate,$openingBalance);
+            return self::generateZeroInterestRateInstallments($numberOfInstallments,$monthlyInterestRate,$equatedMonthlyInstallment,$annualInterestRate,$openingBalance,$dueDate);
         }else{
-            return self::generateInstallments($numberOfInstallments,$monthlyInterestRate,$equatedMonthlyInstallment,$annualInterestRate,$openingBalance);
+            return self::generateInstallments($numberOfInstallments,$monthlyInterestRate,$equatedMonthlyInstallment,$annualInterestRate,$openingBalance,$dueDate);
         }
 
     }
-    private static function generateZeroInterestRateInstallments($numberOfInstallments,$monthlyInterestRate,$equatedMonthlyInstallment,$annualInterestRate,$openingBalance):array
+    private static function generateZeroInterestRateInstallments($numberOfInstallments,$monthlyInterestRate,$equatedMonthlyInstallment,$annualInterestRate,$openingBalance,$dueDate):array
     {
         $amountPaid=0;
         $payments=[];
@@ -71,10 +73,12 @@ class MonthlyInstallments
                 $interest,
                 $principalRepayment,
                 $equatedMonthlyInstallment,
-                $closingBalance
+                $closingBalance,
+                $dueDate
             );
             $amountPaid = $amountPaid + $equatedMonthlyInstallment;
             $openingBalance =$closingBalance;
+            $dueDate = $dueDate->addMonth();
         }
         return $payments;
     }
@@ -89,7 +93,7 @@ class MonthlyInstallments
         return round($number, 2);
     }
 
-    private static function create($month, $openingBalance, $interest, $principalRepayment, $equatedMonthlyInstallment, $closingBalance): MonthlyInstallments
+    private static function create($month, $openingBalance, $interest, $principalRepayment, $equatedMonthlyInstallment, $closingBalance,Carbon $dueDate): MonthlyInstallments
     {
         $payment = new self();
         $payment->month = $month;
@@ -98,6 +102,7 @@ class MonthlyInstallments
         $payment->principalRepayment = $principalRepayment;
         $payment->amountToBePaid = $equatedMonthlyInstallment;
         $payment->closingBalance = $closingBalance;
+        $payment->dueDate = $dueDate->format('Y-m-d');
         return $payment;
     }
     private static function calculateReducingRateEMI($principalAmount, $annualInterestRate, $numberOfInstallments): float
@@ -113,7 +118,7 @@ class MonthlyInstallments
         return ($annualInterestRate / 12) / 100;
     }
 
-    private static function generateInstallments(int $numberOfInstallments, float|int $monthlyInterestRate, float $equatedMonthlyInstallment, float $annualInterestRate, float $openingBalance): array
+    private static function generateInstallments(int $numberOfInstallments, float|int $monthlyInterestRate, float $equatedMonthlyInstallment, float $annualInterestRate, float $openingBalance,$dueDate): array
     {
         $amountPaid=0;
         $payments=[];
@@ -135,10 +140,12 @@ class MonthlyInstallments
                 $interest,
                 $principalRepayment,
                 $equatedMonthlyInstallment,
-                $closingBalance
+                $closingBalance,
+                $dueDate
             );
             $amountPaid = $amountPaid + $equatedMonthlyInstallment;
             $openingBalance =$closingBalance;
+            $dueDate = $dueDate->addMonth();
         }
         return $payments;
     }

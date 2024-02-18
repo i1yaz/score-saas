@@ -50,6 +50,7 @@ class InvoiceDataTable implements IDataTables
                 'monthly_invoice_subscriptions.subscription_id',
                 'monthly_invoice_subscriptions.is_active',
                 'monthly_invoice_packages.start_date',
+                'invoices.has_installments',
             ])
             ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount ELSE 0 END) AS amount_paid')
             ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount_refunded ELSE 0 END) AS amount_refunded')

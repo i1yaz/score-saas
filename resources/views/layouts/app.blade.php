@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="{{asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css')}}">
         <link rel="stylesheet" href="{{asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
         <link rel="stylesheet" href="{{asset('plugins/datatables-buttons/css/buttons.bootstrap4.min.css')}}">
+        <link rel="stylesheet" href="{{ asset('plugins/sweetalert2/sweetalert2.min.css') }}"/>
         <style>
             .required:after{
                 content:'(*)';
@@ -91,6 +92,7 @@
                 <script src="{{asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js')}}"></script>
                 <script src="{{asset('plugins/datatables-buttons/js/dataTables.buttons.min.js')}}"></script>
                 <script src="{{asset('plugins/datatables-buttons/js/buttons.bootstrap4.min.js')}}"></script>
+                <script src="{{ asset('plugins/sweetalert2/sweetalert2.min.js') }}"></script>
 {{--                <script defer src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.1/cdn.min.js" integrity="sha512-qxuuYirD/2PiyVS9pjdPbm8Uixg0uq1jywNIP8gsmoYpSs7J7nTHTTFvCW2mMYPQPRaTaIxOlXJJc8S+B7OBvw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>--}}
                 {{--    <script src="../../plugins/jszip/jszip.min.js"></script>--}}
                 {{--    <script src="../../plugins/pdfmake/pdfmake.min.js"></script>--}}
@@ -98,7 +100,7 @@
                 {{--    <script src="../../plugins/datatables-buttons/js/buttons.html5.min.js"></script>--}}
                 {{--    <script src="../../plugins/datatables-buttons/js/buttons.print.min.js"></script>--}}
                 {{--    <script src="../../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>--}}
-
+                @stack('after_third_party_scripts')
                 <script type="text/javascript">
                     toastr.options.closeDuration = 3000;
                     $('#start_date').datepicker()

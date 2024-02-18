@@ -50,9 +50,13 @@
 <!-- Paid Status Field -->
 <div class="col-sm-12 col-md-6">
     {!! Form::label('paid_status', 'Paid Status:') !!}
-    <p>{!! getInvoiceStatusFromId($invoice->invoice_status)  !!}</p>
+    <p>{!! getInvoiceStatusFromId($invoice->invoice_status,$invoice->invoiceable_type,$invoice->subscription_status,$invoice->subscription_id,$invoice->start_date)  !!}</p>
 </div>
 
+@if($invoice->invoiceable_type===\App\Models\StudentTutoringPackage::class && $invoice->has_installments==true)
+    @include('invoices.show_installments')
+
+@endif
 
 
 

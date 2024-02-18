@@ -3,9 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\DataTables\InvoiceDataTable;
-use App\Helpers\InstallmentsGenerator;
-use App\Helpers\MonthlyInstallments;
-use App\Http\Requests\CreateInstallments;
 use App\Http\Requests\CreateInvoiceRequest;
 use App\Http\Requests\UpdateInvoiceRequest;
 use App\Models\Invoice;
@@ -13,10 +10,8 @@ use App\Models\LineItem;
 use App\Models\MonthlyInvoicePackage;
 use App\Models\MonthlyInvoiceSubscription;
 use App\Models\Payment;
-use App\Models\StudentTutoringPackage;
 use App\Models\Tax;
 use App\Repositories\InvoiceRepository;
-use Carbon\Carbon;
 use Flash;
 use Illuminate\Http\Request;
 
@@ -41,13 +36,10 @@ class InvoiceController extends AppBaseController
                 'package',
                 'invoice_status',
                 'invoice_type',
-                //                'student',
-                //                'parent',
                 'start_date',
                 'due_date',
                 'amount_paid',
                 'amount_remaining',
-                //                'fully_paid_at',
                 'action',
             ];
             $limit = $request->input('length');
@@ -111,7 +103,6 @@ class InvoiceController extends AppBaseController
 
             return redirect(route('invoices.index'));
         }
-
         return view('invoices.show')->with('invoice', $invoice);
     }
 
@@ -194,6 +185,9 @@ class InvoiceController extends AppBaseController
             $totalAmount = cleanAmountWithCurrencyFormat(getPriceFromHoursAndHourlyWithDiscount($invoice->hourly_rate, $invoice->hours, $invoice->discount, $invoice->discount_type));
             $remainingAmount = $totalAmount - $invoice->amount_paid ?? 0;
             $remainingAmount = $remainingAmount + $invoice->amount_refunded;
+            if ($invoice->has_installments){
+                return redirect(route('invoices.show',['invoice'=>$invoice->invoice_id]));
+            }
 
             return view('invoices.tutoring-package-payment-create', [
                 'invoice' => $invoice,
@@ -207,13 +201,13 @@ class InvoiceController extends AppBaseController
             $monthlyInvoicePackage = MonthlyInvoicePackage::select(['id', 'hourly_rate', 'start_date'])->findOrFail($invoice->monthly_invoice_package_id);
             $subscription = MonthlyInvoiceSubscription::select(['subscription_id', 'is_active'])->where('monthly_invoice_package_id', $invoice->monthly_invoice_package_id)->firstOrFail();
 
-            if (! empty($subscription->subscription_id) && $subscription->is_active === false) {
+            if (!empty($subscription->subscription_id) && $subscription->is_active === false) {
                 Flash::info('This Package is completed. Please contact to the admin!');
 
                 return redirect(route('invoices.index'));
             }
-            if ($monthlyInvoicePackage->start_date->endOfDay()->isPast()) {
-                Flash::error('This Package is expired. Please contact to the admin!');
+            if ((empty($subscription->subscription_id) || $subscription->is_active === false)  && $monthlyInvoicePackage->start_date->endOfDay()->isPast()) {
+                Flash::error('This Package is expired or already completed. Please contact to the admin!');
 
                 return redirect(route('invoices.index'));
             }
@@ -246,34 +240,4 @@ class InvoiceController extends AppBaseController
         return view('invoices.public-invoice.public_view')->with($invoiceData);
     }
 
-    public function createInstallments(CreateInstallments $request,$invoiceId)
-    {
-
-        $invoice = Invoice::select([
-            'invoices.id',
-            'invoices.due_date',
-            'student_tutoring_packages.discount',
-            'student_tutoring_packages.hours',
-            'student_tutoring_packages.hourly_rate',
-            'student_tutoring_packages.discount_type',
-            'student_tutoring_packages.start_date'
-        ])
-            ->join('student_tutoring_packages', function ($query){
-                $query->on('student_tutoring_packages.id', '=', 'invoices.invoiceable_id')
-                    ->where('invoices.invoiceable_type', '=', StudentTutoringPackage::class);
-            })
-            ->where('invoices.id','=' ,$invoiceId)->firstOrFail();
-
-        $this->authorize('createInstallments', $invoice);
-
-        $totalAmount = cleanAmountWithCurrencyFormat(getPriceFromHoursAndHourlyWithDiscount($invoice->hourly_rate, $invoice->hours, $invoice->discount, $invoice->discount_type));
-        $remainingAmount = $totalAmount - $invoice->amount_paid ?? 0;
-        $remainingAmount = $remainingAmount + $invoice->amount_refunded;
-        $installments = MonthlyInstallments::calculate($remainingAmount, 0, \request()->installments);
-        $dueDate = Carbon::parse($request->due_date)->addMonthNoOverflow()->format('Y-m-d');
-        dd($dueDate);
-
-        return view('invoices.create-installments', ['installments' => $installments, 'invoiceId' => $invoiceId]);
-
-    }
 }

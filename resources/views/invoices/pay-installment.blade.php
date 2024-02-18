@@ -25,7 +25,7 @@
                 <h3 class="card-title">Invoice Pay
                 </h3>
             </div>
-            {!! Form::open(['route' => 'invoices.store','id' => 'payment-form']) !!}
+            {!! Form::open(['route' => 'stripe-installment-payment','id' => 'payment-form']) !!}
 
             <div class="card-body">
 
@@ -33,8 +33,9 @@
                     <!-- Id Field -->
                     <div class="form-group col-sm-12 col-md-6">
                         {!! Form::label('final_amount', 'Payable Amount:') !!}
-                        {!! Form::input('text','final_amount',($invoice->final_amount-$invoice->amount_paid??0),['readonly'=>'readonly','class' => 'form-control']) !!}
+                        {!! Form::input('text','final_amount',($totalAmount),['readonly'=>'readonly','class' => 'form-control']) !!}
                     </div>
+
                     <div class="form-group col-sm-12 col-md-6">
                         {!! Form::label('payment_mode', 'Payment Mode:') !!}
                         {!! Form::select('payment_mode',$paymentModes??[],null,['class' => 'form-control','id'=>'payment-mode']) !!}
@@ -49,45 +50,24 @@
             {!! Form::close() !!}
         </div>
     </div>
-    @push('page_scripts')
+    @push('after_third_party_scripts')
         <script src="https://js.stripe.com/v3/"></script>
         <script>
             @if(!empty($stripeKey))
-                let stripe = Stripe('{{  $stripeKey ?? config('services.stripe.key') }}');
+            let stripe = Stripe('{{  $stripeKey ?? config('services.stripe.key') }}');
             @endif
-            let invoiceStripePaymentUrl = '{{ route('stripe-payment') }}';
+            let invoiceStripePaymentUrl = '{{ route('stripe-installment-payment') }}';
 
-            $('#payment-type').select2({
-                dropdownAutoWidth: true, width: 'auto',
-                theme: 'bootstrap4',
-                placeholder: "Please select payment type",
-            });
-            $('#payment-type').on('select2:select', function (e) {
-                let data = e.params.data;
-                console.log(data.id)
-                if (data.id === 'partial'){
-                    let html = `<div class='form-group col-sm-12 col-md-6 partial-div'> {!! Form::label('amount', 'Amount:') !!} {!! Form::input('text','amount',0,['class' => 'form-control','id'=>'partial-amount']) !!}</div>`;
-                    $('.payment-type').after(html)
-                }else if(data.id === 'full'){
-                    $('.partial-div').remove()
-                }
-
-            });
 
             $(document).on("submit", "#payment-form", function (e) {
                 e.preventDefault();
                 let paymentMode = $('#payment-mode').find(":selected").val()
 
-                if ($("#partial-amount").val() == 0) {
-                    displayErrorMessage("Partial should not be equal to zero");
-                    return false;
-                }
                 let btnSubmitEle = $("#btnPay");
                 ToggleBtnLoader(btnSubmitEle);
                 let payloadData = {
                     _token: "{{ csrf_token() }}",
-                    partialAmount: parseFloat($("#partial-amount").val()),
-                    invoiceId: "{{ $invoice->invoice_id }}",
+                    installmentId: "{{ $installment->id }}",
                 };
 
                 if (paymentMode === 'stripe') {

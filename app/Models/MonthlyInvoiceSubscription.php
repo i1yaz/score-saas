@@ -9,7 +9,7 @@ class MonthlyInvoiceSubscription extends Model
 {
     use HasFactory;
 
-    const STATUS_ACTIVE = 1;
+    const STATUS_ACTIVE = 1;//only for migration
 
     const STATUS_INACTIVE = 1;
 

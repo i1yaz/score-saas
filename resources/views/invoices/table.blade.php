@@ -7,13 +7,10 @@
                 <th>Package</th>
                 <th>Invoice Status</th>
                 <th>Invoice Type</th>
-{{--                <th>Student</th>--}}
-{{--                <th>Parent</th>--}}
                 <th>Start Date</th>
                 <th>Due Date</th>
                 <th>Amount Paid</th>
                 <th>Remaining Amount</th>
-{{--                <th>Fully Paid At</th>--}}
                 <th>Action</th>
             </tr>
             </thead>
@@ -54,6 +51,26 @@
                 ],
                 order: [[0, 'desc']]
             });
+
+            $(document).on('click','.create-installments', function (e) {
+                e.preventDefault();
+                var form = $(this).parents('form');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You want to create installments for this invoice!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, create it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+
         });
+
     </script>
 @endpush

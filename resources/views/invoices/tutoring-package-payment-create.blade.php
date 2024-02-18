@@ -25,7 +25,7 @@
                 <h3 class="card-title">Invoice Pay
                 </h3>
             </div>
-            {!! Form::open(['route' => 'invoices.store','id'=>'non-package-invoice-package-form','id' => 'payment-form']) !!}
+            {!! Form::open(['route' => 'invoices.store','id' => 'payment-form']) !!}
 
             <div class="card-body">
 
@@ -35,12 +35,6 @@
                         {!! Form::label('final_amount', 'Payable Amount:') !!}
                         {!! Form::input('text','final_amount',($remainingAmount),['readonly'=>'readonly','class' => 'form-control']) !!}
                     </div>
-                    @if($invoice->allow_partial_payment)
-                        <div class="form-group col-sm-12 col-md-6 payment-type">
-                            {!! Form::label('payment_type', 'Payment Type:') !!}
-                            {!! Form::select('payment_type',['full' => 'Full Payment','partial' => 'Partial'],null,['class' => 'form-control','id'=>'payment-type']) !!}
-                        </div>
-                    @endif
 
                     <div class="form-group col-sm-12 col-md-6">
                         {!! Form::label('payment_mode', 'Payment Mode:') !!}
@@ -62,24 +56,8 @@
             @if(!empty($stripeKey))
             let stripe = Stripe('{{  $stripeKey ?? config('services.stripe.key') }}');
             @endif
-            let invoiceStripePaymentUrl = '{{ route('client.stripe-payment') }}';
+            let invoiceStripePaymentUrl = '{{ route('stripe-payment') }}';
 
-            $('#payment-type').select2({
-                dropdownAutoWidth: true, width: 'auto',
-                theme: 'bootstrap4',
-                placeholder: "Please select payment type",
-            });
-            $('#payment-type').on('select2:select', function (e) {
-                let data = e.params.data;
-                console.log(data.id)
-                if (data.id === 'partial'){
-                    let html = `<div class='form-group col-sm-12 col-md-6 partial-div'> {!! Form::label('amount', 'Amount:') !!} {!! Form::input('text','amount',0,['class' => 'form-control','id'=>'partial-amount']) !!}</div>`;
-                    $('.payment-type').after(html)
-                }else if(data.id === 'full'){
-                    $('.partial-div').remove()
-                }
-
-            });
 
             $(document).on("submit", "#payment-form", function (e) {
                 e.preventDefault();

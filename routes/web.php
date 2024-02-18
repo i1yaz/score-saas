@@ -3,6 +3,7 @@
 use App\Helpers\MonthlyInstallments;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\InstallmentController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\InvoicePackageTypeController;
 use App\Http\Controllers\LineItemController;
@@ -172,9 +173,13 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], functio
     Route::get('invoice-package-types/{invoice_package_type}/edit', [InvoicePackageTypeController::class, 'edit'])->name('invoice-package-types.edit')->middleware(['permission:invoice_package_type-edit']);
     Route::patch('invoice-package-types/{invoice_package_type}', [InvoicePackageTypeController::class, 'update'])->name('invoice-package-types.update')->middleware(['permission:invoice_package_type-edit']);
     Route::delete('invoice-package-types/{invoice_package_type}', [InvoicePackageTypeController::class, 'destroy'])->name('invoice-package-types.destroy')->middleware(['permission:invoice_package_type-destroy']);
+    //Installments
+    Route::get('invoices/{invoice}/create-installments', [InstallmentController::class, 'createInstallments'])->name('invoices.create-installments')->middleware(['permission:invoice-installments']);
+    Route::post('invoices/{invoice}/create-installments', [InstallmentController::class, 'storeInstallments'])->name('invoices.store-installments')->middleware(['permission:invoice-installments']);
+    Route::get('installment/{installment}/pay', [InstallmentController::class, 'payInstallments'])->name('invoices.pay-installments');
+
     //Invoices
     Route::get('invoices', [InvoiceController::class, 'index'])->name('invoices.index')->middleware(['permission:invoice-index']);
-    Route::post('invoices/{invoice}/create-installments', [InvoiceController::class, 'createInstallments'])->name('invoices.create-installments')->middleware(['permission:invoice-installments']);
     Route::get('invoices/create', [InvoiceController::class, 'create'])->name('invoices.create')->middleware(['permission:invoice-create']);
     Route::post('invoices', [InvoiceController::class, 'store'])->name('invoices.store')->middleware(['permission:invoice-create']);
     Route::get('invoices/{invoice}/pay/{type?}', [InvoiceController::class, 'showPaymentPage'])->name('invoices.pay')->middleware(['permission:invoice-pay']);
@@ -229,7 +234,8 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], functio
 
     //Payments
     Route::get('payments', [PaymentController::class, 'index'])->name('payments.index')->middleware(['permission:payment-index']);
-    Route::post('payment/stripe', [StripeController::class, 'createSession'])->name('client.stripe-payment');
+    Route::post('payment/stripe', [StripeController::class, 'createSession'])->name('stripe-payment');
+    Route::post('installment/payment/stripe', [StripeController::class, 'createInstallmentSession'])->name('stripe-installment-payment');
     Route::post('payment/stripe-subscribe', [StripeController::class, 'createSessionForSubscription'])->name('client.stripe-monthly-subscription');
     Route::post('payment/stripe-cancel-subscription', [StripeController::class, 'cancelMonthlyInvoicePackageSubscription'])->name('client.stripe-cancel-monthly-subscription');
     Route::get('payments/create', [PaymentController::class, 'create'])->name('payments.create')->middleware(['permission:payment-create']);

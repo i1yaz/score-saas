@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\MonthlyInstallments;
 use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\MonthlyInvoicePackage;
@@ -14,6 +15,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -419,7 +421,15 @@ if (! function_exists('getInvoiceStatusFromId')) {
         };
     }
 }
-
+if (!function_exists('getSuccessErrorBadge')){
+    function getSuccessErrorBadge(bool $status,$successMessage,$errorMessage): string
+    {
+        return match ($status) {
+            true => "<span class='badge badge-success'>".$successMessage."</span>",
+            false => "<span class='badge badge-danger'>".$errorMessage."</span>",
+        };
+    }
+}
 if (! function_exists('getRemainingAmountFromTotalAndPaidAmount')) {
     function getRemainingAmountFromTotalAndPaidAmount(float $total, float $paid): string
     {
@@ -966,6 +976,14 @@ if (! function_exists('getPaymentGatewayNameFromId')) {
         return '';
     }
 }
+if (!function_exists('getPaymentGateways')){
+    function getPaymentGateways(): array
+    {
+        return [
+            'stripe' => 'Stripe',
+        ];
+    }
+}
 if (! function_exists('getStripeCustomerIdFromUser')) {
     function getStripeCustomerIdFromUser(Authenticatable $user): string
     {
@@ -1114,5 +1132,53 @@ if (! function_exists('getOneYearEarning')) {
         }
 
         return $result; //do not reverse because the months area already revered
+    }
+}
+if (!function_exists('getInvoiceDueDate')){
+    function getInvoiceDueDate(int $due_date): Carbon
+    {
+        $currentDay = Carbon::now()->day;
+        $currentMonth = Carbon::now()->month;
+        $currentYear = Carbon::now()->year;
+        $dueDateMonth = $currentMonth;
+        if ($due_date <= $currentDay) {
+            $dueDateMonth++;
+            if ($dueDateMonth > 12) {
+                $dueDateMonth = 1;
+                $currentYear++;
+            }
+        }
+        return Carbon::createFromDate($currentYear, $dueDateMonth, $due_date);
+    }
+}
+if (!function_exists('getInstallmentsAndDueDate')){
+    function getInstallmentsAndDueDate(Request $request,int $invoiceId): array
+    {
+        $invoice = Invoice::select([
+            'invoices.id',
+            'invoices.due_date',
+            'student_tutoring_packages.discount',
+            'student_tutoring_packages.hours',
+            'student_tutoring_packages.hourly_rate',
+            'student_tutoring_packages.discount_type',
+            'student_tutoring_packages.start_date',
+            'invoices.has_installments',
+        ])
+            ->join('student_tutoring_packages', function ($query){
+                $query->on('student_tutoring_packages.id', '=', 'invoices.invoiceable_id')
+                    ->where('invoices.invoiceable_type', '=', StudentTutoringPackage::class);
+            })
+            ->where('invoices.id','=' ,$invoiceId)->firstOrFail();
+
+
+        $dueDate = getInvoiceDueDate($request->due_date);
+        $totalAmount = cleanAmountWithCurrencyFormat(getPriceFromHoursAndHourlyWithDiscount($invoice->hourly_rate, $invoice->hours, $invoice->discount, $invoice->discount_type));
+        $remainingAmount = $totalAmount - $invoice->amount_paid ?? 0;
+        $remainingAmount = $remainingAmount + $invoice->amount_refunded;
+        $installments =  MonthlyInstallments::calculate($remainingAmount, 0, $request->installments,$dueDate);
+        return [
+            'installments' => $installments,
+            'invoice' => $invoice,
+        ];
     }
 }

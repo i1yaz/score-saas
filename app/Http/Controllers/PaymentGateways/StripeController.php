@@ -38,8 +38,6 @@ class StripeController extends AppBaseController
                 [
                     'invoices.id as invoice_id',
                     'non_invoice_packages.final_amount',
-                    'non_invoice_packages.allow_partial_payment as nip_allow_partial_payment',
-                    'student_tutoring_packages.allow_partial_payment as stp_allow_partial_payment',
                     'invoiceable_type',
                     'invoiceable_id',
                     'student_tutoring_packages.hourly_rate as stp_hourly_rate',
@@ -84,10 +82,7 @@ class StripeController extends AppBaseController
             $payable_amount = $payable_amount - $invoice->amount_paid;
             $payable_amount = $payable_amount + $invoice->amount_refunded ?? 0;
         }
-        $amount = null;
-        if (filter_var($invoice->nip_allow_partial_payment, FILTER_VALIDATE_BOOLEAN) || filter_var($invoice->stp_allow_partial_payment, FILTER_VALIDATE_BOOLEAN)) {
-            $amount = $request->partialAmount;
-        }
+        $amount = 0;
 
         if (! is_numeric($amount)) {
             $amount = $payable_amount;
@@ -316,5 +311,10 @@ class StripeController extends AppBaseController
         }
 
         return response()->json(['message' => 'Subscription Not Found or Already canceled'], 404);
+    }
+
+    public function createInstallmentSession(Request $request)
+    {
+        dd($request->all());
     }
 }
