@@ -25,7 +25,7 @@
                 <h3 class="card-title">Invoice Pay
                 </h3>
             </div>
-            {!! Form::open(['route' => 'invoices.store','id'=>'non-package-invoice-package-form','id' => 'payment-form']) !!}
+            {!! Form::open(['route' => 'invoices.store','id' => 'payment-form']) !!}
 
             <div class="card-body">
 
@@ -35,12 +35,6 @@
                         {!! Form::label('final_amount', 'Payable Amount:') !!}
                         {!! Form::input('text','final_amount',($invoice->final_amount-$invoice->amount_paid??0),['readonly'=>'readonly','class' => 'form-control']) !!}
                     </div>
-                    @if($invoice->allow_partial_payment)
-                        <div class="form-group col-sm-12 col-md-6 payment-type">
-                            {!! Form::label('payment_type', 'Payment Type:') !!}
-                            {!! Form::select('payment_type',['full' => 'Full Payment','partial' => 'Partial'],null,['class' => 'form-control','id'=>'payment-type']) !!}
-                        </div>
-                    @endif
                     <div class="form-group col-sm-12 col-md-6">
                         {!! Form::label('payment_mode', 'Payment Mode:') !!}
                         {!! Form::select('payment_mode',$paymentModes??[],null,['class' => 'form-control','id'=>'payment-mode']) !!}
@@ -55,13 +49,14 @@
             {!! Form::close() !!}
         </div>
     </div>
-    @push('page_scripts')
+    @push('after_third_party_scripts')
         <script src="https://js.stripe.com/v3/"></script>
         <script>
+            ajaxSubmit = false;
             @if(!empty($stripeKey))
                 let stripe = Stripe('{{  $stripeKey ?? config('services.stripe.key') }}');
             @endif
-            let invoiceStripePaymentUrl = '{{ route('client.stripe-payment') }}';
+            let invoiceStripePaymentUrl = '{{ route('stripe-payment') }}';
 
             $('#payment-type').select2({
                 dropdownAutoWidth: true, width: 'auto',

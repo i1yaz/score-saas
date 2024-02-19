@@ -49,6 +49,7 @@ class InvoiceRepository extends BaseRepository
         $invoice = Invoice::query()
             ->select(
                 [
+                    'invoices.id',
                     'invoices.id as invoice_id', 'invoices.paid_status as invoice_status', 'invoices.invoiceable_type', 'student_tutoring_packages.student_id',
                     's1.parent_id as parent_id',
                     's1.id as student_id',
@@ -71,7 +72,12 @@ class InvoiceRepository extends BaseRepository
                     'monthly_invoice_packages.hourly_rate', 'monthly_invoice_packages.discount',
                     'monthly_invoice_packages.discount_type',
                     'clients.email as client_email',
+                    'monthly_invoice_subscriptions.subscription_id',
+                    'monthly_invoice_subscriptions.subscription_status',
+                    'monthly_invoice_packages.start_date',
+                    'invoices.has_installments'
                 ])
+            ->with(['installments'])
             ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount ELSE 0 END) AS amount_paid')
             ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount_refunded ELSE 0 END) AS amount_refunded')
             ->leftJoin('student_tutoring_packages', function ($q) {
@@ -83,6 +89,8 @@ class InvoiceRepository extends BaseRepository
             ->leftJoin('non_invoice_packages', function ($q) {
                 $q->on('invoices.invoiceable_id', '=', 'non_invoice_packages.id')->where('invoices.invoiceable_type', '=', NonInvoicePackage::class);
             })
+            ->leftJoin('monthly_invoice_subscriptions', 'monthly_invoice_packages.id', '=', 'monthly_invoice_subscriptions.monthly_invoice_package_id')
+
             ->leftJoin('clients', 'non_invoice_packages.client_id', '=', 'clients.id')
             ->leftJoin('payments', 'payments.invoice_id', 'invoices.id')
             ->leftJoin('tutoring_package_types', 'student_tutoring_packages.tutoring_package_type_id', '=', 'tutoring_package_types.id')
@@ -90,8 +98,7 @@ class InvoiceRepository extends BaseRepository
             ->leftJoin('parents as p1', 's1.parent_id', '=', 'p1.id')
 
             ->leftJoin('students as s2', 'monthly_invoice_packages.student_id', '=', 's2.id')
-            ->leftJoin('parents as p2', 's2.parent_id', '=', 'p2.id')
-            ->where('invoices.id', $id);
+            ->leftJoin('parents as p2', 's2.parent_id', '=', 'p2.id');
         if (Auth::user()->hasRole('parent') && Auth::user() instanceof ParentUser) {
             $invoice = $invoice->where(function ($q) {
                 return $q->where('s1.parent_id', Auth::id())
@@ -114,7 +121,7 @@ class InvoiceRepository extends BaseRepository
         if (Auth::user()->hasRole('client') && Auth::user() instanceof Client) {
             $invoice = $invoice->where('non_invoice_packages.client_id', Auth::id());
         }
-        $invoice = $invoice->first();
+        $invoice = $invoice->where('invoices.id', $id)->first();
         if (empty($invoice->invoice_id)) {
             abort(403, 'Unauthorized action.');
         }
@@ -223,7 +230,6 @@ class InvoiceRepository extends BaseRepository
             $nonPackageInvoice->tax_amount = $taxOnSubtotal;
             $nonPackageInvoice->final_amount = $totalFinalAmount;
             $nonPackageInvoice->auth_guard = Auth::guard()->name;
-            $nonPackageInvoice->allow_partial_payment = yesNoToBoolean($input['allow_partial_payment']);
             $nonPackageInvoice->added_by = Auth::id();
             $nonPackageInvoice->save();
 
@@ -256,8 +262,7 @@ class InvoiceRepository extends BaseRepository
         $invoice = Invoice::query()->select(
             [
                 'invoices.id as invoice_id',
-                'non_invoice_packages.final_amount',
-                'non_invoice_packages.allow_partial_payment',
+                'non_invoice_packages.final_amount'
             ])
             ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount ELSE 0 END) AS amount_paid')
             ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount_refunded ELSE 0 END) AS amount_refunded')
@@ -290,9 +295,7 @@ class InvoiceRepository extends BaseRepository
 
     public function getPaymentGateways(): array
     {
-        return [
-            'stripe' => 'Stripe',
-        ];
+        return getPaymentGateways();
     }
 
     public function showTutoringPackageInvoice($id)
@@ -300,11 +303,11 @@ class InvoiceRepository extends BaseRepository
         $invoice = Invoice::query()->select(
             [
                 'invoices.id as invoice_id',
+                'invoices.has_installments',
                 'student_tutoring_packages.hourly_rate',
                 'student_tutoring_packages.hours',
                 'student_tutoring_packages.discount',
                 'student_tutoring_packages.discount_type',
-                'student_tutoring_packages.allow_partial_payment',
             ])
             ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount ELSE 0 END) AS amount_paid')
             ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount_refunded ELSE 0 END) AS amount_refunded')
@@ -336,7 +339,6 @@ class InvoiceRepository extends BaseRepository
 
     public function update(array $input, int $id)
     {
-        $input['allow_partial_payment'] = yesNoToBoolean($input['allow_partial_payment']);
         $query = $this->model->newQuery();
 
         $model = $query->findOrFail($id);

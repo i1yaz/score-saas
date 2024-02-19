@@ -596,6 +596,14 @@ class PermissionSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
             [
+                'name' => 'invoice-installments',
+                'display_name' => 'Monthly Invoice Package Installments',
+                'description' => 'Monthly Invoice Package Installments',
+                'resource' => 'Monthly Invoice Package',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
                 'name' => 'non_package_invoice-create',
                 'display_name' => 'Non-Package Invoice Create',
                 'description' => 'Non package invoice create',

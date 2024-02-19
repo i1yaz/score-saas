@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Mail\ClientMakePaymentMail;
+use App\Models\Installment;
 use App\Models\Invoice;
 use App\Models\MonthlyInvoicePackage;
 use App\Models\MonthlyInvoiceSubscription;
@@ -14,6 +15,7 @@ use Exception;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Stripe\SubscriptionItem;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
@@ -35,6 +37,14 @@ class StripeRepository
         $invoiceId = $reference[1];
         $userId = $reference[2];
         $authGuard = $reference[3];
+        if (Str::startsWith($invoiceId,'installment')){
+            $installmentReference = explode('_',$invoiceId);
+            $installmentId = $installmentReference[1];
+            $invoiceId = $installmentReference[2];
+            Installment::where('id',$installmentId)->update([
+                'is_paid' => true
+            ]);
+        }
 
         $invoice = Invoice::query()
             ->select(['invoices.id as invoice_id', 'invoiceable_type', 'invoiceable_id'])
@@ -45,7 +55,7 @@ class StripeRepository
         $paymentStatus = Payment::PENDING;
         if ($invoice->invoiceable_type == NonInvoicePackage::class) {
             $nonInvoicePackage = NonInvoicePackage::findOrFail($invoice->invoiceable_id);
-            if (($amountPaidInLastSession + $invoice->paid_amount) == $nonInvoicePackage->final_amount) {
+            if (($amountPaidInLastSession + $invoice->amount_paid) == $nonInvoicePackage->final_amount) {
                 $paymentStatus = Payment::PAID;
             } else {
                 $paymentStatus = Payment::PARTIAL_PAYMENT;
@@ -55,8 +65,7 @@ class StripeRepository
         if ($invoice->invoiceable_type == StudentTutoringPackage::class) {
             $studentTutoringPackage = StudentTutoringPackage::findOrFail($invoice->invoiceable_id);
             $payable_amount = cleanAmountWithCurrencyFormat(getPriceFromHoursAndHourlyWithDiscount($studentTutoringPackage->hourly_rate, $studentTutoringPackage->hours, $studentTutoringPackage->discount, $studentTutoringPackage->discount_type));
-
-            if (($amountPaidInLastSession + $invoice->paid_amount) == $payable_amount) {
+            if (($amountPaidInLastSession + $invoice->amount_paid) == $payable_amount) {
                 $paymentStatus = Payment::PAID;
             } else {
                 $paymentStatus = Payment::PARTIAL_PAYMENT;

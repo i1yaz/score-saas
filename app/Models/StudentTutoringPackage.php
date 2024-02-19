@@ -39,8 +39,7 @@ class StudentTutoringPackage extends BaseModel
         'tutor_hourly_rate',
         'added_by',
         'auth_guard',
-        'status',
-//        'allow_partial_payment',
+        'status'
     ];
 
     protected $casts = [
@@ -54,7 +53,6 @@ class StudentTutoringPackage extends BaseModel
         'discount' => 'integer',
         'discount_type' => 'integer',
         'start_date' => 'date',
-//        'allow_partial_payment' => 'boolean',
     ];
 
     public static mixed $messages = [

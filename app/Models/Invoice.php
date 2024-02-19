@@ -45,6 +45,7 @@ class Invoice extends BaseModel
         'paid_by_id',
         'invoiceable_type',
         'invoiceable_id',
+        'has_installments',
         'auth_guard',
         'added_by',
     ];
@@ -64,6 +65,7 @@ class Invoice extends BaseModel
         'invoiceable_type' => 'string',
         'invoiceable_id' => 'integer',
         'due_date' => 'date',
+        'has_installments' => 'boolean',
     ];
 
     public static array $rules = [
@@ -102,5 +104,9 @@ class Invoice extends BaseModel
     public function invoiceable(): MorphTo
     {
         return $this->morphTo();
+    }
+    public function installments(): HasMany
+    {
+        return $this->hasMany(Installment::class);
     }
 }

@@ -1,7 +1,9 @@
 <?php
 
+use App\Helpers\MonthlyInstallments;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\InstallmentController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\InvoicePackageTypeController;
 use App\Http\Controllers\LineItemController;
@@ -39,7 +41,43 @@ use Illuminate\Support\Facades\Route;
 //Route::get('packages/{package}/edit',[App\Http\Controllers\SchoolController::class,'edit'])->name('packages.edit')->middleware(['permission:package-edit']);
 //Route::patch('packages/{package}',[App\Http\Controllers\SchoolController::class,'update'])->name('packages.update')->middleware(['permission:package-edit']);
 //Route::delete('packages/{package}',[App\Http\Controllers\SchoolController::class,'destroy'])->name('packages.destroy')->middleware(['permission:package-destroy']);
+Route::get('/installment', function () {
 
+    // Given values
+    $principalAmount = 1000;
+    $annualInterestRate = 0;
+    $numberOfInstallments = 12;
+    $installments = MonthlyInstallments::calculate($principalAmount,$annualInterestRate,$numberOfInstallments);
+
+    dd($installments);
+    return view('welcome',compact('installments'));
+
+// Calculate monthly interest rate
+    $monthlyInterestRate = ($annualInterestRate / 12) / 100;
+
+// Calculate EMI using the loan amortization formula
+    $emi = $principalAmount * ($monthlyInterestRate * pow(1 + $monthlyInterestRate, $numberOfInstallments)) / (pow(1 + $monthlyInterestRate, $numberOfInstallments) - 1);
+
+// Calculate Interest and Principal for the 1st Installment
+    $interest1 = $principalAmount * $monthlyInterestRate;
+    $principal1 = $emi - $interest1;
+
+// Calculate Outstanding Loan Amount after 1st Installment
+    $outstandingLoanAmount1 = $principalAmount - $principal1;
+
+// Calculate Interest and Principal for the 2nd Installment
+    $interest2 = $outstandingLoanAmount1 * $monthlyInterestRate;
+    $principal2 = $emi - $interest2;
+
+// Display results
+
+
+
+    dd("EMI: $emi",
+        "1st Installment - Interest: $interest1, Principal: $principal1, Outstanding Loan: $outstandingLoanAmount1",
+        "2nd Installment - Interest: $interest2, Principal: $principal2",
+        MonthlyInstallments::calculate($principalAmount,$annualInterestRate,$numberOfInstallments));
+});
 Route::get('/', function () {
     return view('welcome');
 });
@@ -135,6 +173,11 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], functio
     Route::get('invoice-package-types/{invoice_package_type}/edit', [InvoicePackageTypeController::class, 'edit'])->name('invoice-package-types.edit')->middleware(['permission:invoice_package_type-edit']);
     Route::patch('invoice-package-types/{invoice_package_type}', [InvoicePackageTypeController::class, 'update'])->name('invoice-package-types.update')->middleware(['permission:invoice_package_type-edit']);
     Route::delete('invoice-package-types/{invoice_package_type}', [InvoicePackageTypeController::class, 'destroy'])->name('invoice-package-types.destroy')->middleware(['permission:invoice_package_type-destroy']);
+    //Installments
+    Route::get('invoices/{invoice}/create-installments', [InstallmentController::class, 'createInstallments'])->name('invoices.create-installments')->middleware(['permission:invoice-installments']);
+    Route::post('invoices/{invoice}/create-installments', [InstallmentController::class, 'storeInstallments'])->name('invoices.store-installments')->middleware(['permission:invoice-installments']);
+    Route::get('installment/{installment}/pay', [InstallmentController::class, 'payInstallments'])->name('invoices.pay-installments');
+
     //Invoices
     Route::get('invoices', [InvoiceController::class, 'index'])->name('invoices.index')->middleware(['permission:invoice-index']);
     Route::get('invoices/create', [InvoiceController::class, 'create'])->name('invoices.create')->middleware(['permission:invoice-create']);
@@ -191,7 +234,8 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], functio
 
     //Payments
     Route::get('payments', [PaymentController::class, 'index'])->name('payments.index')->middleware(['permission:payment-index']);
-    Route::post('payment/stripe', [StripeController::class, 'createSession'])->name('client.stripe-payment');
+    Route::post('payment/stripe', [StripeController::class, 'createSession'])->name('stripe-payment');
+    Route::post('installment/payment/stripe', [StripeController::class, 'createInstallmentSession'])->name('stripe-installment-payment');
     Route::post('payment/stripe-subscribe', [StripeController::class, 'createSessionForSubscription'])->name('client.stripe-monthly-subscription');
     Route::post('payment/stripe-cancel-subscription', [StripeController::class, 'cancelMonthlyInvoicePackageSubscription'])->name('client.stripe-cancel-monthly-subscription');
     Route::get('payments/create', [PaymentController::class, 'create'])->name('payments.create')->middleware(['permission:payment-create']);

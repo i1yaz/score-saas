@@ -1,7 +1,4 @@
 @extends('layouts.app')
-@push('page_css')
-    <link rel="stylesheet" href="{{ asset('plugins/sweetalert2/sweetalert2.min.css') }}"/>
-@endpush
 @section('content')
     <section class="content-header">
         <div class="container-fluid">
@@ -58,7 +55,6 @@
         </div>
     </div>
     @push('page_scripts')
-        <script src="{{ asset('plugins/sweetalert2/sweetalert2.min.js') }}"></script>
         <script src="https://js.stripe.com/v3/"></script>
         <script>
             @if(!empty($stripeKey))

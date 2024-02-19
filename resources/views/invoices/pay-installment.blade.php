@@ -25,6 +25,7 @@
                 <h3 class="card-title">Invoice Pay
                 </h3>
             </div>
+            {!! Form::open(['route' => 'stripe-installment-payment','id' => 'payment-form']) !!}
 
             <div class="card-body">
 
@@ -32,7 +33,7 @@
                     <!-- Id Field -->
                     <div class="form-group col-sm-12 col-md-6">
                         {!! Form::label('final_amount', 'Payable Amount:') !!}
-                        {!! Form::input('text','final_amount',($remainingAmount),['readonly'=>'readonly','class' => 'form-control']) !!}
+                        {!! Form::input('text','final_amount',($totalAmount),['readonly'=>'readonly','class' => 'form-control']) !!}
                     </div>
 
                     <div class="form-group col-sm-12 col-md-6">
@@ -45,6 +46,8 @@
                 {!! Form::submit('Pay', ['class' => 'btn btn-primary','id'=>'btnPay']) !!}
                 <a href="{{ route('invoices.index') }}" class="btn btn-default"> Cancel </a>
             </div>
+
+            {!! Form::close() !!}
         </div>
     </div>
     @push('after_third_party_scripts')
@@ -54,10 +57,10 @@
             @if(!empty($stripeKey))
             let stripe = Stripe('{{  $stripeKey ?? config('services.stripe.key') }}');
             @endif
-            let invoiceStripePaymentUrl = '{{ route('stripe-payment') }}';
+            let invoiceStripePaymentUrl = '{{ route('stripe-installment-payment') }}';
 
 
-            $(document).on("click", "#btnPay", function (e) {
+            $(document).on("submit", "#payment-form", function (e) {
                 e.preventDefault();
                 let paymentMode = $('#payment-mode').find(":selected").val()
 
@@ -65,7 +68,7 @@
                 ToggleBtnLoader(btnSubmitEle);
                 let payloadData = {
                     _token: "{{ csrf_token() }}",
-                    invoiceId: "{{ $invoice->invoice_id }}",
+                    installmentId: "{{ $installment->id }}",
                 };
 
                 if (paymentMode === 'stripe') {
