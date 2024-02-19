@@ -25,7 +25,6 @@
                 <h3 class="card-title">Invoice Pay
                 </h3>
             </div>
-            {!! Form::open(['route' => 'invoices.store','id' => 'payment-form']) !!}
 
             <div class="card-body">
 
@@ -46,36 +45,26 @@
                 {!! Form::submit('Pay', ['class' => 'btn btn-primary','id'=>'btnPay']) !!}
                 <a href="{{ route('invoices.index') }}" class="btn btn-default"> Cancel </a>
             </div>
-
-            {!! Form::close() !!}
         </div>
     </div>
-    @push('page_scripts')
+    @push('after_third_party_scripts')
         <script src="https://js.stripe.com/v3/"></script>
         <script>
+            ajaxSubmit = false;
             @if(!empty($stripeKey))
             let stripe = Stripe('{{  $stripeKey ?? config('services.stripe.key') }}');
             @endif
             let invoiceStripePaymentUrl = '{{ route('stripe-payment') }}';
 
 
-            $(document).on("submit", "#payment-form", function (e) {
+            $(document).on("click", "#btnPay", function (e) {
                 e.preventDefault();
                 let paymentMode = $('#payment-mode').find(":selected").val()
 
-                if ($("#partial-amount").val() == 0) {
-                    displayErrorMessage("Partial should not be equal to zero");
-                    return false;
-                }
-                let partialAmount = parseFloat($("#partial-amount").val())
-                if(isNaN(partialAmount)){
-                    partialAmount = null
-                }
                 let btnSubmitEle = $("#btnPay");
                 ToggleBtnLoader(btnSubmitEle);
                 let payloadData = {
                     _token: "{{ csrf_token() }}",
-                    partialAmount: partialAmount,
                     invoiceId: "{{ $invoice->invoice_id }}",
                 };
 

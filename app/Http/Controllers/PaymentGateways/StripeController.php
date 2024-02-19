@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\PaymentGateways;
 
 use App\Http\Controllers\AppBaseController;
+use App\Models\Installment;
 use App\Models\Invoice;
 use App\Models\MonthlyInvoicePackage;
 use App\Models\MonthlyInvoiceSubscription;
@@ -82,21 +83,19 @@ class StripeController extends AppBaseController
             $payable_amount = $payable_amount - $invoice->amount_paid;
             $payable_amount = $payable_amount + $invoice->amount_refunded ?? 0;
         }
-        $amount = 0;
-
-        if (! is_numeric($amount)) {
-            $amount = $payable_amount;
-        }
-        if ($amount > $payable_amount) {
-            $amount = $payable_amount;
-        }
 
         $invoiceId = $invoice->invoice_id;
         $invoiceCode = getInvoiceCodeFromId($invoiceId);
         $packageType = getInvoiceTypeFromClass($invoice->invoiceable_type);
-        $userId = \Auth::id() ?? 'none';
-        $guard = \Auth::guard()->name ?? 'none';
+
+        return $this->makeSession($userEmail,$packageType,$packageCode,$invoiceCode,$payable_amount,$invoiceType,$invoiceId);
+    }
+
+    public function makeSession($userEmail,$packageType,$packageCode,$invoiceCode,$payable_amount,$invoiceType,$invoiceId)
+    {
         try {
+            $userId = \Auth::id() ?? 'none';
+            $guard = \Auth::guard()->name ?? 'none';
             setStripeApiKey();
             $session = StripeSession::create([
                 'payment_method_types' => ['card'],
@@ -108,7 +107,7 @@ class StripeController extends AppBaseController
                                 'name' => 'Payment for '.$packageType.' Package #'.$packageCode,
                                 'description' => 'Bill invoice #'.$invoiceCode,
                             ],
-                            'unit_amount' => $amount * 100,
+                            'unit_amount' => $payable_amount * 100,
                             'currency' => getInvoiceCurrencyCode(),
                         ],
                         'quantity' => 1,
@@ -315,6 +314,35 @@ class StripeController extends AppBaseController
 
     public function createInstallmentSession(Request $request)
     {
-        dd($request->all());
+        setStripeApiKey();
+        $installment = Installment::select([
+            'installments.id',
+            'installments.is_paid',
+            'invoices.id as invoice_id',
+            'invoices.invoiceable_type',
+            'invoices.invoiceable_id',
+            'installments.amount'
+        ])
+            ->selectRaw('SUM(CASE WHEN payments.status = 1 THEN payments.amount_refunded ELSE 0 END) AS amount_refunded')
+            ->join('invoices','installments.invoice_id','invoices.id')
+            ->leftJoin('payments', 'payments.invoice_id', '=', 'invoices.id')
+            ->findOrFail($request->installmentId);
+        if ($installment->is_paid){
+            Flash::info('The installment is already paid.');
+            return redirect()->back();
+        }
+        $invoiceId = "installment_{$installment->id}_{$installment->invoice_id}";
+        $invoiceCode = getInvoiceCodeFromId($installment->invoice_id);
+        $packageType = getInvoiceTypeFromClass($installment->invoiceable_type);
+        $payable_amount = $installment->amount - $installment->amount_refunded;
+        $invoiceType = 1;
+        $userEmail = StudentTutoringPackage::query()
+            ->select(['students.email'])
+            ->leftJoin('students', 'students.id', '=', 'student_tutoring_packages.student_id')
+            ->where('student_tutoring_packages.id', $installment->invoiceable_id)->firstOrFail()->email;
+
+        $packageCode = getStudentTutoringPackageCodeFromId($installment->invoiceable_id);
+        return $this->makeSession($userEmail,$packageType,$packageCode,$invoiceCode,$payable_amount,$invoiceType,$invoiceId);
+
     }
 }

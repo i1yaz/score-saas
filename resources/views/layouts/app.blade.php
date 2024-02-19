@@ -79,6 +79,9 @@
                 @yield('content')
             </div>
             @push('third_party_scripts')
+                <script>
+                    var ajaxSubmit = true;
+                </script>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js" integrity="sha512-lzilC+JFd6YV8+vQRNRtU7DOqv5Sa9Ek53lXt/k91HZTJpytHS1L6l1mMKR9K6VVoDt4LiEXaa6XBrYk1YhGTQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
                 <script src="{{asset("plugins/toastr/toastr.min.js")}}"></script>
                 <script src="{{asset('plugins/fullcalendar/main.min.js')}}"></script>
@@ -105,40 +108,42 @@
                     toastr.options.closeDuration = 3000;
                     $('#start_date').datepicker()
                     $('.date-input').datepicker()
-                    $("input[type='submit']").on("click", function (e) {
-                        $(this).attr("disabled", "disabled");
+                    if (ajaxSubmit){
+                        $("input[type='submit']").on("click", function (e) {
+                            $(this).attr("disabled", "disabled");
+                            var formData = $(this).parents("form").serialize();
+                            $.ajax({
+                                type: "POST",
+                                url: $(this).parents("form").attr("action"),
+                                data: formData,
+                                success: function(response) {
+                                    toastr.success(response.message);
+                                    if (typeof response.redirectTo !== 'undefined') {
+                                        window.location = response.redirectTo
 
-                        var formData = $(this).parents("form").serialize();
+                                    } else {
+                                        $("input[type='submit']").attr("disabled", false);
+                                    }
+                                },
+                                error: function(xhr, status, error) {
 
-                        $.ajax({
-                            type: "POST",
-                            url: $(this).parents("form").attr("action"),
-                            data: formData,
-                            success: function(response) {
-                                toastr.success(response.message);
-                                if (typeof response.redirectTo !== 'undefined') {
-                                    window.location = response.redirectTo
-
-                                } else {
+                                    if (xhr.status === 422) {
+                                        $.each(xhr.responseJSON.errors, function (key, item) {
+                                            toastr.error(item[0]);
+                                        });
+                                    } else if(xhr.status === 404){
+                                        let response = xhr.responseJSON
+                                        toastr.error(response.message);
+                                    } else {
+                                        toastr.error("something went wrong");
+                                    }
                                     $("input[type='submit']").attr("disabled", false);
                                 }
-                            },
-                            error: function(xhr, status, error) {
-
-                                if (xhr.status === 422) {
-                                    $.each(xhr.responseJSON.errors, function (key, item) {
-                                        toastr.error(item[0]);
-                                    });
-                                } else if(xhr.status === 404){
-                                    let response = xhr.responseJSON
-                                    toastr.error(response.message);
-                                } else {
-                                    toastr.error("something went wrong");
-                                }
-                                $("input[type='submit']").attr("disabled", false);
-                            }
+                            });
                         });
-                    });
+
+                    }
+
                     function ToggleBtnLoader(btnLoader) {
 
                         let spinner = "<span class='spinner-border spinner-border-sm'></span> Processing...";

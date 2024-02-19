@@ -20,6 +20,7 @@
     </section>
 
     <div class="content px-3">
+        @include('adminlte-templates::common.errors')
     <div class="card card-primary">
             <div class="card-header">
                 <h3 class="card-title">Invoice Details

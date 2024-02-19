@@ -53,6 +53,7 @@
     @push('after_third_party_scripts')
         <script src="https://js.stripe.com/v3/"></script>
         <script>
+            ajaxSubmit = false;
             @if(!empty($stripeKey))
             let stripe = Stripe('{{  $stripeKey ?? config('services.stripe.key') }}');
             @endif
