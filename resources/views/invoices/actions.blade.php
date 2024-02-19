@@ -2,12 +2,12 @@
 <div class='btn-group float-right'>
     @if($invoice->invoiceable_type===\App\Models\StudentTutoringPackage::class && $invoice->has_installments==false)
         @permission('invoice-installments')
-        <a href="#" data-toggle="modal" data-target="#create-installments" class='btn btn-default'>
+        <a href="#" data-toggle="modal" data-target="#create-installments-{{$invoice->id}}" class='btn btn-default'>
             <i class="fa fa-bars" aria-hidden="true"></i>
             Installments
         </a>
 
-        <div class="modal fade" id="create-installments" style="display: none;" aria-hidden="true">
+        <div class="modal fade" id="create-installments-{{$invoice->id}}" style="display: none;" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">

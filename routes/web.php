@@ -41,43 +41,7 @@ use Illuminate\Support\Facades\Route;
 //Route::get('packages/{package}/edit',[App\Http\Controllers\SchoolController::class,'edit'])->name('packages.edit')->middleware(['permission:package-edit']);
 //Route::patch('packages/{package}',[App\Http\Controllers\SchoolController::class,'update'])->name('packages.update')->middleware(['permission:package-edit']);
 //Route::delete('packages/{package}',[App\Http\Controllers\SchoolController::class,'destroy'])->name('packages.destroy')->middleware(['permission:package-destroy']);
-Route::get('/installment', function () {
 
-    // Given values
-    $principalAmount = 1000;
-    $annualInterestRate = 0;
-    $numberOfInstallments = 12;
-    $installments = MonthlyInstallments::calculate($principalAmount,$annualInterestRate,$numberOfInstallments);
-
-    dd($installments);
-    return view('welcome',compact('installments'));
-
-// Calculate monthly interest rate
-    $monthlyInterestRate = ($annualInterestRate / 12) / 100;
-
-// Calculate EMI using the loan amortization formula
-    $emi = $principalAmount * ($monthlyInterestRate * pow(1 + $monthlyInterestRate, $numberOfInstallments)) / (pow(1 + $monthlyInterestRate, $numberOfInstallments) - 1);
-
-// Calculate Interest and Principal for the 1st Installment
-    $interest1 = $principalAmount * $monthlyInterestRate;
-    $principal1 = $emi - $interest1;
-
-// Calculate Outstanding Loan Amount after 1st Installment
-    $outstandingLoanAmount1 = $principalAmount - $principal1;
-
-// Calculate Interest and Principal for the 2nd Installment
-    $interest2 = $outstandingLoanAmount1 * $monthlyInterestRate;
-    $principal2 = $emi - $interest2;
-
-// Display results
-
-
-
-    dd("EMI: $emi",
-        "1st Installment - Interest: $interest1, Principal: $principal1, Outstanding Loan: $outstandingLoanAmount1",
-        "2nd Installment - Interest: $interest2, Principal: $principal2",
-        MonthlyInstallments::calculate($principalAmount,$annualInterestRate,$numberOfInstallments));
-});
 Route::get('/', function () {
     return view('welcome');
 });
