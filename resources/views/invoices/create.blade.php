@@ -19,7 +19,8 @@
 
         <div class="card card-primary">
             <div class="card-header">
-                <h3 class="card-title">                    Create Invoices
+                <h3 class="card-title">
+                    Create Invoices
                 </h3>
             </div>
             {!! Form::open(['route' => 'invoices.store','id'=>'non-package-invoice-package-form']) !!}
