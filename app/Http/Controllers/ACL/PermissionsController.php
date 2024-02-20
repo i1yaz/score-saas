@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
+use Laracasts\Flash\Flash;
 
 class PermissionsController
 {
@@ -41,10 +42,8 @@ class PermissionsController
             'resource' => 'nullable|string',
         ]);
 
-        $permission = $this->permissionModel::create($data);
-
-        Session::flash('laratrust-success', 'Permission created successfully');
-
+        $this->permissionModel::create($data);
+        Flash::success('Permission created successfully');
         return redirect(route('acl.permissions.index'));
     }
 
@@ -69,9 +68,7 @@ class PermissionsController
         ]);
 
         $permission->update($data);
-
-        Session::flash('laratrust-success', 'Permission updated successfully');
-
+        Flash::success('Permission updated successfully');
         return redirect(route('acl.permissions.index'));
     }
 }

@@ -39,3 +39,8 @@
         }
     </script>
 @endpush
+@push('after_third_party_scripts')
+    <script>
+        ajaxSubmit = false
+    </script>
+@endpush
