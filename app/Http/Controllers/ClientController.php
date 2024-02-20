@@ -147,12 +147,12 @@ class ClientController extends AppBaseController
 
             return redirect(route('clients.index'));
         }
-        $data = array_filter($request->all());
+        $input = array_filter($request->all());
 
-        if (!empty($data['password'])){
-            $data['password'] = Hash::make($request->password);
+        if (!empty($input['password'])){
+            $input['password'] = Hash::make($request->password);
         }
-        $this->clientRepository->update($data, $id);
+        $this->clientRepository->update($input, $id);
         if ($request->ajax()) {
             return response()->json(
                 [

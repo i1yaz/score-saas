@@ -189,7 +189,16 @@ class ParentController extends AppBaseController
         $input = $request->all();
         $input['referral_from_positive_experience_with_tutor'] = $input['referral_from_positive_experience_with_tutor'] == 'yes';
         $input['status'] = $input['status'] == 'yes';
+        if (!empty($input['password'])){
+            $input['password'] = Hash::make($request->password);
+        }
         $this->parentRepository->update($input, $parent->id);
+        if ($request->ajax()) {
+            return response()->json(
+                [
+                    'message' => 'Parent updated successfully.',
+                ]);
+        }
         Flash::success('Parent updated successfully.');
 
         return redirect(route('parents.index'));

@@ -164,8 +164,17 @@ class TutorController extends AppBaseController
         $input = $request->all();
         $input['status'] = $input['status'] == 'yes';
         unset($input['picture'],$input['resume']);
+        if (!empty($input['password'])){
+            $input['password'] = Hash::make($request->password);
+        }
         $this->tutorRepository->update($input, $id);
         $this->storePictureOrResume($request, $tutor);
+        if ($request->ajax()) {
+            return response()->json(
+                [
+                    'message' => 'Tutor updated successfully.',
+                ]);
+        }
         Flash::success('Tutor updated successfully.');
 
         return redirect(route('tutors.index'));

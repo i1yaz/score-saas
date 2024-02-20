@@ -194,9 +194,12 @@ class StudentController extends AppBaseController
         $input['email_known'] = $input['email_known'] == 'yes';
         $input['status'] = $input['status'] == 'yes';
         $input = array_filter($input);
+        if (!empty($input['password'])){
+            $input['password'] = Hash::make($request->password);
+        }
         $this->studentRepository->update($input, $id);
         if ($request->ajax()) {
-            return response()->json(['success' => true, 'message' => 'Student saved successfully.', 'redirectTo' => route('students.index')]);
+            return response()->json(['success' => true, 'message' => 'Student saved successfully.']);
         }
         Flash::success('Student updated successfully.');
 
