@@ -44,7 +44,9 @@ class TutoringLocationController extends AppBaseController
         $input = $request->all();
 
         $this->tutoringLocationRepository->create($input);
-
+        if ($request->ajax()) {
+            return response()->json(['message' => 'Tutoring Location saved successfully.']);
+        }
         Flash::success('Tutoring Location saved successfully.');
 
         return redirect(route('tutoring-locations.index'));
@@ -96,7 +98,9 @@ class TutoringLocationController extends AppBaseController
         }
 
         $this->tutoringLocationRepository->update($request->all(), $id);
-
+        if ($request->ajax()) {
+            return response()->json(['message' => 'Tutoring Location updated successfully.']);
+        }
         Flash::success('Tutoring Location updated successfully.');
 
         return redirect(route('tutoring-locations.index'));

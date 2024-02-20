@@ -45,7 +45,9 @@ class TutoringPackageTypeController extends AppBaseController
         $input = $request->all();
 
         $this->tutoringPackageTypeRepository->create($input);
-
+        if ($request->ajax()) {
+            return response()->json(['message' => 'Tutoring Package Type saved successfully.']);
+        }
         Flash::success('Tutoring Package Type saved successfully.');
 
         return redirect(route('tutoring-package-types.index'));
@@ -96,8 +98,10 @@ class TutoringPackageTypeController extends AppBaseController
             return redirect(route('tutoring-package-types.index'));
         }
 
-        $tutoringPackageType = $this->tutoringPackageTypeRepository->update($request->all(), $id);
-
+        $this->tutoringPackageTypeRepository->update($request->all(), $id);
+        if ($request->ajax()) {
+            return response()->json(['message' => 'Tutoring Package Type updated successfully.']);
+        }
         Flash::success('Tutoring Package Type updated successfully.');
 
         return redirect(route('tutoring-package-types.index'));

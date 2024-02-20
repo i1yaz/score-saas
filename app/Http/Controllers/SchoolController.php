@@ -47,7 +47,7 @@ class SchoolController extends AppBaseController
         $this->schoolRepository->create($input);
 
         if ($request->ajax()) {
-            return response()->json(['success' => 'School saved successfully.']);
+            return response()->json(['message' => 'School saved successfully.']);
         }
 
         Flash::success('School saved successfully.');
@@ -101,7 +101,9 @@ class SchoolController extends AppBaseController
         }
 
         $this->schoolRepository->update($request->all(), $id);
-
+        if ($request->ajax()) {
+            return response()->json(['message' => 'School updated successfully.']);
+        }
         Flash::success('School updated successfully.');
 
         return redirect(route('schools.index'));

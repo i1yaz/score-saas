@@ -56,8 +56,10 @@ class TaxController extends AppBaseController
     {
         $input = $request->all();
 
-        $tax = $this->taxRepository->create($input);
-
+        $this->taxRepository->create($input);
+        if ($request->ajax()) {
+            return response()->json(['message' => 'Tax saved successfully.']);
+        }
         Flash::success('Tax saved successfully.');
 
         return redirect(route('taxes.index'));
@@ -102,14 +104,22 @@ class TaxController extends AppBaseController
     {
         $tax = $this->taxRepository->find($id);
 
-        if (empty($tax)) {
+        if (empty($tax) && !$request->ajax()) {
             Flash::error('Tax not found');
 
             return redirect(route('taxes.index'));
         }
+        if (empty($tax) && $request->ajax()) {
+            Flash::error('Tax not found');
 
-        $tax = $this->taxRepository->update($request->all(), $id);
-
+            if ($request->ajax()) {
+                return response()->json(['message' => 'Tax not found.']);
+            }
+        }
+        $this->taxRepository->update($request->all(), $id);
+        if ($request->ajax()) {
+            return response()->json(['message' => 'Tax updated successfully.']);
+        }
         Flash::success('Tax updated successfully.');
 
         return redirect(route('taxes.index'));

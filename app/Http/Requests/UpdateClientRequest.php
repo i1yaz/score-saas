@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\Client;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateClientRequest extends FormRequest
 {
@@ -24,8 +25,12 @@ class UpdateClientRequest extends FormRequest
      */
     public function rules()
     {
-        $rules = Client::$rules;
-
-        return $rules;
+        $clientID = $this->route('client');
+        return [
+            'first_name' => 'required|string|min:2|max:255',
+            'last_name' => 'required|string|min:2|max:255',
+            'email' => ['required','email',Rule::unique('clients')->ignore($clientID)],
+            'password' => 'nullable|string|min:8|max:255',
+        ];
     }
 }

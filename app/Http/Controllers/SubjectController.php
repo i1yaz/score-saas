@@ -59,7 +59,7 @@ class SubjectController extends AppBaseController
             }
             $subjectsRenderedView = view('student_tutoring_packages.subjects', ['subjects' => $this->subjectRepository->all(), 'selectedSubjects' => $subjects])->render();
 
-            return response()->json(['success' => 'Subject added successfully.', 'html' => $subjectsRenderedView]);
+            return response()->json(['message' => 'Subject added successfully.', 'html' => $subjectsRenderedView]);
         }
         Flash::success('Subject saved successfully.');
 
@@ -112,7 +112,9 @@ class SubjectController extends AppBaseController
         }
 
         $this->subjectRepository->update($request->all(), $id);
-
+        if ($request->ajax()) {
+            return response()->json(['message' => 'Subject updated successfully.']);
+        }
         Flash::success('Subject updated successfully.');
 
         return redirect(route('subjects.index'));

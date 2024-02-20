@@ -12,6 +12,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -74,6 +75,13 @@ class ClientController extends AppBaseController
             } catch (\Exception $e) {
                 report($e);
             }
+            if ($request->ajax()) {
+                return response()->json(
+                    [
+                        'message' => 'Parent saved successfully.',
+                        'redirectTo' => route('clients.index')
+                    ]);
+            }
             \Laracasts\Flash\Flash::success('Parent saved successfully.');
 
             return redirect(route('clients.index'));
@@ -81,6 +89,13 @@ class ClientController extends AppBaseController
         } catch (QueryException $queryException) {
             DB::rollBack();
             report($queryException);
+            if ($request->ajax()) {
+                return response()->json(
+                    [
+                        'message' => 'something went wrong.',
+                        'redirectTo' => route('clients.index')
+                    ]);
+            }
             Flash::error('something went wrong');
 
             return redirect(route('clients.index'));
@@ -132,9 +147,18 @@ class ClientController extends AppBaseController
 
             return redirect(route('clients.index'));
         }
+        $data = array_filter($request->all());
 
-        $client = $this->clientRepository->update($request->all(), $id);
-
+        if (!empty($data['password'])){
+            $data['password'] = Hash::make($request->password);
+        }
+        $this->clientRepository->update($data, $id);
+        if ($request->ajax()) {
+            return response()->json(
+                [
+                    'message' => 'Client updated successfully.',
+                ]);
+        }
         Flash::success('Client updated successfully.');
 
         return redirect(route('clients.index'));

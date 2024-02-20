@@ -46,7 +46,9 @@ class EmailTemplateController extends Controller
         $input['text_template'] = strip_tags($input['html_template']);
         unset($input['files']);
         $template->update($input);
-
+        if (request()->ajax()) {
+            return response()->json(['message' => 'Email Template updated successfully.']);
+        }
         return redirect()->route('email-templates.index')->with('success', 'Email template updated successfully');
     }
 

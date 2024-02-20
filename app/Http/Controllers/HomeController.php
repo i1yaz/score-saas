@@ -37,6 +37,9 @@ class HomeController extends Controller
         if (Auth::user()->hasRole('parent')) {
             return redirect()->route('parent-dashboard.index');
         }
+        if (Auth::user()->hasRole('client')) {
+            return redirect()->route('client-dashboard.index');
+        }
 
         $students = Cache::rememberForever('students_count', function () {
             return Student::query()
