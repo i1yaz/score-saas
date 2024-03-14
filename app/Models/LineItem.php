@@ -17,12 +17,6 @@ class LineItem extends Model
         'added_by',
     ];
 
-    protected $casts = [
-        'id' => 'integer',
-        'name' => 'string',
-        'price' => 'string',
-    ];
-
     public static array $rules = [
         'name' => ['required', 'string'],
         'price' => ['required', 'numeric'],
@@ -58,5 +52,13 @@ class LineItem extends Model
     public function invoices(): BelongsToMany
     {
         return $this->belongsToMany(Invoice::class);
+    }
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'name' => 'string',
+            'price' => 'string',
+        ];
     }
 }

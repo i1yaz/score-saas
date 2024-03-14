@@ -17,14 +17,16 @@ class TutoringPackageType extends BaseModel
         'auth_guard',
     ];
 
-    protected $casts = [
-        'id' => 'integer',
-        'name' => 'string',
-        'hours' => 'integer',
-    ];
-
     public static array $rules = [
         'name' => ['required', 'string', 'max:255'],
         'hours' => ['sometimes', 'numeric', 'gt:0'],
     ];
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'name' => 'string',
+            'hours' => 'integer',
+        ];
+    }
 }

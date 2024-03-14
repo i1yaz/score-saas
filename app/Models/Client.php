@@ -37,14 +37,6 @@ class Client extends Authenticatable implements LaratrustUser
 
     ];
 
-    protected $casts = [
-        'id' => 'integer',
-        'first_name' => 'string',
-        'last_name' => 'string',
-        'email' => 'string',
-        'password' => 'string',
-    ];
-
     public static array $rules = [
         'first_name' => 'required|string|min:2|max:255',
         'last_name' => 'required|string|min:2|max:255',
@@ -75,5 +67,15 @@ class Client extends Authenticatable implements LaratrustUser
     public function getFullNameAttribute(): string
     {
         return "{$this->first_name}  {$this->last_name}";
+    }
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'first_name' => 'string',
+            'last_name' => 'string',
+            'email' => 'string',
+            'password' => 'string',
+        ];
     }
 }

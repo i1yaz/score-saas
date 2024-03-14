@@ -57,21 +57,6 @@ class ParentUser extends Authenticatable implements LaratrustUser
         'referral_from_positive_experience_with_tutor',
     ];
 
-    protected $casts = [
-        'id' => 'integer',
-        'first_name' => 'string',
-        'last_name' => 'string',
-        'email' => 'string',
-        'status' => 'boolean',
-        'phone' => 'string',
-        'address' => 'string',
-        'address2' => 'string',
-        'phone_alternate' => 'string',
-        'referral_source' => 'string',
-        'added_by' => 'integer',
-        'referral_from_positive_experience_with_tutor' => 'boolean',
-    ];
-
     public static array $rules = [
         'first_name' => 'required|string|min:2|max:255',
         'last_name' => 'required|string|min:2|max:255',
@@ -116,5 +101,22 @@ class ParentUser extends Authenticatable implements LaratrustUser
     public function getFullNameAttribute(): string
     {
         return "{$this->first_name}  {$this->last_name}";
+    }
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'first_name' => 'string',
+            'last_name' => 'string',
+            'email' => 'string',
+            'status' => 'boolean',
+            'phone' => 'string',
+            'address' => 'string',
+            'address2' => 'string',
+            'phone_alternate' => 'string',
+            'referral_source' => 'string',
+            'added_by' => 'integer',
+            'referral_from_positive_experience_with_tutor' => 'boolean',
+        ];
     }
 }

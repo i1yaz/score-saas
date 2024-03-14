@@ -50,24 +50,6 @@ class Invoice extends BaseModel
         'added_by',
     ];
 
-    protected $casts = [
-        'id' => 'integer',
-        'invoice_package_type_id' => 'integer',
-        'general_description' => 'string',
-        'detailed_description' => 'string',
-        'email_to_parent' => 'boolean',
-        'email_to_student' => 'boolean',
-        'amount_paid' => 'float',
-        'amount_remaining' => 'float',
-        'paid_status' => 'boolean',
-        'paid_by_modal' => 'string',
-        'paid_by_id' => 'integer',
-        'invoiceable_type' => 'string',
-        'invoiceable_id' => 'integer',
-        'due_date' => 'date',
-        'has_installments' => 'boolean',
-    ];
-
     public static array $rules = [
         'client_id' => 'required',
         'due_date' => ['required', 'date', 'after_or_equal:today'],
@@ -108,5 +90,25 @@ class Invoice extends BaseModel
     public function installments(): HasMany
     {
         return $this->hasMany(Installment::class);
+    }
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'invoice_package_type_id' => 'integer',
+            'general_description' => 'string',
+            'detailed_description' => 'string',
+            'email_to_parent' => 'boolean',
+            'email_to_student' => 'boolean',
+            'amount_paid' => 'float',
+            'amount_remaining' => 'float',
+            'paid_status' => 'boolean',
+            'paid_by_modal' => 'string',
+            'paid_by_id' => 'integer',
+            'invoiceable_type' => 'string',
+            'invoiceable_id' => 'integer',
+            'due_date' => 'date',
+            'has_installments' => 'boolean',
+        ];
     }
 }

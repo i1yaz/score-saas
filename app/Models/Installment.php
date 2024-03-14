@@ -16,13 +16,6 @@ class Installment extends BaseModel
        'auth_guard',
        'added_by'
    ];
-   protected $casts = [
-       'id' => 'integer',
-       'invoice_id' => 'integer',
-       'amount' => 'float',
-       'is_paid' => 'bool',
-       'added_by' => 'integer'
-       ];
 
     /**
      *------------------------------------------------------------------
@@ -33,5 +26,15 @@ class Installment extends BaseModel
     public function invoice(): BelongsTo
     {
         return $this->belongsTo(Invoice::class,'invoice_id');
+    }
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'invoice_id' => 'integer',
+            'amount' => 'float',
+            'is_paid' => 'bool',
+            'added_by' => 'integer'
+            ];
     }
 }

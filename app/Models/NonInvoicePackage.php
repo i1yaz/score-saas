@@ -21,12 +21,14 @@ class NonInvoicePackage extends Model
         'prefix',
         'is_active',
     ];
-
-    protected $casts = [
-    ];
     /**
      *------------------------------------------------------------------
      * Relationships
      *------------------------------------------------------------------
      */
+    protected function casts(): array
+    {
+        return [
+        ];
+    }
 }

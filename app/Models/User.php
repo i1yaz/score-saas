@@ -37,16 +37,6 @@ class User extends Authenticatable implements LaratrustUser
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-    ];
-
     const CAN_ACCESS_ACL = [1];
     /**
      *------------------------------------------------------------------
@@ -77,5 +67,12 @@ class User extends Authenticatable implements LaratrustUser
     public function getFullNameAttribute(): string
     {
         return "{$this->first_name}  {$this->last_name}";
+    }
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
     }
 }

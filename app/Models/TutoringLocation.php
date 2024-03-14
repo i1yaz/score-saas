@@ -16,12 +16,14 @@ class TutoringLocation extends BaseModel
         'auth_guard',
     ];
 
-    protected $casts = [
-        'id' => 'integer',
-        'name' => 'string',
-    ];
-
     public static array $rules = [
         'name' => 'required|string|max:255',
     ];
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'name' => 'string',
+        ];
+    }
 }

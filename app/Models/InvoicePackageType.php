@@ -18,12 +18,14 @@ class InvoicePackageType extends Model
         'auth_guard',
     ];
 
-    protected $casts = [
-        'id' => 'integer',
-        'name' => 'string',
-    ];
-
     public static array $rules = [
 
     ];
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'name' => 'string',
+        ];
+    }
 }

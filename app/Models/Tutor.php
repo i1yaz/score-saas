@@ -55,22 +55,6 @@ class Tutor extends Authenticatable implements LaratrustUser
         'hourly_rate',
     ];
 
-    protected $casts = [
-        'id' => 'integer',
-        'first_name' => 'string',
-        'last_name' => 'string',
-        'email' => 'string',
-        'password' => 'string',
-        'secondary_email' => 'string',
-        'phone' => 'string',
-        'secondary_phone' => 'string',
-        'picture' => 'string',
-        'resume' => 'string',
-        'start_date' => 'date',
-        'added_by' => 'integer',
-        'status' => 'boolean',
-    ];
-
     public static array $rules = [
         'first_name' => ['required', 'string', 'min:2', 'max:255'],
         'last_name' => ['required', 'string', 'min:2', 'max:255'],
@@ -118,5 +102,23 @@ class Tutor extends Authenticatable implements LaratrustUser
     public function getFullNameAttribute(): string
     {
         return "{$this->first_name} {$this->last_name}";
+    }
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'first_name' => 'string',
+            'last_name' => 'string',
+            'email' => 'string',
+            'password' => 'string',
+            'secondary_email' => 'string',
+            'phone' => 'string',
+            'secondary_phone' => 'string',
+            'picture' => 'string',
+            'resume' => 'string',
+            'start_date' => 'date',
+            'added_by' => 'integer',
+            'status' => 'boolean',
+        ];
     }
 }

@@ -58,13 +58,15 @@ class Session extends Model
         'student_tutoring_package_id' => 'Please select a tutoring package',
     ];
 
-    protected $casts = [
-
-    ];
-
     const CODE_START = 5000;
 
     const LIST_DATA_LIST_ID = 1;
 
     const PREFIX = 'SRN-';
+    protected function casts(): array
+    {
+        return [
+    
+        ];
+    }
 }

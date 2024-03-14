@@ -27,12 +27,6 @@ class School extends BaseModel
         'auth_guard',
     ];
 
-    protected $casts = [
-        'id' => 'integer',
-        'name' => 'string',
-        'address' => 'string',
-    ];
-
     public static array $rules = [
         'name' => ['required', 'string', 'max:255'],
     ];
@@ -45,5 +39,13 @@ class School extends BaseModel
     public function studentsEnrolled(): HasMany
     {
         return $this->hasMany(Student::class);
+    }
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'name' => 'string',
+            'address' => 'string',
+        ];
     }
 }

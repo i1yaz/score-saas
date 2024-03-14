@@ -43,18 +43,6 @@ class MonthlyInvoicePackage extends BaseModel
         'auth_guard',
     ];
 
-    protected $casts = [
-        'id' => 'integer',
-        'student_id' => 'integer',
-        'notes' => 'string',
-        'internal_notes' => 'string',
-        'start_date' => 'date',
-        'tutoring_location_id' => 'integer',
-        'is_score_guaranteed' => 'boolean',
-        'is_free' => 'boolean',
-        'due_date' => 'date',
-    ];
-
     public static array $rules = [
         'student_id' => 'required|integer',
         'notes' => 'nullable|string',
@@ -132,5 +120,19 @@ class MonthlyInvoicePackage extends BaseModel
     public function invoice(): MorphOne
     {
         return $this->morphOne(Invoice::class, 'invoiceable');
+    }
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'student_id' => 'integer',
+            'notes' => 'string',
+            'internal_notes' => 'string',
+            'start_date' => 'date',
+            'tutoring_location_id' => 'integer',
+            'is_score_guaranteed' => 'boolean',
+            'is_free' => 'boolean',
+            'due_date' => 'date',
+        ];
     }
 }

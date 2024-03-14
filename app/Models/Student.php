@@ -58,23 +58,6 @@ class Student extends Authenticatable implements LaratrustUser
         'status',
     ];
 
-    protected $casts = [
-        'id' => 'integer',
-        'email' => 'string',
-        'school_id' => 'integer',
-        'first_name' => 'string',
-        'last_name' => 'string',
-        'email_known' => 'boolean',
-        'testing_accommodation' => 'boolean',
-        'testing_accommodation_nature' => 'string',
-        'official_baseline_act_score' => 'string',
-        'official_baseline_sat_score' => 'string',
-        'test_anxiety_challenge' => 'boolean',
-        'parent_id' => 'integer',
-        'added_by' => 'integer',
-        'status' => 'boolean',
-    ];
-
     public static array $rules = [
         'first_name' => 'required|string|min:2|max:255',
         'last_name' => 'required|string|min:2|max:255',
@@ -134,5 +117,24 @@ class Student extends Authenticatable implements LaratrustUser
     public function getFullNameAttribute(): string
     {
         return "{$this->first_name}  {$this->last_name}";
+    }
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'email' => 'string',
+            'school_id' => 'integer',
+            'first_name' => 'string',
+            'last_name' => 'string',
+            'email_known' => 'boolean',
+            'testing_accommodation' => 'boolean',
+            'testing_accommodation_nature' => 'string',
+            'official_baseline_act_score' => 'string',
+            'official_baseline_sat_score' => 'string',
+            'test_anxiety_challenge' => 'boolean',
+            'parent_id' => 'integer',
+            'added_by' => 'integer',
+            'status' => 'boolean',
+        ];
     }
 }

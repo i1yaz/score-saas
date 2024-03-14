@@ -16,12 +16,6 @@ class Tax extends Model
         'added_by',
     ];
 
-    protected $casts = [
-        'id' => 'integer',
-        'name' => 'string',
-        'value' => 'decimal:2',
-    ];
-
     const FLAT_DISCOUNT = 1;
 
     const PERCENTAGE_DISCOUNT = 2;
@@ -51,5 +45,13 @@ class Tax extends Model
     public function scopeInActive(Builder $query): void
     {
         $query->where('status', false);
+    }
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'name' => 'string',
+            'value' => 'decimal:2',
+        ];
     }
 }

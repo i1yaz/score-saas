@@ -42,19 +42,6 @@ class StudentTutoringPackage extends BaseModel
         'status'
     ];
 
-    protected $casts = [
-        'id' => 'integer',
-        'student_id' => 'integer',
-        'tutoring_package_type_id' => 'integer',
-        'tutor_id' => 'integer',
-        'notes' => 'string',
-        'internal_notes' => 'string',
-        'tutoring_location_id' => 'integer',
-        'discount' => 'integer',
-        'discount_type' => 'integer',
-        'start_date' => 'date',
-    ];
-
     public static mixed $messages = [
         'student_id' => 'Please select a student',
         'tutoring_location_id' => 'Please select a tutoring location',
@@ -101,5 +88,20 @@ class StudentTutoringPackage extends BaseModel
     public function getStudentTutoringPackageCodeAttribute(): string
     {
         return getStudentTutoringPackageCodeFromId($this->id);
+    }
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'student_id' => 'integer',
+            'tutoring_package_type_id' => 'integer',
+            'tutor_id' => 'integer',
+            'notes' => 'string',
+            'internal_notes' => 'string',
+            'tutoring_location_id' => 'integer',
+            'discount' => 'integer',
+            'discount_type' => 'integer',
+            'start_date' => 'date',
+        ];
     }
 }

@@ -50,16 +50,18 @@ class Payment extends Model
         'is_subscription_payment',
     ];
 
-    protected $casts = [
-        'id' => 'integer',
-        'invoice_id' => 'integer',
-        'amount' => 'float',
-        'payment_gateway' => 'integer',
-        'transaction_id' => 'integer',
-        'is_subscription_payment' => 'boolean',
-    ];
-
     public static array $rules = [
 
     ];
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'invoice_id' => 'integer',
+            'amount' => 'float',
+            'payment_gateway' => 'integer',
+            'transaction_id' => 'integer',
+            'is_subscription_payment' => 'boolean',
+        ];
+    }
 }
