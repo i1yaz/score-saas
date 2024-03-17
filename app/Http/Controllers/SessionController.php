@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\DataTables\SessionDataTable;
 use App\Http\Requests\CreateSessionRequest;
 use App\Http\Requests\UpdateSessionRequest;
+use App\Mail\ClientRegisteredMail;
 use App\Mail\FlagSessionMail;
 use App\Models\ListData;
+use App\Models\MailTemplate;
 use App\Models\MonthlyInvoicePackage;
 use App\Models\MonthlyInvoicePackageTutor;
 use App\Models\Session;
@@ -132,7 +134,11 @@ class SessionController extends Controller
             $admins = $admins->pluck('email')->toArray();
             try {
                 $input['package'] = $tutoringPackageId;
-                Mail::to($admins)->send(new FlagSessionMail($input));
+                $template = MailTemplate::where('mailable', FlagSessionMail::class)->firstOrFail();
+                if ($template->status){
+                    Mail::to($admins)->send(new FlagSessionMail($input));
+
+                }
 
             } catch (\Exception $e) {
                 report($e);

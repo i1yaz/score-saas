@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Mail\ClientMakePaymentMail;
 use App\Models\Installment;
 use App\Models\Invoice;
+use App\Models\MailTemplate;
 use App\Models\MonthlyInvoicePackage;
 use App\Models\MonthlyInvoiceSubscription;
 use App\Models\NonInvoicePackage;
@@ -106,7 +107,10 @@ class StripeRepository
         $admins = User::whereHasRole(['super-admin'])->get(['email']);
         $admins = $admins->pluck('email')->toArray();
         try {
-            Mail::to($admins)->send(new ClientMakePaymentMail($paymentTransactionData));
+            $template = MailTemplate::where('mailable', ClientMakePaymentMail::class)->firstOrFail();
+            if ($template->status){
+                Mail::to($admins)->send(new ClientMakePaymentMail($paymentTransactionData));
+            }
         } catch (Exception $e) {
             report($e);
         }

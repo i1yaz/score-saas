@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MailTemplate;
 use Carbon\Carbon;
 use Faker\Factory as Faker;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
-use Spatie\MailTemplates\Models\MailTemplate;
 
 class EmailTemplateController extends Controller
 {
@@ -43,9 +43,15 @@ class EmailTemplateController extends Controller
 
         $template = MailTemplate::findOrFail($template);
         $input = request()->all();
+        if (empty($input['status'])){
+            $input['status'] =false;
+        }
         $input['text_template'] = strip_tags($input['html_template']);
         unset($input['files']);
         $template->update($input);
+        if (request()->ajax()) {
+            return response()->json(['success' => true,'message' => 'Email template updated successfully']);
+        }
 
         return redirect()->route('email-templates.index')->with('success', 'Email template updated successfully');
     }

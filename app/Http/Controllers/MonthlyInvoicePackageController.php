@@ -6,6 +6,7 @@ use App\DataTables\MonthlyInvoicePackageDataTable;
 use App\Http\Requests\CreateMonthlyInvoicePackageRequest;
 use App\Http\Requests\UpdateMonthlyInvoicePackageRequest;
 use App\Mail\ParentInvoiceMailAfterMonthlyInvoicePackageCreationMail;
+use App\Models\MailTemplate;
 use App\Models\MonthlyInvoicePackage;
 use App\Models\Student;
 use App\Models\Subject;
@@ -104,7 +105,10 @@ class MonthlyInvoicePackageController extends AppBaseController
                 $parentEmail = Student::select(['parents.email as parent_email', 'students.id', 'students.parent_id'])->where('students.id', $input['student_id'])
                     ->join('parents', 'students.parent_id', '=', 'parents.id')->first();
                 try {
-                    Mail::to($parentEmail->parent_email)->send(new ParentInvoiceMailAfterMonthlyInvoicePackageCreationMail($monthlyInvoicePackage));
+                    $template = MailTemplate::where('mailable', ParentInvoiceMailAfterMonthlyInvoicePackageCreationMail::class)->firstOrFail();
+                    if ($template->status){
+                        Mail::to($parentEmail->parent_email)->send(new ParentInvoiceMailAfterMonthlyInvoicePackageCreationMail($monthlyInvoicePackage));
+                    }
                 } catch (\Exception $exception) {
                     report($exception);
                 }
@@ -219,7 +223,10 @@ class MonthlyInvoicePackageController extends AppBaseController
                 $parentEmail = Student::select(['parents.email as parent_email', 'students.id', 'students.parent_id'])->where('students.id', $input['student_id'])
                     ->join('parents', 'students.parent_id', '=', 'parents.id')->first();
                 try {
-                    Mail::to($parentEmail->parent_email)->send(new ParentInvoiceMailAfterMonthlyInvoicePackageCreationMail($monthlyInvoicePackage));
+                    $template = MailTemplate::where('mailable', ParentInvoiceMailAfterMonthlyInvoicePackageCreationMail::class)->firstOrFail();
+                    if ($template->status){
+                        Mail::to($parentEmail->parent_email)->send(new ParentInvoiceMailAfterMonthlyInvoicePackageCreationMail($monthlyInvoicePackage));
+                    }
                 } catch (\Exception $exception) {
                     report($exception);
                 }

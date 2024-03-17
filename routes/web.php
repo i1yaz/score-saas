@@ -41,7 +41,9 @@ use Illuminate\Support\Facades\Route;
 //Route::get('packages/{package}/edit',[App\Http\Controllers\SchoolController::class,'edit'])->name('packages.edit')->middleware(['permission:package-edit']);
 //Route::patch('packages/{package}',[App\Http\Controllers\SchoolController::class,'update'])->name('packages.update')->middleware(['permission:package-edit']);
 //Route::delete('packages/{package}',[App\Http\Controllers\SchoolController::class,'destroy'])->name('packages.destroy')->middleware(['permission:package-destroy']);
-
+Route::get('invoice-reminder',function (){
+    Artisan::call('invoice:payment-reminder');
+});
 Route::get('/', function () {
     return view('welcome');
 });

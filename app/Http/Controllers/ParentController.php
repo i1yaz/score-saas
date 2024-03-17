@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Requests\CreateParentRequest;
 use App\Http\Requests\UpdateParentRequest;
 use App\Mail\ParentRegisteredMail;
+use App\Models\MailTemplate;
 use App\Models\ParentUser;
 use App\Models\Student;
 use App\Repositories\ParentRepository;
@@ -101,7 +102,10 @@ class ParentController extends AppBaseController
             DB::commit();
             $input['password'] = App::environment(['production']) ? $passwordString : 'abcd1234';
             try {
-                Mail::to($user)->send(new ParentRegisteredMail($input));
+                $template = MailTemplate::where('mailable', ParentRegisteredMail::class)->firstOrFail();
+                if ($template->status) {
+                    Mail::to($user)->send(new ParentRegisteredMail($input));
+                }
 
             } catch (\Exception $e) {
                 report($e);
