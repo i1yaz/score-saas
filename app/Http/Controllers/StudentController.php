@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Requests\CreateStudentRequest;
 use App\Http\Requests\UpdateStudentRequest;
 use App\Mail\StudentRegistrationMail;
+use App\Models\MailTemplate;
 use App\Models\ParentUser;
 use App\Models\School;
 use App\Models\Student;
@@ -101,7 +102,11 @@ class StudentController extends AppBaseController
             DB::commit();
             $input['password'] = App::environment(['production']) ? $passwordString : 'abcd1234';
             try {
-                Mail::to($user)->send(new StudentRegistrationMail($input));
+                $template = MailTemplate::where('mailable', StudentRegistrationMail::class)->firstOrFail();
+                if ($template->status) {
+                    Mail::to($user)->send(new StudentRegistrationMail($input));
+
+                }
 
             } catch (\Exception $exception) {
                 report($exception);

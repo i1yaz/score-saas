@@ -5,6 +5,7 @@
             <tr>
                 <th>Name</th>
                 <th>Subject</th>
+                <th>Active</th>
                 <th colspan="3">Action</th>
             </tr>
             </thead>
@@ -13,6 +14,7 @@
                 <tr>
                     <td>{{ $template->name }}</td>
                     <td>{{ $template->description }}</td>
+                    <td>@include('partials.status_badge',['status' => $template->status,'text_success'=>'Yes','text_danger' => 'No'])</td>
                     <td  style="width: 120px">
                         <div class='btn-group'>
                             @permission('email_templates-show')

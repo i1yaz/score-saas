@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Mail\SessionSubmittedMail;
+use App\Models\MailTemplate;
 use App\Models\MonthlyInvoicePackage;
 use App\Models\MonthlyInvoiceSubscription;
 use App\Models\Session;
@@ -69,7 +70,10 @@ class ReportMonthlyPackageUsageCommand extends Command
                         'bill_amount' => $hoursAmount + $minutesAmount,
                         'start_time' => $monthlyPackage->start_date,
                     ];
-                    Mail::to($monthlyPackage->student_email)->send(new SessionSubmittedMail($input));
+                    $template = MailTemplate::where('mailable', SessionSubmittedMail::class)->firstOrFail();
+                    if ($template->status) {
+                        Mail::to($monthlyPackage->student_email)->send(new SessionSubmittedMail($input));
+                    }
                     $this->info('Report generated successfully at '.$now->toDateTimeString().'-'.Carbon::now()->toDateTimeString().' for package '.$monthlyPackage->id ?? 'nothing');
                 }
 

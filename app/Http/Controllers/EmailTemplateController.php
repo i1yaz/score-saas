@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MailTemplate;
 use Carbon\Carbon;
 use Faker\Factory as Faker;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
-use Spatie\MailTemplates\Models\MailTemplate;
 
 class EmailTemplateController extends Controller
 {
@@ -43,12 +43,16 @@ class EmailTemplateController extends Controller
 
         $template = MailTemplate::findOrFail($template);
         $input = request()->all();
+        if (empty($input['status'])){
+            $input['status'] =false;
+        }
         $input['text_template'] = strip_tags($input['html_template']);
         unset($input['files']);
         $template->update($input);
         if (request()->ajax()) {
-            return response()->json(['message' => 'Email Template updated successfully.']);
+            return response()->json(['success' => true,'message' => 'Email template updated successfully']);
         }
+
         return redirect()->route('email-templates.index')->with('success', 'Email template updated successfully');
     }
 
@@ -113,6 +117,22 @@ class EmailTemplateController extends Controller
             $data['student_last_name'] = $faker->lastName;
             $data['bill_amount'] = $faker->randomFloat(2, 0, 1000);
             $data['start_time'] = Carbon::now()->format('Y-m-d');
+        }
+        if ($template_id == 10) {
+            $data = [
+                'invoiceable_type' => rand(1000,9999),
+                'due_date' => Carbon::now()->addWeek(),
+                'price' => $faker->randomFloat(2, 0, 1000),
+                'student_email' => $faker->email,
+                'student_first_name' => $faker->firstName,
+                'student_last_name' => $faker->lastName,
+                'parent_email' => $faker->email,
+                'parent_first_name' => $faker->firstName,
+                'parent_last_name' => $faker->lastName,
+                'client_email' => $faker->email,
+                'client_first_name' => $faker->firstName,
+                'client_last_name' => $faker->lastName,
+            ];
         }
 
         return $data;

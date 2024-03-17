@@ -40,6 +40,12 @@
         </div>
     </div>
 </div>
+<div class="form-group col-sm-6">
+    <div class="custom-control custom-checkbox">
+        <input class="custom-control-input form-control" type="checkbox" name="status" id="status" value="true" @if($template->status) checked @endif>
+        <label for="status" class="custom-control-label">Status</label>
+    </div>
+</div>
 
 @push('page_scripts')
     <script src="{{asset('plugins/summernote/summernote-bs4.min.js')}}"></script>

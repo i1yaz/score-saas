@@ -6,6 +6,7 @@ use App\DataTables\StudentTutoringPackageDataTable;
 use App\Http\Requests\CreateStudentTutoringPackageRequest;
 use App\Http\Requests\UpdateStudentTutoringPackageRequest;
 use App\Mail\ParentInvoiceMailAfterStudentTutoringPackageCreation;
+use App\Models\MailTemplate;
 use App\Models\MonthlyInvoicePackage;
 use App\Models\Student;
 use App\Models\StudentTutoringPackage;
@@ -113,7 +114,10 @@ class StudentTutoringPackageController extends AppBaseController
                 $parentEmail = Student::select(['parents.email as parent_email', 'students.id', 'students.parent_id'])->where('students.id', $input['student_id'])
                     ->join('parents', 'students.parent_id', '=', 'parents.id')->first();
                 try {
-                    Mail::to($parentEmail->parent_email)->send(new ParentInvoiceMailAfterStudentTutoringPackageCreation($studentTutoringPackage));
+                    $template = MailTemplate::where('mailable', ParentInvoiceMailAfterStudentTutoringPackageCreation::class)->firstOrFail();
+                    if ($template->status) {
+                        Mail::to($parentEmail->parent_email)->send(new ParentInvoiceMailAfterStudentTutoringPackageCreation($studentTutoringPackage));
+                    }
 
                 } catch (\Exception $exception) {
                     report($exception);

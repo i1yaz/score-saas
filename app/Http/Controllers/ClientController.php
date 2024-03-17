@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Requests\CreateClientRequest;
 use App\Http\Requests\UpdateClientRequest;
+use App\Mail\ClientMakePaymentMail;
 use App\Mail\ClientRegisteredMail;
+use App\Models\MailTemplate;
 use App\Repositories\ClientRepository;
 use Flash;
 use Illuminate\Database\QueryException;
@@ -71,7 +73,10 @@ class ClientController extends AppBaseController
             DB::commit();
             $input['password'] = App::environment(['production']) ? $passwordString : 'abcd1234';
             try {
-                Mail::to($user)->send(new ClientRegisteredMail($input));
+                $template = MailTemplate::where('mailable', ClientRegisteredMail::class)->firstOrFail();
+                if ($template->status){
+                    Mail::to($user)->send(new ClientRegisteredMail($input));
+                }
             } catch (\Exception $e) {
                 report($e);
             }

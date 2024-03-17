@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Requests\CreateTutorRequest;
 use App\Http\Requests\UpdateTutorRequest;
 use App\Mail\TutorRegistrationMail;
+use App\Models\MailTemplate;
 use App\Models\Tutor;
 use App\Repositories\TutorRepository;
 use Illuminate\Database\Eloquent\Model;
@@ -101,7 +102,10 @@ class TutorController extends AppBaseController
             DB::commit();
             $input['password'] = App::environment(['production']) ? $passwordString : 'abcd1234';
             try {
-                Mail::to($user)->send(new TutorRegistrationMail($input));
+                $template = MailTemplate::where('mailable', TutorRegistrationMail::class)->firstOrFail();
+                if ($template->status) {
+                    Mail::to($user)->send(new TutorRegistrationMail($input));
+                }
             } catch (\Exception $exception) {
                 report($exception);
             }
