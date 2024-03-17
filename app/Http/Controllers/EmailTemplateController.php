@@ -118,6 +118,22 @@ class EmailTemplateController extends Controller
             $data['bill_amount'] = $faker->randomFloat(2, 0, 1000);
             $data['start_time'] = Carbon::now()->format('Y-m-d');
         }
+        if ($template_id == 10) {
+            $data = [
+                'invoiceable_type' => rand(1000,9999),
+                'due_date' => Carbon::now()->addWeek(),
+                'price' => $faker->randomFloat(2, 0, 1000),
+                'student_email' => $faker->email,
+                'student_first_name' => $faker->firstName,
+                'student_last_name' => $faker->lastName,
+                'parent_email' => $faker->email,
+                'parent_first_name' => $faker->firstName,
+                'parent_last_name' => $faker->lastName,
+                'client_email' => $faker->email,
+                'client_first_name' => $faker->firstName,
+                'client_last_name' => $faker->lastName,
+            ];
+        }
 
         return $data;
     }
