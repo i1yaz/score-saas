@@ -44,9 +44,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('invoice-reminder',function (){
     Artisan::call('invoice:payment-reminder');
 });
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [\App\Http\Controllers\Frontend\HomeController::class,'home']);
 
 Route::get('invoice/{invoice}/public-view/{type?}', [InvoiceController::class, 'showPublicInvoice']);
 Auth::routes(['register' => false]);
