@@ -53,6 +53,13 @@ Route::get('/faq', [FaqController::class,'index']);
 Route::get('/pricing', [PricingController::class,'index']);
 Route::get('contact', [ContactController::class,'index']);
 Route::post('contact', [ContactController::class,'submitForm']);
+Route::group(['prefix' => 'account'], function () {
+    Route::any("/signup", "Frontend\Signup@index");
+    Route::post("/signup", "Frontend\Signup@createAccount");
+    Route::any("/login", "Frontend\Login@index");
+    Route::post("/login", "Frontend\Login@getAccount");
+});
+
 
 Route::get('invoice/{invoice}/public-view/{type?}', [InvoiceController::class, 'showPublicInvoice']);
 Auth::routes(['register' => false]);
