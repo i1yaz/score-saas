@@ -41,11 +41,11 @@
                 <!--each plan-->
                 @foreach($packages as $package)
                 <div class="col-sm-12 col-md-6 col-lg-4">
-                    <div class="card box-shadow pricing-plan pricing-featured-{{ $package->package_featured }}">
+                    <div class="card box-shadow pricing-plan pricing-featured-{{ $package->featured }}">
                         <div class="card-body">
-                            <h4 class="my-0 font-weight-normal">{{ $package->package_name }}</h4>
+                            <h4 class="my-0 font-weight-normal">{{ $package->name }}</h4>
                             <h1 class="card-title pricing-card-title">
-                                {{ runtimeMoneyFormatPricing($package->package_amount_monthly) }} <small
+                                {{ runtimeMoneyFormatPricing($package->amount_monthly) }} <small
                                     class="text-muted">/
                                     @lang('lang.month')</small></h1>
                             <ul class="list-unstyled mt-3 mb-4">
@@ -53,41 +53,41 @@
 
                                 <!--package_limits_team-->
                                 <li>
-                                    @if($package->package_limits_team > 0 || $package->package_limits_team == -1)
+                                    @if($package->limits_team > 0 || $package->limits_team == -1)
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
                                     @endif
                                     <span class="x-text font-weight-500">@lang('lang.team') (@lang('lang.users')) -
-                                        {{ runtimeCheckUnlimited($package->package_limits_team) }}</span>
+                                        {{ runtimeCheckUnlimited($package->limits_team) }}</span>
                                 </li>
 
                                 <!--package_limits_clients-->
                                 <li>
-                                    @if($package->package_limits_clients > 0 || $package->package_limits_clients == -1)
+                                    @if($package->limits_clients > 0 || $package->limits_clients == -1)
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
                                     @endif
                                     <span class="x-text font-weight-500">@lang('lang.clients') -
-                                        {{ runtimeCheckUnlimited($package->package_limits_clients) }}</span>
+                                        {{ runtimeCheckUnlimited($package->limits_clients) }}</span>
                                 </li>
 
 
                                 <!--package_limits_projects-->
                                 <li>
-                                    @if($package->package_limits_projects > 0 || $package->package_limits_projects == -1)
+                                    @if($package->limits_projects > 0 || $package->limits_projects == -1)
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
                                     @endif
                                     <span class="x-text font-weight-500">@lang('lang.projects') -
-                                        {{ runtimeCheckUnlimited($package->package_limits_projects) }}</span>
+                                        {{ runtimeCheckUnlimited($package->limits_projects) }}</span>
                                 </li>
 
                                 <!--package_module_tasks-->
                                 <li>
-                                    @if($package->package_module_tasks == 'yes')
+                                    @if($package->module_tasks == 'yes')
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
@@ -97,7 +97,7 @@
 
                                 <!--package_module_leads-->
                                 <li>
-                                    @if($package->package_module_leads == 'yes')
+                                    @if($package->module_leads == 'yes')
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
@@ -107,7 +107,7 @@
 
                                 <!--package_module_invoices-->
                                 <li>
-                                    @if($package->package_module_invoices == 'yes')
+                                    @if($package->module_invoices == 'yes')
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
@@ -117,7 +117,7 @@
 
                                 <!--package_module_estimates-->
                                 <li>
-                                    @if($package->package_module_estimates == 'yes')
+                                    @if($package->module_estimates == 'yes')
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
@@ -127,7 +127,7 @@
 
                                 <!--package_module_subscriptions-->
                                 <li>
-                                    @if($package->package_module_subscriptions == 'yes')
+                                    @if($package->module_subscriptions == 'yes')
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
@@ -137,7 +137,7 @@
 
                                 <!--package_module_contracts-->
                                 <li>
-                                    @if($package->package_module_contracts == 'yes')
+                                    @if($package->module_contracts == 'yes')
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
@@ -147,7 +147,7 @@
 
                                 <!--package_module_proposals-->
                                 <li>
-                                    @if($package->package_module_proposals == 'yes')
+                                    @if($package->module_proposals == 'yes')
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
@@ -157,7 +157,7 @@
 
                                 <!--package_module_tickets-->
                                 <li>
-                                    @if($package->package_module_tickets == 'yes')
+                                    @if($package->module_tickets == 'yes')
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
@@ -167,7 +167,7 @@
 
                                 <!--package_module_expense-->
                                 <li>
-                                    @if($package->package_module_expense == 'yes')
+                                    @if($package->module_expense == 'yes')
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
@@ -177,7 +177,7 @@
 
                                 <!--package_module_messages-->
                                 <li>
-                                    @if($package->package_module_messages == 'yes')
+                                    @if($package->module_messages == 'yes')
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
@@ -187,7 +187,7 @@
 
                                 <!--package_module_timetracking-->
                                 <li>
-                                    @if($package->package_module_timetracking == 'yes')
+                                    @if($package->module_timetracking == 'yes')
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
@@ -197,7 +197,7 @@
 
                                 <!--package_module_knowledgebase-->
                                 <li>
-                                    @if($package->package_module_knowledgebase == 'yes')
+                                    @if($package->module_knowledgebase == 'yes')
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
@@ -207,7 +207,7 @@
 
                                 <!--package_module_reminders-->
                                 <li>
-                                    @if($package->package_module_reminders == 'yes')
+                                    @if($package->module_reminders == 'yes')
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
@@ -215,11 +215,11 @@
                                     <span class="x-text">@lang('lang.reminders')</span>
                                 </li>
                             </ul>
-                            @if($package->package_subscription_options == 'free')
-                            <a type="button" href="{{ url('account/signup?ref=free_'.$package->package_id) }}"
+                            @if($package->subscription_options == 'free')
+                            <a type="button" href="{{ url('account/signup?ref=free_'.$package->id) }}"
                                 class="frontent-pricing-button">{{ $content->data_4 ?? '' }}</a>
                             @else
-                            <a type="button" href="{{ url('account/signup?ref=monthly_'.$package->package_id) }}"
+                            <a type="button" href="{{ url('account/signup?ref=monthly_'.$package->id) }}"
                                 class="frontent-pricing-button">{{ $content->data_4 ?? '' }}</a>
                             @endif
                         </div>
@@ -237,11 +237,11 @@
                 <!--each plan-->
                 @foreach($packages as $package)
                 <div class="col-sm-12 col-md-6 col-lg-4">
-                    <div class="card box-shadow pricing-plan pricing-featured-{{ $package->package_featured }}">
+                    <div class="card box-shadow pricing-plan pricing-featured-{{ $package->featured }}">
                         <div class="card-body">
-                            <h4 class="my-0 font-weight-normal">{{ $package->package_name }}</h4>
+                            <h4 class="my-0 font-weight-normal">{{ $package->name }}</h4>
                             <h1 class="card-title pricing-card-title">
-                                {{ runtimeMoneyFormatPricing($package->package_amount_yearly) }} <small
+                                {{ runtimeMoneyFormatPricing($package->amount_yearly) }} <small
                                     class="text-muted">/
                                     @lang('lang.year')</small></h1>
                             <ul class="list-unstyled mt-3 mb-4">
@@ -249,41 +249,41 @@
 
                                 <!--package_limits_team-->
                                 <li>
-                                    @if($package->package_limits_clients > 0)
+                                    @if($package->limits_clients > 0)
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
                                     @endif
                                     <span class="x-text font-weight-500">@lang('lang.team') (@lang('lang.users')) -
-                                        {{ runtimeCheckUnlimited($package->package_limits_team) }}</span>
+                                        {{ runtimeCheckUnlimited($package->limits_team) }}</span>
                                 </li>
 
                                 <!--package_limits_clients-->
                                 <li>
-                                    @if($package->package_limits_clients > 0)
+                                    @if($package->limits_clients > 0)
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
                                     @endif
                                     <span class="x-text font-weight-500">@lang('lang.clients') -
-                                        {{ runtimeCheckUnlimited($package->package_limits_clients) }}</span>
+                                        {{ runtimeCheckUnlimited($package->limits_clients) }}</span>
                                 </li>
 
 
                                 <!--package_limits_projects-->
                                 <li>
-                                    @if($package->package_limits_projects > 0)
+                                    @if($package->limits_projects > 0)
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
                                     @endif
                                     <span class="x-text font-weight-500">@lang('lang.projects') -
-                                        {{ runtimeCheckUnlimited($package->package_limits_projects) }}</span>
+                                        {{ runtimeCheckUnlimited($package->limits_projects) }}</span>
                                 </li>
 
                                 <!--package_module_tasks-->
                                 <li>
-                                    @if($package->package_module_tasks == 'yes')
+                                    @if($package->module_tasks == 'yes')
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
@@ -293,7 +293,7 @@
 
                                 <!--package_module_leads-->
                                 <li>
-                                    @if($package->package_module_leads == 'yes')
+                                    @if($package->module_leads == 'yes')
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
@@ -303,7 +303,7 @@
 
                                 <!--package_module_invoices-->
                                 <li>
-                                    @if($package->package_module_invoices == 'yes')
+                                    @if($package->module_invoices == 'yes')
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
@@ -313,7 +313,7 @@
 
                                 <!--package_module_estimates-->
                                 <li>
-                                    @if($package->package_module_estimates == 'yes')
+                                    @if($package->module_estimates == 'yes')
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
@@ -323,7 +323,7 @@
 
                                 <!--package_module_subscriptions-->
                                 <li>
-                                    @if($package->package_module_subscriptions == 'yes')
+                                    @if($package->module_subscriptions == 'yes')
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
@@ -333,7 +333,7 @@
 
                                 <!--package_module_contracts-->
                                 <li>
-                                    @if($package->package_module_contracts == 'yes')
+                                    @if($package->module_contracts == 'yes')
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
@@ -343,7 +343,7 @@
 
                                 <!--package_module_proposals-->
                                 <li>
-                                    @if($package->package_module_proposals == 'yes')
+                                    @if($package->module_proposals == 'yes')
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
@@ -353,7 +353,7 @@
 
                                 <!--package_module_tickets-->
                                 <li>
-                                    @if($package->package_module_tickets == 'yes')
+                                    @if($package->module_tickets == 'yes')
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
@@ -363,7 +363,7 @@
 
                                 <!--package_module_expense-->
                                 <li>
-                                    @if($package->package_module_expense == 'yes')
+                                    @if($package->module_expense == 'yes')
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
@@ -373,7 +373,7 @@
 
                                 <!--package_module_messages-->
                                 <li>
-                                    @if($package->package_module_messages == 'yes')
+                                    @if($package->module_messages == 'yes')
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
@@ -383,7 +383,7 @@
 
                                 <!--package_module_timetracking-->
                                 <li>
-                                    @if($package->package_module_timetracking == 'yes')
+                                    @if($package->module_timetracking == 'yes')
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
@@ -393,7 +393,7 @@
 
                                 <!--package_module_knowledgebase-->
                                 <li>
-                                    @if($package->package_module_knowledgebase == 'yes')
+                                    @if($package->module_knowledgebase == 'yes')
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
@@ -403,7 +403,7 @@
 
                                 <!--package_module_reminders-->
                                 <li>
-                                    @if($package->package_module_reminders == 'yes')
+                                    @if($package->module_reminders == 'yes')
                                     <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
                                     <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
@@ -411,11 +411,11 @@
                                     <span class="x-text">@lang('lang.reminders')</span>
                                 </li>
                             </ul>
-                            @if($package->package_subscription_options == 'free')
-                            <a type="button" href="{{ url('account/signup?ref=free_'.$package->package_id) }}"
+                            @if($package->subscription_options == 'free')
+                            <a type="button" href="{{ url('account/signup?ref=free_'.$package->id) }}"
                                 class="frontent-pricing-button">{{ $content->data_4 ?? '' }}</a>
                             @else
-                            <a type="button" href="{{ url('account/signup?ref=yearly_'.$package->package_id) }}"
+                            <a type="button" href="{{ url('account/signup?ref=yearly_'.$package->id) }}"
                                 class="frontent-pricing-button">{{ $content->data_4 ?? '' }}</a>
                             @endif
                         </div>

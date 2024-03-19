@@ -22,12 +22,12 @@
         <div class="faq-container">
 
             @foreach($faqs as $faq)
-            <div class="each-faq" data-target="faq_{{ $faq->faq_id }}">
+            <div class="each-faq" data-target="faq_{{ $faq->id }}">
                 <div class="faq-title">
-                    {{ $faq->faq_title }}
+                    {{ $faq->title }}
                 </div>
-                <div class="faq-content hidden" id="faq_{{ $faq->faq_id }}">
-                    {!! _clean($faq->faq_content) !!}
+                <div class="faq-content hidden" id="faq_{{ $faq->id }}">
+                    {!! _clean($faq->content) !!}
                 </div>
             </div>
             @endforeach
