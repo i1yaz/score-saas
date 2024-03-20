@@ -54,10 +54,10 @@ Route::get('/pricing', [PricingController::class,'index']);
 Route::get('contact', [ContactController::class,'index']);
 Route::post('contact', [ContactController::class,'submitForm']);
 Route::group(['prefix' => 'account'], function () {
-    Route::any("/signup", "Frontend\Signup@index");
-    Route::post("/signup", "Frontend\Signup@createAccount");
-    Route::any("/login", "Frontend\Login@index");
-    Route::post("/login", "Frontend\Login@getAccount");
+    Route::any("/signup", [\App\Http\Controllers\Frontend\SignupController::class,'index']);
+    Route::post("/signup", [\App\Http\Controllers\Frontend\SignupController::class,'createAccount']);
+    Route::any("/login", [\App\Http\Controllers\Frontend\LoginController::class,'index']);
+    Route::post("/login", [\App\Http\Controllers\Frontend\LoginController::class,'getAccount']);
 });
 
 

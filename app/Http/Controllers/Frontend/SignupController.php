@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Landlord\CreateAccountRequest;
 use App\Http\Requests\Landlord\Signup\CreateAccount;
+use App\Models\Landlord\Frontend;
+use App\Models\Landlord\Package;
 use App\Repositories\Landlord\CreateTenantRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -14,15 +16,15 @@ class SignupController extends Controller
     public function index() {
 
         //get packages
-        $packages = \App\Models\Landlord\Package::Where('package_status', 'active')->Where('package_visibility', 'visible')->get();
+        $packages = Package::Where('package_status', 'active')->Where('package_visibility', 'visible')->get();
 
         $page = $this->pageSettings('index');
 
         //main menu
-        $mainmenu = \App\Models\Landlord\Frontend::Where('frontend_group', 'main-menu')->orderBy('frontend_name', 'asc')->get();
+        $mainmenu = Frontend::Where('frontend_group', 'main-menu')->orderBy('frontend_name', 'asc')->get();
 
         //get the item
-        $section = \App\Models\Landlord\Frontend::Where('frontend_name', 'page-signup')->first();
+        $section = Frontend::Where('frontend_name', 'page-signup')->first();
 
         return view('frontend/signup/page', compact('page', 'packages', 'mainmenu', 'section'))->render();
 
@@ -45,7 +47,7 @@ class SignupController extends Controller
         $plan_id = str_replace(['monthly_', 'yearly_', 'free_'], '', request('plan'));
 
         //get the package
-        if (!$package = \App\Models\Landlord\Package::Where('package_id', $plan_id)->first()) {
+        if (!$package = Package::Where('package_id', $plan_id)->first()) {
             abort(409, __('lang.package_not_found'));
         }
 

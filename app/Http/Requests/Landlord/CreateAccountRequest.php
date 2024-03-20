@@ -2,6 +2,9 @@
 
 namespace App\Http\Requests\Landlord;
 
+use App\Models\Landlord\Package;
+use App\Models\Landlord\Setting;
+use App\Models\Landlord\Settings;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -52,7 +55,7 @@ class CreateAccountRequest extends FormRequest
                 },
                 //validate reserved words
                 function ($attribute, $value, $fail) {
-                    $settings = \App\Models\Landlord\Settings::on('landlord')->Where('settings_id', 'default')->first();
+                    $settings = Setting::on('landlord')->Where('settings_id', 'default')->first();
                     $reserved_words = explode(',', $settings->settings_reserved_words);
                     $reserved_words = array_map('trim', $reserved_words);
                     if (in_array($value, $reserved_words)) {
@@ -64,7 +67,7 @@ class CreateAccountRequest extends FormRequest
                 'required',
                 function ($attribute, $value, $fail) {
                     $plan_id = str_replace(['monthly_', 'yearly_', 'free_'], '', $value);
-                    if ($value != "" && \App\Models\Landlord\Package::Where('package_id', $plan_id)->Where('package_status', 'active')->doesntExist()) {
+                    if ($value != "" && Package::Where('package_id', $plan_id)->Where('package_status', 'active')->doesntExist()) {
                         return $fail(__('lang.package_not_found'));
                     }
                 },
