@@ -48,18 +48,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('invoice-reminder',function (){
     Artisan::call('invoice:payment-reminder');
 });
-Route::get('/', [HomeController::class,'home']);
-Route::get('/faq', [FaqController::class,'index']);
-Route::get('/pricing', [PricingController::class,'index']);
-Route::get('contact', [ContactController::class,'index']);
-Route::post('contact', [ContactController::class,'submitForm']);
-Route::group(['prefix' => 'account'], function () {
-    Route::any("/signup", [\App\Http\Controllers\Frontend\SignupController::class,'index']);
-    Route::post("/signup", [\App\Http\Controllers\Frontend\SignupController::class,'createAccount']);
-    Route::any("/login", [\App\Http\Controllers\Frontend\LoginController::class,'index']);
-    Route::post("/login", [\App\Http\Controllers\Frontend\LoginController::class,'getAccount']);
-});
-
 
 Route::get('invoice/{invoice}/public-view/{type?}', [InvoiceController::class, 'showPublicInvoice']);
 Auth::routes(['register' => false]);

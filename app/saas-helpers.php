@@ -1,84 +1,5 @@
 <?php
 
-/**
- * get the correct [HOST] depending on the 'DB_METHOD' set in .env
- * @param string $url
- * @return string
- */
-function env_db_host() {
-
-    //get the right value
-    switch (env('DB_METHOD')) {
-        case 'mysql_user':
-            return env('DB_METHOD_MYSQL_HOST');
-        case 'cpanel':
-            return env('DB_METHOD_CPANEL_HOST');
-        case 'plesk':
-            return env('DB_METHOD_PLESK_HOST');
-        default:
-            return 'localhost';
-    }
-}
-
-/**
- * get the correct [PORT] depending on the 'DB_METHOD' set in .env
- * @param string $url
- * @return string
- */
-function env_db_port() {
-
-    //get the right value
-    switch (env('DB_METHOD')) {
-        case 'mysql_user':
-            return env('DB_METHOD_MYSQL_PORT');
-        case 'cpanel':
-            return env('DB_METHOD_CPANEL_PORT');
-        case 'plesk':
-            return env('DB_METHOD_PLESK_PORT');
-        default:
-            return '3306';
-    }
-}
-
-/**
- * get the correct [USER] depending on the 'DB_METHOD' set in .env
- * @param string $url
- * @return string
- */
-function env_db_user() {
-
-    //get the right value
-    switch (env('DB_METHOD')) {
-        case 'mysql_user':
-            return env('DB_METHOD_MYSQL_USER');
-        case 'cpanel':
-            return env('DB_METHOD_CPANEL_USER');
-        case 'plesk':
-            return env('DB_METHOD_PLESK_USERNAME');
-        default:
-            return 'undefined';
-    }
-}
-
-/**
- * get the correct [PASSWORD] depending on the 'DB_METHOD' set in .env
- * @param string $url
- * @return string
- */
-function env_db_password() {
-
-    //get the right value
-    switch (env('DB_METHOD')) {
-        case 'mysql_user':
-            return env('DB_METHOD_MYSQL_PASSWORD');
-        case 'cpanel':
-            return env('DB_METHOD_CPANEL_PASSWORD');
-        case 'plesk':
-            return env('DB_METHOD_PLESK_PASSWORD');
-        default:
-            return 'undefined';
-    }
-}
 
 /**
  * @param string $status the status of the toggled form section (show or hide)
@@ -270,9 +191,10 @@ function runtimeSubscriptionStatusLang($status = '') {
  * return the url to logo
  * @return string
  */
-function runtimeLogoFrontEnd() {
-    $logo = config('system.settings_system_logo_frontend_name');
-    $version = config('system.settings_system_logo_versioning');
+function runtimeLogoFrontEnd(): string
+{
+    $logo = config('system.system_logo_frontend_name');
+    $version = config('system.system_logo_versioning');
     return url("logos/app/$logo?v=$version");
 }
 
@@ -444,32 +366,8 @@ function runtimeRenewalPeriodSelector($cycle = '', $type = 'period') {
 
 }
 
-/**
- * retun a cpanel url based on the current url
- */
-function cpanelURL() {
 
-    return str_replace('/:2083', ':2083', url(':2083'));
 
-}
-
-/**
- * retun a plesk domain
- */
-function pleskDomain() {
-
-    return request()->getHttpHost();
-
-}
-
-/**
- * retun a plesk url based on the current url
- */
-function pleskURL() {
-
-    return str_replace('/:8443', ':8443', url(':8443'));
-
-}
 
 /**
  * create a database name with a prefix (if provided)
@@ -523,38 +421,6 @@ function validateCpanelURL($url = '') {
 
     return true;
 
-}
-
-/**
- * remove any extra characters and params in a cpanel url
- * @param string $url cpanel url
- */
-function cpanelCleanURL($url = '') {
-
-    //clean url - remove any params after :2083
-    $url = preg_replace('/\:2083(.*)/', ':2083', $url);
-    $url = rtrim($url);
-
-    //ensure its SSL (none ssl urls cause errors)
-    $url = str_replace('http://', 'https://', $url);
-
-    return $url;
-}
-
-/**
- * remove any extra characters and params in a cpanel url
- * @param string $url cpanel url
- */
-function pleskCleanURL($url = '') {
-
-    //clean url - remove any params after :8443
-    $url = preg_replace('/\:8443(.*)/', ':8443', $url);
-    $url = rtrim($url);
-
-    //ensure its SSL (none ssl urls cause errors)
-    $url = str_replace('http://', 'https://', $url);
-
-    return $url;
 }
 
 /**
@@ -645,7 +511,7 @@ function runtimeFrontendMenuSignup($url = '') {
 function middlwareBootSystem() {
 
     //save system settings into config array
-    $settings = \App\Models\Settings::leftJoin('settings2', 'settings2.settings2_id', '=', 'settings.settings_id')
+    $settings = \App\Models\Setting::leftJoin('settings2', 'settings2.settings2_id', '=', 'settings.settings_id')
         ->Where('settings_id', 1)
         ->first();
 

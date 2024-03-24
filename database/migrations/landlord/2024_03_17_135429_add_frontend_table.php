@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('frontend', function (Blueprint $table) {
+        Schema::connection('landlord')->create('frontend', function (Blueprint $table) {
             $table->engine = "MyISAM";
             $table->id();
             $table->string('name')->nullable()->comment('e.g. hero-header');

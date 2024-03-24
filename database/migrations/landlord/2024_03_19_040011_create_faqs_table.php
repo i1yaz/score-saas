@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('faqs', function (Blueprint $table) {
+        Schema::connection('landlord')->create('faqs', function (Blueprint $table) {
             $table->engine = "MyISAM";
             $table->id();
             $table->integer('position')->nullable();

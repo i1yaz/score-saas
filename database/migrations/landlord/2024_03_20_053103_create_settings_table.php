@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('settings', function (Blueprint $table) {
+        Schema::connection('landlord')->create('settings', function (Blueprint $table) {
             $table->id();
             $table->string('version', 10)->nullable();
             $table->string('frontend_domain', 200)->nullable();

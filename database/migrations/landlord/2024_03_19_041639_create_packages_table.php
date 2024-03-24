@@ -11,13 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-
-//  KEY `package_creatorid` (`package_creatorid`),
-//  KEY `package_featured` (`package_featured`),
-//  KEY `package_status` (`package_status`),
-//  KEY `package_visibility` (`package_visibility`)
-//) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COMMENT='[truncate]';
-        Schema::create('packages', function (Blueprint $table) {
+        Schema::connection('landlord')->create('packages', function (Blueprint $table) {
             $table->id();
             $table->string('name', 150)->nullable();
             $table->string('subscription_options', 150)->default('paid')->comment('free|paid');

@@ -6,6 +6,12 @@ use App\Http\Middleware\ACL;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\DefaultWebMiddleware;
 use App\Http\Middleware\EncryptCookies;
+use App\Http\Middleware\General\BootTheme;
+use App\Http\Middleware\General\General;
+use App\Http\Middleware\General\Settings;
+use App\Http\Middleware\General\StripHtmlTags;
+use App\Http\Middleware\Landlord\BootMail;
+use App\Http\Middleware\Landlord\BootSystem;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\TrimStrings;
@@ -29,6 +35,7 @@ use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Spatie\Multitenancy\Http\Middleware\NeedsTenant;
 
 class Kernel extends HttpKernel
 {
@@ -69,6 +76,59 @@ class Kernel extends HttpKernel
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             ThrottleRequests::class.':api',
             SubstituteBindings::class,
+        ],
+        'landlord' => [
+
+            //Next loop Middleware (run this first, before system middleware)
+            BootSystem::class,
+            BootMail::class,
+            //System Middleware
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartSession::class,
+            // \Illuminate\Session\Middleware\AuthenticateSession::class,
+            ShareErrorsFromSession::class,
+            VerifyCsrfToken::class,
+            SubstituteBindings::class,
+            // strip tags from specified post requests
+            StripHtmlTags::class,
+        ],
+        'tenant' => [
+
+            NeedsTenant::class,
+            //system middleware
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartSession::class,
+            // \Illuminate\Session\Middleware\AuthenticateSession::class,
+            ShareErrorsFromSession::class,
+            VerifyCsrfToken::class,
+            SubstituteBindings::class,
+
+            //BOOTING
+            Middleware\General\BootSystem::class,
+            BootTheme::class,
+            Middleware\General\BootMail::class,
+
+            //[settings middleware]
+            Settings::class,
+            //[general middleware]
+            General::class,
+
+            //strip tags from specified post requests
+            StripHtmlTags::class,
+        ],
+        'frontend' => [
+            BootSystem::class,
+            BootMail::class,
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartSession::class,
+            // \Illuminate\Session\Middleware\AuthenticateSession::class,
+            ShareErrorsFromSession::class,
+            VerifyCsrfToken::class,
+            SubstituteBindings::class,
+            StripHtmlTags::class,
         ],
     ];
 

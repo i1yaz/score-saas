@@ -16,15 +16,15 @@ class SignupController extends Controller
     public function index() {
 
         //get packages
-        $packages = Package::Where('package_status', 'active')->Where('package_visibility', 'visible')->get();
+        $packages = Package::Where('status', 'active')->Where('visibility', 'visible')->get();
 
         $page = $this->pageSettings('index');
 
         //main menu
-        $mainmenu = Frontend::Where('frontend_group', 'main-menu')->orderBy('frontend_name', 'asc')->get();
+        $mainmenu = Frontend::Where('group', 'main-menu')->orderBy('name', 'asc')->get();
 
         //get the item
-        $section = Frontend::Where('frontend_name', 'page-signup')->first();
+        $section = Frontend::Where('name', 'page-signup')->first();
 
         return view('frontend/signup/page', compact('page', 'packages', 'mainmenu', 'section'))->render();
 
@@ -47,35 +47,35 @@ class SignupController extends Controller
         $plan_id = str_replace(['monthly_', 'yearly_', 'free_'], '', request('plan'));
 
         //get the package
-        if (!$package = Package::Where('package_id', $plan_id)->first()) {
+        if (!$package = Package::Where('id', $plan_id)->first()) {
             abort(409, __('lang.package_not_found'));
         }
 
         //free packages
-        if ($package->package_subscription_options == 'free') {
+        if ($package->subscription_options == 'free') {
             $status = 'active';
             $subscription_amount = 0;
             $subscription_date_started = now();
         }
 
         //general settings for paid subscriptions
-        if ($package->package_subscription_options == 'paid') {
+        if ($package->subscription_options == 'paid') {
             if (request('billing_cycle') == 'monthly') {
-                $subscription_amount = $package->package_amount_monthly;
+                $subscription_amount = $package->amount_monthly;
             } else {
-                $subscription_amount = $package->package_amount_yearly;
+                $subscription_amount = $package->amount_yearly;
             }
         }
 
         //paid packages - free trial
-        if ($package->package_subscription_options == 'paid' && config('system.settings_free_trial') == 'yes') {
+        if ($package->subscription_options == 'paid' && config('system.settings_free_trial') == 'yes') {
             $status = 'free-trial';
             $free_trial = 'yes';
             $subscription_trial_end = \Carbon\Carbon::now()->addDays(config('system.settings_free_trial_days'))->format('Y-m-d');
         }
 
         //paid packages - free trial
-        if ($package->package_subscription_options == 'paid' && config('system.settings_free_trial') == 'no') {
+        if ($package->subscription_options == 'paid' && config('system.settings_free_trial') == 'no') {
             $status = 'awaiting-payment';
         }
 
@@ -113,11 +113,11 @@ class SignupController extends Controller
         $subscription->subscription_uniqueid = str_unique();
         $subscription->subscription_creatorid = 0;
         $subscription->subscription_customerid = $customer->tenant_id;
-        $subscription->subscription_type = $package->package_subscription_options;
+        $subscription->subscription_type = $package->subscription_options;
         $subscription->subscription_amount = $subscription_amount;
         $subscription->subscription_trial_end = $subscription_trial_end;
         $subscription->subscription_date_started = $subscription_date_started;
-        $subscription->subscription_package_id = $package->package_id;
+        $subscription->subscription_id = $package->id;
         $subscription->subscription_status = $status;
         $subscription->subscription_gateway_billing_cycle = request('billing_cycle');
         $subscription->save();
@@ -131,7 +131,7 @@ class SignupController extends Controller
         $event->event_creator_type = 'customer';
         $event->event_item_id = $customer->tenant_id;
         $event->event_payload_1 = $customer->tenant_name;
-        $event->event_payload_2 = $package->package_name;
+        $event->event_payload_2 = $package->name;
         $event->event_payload_3 = '';
         $event->save();
 
