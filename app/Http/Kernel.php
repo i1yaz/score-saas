@@ -13,6 +13,7 @@ use App\Http\Middleware\General\StripHtmlTags;
 use App\Http\Middleware\Landlord\BootMail;
 use App\Http\Middleware\Landlord\BootSystem;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
+use App\Http\Middleware\RedirectBasedOnUrl;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
@@ -54,6 +55,7 @@ class Kernel extends HttpKernel
         ValidatePostSize::class,
         TrimStrings::class,
         ConvertEmptyStringsToNull::class,
+        RedirectBasedOnUrl::class,
     ];
 
     /**
@@ -92,6 +94,7 @@ class Kernel extends HttpKernel
             SubstituteBindings::class,
             // strip tags from specified post requests
             StripHtmlTags::class,
+            RedirectBasedOnUrl::class,
         ],
         'tenant' => [
 
@@ -117,6 +120,7 @@ class Kernel extends HttpKernel
 
             //strip tags from specified post requests
             StripHtmlTags::class,
+            RedirectBasedOnUrl::class,
         ],
         'frontend' => [
             BootSystem::class,
@@ -129,6 +133,7 @@ class Kernel extends HttpKernel
             VerifyCsrfToken::class,
             SubstituteBindings::class,
             StripHtmlTags::class,
+            RedirectBasedOnUrl::class,
         ],
     ];
 
@@ -153,5 +158,6 @@ class Kernel extends HttpKernel
         'verified' => EnsureEmailIsVerified::class,
         'acl.access' => ACL::class,
         'web.general' => WebGeneralMiddleware::class,
+        'redirect.url' => RedirectBasedOnUrl::class,
     ];
 }

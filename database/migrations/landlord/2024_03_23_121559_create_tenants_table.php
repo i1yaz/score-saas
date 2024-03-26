@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('subdomain')->nullable();
             $table->string('domain_type')->default('subdomain')->comment('subdomain|custom');
             $table->string('database')->nullable();
-            $table->integer('creator_id')->nullable();
+            $table->integer('added_by')->nullable();
             $table->string('name')->nullable();
             $table->string('email')->nullable();
             $table->string('stripe_customer_id')->nullable()->comment('used for stripe checkout');

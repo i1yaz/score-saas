@@ -29,7 +29,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-widget="pushmenu" href="#" role="button">
-                            <strong>{{getRoleDescriptionOfLoggedInUser()}}</strong>
+                            <strong>App Admin</strong>
                         </a>
                     </li>
                 </ul>
@@ -62,7 +62,7 @@
                                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                     Sign out
                                 </a>
-                                <form id="logout-form" action="{{ route('logout',['guard'=>\Illuminate\Support\Facades\Auth::guard()->name]) }}" method="POST" class="d-none">
+                                <form id="logout-form" action="{{ route('landlord.logout') }}" method="POST" class="d-none">
                                     @csrf
                                 </form>
                             </li>
@@ -72,7 +72,7 @@
             </nav>
 
             <!-- Left side column. contains the logo and sidebar -->
-            @include('layouts.sidebar')
+            @include('landlord.layouts.sidebar')
 
             <!-- Content Wrapper. Contains page content -->
             <div class="content-wrapper">
@@ -165,7 +165,6 @@
             <!-- Main Footer -->
             <footer class="main-footer">
                 <div class="float-right d-none d-sm-block">
-{{--                    <b>Version</b> 3.1.0--}}
                 </div>
                 <strong>Copyright &copy; 2014-2023 <a href="{{config('app.url')}}">{{config('app.name')}}</a></strong> All rights
                 reserved.

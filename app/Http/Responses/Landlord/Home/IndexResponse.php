@@ -21,7 +21,7 @@ class IndexResponse implements Responsable
 
         $payload = $this->payload;
 
-        return view('landlord/home/', compact('page', 'stats', 'payload'))->render();
+        return view('landlord/dashboard/index', compact('page', 'stats', 'payload'));
     }
 
 }

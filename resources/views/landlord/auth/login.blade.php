@@ -53,7 +53,7 @@
                     </form>
 
                     <p class="mb-1">
-                        <a href="{{ route('password.request') }}">I forgot my password</a>
+                        <a href="{{ route('landlord.forgot-password') }}">I forgot my password</a>
                     </p>
                     @if (Route::has('register'))
                         <p class="mb-0">

@@ -1,47 +1,69 @@
 <?php
 
 use App\Http\Controllers\Landlord\Auth\AuthenticateController;
-use App\Http\Controllers\Landlord\HomeController;
+use App\Http\Controllers\Landlord\CustomerController;
+use App\Http\Controllers\Landlord\DashboardController;
 
-Route::middleware('landlord')->group(function () {
+//Route::get('schools', [SchoolController::class, 'index'])->name('schools.index');
+//Route::get('schools/create', [SchoolController::class, 'create'])->name('schools.create');
+//Route::post('schools', [SchoolController::class, 'store'])->name('schools.store');
+//Route::get('schools/{school}', [SchoolController::class, 'show'])->name('schools.show');
+//Route::get('schools/{school}/edit', [SchoolController::class, 'edit'])->name('schools.edit');
+//Route::patch('schools/{school}', [SchoolController::class, 'update'])->name('schools.update');
+//Route::delete('schools/{school}', [SchoolController::class, 'destroy'])->name('schools.destroy');
 
-    Route::group(['prefix' => 'app-admin'], function () {
-        //HOME
-        Route::any('/', [HomeController::class,'index'])->name('landlord.root');
-        Route::any('/home', [HomeController::class,'index'])->name('landlord.home');
-
-
+Route::middleware(['landlord'])->group(function () {
+    Route::group(['prefix' => 'app-admin','as' => 'landlord.'], function () {
         //LOGIN & SIGNUP
-        Route::get("/login", [AuthenticateController::class,'logIn'])->name('landlord.login');
-        Route::post("/login", [AuthenticateController::class,'logInAction'])->name('landlord.login-action');
-        Route::get("/forgot-password", [AuthenticateController::class,'forgotPassword']);
-        Route::post("/forgot-password", [AuthenticateController::class,'forgotPasswordAction']);
-        Route::get("/signup", [AuthenticateController::class,'signUp']);
-        Route::post("/signup", [AuthenticateController::class,'signUpAction']);
-        Route::get("/reset-password", [AuthenticateController::class,'resetPassword']);
-        Route::post("/reset-password", [AuthenticateController::class,'resetPasswordAction']);
+        Route::get("/login", [AuthenticateController::class, 'logIn'])->name('login');
+        Route::post("/login", [AuthenticateController::class, 'logInAction'])->name('login-action');
+        Route::get("/forgot-password", [AuthenticateController::class, 'forgotPassword'])->name('forgot-password');
+        Route::post("/forgot-password", [AuthenticateController::class, 'forgotPasswordAction'])->name('forgot-password-action');
+        Route::get("/signup", [AuthenticateController::class, 'signUp'])->name('signup');
+        Route::post("/signup", [AuthenticateController::class, 'signUpAction'])->name('signup-action');
+        Route::get("/reset-password", [AuthenticateController::class, 'resetPassword'])->name('reset-password');
+        Route::post("/reset-password", [AuthenticateController::class, 'resetPasswordAction'])->name('reset-password-action');
         Route::any('logout', function () {
             Auth::logout();
             return redirect('/app-admin/login');
+        })->name('logout');
+    });
+});
+
+Route::middleware(['landlord','redirect.url'])->group(function () {
+
+    Route::group(['prefix' => 'app-admin','as' => 'landlord.'], function () {
+        //HOME
+        Route::any('/', [DashboardController::class,'index'])->name('root');
+        Route::any('/home', [DashboardController::class,'index'])->name('home');
+
+
+        //CUSTOMERS
+        Route::group(['prefix' => 'customers','as'=>'customer.'], function () {
+            Route::any("/search", "Landlord\Customers@index");
+            Route::get("/{customer}/events", "Landlord\Customers@events")->where('customer', '[0-9]+');
+            Route::delete("/{customer}/delete", "Landlord\Customers@destroy")->where('customer', '[0-9]+');
+            Route::get("/{customer}/subscription", "Landlord\Customers@showSubscription")->where('customer', '[0-9]+');
+            Route::get("/{customer}/update-password", "Landlord\Customers@editPassword")->where('customer', '[0-9]+');
+            Route::post("/{customer}/update-password", "Landlord\Customers@updatePassword")->where('customer', '[0-9]+');
+            Route::get("/{customer}/set-active", "Landlord\Customers@setStatusActive")->where('customer', '[0-9]+');
+            Route::post("/{customer}/set-active", "Landlord\Customers@updateStatusActive")->where('customer', '[0-9]+');
+            Route::get("/{customer}/sync-account", "Landlord\Customers@syncAccount")->where('customer', '[0-9]+');
+            Route::post("/{customer}/sync-account", "Landlord\Customers@updateSyncAccount")->where('customer', '[0-9]+');
+            Route::get("/{customer}/email", "Landlord\Customers@showEmailSettings")->where('customer', '[0-9]+');
+            Route::get("/{customer}/updated-email-forwarding", "Landlord\Customers@markEmailSettingsDone")->where('customer', '[0-9]+');
+            Route::get("/{customer}/login", "Landlord\Customers@LoginAsCustomer")->where('customer', '[0-9]+');
         });
-//
-//        //CUSTOMERS
-//        Route::group(['prefix' => 'customers'], function () {
-//            Route::any("/search", "Landlord\Customers@index");
-//            Route::get("/{customer}/events", "Landlord\Customers@events")->where('customer', '[0-9]+');
-//            Route::delete("/{customer}/delete", "Landlord\Customers@destroy")->where('customer', '[0-9]+');
-//            Route::get("/{customer}/subscription", "Landlord\Customers@showSubscription")->where('customer', '[0-9]+');
-//            Route::get("/{customer}/update-password", "Landlord\Customers@editPassword")->where('customer', '[0-9]+');
-//            Route::post("/{customer}/update-password", "Landlord\Customers@updatePassword")->where('customer', '[0-9]+');
-//            Route::get("/{customer}/set-active", "Landlord\Customers@setStatusActive")->where('customer', '[0-9]+');
-//            Route::post("/{customer}/set-active", "Landlord\Customers@updateStatusActive")->where('customer', '[0-9]+');
-//            Route::get("/{customer}/sync-account", "Landlord\Customers@syncAccount")->where('customer', '[0-9]+');
-//            Route::post("/{customer}/sync-account", "Landlord\Customers@updateSyncAccount")->where('customer', '[0-9]+');
-//            Route::get("/{customer}/email", "Landlord\Customers@showEmailSettings")->where('customer', '[0-9]+');
-//            Route::get("/{customer}/updated-email-forwarding", "Landlord\Customers@markEmailSettingsDone")->where('customer', '[0-9]+');
-//            Route::get("/{customer}/login", "Landlord\Customers@LoginAsCustomer")->where('customer', '[0-9]+');
-//        });
-//        Route::resource('customers', 'Landlord\Customers');
+        Route::group(['as'=>'customer.'], function () {
+            //CRUD
+            Route::get('customers', [CustomerController::class, 'index'])->name('index');
+            Route::get('customers/create', [CustomerController::class, 'create'])->name('create');
+            Route::post('customers', [CustomerController::class, 'store'])->name('store');
+            Route::get('customers/{customer}', [CustomerController::class, 'show'])->name('show');
+            Route::get('customers/{customer}/edit', [CustomerController::class, 'edit'])->name('edit');
+            Route::patch('customers/{customer}', [CustomerController::class, 'update'])->name('update');
+            Route::delete('customers/{customer}', [CustomerController::class, 'destroy'])->name('destroy');
+        });
 //
 //        //SUBSCRIPTIONS
 //        Route::group(['prefix' => 'subscriptions'], function () {

@@ -367,15 +367,15 @@ function runtimeRenewalPeriodSelector($cycle = '', $type = 'period') {
 }
 
 
-
-
 /**
  * create a database name with a prefix (if provided)
  * @param string $prefix
+ * @return string
  */
-function databaseName($prefix = '') {
+function databaseName(string $prefix = ''): string
+{
 
-    $prefix = ($prefix != '') ? $prefix : 'growcrm_';
+    $prefix = ($prefix != '') ? $prefix : 'score_saas_';
 
     //database name
     $num = time();

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Landlord;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Responses\Landlord\Home\IndexResponse;
 
-class HomeController extends AppBaseController
+class DashboardController extends AppBaseController
 {
     public function index() {
 

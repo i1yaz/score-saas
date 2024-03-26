@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::connection('landlord')->create('users', function (Blueprint $table) {
             $table->id();
-            $table->integer('creator_id')->nullable();
             $table->string('email')->nullable();
             $table->string('password');
             $table->string('remember_token')->nullable();
@@ -31,6 +30,7 @@ return new class extends Migration
             $table->string('pref_leftmenu_position')->default('collapsed')->comment('collapsed | open');
             $table->string('pref_email_notifications')->default('yes')->comment('yes | no');
             $table->string('welcome_email_sent')->default('no')->comment('yes|no');
+            $table->integer('added_by')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

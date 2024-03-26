@@ -6,7 +6,8 @@ use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Setting extends BaseModel
+class Defaults extends BaseModel
 {
+    protected $table = 'defaults';
 
 }

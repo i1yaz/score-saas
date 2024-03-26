@@ -56,7 +56,7 @@ Route::get('payment/success', [PaymentController::class, 'success'])->name('paym
 Route::get('payment/failed', [PaymentController::class, 'failed'])->name('payment-failed');
 Route::post('stripe-webhooks', [StripeController::class, 'webhooks'])->name('stripe-webhooks');
 
-Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], function () {
+Route::group(['middleware' => ['auth:web,parent,student,tutor,client','redirect.url']], function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     //Parent
     Route::get('parents', [ParentController::class, 'index'])->name('parents.index')->middleware(['permission:parent-index']);
