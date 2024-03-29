@@ -16,13 +16,13 @@ class RedirectBasedOnUrl
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::check()) {
-            return $next($request);
-        }
-        $url = $request->url();
-        if (str_contains($url, '/app-admin') && !str_contains($url, '/app-admin/login')) {
-            return redirect()->route('landlord.login');
-        }
+//        if (Auth::check()) {
+//            return $next($request);
+//        }
+//        $url = $request->url();
+//        if (str_contains($url, '/app-admin') && !str_contains($url, '/app-admin/login')) {
+//            return redirect()->route('landlord.login');
+//        }
 
         return $next($request);
     }
