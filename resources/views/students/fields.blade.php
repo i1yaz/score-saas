@@ -169,7 +169,7 @@
             // Initialize Select2
             $("#parent-id").select2({
                 theme: 'bootstrap4',
-                minimumInputLength: 3,
+                minimumInputLength: 1,
                 ajax: {
                     url: "{{route('student-parent-ajax')}}",
                     dataType: "json",
@@ -199,7 +199,7 @@
 
             $("#school-id").select2({
                 theme: 'bootstrap4',
-                minimumInputLength: 3,
+                minimumInputLength: 1,
                 ajax: {
                     url: "{{route('student-school-ajax')}}",
                     dataType: "json",

@@ -131,7 +131,7 @@
             $("#location-id").select2({
                 theme: 'bootstrap4',
                 dropdownAutoWidth: true, width: 'auto',
-                minimumInputLength: 3,
+                minimumInputLength: 1,
                 ajax: {
                     url: "{{route('location-ajax')}}",
                     dataType: "json",
@@ -162,7 +162,7 @@
                 dropdownAutoWidth: true, width: 'auto',
                 dropdownParent: $('#session-store'),
                 theme: 'bootstrap4',
-                minimumInputLength: 3,
+                minimumInputLength: 1,
                 ajax: {
                     url: "{{route('tutoring-package-ajax')}}",
                     dataType: "json",

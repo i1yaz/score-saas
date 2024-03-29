@@ -3,7 +3,7 @@
         $("#tutor-id").select2({
             theme: 'bootstrap4',
             dropdownAutoWidth: true, width: 'auto',
-            minimumInputLength: 3,
+            minimumInputLength: 1,
             multiple: true,
             ajax: {
                 url: "{{route('tutor-email-ajax')}}",

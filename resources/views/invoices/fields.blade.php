@@ -260,7 +260,7 @@
         $("#client-id").select2({
             dropdownAutoWidth: true, width: 'auto',
             theme: 'bootstrap4',
-            minimumInputLength: 3,
+            minimumInputLength: 1,
             multiple: true,
             ajax: {
                 url: "{{route('client-email-ajax')}}",

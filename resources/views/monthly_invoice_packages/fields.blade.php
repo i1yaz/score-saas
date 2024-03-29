@@ -180,7 +180,7 @@
         $("#student-id").select2({
             dropdownAutoWidth: true, width: 'auto',
             theme: 'bootstrap4',
-            minimumInputLength: 3,
+            minimumInputLength: 1,
             ajax: {
                 url: "{{route('student-email-ajax')}}",
                 dataType: "json",
@@ -210,7 +210,7 @@
         $("#tutoring-location-id").select2({
             dropdownAutoWidth: true, width: 'auto',
             theme: 'bootstrap4',
-            minimumInputLength: 3,
+            minimumInputLength: 1,
             ajax: {
                 url: "{{route('tutoring-location-ajax')}}",
                 dataType: "json",
@@ -240,7 +240,7 @@
         $("#tutor-id").select2({
             dropdownAutoWidth: true, width: 'auto',
             theme: 'bootstrap4',
-            minimumInputLength: 3,
+            minimumInputLength: 1,
             multiple: true,
             ajax: {
                 url: "{{route('tutor-email-ajax')}}",
