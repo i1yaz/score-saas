@@ -82,7 +82,7 @@
 </div>
 
 <div class="form-group col-sm-6">
-    {!! Form::label('is_free', 'Is this a score guarantee invoice?') !!}
+    {!! Form::label('is_free', 'Is this a free invoice?') !!}
     <small  class="text-danger">If yes, invoice will automatically be set to paid.</small>
     <div class="radio">
         <div class="form-check form-check-inline">
