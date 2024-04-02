@@ -3,6 +3,7 @@
 use App\Http\Controllers\Landlord\Auth\AuthenticateController;
 use App\Http\Controllers\Landlord\CustomerController;
 use App\Http\Controllers\Landlord\DashboardController;
+use App\Http\Controllers\Landlord\PackageController;
 
 //Route::get('schools', [SchoolController::class, 'index'])->name('schools.index');
 //Route::get('schools/create', [SchoolController::class, 'create'])->name('schools.create');
@@ -39,7 +40,7 @@ Route::middleware(['landlord','redirect.url'])->group(function () {
 
 
         //CUSTOMERS
-        Route::group(['prefix' => 'customers','as'=>'customer.'], function () {
+        Route::group(['prefix' => 'customers','as'=>'customers.'], function () {
             Route::any("/search", "Landlord\Customers@index");
             Route::get("/{customer}/events", "Landlord\Customers@events")->where('customer', '[0-9]+');
             Route::delete("/{customer}/delete", "Landlord\Customers@destroy")->where('customer', '[0-9]+');
@@ -54,7 +55,7 @@ Route::middleware(['landlord','redirect.url'])->group(function () {
             Route::get("/{customer}/updated-email-forwarding", "Landlord\Customers@markEmailSettingsDone")->where('customer', '[0-9]+');
             Route::get("/{customer}/login", "Landlord\Customers@LoginAsCustomer")->where('customer', '[0-9]+');
         });
-        Route::group(['as'=>'customer.'], function () {
+        Route::group(['as'=>'customers.'], function () {
             //CRUD
             Route::get('customers', [CustomerController::class, 'index'])->name('index');
             Route::get('customers/create', [CustomerController::class, 'create'])->name('create');
@@ -64,6 +65,27 @@ Route::middleware(['landlord','redirect.url'])->group(function () {
             Route::patch('customers/{customer}', [CustomerController::class, 'update'])->name('update');
             Route::delete('customers/{customer}', [CustomerController::class, 'destroy'])->name('destroy');
         });
+        //PACKAGES
+        Route::group(['prefix' => 'packages','as'=>'packages.'], function () {
+            Route::any("/search", "Landlord\Packages@index");
+            Route::get("/{package}/archive", "Landlord\Packages@archive")->where('package', '[0-9]+');
+            Route::get("/{package}/restore", "Landlord\Packages@restore")->where('package', '[0-9]+');
+        });
+        Route::group(['as'=>'packages.'], function () {
+            Route::any("/search", "Landlord\Packages@index");
+            Route::get("/{package}/archive", "Landlord\Packages@archive")->where('package', '[0-9]+');
+            Route::get("/{package}/restore", "Landlord\Packages@restore")->where('package', '[0-9]+');
+
+            Route::get('packages', [PackageController::class, 'index'])->name('index');
+            Route::get('packages/create', [PackageController::class, 'create'])->name('create');
+            Route::post('packages', [PackageController::class, 'store'])->name('store');
+            Route::get('packages/{package}', [PackageController::class, 'show'])->name('show');
+            Route::get('packages/{package}/edit', [PackageController::class, 'edit'])->name('edit');
+            Route::patch('packages/{package}', [PackageController::class, 'update'])->name('update');
+            Route::delete('packages/{package}', [PackageController::class, 'destroy'])->name('destroy');
+
+        });
+
 //
 //        //SUBSCRIPTIONS
 //        Route::group(['prefix' => 'subscriptions'], function () {
@@ -83,14 +105,6 @@ Route::middleware(['landlord','redirect.url'])->group(function () {
 //        //OFFLINE PAYMENTS
 //        Route::get("/offline-payments", "Landlord\OfflinePayments@index");
 //        Route::delete("/offline-payments/{id}", "Landlord\OfflinePayments@destroy")->where('id', '[0-9]+');
-//
-//        //PACKAGES
-//        Route::group(['prefix' => 'packages'], function () {
-//            Route::any("/search", "Landlord\Packages@index");
-//            Route::get("/{package}/archive", "Landlord\Packages@archive")->where('package', '[0-9]+');
-//            Route::get("/{package}/restore", "Landlord\Packages@restore")->where('package', '[0-9]+');
-//        });
-//        Route::resource('packages', 'Landlord\Packages');
 //
 //        //BLOGS
 //        Route::resource('blogs', 'Landlord\Blogs');

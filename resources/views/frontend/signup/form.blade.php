@@ -31,7 +31,7 @@
             <input type="text" class="form-control" name="account_name" placeholder="{{ $section->data_4 }}"
                 aria-describedby="basic-addon2">
             <span class="input-group-addon x-sub-domain"
-                id="basic-addon2">.{{ config('system.settings_base_domain') }}</span>
+                id="basic-addon2">.{{ config('saas.settings_base_domain') }}</span>
         </div>
 
         <!--item-->

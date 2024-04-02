@@ -15,7 +15,7 @@ class CustomerDataTable implements IDataTables
         'id' =>'tenants.id',
         'name' =>'tenants.name',
         'created_at' => 'tenants.created_at',
-        'account_url' => 'tenants.account_url',
+        'account' => 'tenants.account_url',
         'plan' => 'packages.plan',
         'type' => 'subscriptions.type',
         'status' => 'packages.status',

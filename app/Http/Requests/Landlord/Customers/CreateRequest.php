@@ -9,20 +9,13 @@
 
 namespace App\Http\Requests\Landlord\Customers;
 
+use App\Models\Landlord\Settings;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StoreUpdateValidation extends FormRequest {
+class CreateRequest extends FormRequest {
 
-    //use App\Http\Requests\Foo\TemplateValidation;
-    //function update(TemplateValidation $request,
-
-    /**
-     * we are checking authorised users via the middleware
-     * so just retun true here
-     * @return bool
-     */
     public function authorize() {
         return true;
     }
@@ -50,18 +43,17 @@ class StoreUpdateValidation extends FormRequest {
      */
     public function rules() {
 
-        //Common to all of them
         $rules = [
-            'full_name' => [
+            'name' => [
                 'required',
             ],
-            'email_address' => [
+            'email' => [
                 'required',
-                Rule::unique('tenants', 'tenant_email')->ignore(request()->route('customer'), 'tenant_id'),
+                Rule::unique('tenants', 'email')->ignore(request()->route('customer'), 'id'),
             ],
             'account_name' => [
                 'required',
-                Rule::unique('tenants', 'subdomain')->ignore(request()->route('customer'), 'tenant_id'),
+                Rule::unique('tenants', 'subdomain')->ignore(request()->route('customer'), 'id'),
                 function ($attribute, $value, $fail) {
                     //validate domain name characters (a-z A-Z 0-9 . -)
                     if (!preg_match('/^[a-zA-Z0-9]+[a-zA-Z0-9-._]*[a-zA-Z0-9]+$/', $value)) {
@@ -70,7 +62,7 @@ class StoreUpdateValidation extends FormRequest {
                 },
                 //validate reserved words
                 function ($attribute, $value, $fail) {
-                    $settings = \App\Models\Landlord\Settings::on('landlord')->Where('settings_id', 'default')->first();
+                    $settings = Settings::on('landlord')->Where('settings_id', 'default')->first();
                     $reserved_words = explode(',', $settings->settings_reserved_words);
                     $reserved_words = array_map('trim', $reserved_words);
                     if (in_array($value, $reserved_words)) {
@@ -80,7 +72,7 @@ class StoreUpdateValidation extends FormRequest {
             ],
             'plan' => [
                 'required',
-                Rule::exists('packages', 'package_id'),
+                Rule::exists('packages', 'id'),
             ],
         ];
 

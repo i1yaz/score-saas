@@ -10,8 +10,8 @@ class LoginController extends Controller
 {
     public function index() {
 
-        $mainmenu = Frontend::Where('frontend_group', 'main-menu')->orderBy('frontend_name', 'asc')->get();
-        $section = Frontend::Where('frontend_name', 'page-login')->first();
+        $mainmenu = Frontend::Where('group', 'main-menu')->orderBy('name', 'asc')->get();
+        $section = Frontend::Where('name', 'page-login')->first();
         $payload = [
             'page' => $this->pageSettings('index'),
         ];

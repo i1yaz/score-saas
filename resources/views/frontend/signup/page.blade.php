@@ -24,7 +24,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="heading_mobile">
-                        <a href="javascript:void(0);" class="heading_logo">
+                        <a href="/" class="heading_logo">
                             <img src="{{ runtimeLogoFrontEnd() }}" alt="">
                         </a>
                         <div class="heading_mobile_thum"></div>

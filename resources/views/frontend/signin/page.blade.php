@@ -14,7 +14,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="heading_mobile">
-                        <a href="javascript:void(0);" class="heading_logo">
+                        <a href="/" class="heading_logo">
                             <img src="{{ runtimeLogoFrontEnd() }}" alt="">
                         </a>
                         <div class="heading_mobile_thum"></div>
@@ -31,7 +31,7 @@
 
             <div class="col-lg-6">
                 <div class="x-splash-image">
-                    <img src="public/themes/frontend/assets/images/signup-splash.png">
+                    <img src="themes/frontend/assets/images/signup-splash.png">
                 </div>
             </div>
             <div class="col-lg-6">

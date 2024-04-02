@@ -6,9 +6,10 @@ use App\DataTables\InvoiceDataTable;
 use App\DataTables\Landlord\CustomerDataTable;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Requests\Landlord\Customers\SetActiveValidation;
-use App\Http\Requests\Landlord\Customers\StoreUpdateValidation;
+use App\Http\Requests\Landlord\Customers\CreateRequest;
 use App\Http\Requests\Landlord\Customers\UpdatePasswordValidation;
 use App\Http\Requests\Landlord\Customers\UpdateValidation;
+use App\Models\Landlord\Package;
 use App\Repositories\Landlord\CreateTenantRepository;
 use App\Repositories\Landlord\SubscriptionsRepository;
 use App\Repositories\Landlord\tenantsRepository;
@@ -28,14 +29,13 @@ class CustomerController extends AppBaseController
     public function index(Request $request) {
         if ($request->ajax()) {
             $columns = [
-                'id',
-                'name',
-                'created_at',
-                'account_url',
-                'plan',
-                'type',
-                'status',
-                'action'
+                0 => 'id',
+                1 => 'name',
+                2 => 'created_at',
+                3 => 'account',
+                4 => 'name',
+                5 => 'type',
+                6 => 'status',
             ];
             $limit = $request->input('length');
             $start = $request->input('start');
@@ -58,10 +58,6 @@ class CustomerController extends AppBaseController
         return view('landlord/customers/index');
     }
 
-    /**
-     * Show the resource
-     * @return blade view | ajax view
-     */
     public function show($id) {
 
         //validate exist
@@ -82,91 +78,56 @@ class CustomerController extends AppBaseController
         } else {
             $subscription = [];
         }
-
-        //page
         $page = $this->pageSettings('show');
-
-        //url resource
         request()->merge([
             'resource_query' => "payment_tenant_id=$id",
         ]);
 
-        //show the item
         return view('landlord/customer/wrapper', compact('page', 'customer', 'subscription'))->render();
 
     }
 
-    /**
-     * show the form to create a new resource
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create() {
 
-        $packages = \App\Models\Landlord\Package::Where('package_status', 'active')->get();
-
-        //create options
-        config(['visibility.send_welcome_email_checkbox' => true]);
-
-        //page
-        $html = view('landlord/customers/modal/add-edit-inc', compact('packages'))->render();
-        $jsondata['dom_html'][] = [
-            'selector' => '#commonModalBody',
-            'action' => 'replace',
-            'value' => $html,
-        ];
-
-        //postrun
-        $jsondata['postrun_functions'][] = [
-            'value' => 'NXCustomerChangePlan',
-        ];
-
-        //render
-        return response()->json($jsondata);
-
+        $packages = Package::Where('status', 'active')->get();
+        return view('landlord.customers.create', compact('packages'));
     }
 
-    /**
-     * process for creating a new account
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreUpdateValidation $request, CreateTenantRepository $createtenantrepo) {
-
+    public function store(CreateRequest $request, CreateTenantRepository $createTenantRepo) {
+        dd($request);
         //defaults
         $free_trial = 'no';
         $subscription_trial_end = null;
         $subscription_date_started = null;
 
         //get the package
-        $package = \App\Models\Landlord\Package::Where('package_id', request('plan'))->first();
+        $package = Package::Where('package_id', request('plan'))->first();
 
         //free packages
-        if ($package->package_subscription_options == 'free') {
+        if ($package->subscription_options == 'free') {
             $status = 'active';
             $subscription_amount = 0;
             $subscription_date_started = now();
         }
 
         //general settings for paid subscriptions
-        if ($package->package_subscription_options == 'paid') {
+        if ($package->subscription_options == 'paid') {
             if (request('billing_cycle') == 'monthly') {
-                $subscription_amount = $package->package_amount_monthly;
+                $subscription_amount = $package->amount_monthly;
             } else {
-                $subscription_amount = $package->package_amount_yearly;
+                $subscription_amount = $package->amount_yearly;
             }
         }
 
         //paid packages - free trial
-        if ($package->package_subscription_options == 'paid' && request('free_trial') == 'yes') {
+        if ($package->subscription_options == 'paid' && request('free_trial') == 'yes') {
             $status = 'free-trial';
             $free_trial = 'yes';
             $subscription_trial_end = \Carbon\Carbon::now()->addDays(request('free_trial_days'))->format('Y-m-d');
         }
 
         //paid packages - free trial
-        if ($package->package_subscription_options == 'paid' && request('free_trial') == 'no') {
+        if ($package->subscription_options == 'paid' && request('free_trial') == 'no') {
             $status = 'awaiting-payment';
         }
 
@@ -199,7 +160,7 @@ class CustomerController extends AppBaseController
         $auth_key = Str::random(30);
 
         //create tenant database
-        if (!$createtenantrepo->createTenant($customer, $package, $auth_key)) {
+        if (!$createTenantRepo->createTenant($customer, $package, $auth_key)) {
             $customer->delete();
             abort(409, __('lang.request_failed_see_logs'));
         }
@@ -213,11 +174,11 @@ class CustomerController extends AppBaseController
         $subscription->subscription_creatorid = auth()->id();
         $subscription->subscription_customerid = $customer->tenant_id;
         $subscription->subscription_uniqueid = str_unique();
-        $subscription->subscription_type = $package->package_subscription_options;
+        $subscription->subscription_type = $package->subscription_options;
         $subscription->subscription_amount = $subscription_amount;
         $subscription->subscription_trial_end = $subscription_trial_end;
         $subscription->subscription_date_started = $subscription_date_started;
-        $subscription->subscription_package_id = $package->package_id;
+        $subscription->subscription_package_id = $package->id;
         $subscription->subscription_payment_method = request('subscription_payment_method');
         $subscription->subscription_status = $status;
         $subscription->subscription_gateway_billing_cycle = request('billing_cycle');
@@ -233,7 +194,7 @@ class CustomerController extends AppBaseController
         $event->event_customer_id = $customer->tenant_id;
         $event->event_item_id = $customer->tenant_id;
         $event->event_payload_1 = $customer->tenant_name;
-        $event->event_payload_2 = $package->package_name;
+        $event->event_payload_2 = $package->name;
         $event->event_payload_3 = '';
         $event->save();
 
@@ -812,24 +773,24 @@ class CustomerController extends AppBaseController
             if ($settings = \App\Models\Settings::on('tenant')->Where('settings_id', 1)->first()) {
                 $settings->settings_saas_status = ($tenant->subscription_status != '') ? $tenant->subscription_status : 'cancelled';
                 $settings->settings_saas_tenant_id = $id;
-                $settings->settings_saas_package_id = (is_numeric($tenant->package_id)) ? $tenant->package_id : null;
-                $settings->settings_saas_package_limits_clients = (is_numeric($tenant->package_limits_clients)) ? $tenant->package_limits_clients : 0;
-                $settings->settings_saas_package_limits_team = (is_numeric($tenant->package_limits_team)) ? $tenant->package_limits_team : 0;
-                $settings->settings_saas_package_limits_projects = (is_numeric($tenant->package_limits_projects)) ? $tenant->package_limits_projects : 0;
-                $settings->settings_modules_projects = ($tenant->package_module_projects == 'yes') ? 'enabled' : 'disabled';
-                $settings->settings_modules_tasks = ($tenant->package_module_tasks == 'yes') ? 'enabled' : 'disabled';
-                $settings->settings_modules_invoices = ($tenant->package_module_invoices == 'yes') ? 'enabled' : 'disabled';
-                $settings->settings_modules_leads = ($tenant->package_module_leads == 'yes') ? 'enabled' : 'disabled';
-                $settings->settings_modules_knowledgebase = ($tenant->package_module_knowledgebase == 'yes') ? 'enabled' : 'disabled';
-                $settings->settings_modules_estimates = ($tenant->package_module_estimates == 'yes') ? 'enabled' : 'disabled';
-                $settings->settings_modules_expenses = ($tenant->package_module_expense == 'yes') ? 'enabled' : 'disabled';
-                $settings->settings_modules_subscriptions = ($tenant->package_module_subscriptions == 'yes') ? 'enabled' : 'disabled';
-                $settings->settings_modules_tickets = ($tenant->package_module_tickets == 'yes') ? 'enabled' : 'disabled';
-                $settings->settings_modules_timetracking = ($tenant->package_module_timetracking == 'yes') ? 'enabled' : 'disabled';
-                $settings->settings_modules_reminders = ($tenant->package_module_reminders == 'yes') ? 'enabled' : 'disabled';
-                $settings->settings_modules_proposals = ($tenant->package_module_proposals == 'yes') ? 'enabled' : 'disabled';
-                $settings->settings_modules_contracts = ($tenant->package_module_contracts == 'yes') ? 'enabled' : 'disabled';
-                $settings->settings_modules_messages = ($tenant->package_module_messages == 'yes') ? 'enabled' : 'disabled';
+                $settings->settings_saas_package_id = (is_numeric($tenant->id)) ? $tenant->id : null;
+                $settings->settings_saas_package_limits_clients = (is_numeric($tenant->limits_clients)) ? $tenant->limits_clients : 0;
+                $settings->settings_saas_package_limits_team = (is_numeric($tenant->limits_team)) ? $tenant->limits_team : 0;
+                $settings->settings_saas_package_limits_projects = (is_numeric($tenant->limits_projects)) ? $tenant->limits_projects : 0;
+                $settings->settings_modules_projects = ($tenant->module_projects == 'yes') ? 'enabled' : 'disabled';
+                $settings->settings_modules_tasks = ($tenant->module_tasks == 'yes') ? 'enabled' : 'disabled';
+                $settings->settings_modules_invoices = ($tenant->module_invoices == 'yes') ? 'enabled' : 'disabled';
+                $settings->settings_modules_leads = ($tenant->module_leads == 'yes') ? 'enabled' : 'disabled';
+                $settings->settings_modules_knowledgebase = ($tenant->module_knowledgebase == 'yes') ? 'enabled' : 'disabled';
+                $settings->settings_modules_estimates = ($tenant->module_estimates == 'yes') ? 'enabled' : 'disabled';
+                $settings->settings_modules_expenses = ($tenant->module_expense == 'yes') ? 'enabled' : 'disabled';
+                $settings->settings_modules_subscriptions = ($tenant->module_subscriptions == 'yes') ? 'enabled' : 'disabled';
+                $settings->settings_modules_tickets = ($tenant->module_tickets == 'yes') ? 'enabled' : 'disabled';
+                $settings->settings_modules_timetracking = ($tenant->module_timetracking == 'yes') ? 'enabled' : 'disabled';
+                $settings->settings_modules_reminders = ($tenant->module_reminders == 'yes') ? 'enabled' : 'disabled';
+                $settings->settings_modules_proposals = ($tenant->module_proposals == 'yes') ? 'enabled' : 'disabled';
+                $settings->settings_modules_contracts = ($tenant->module_contracts == 'yes') ? 'enabled' : 'disabled';
+                $settings->settings_modules_messages = ($tenant->module_messages == 'yes') ? 'enabled' : 'disabled';
                 $settings->save();
             }
 

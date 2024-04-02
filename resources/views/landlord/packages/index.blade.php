@@ -5,11 +5,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Customers</h1>
+                    <h1>Packages</h1>
                 </div>
                 <div class="col-sm-6">
                     <a class="btn btn-primary float-right"
-                       href="{{ route('landlord.customers.create') }}">
+                       href="{{ route('landlord.packages.create') }}">
                         Add New
                     </a>
                 </div>
@@ -25,9 +25,9 @@
 
         <div class="card card-primary">
             <div class="card-header">
-                <h3 class="card-title">Customers</h3>
+                <h3 class="card-title">Packages</h3>
             </div>
-            @include('landlord.customers.table')
+     
         </div>
     </div>
 

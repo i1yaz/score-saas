@@ -5,9 +5,15 @@
     </a>
 </li>
 <li class="nav-item">
-    <a href="{{ route('landlord.customer.index') }}" class="nav-link {{ Request::is('landlord.customer.index') ? 'active' : '' }}">
+    <a href="{{ route('landlord.customers.index') }}" class="nav-link {{ Request::is('landlord.customers.index') ? 'active' : '' }}">
         <i class="nav-icon fas fa-home"></i>
         <p>Customers</p>
+    </a>
+</li>
+<li class="nav-item">
+    <a href="{{ route('landlord.packages.index') }}" class="nav-link {{ Request::is('landlord.packages.index') ? 'active' : '' }}">
+        <i class="nav-icon fas fa-home"></i>
+        <p>Packages</p>
     </a>
 </li>
 {{--@permission('tutor_dashboard-index')--}}

@@ -9,7 +9,7 @@
     <form class="form-horizontal form-material x-form p-t-30" id="loginForm" novalidate="novalidate" _lpchecked="1">
         <div class="input-group m-t-0 m-b-50">
             <input type="text" class="form-control" placeholder="{{ $section->data_4 }}" name="domain_name" aria-describedby="basic-addon2">
-            <span class="input-group-addon x-sub-domain" id="basic-addon2">.{{ config('system.settings_base_domain') }}</span>
+            <span class="input-group-addon x-sub-domain" id="basic-addon2">.{{ config('saas.settings_base_domain') }}</span>
         </div>
         <div class="form-group text-center m-t-10 p-b-10">
             <div class="col-xs-12">
