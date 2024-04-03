@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('gateway_paystack_plan_yearly', 150)->nullable();
             $table->text('description')->nullable();
             $table->string('icon', 100)->nullable();
-            $table->string('featured', 10)->default('no')->comment('yes|no');
+            $table->boolean('is_featured')->default(false);
             $table->integer('limits_clients')->default('0')->comment('-1 is unlimited');
             $table->integer('limits_team')->default('0')->comment('-1 is unlimited');
             $table->integer('limits_projects')->default('0')->comment('-1 is unlimited');
