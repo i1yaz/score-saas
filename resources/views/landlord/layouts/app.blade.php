@@ -158,6 +158,47 @@
                         }
 
                     }
+                    function formatPrice(input) {
+                        console.log(input)
+                        let value = input.trim();
+                        console.log(input)
+
+                        // Check if the value contains any non-numeric characters
+                        if (/[^0-9.-]/.test(value)) {
+                            // If it does, remove those characters
+                            value = value.replace(/[^0-9.-]/g, '');
+                        }
+
+                        // If the value is empty or '-', return it as is
+                        if (value === '' || value === '-') {
+                            input.value = value;
+                            return;
+                        }
+
+                        // Remove any extra '-' signs
+                        if (value.startsWith('-') && value.indexOf('-') !== value.lastIndexOf('-')) {
+                            value = value.slice(0, value.lastIndexOf('-')) + value.slice(value.lastIndexOf('-') + 1);
+                        }
+
+                        // If the value starts with '-' and '-' is not immediately followed by a digit, remove '-'
+                        if (value.startsWith('-') && !/\d/.test(value.charAt(1))) {
+                            value = value.slice(1);
+                        }
+
+                        // If the value is larger than 0, allow up to two decimal points
+                        if (parseFloat(value) > 0) {
+                            let parts = value.split('.');
+                            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '');
+                            parts[1] = parts[1] ? parts[1].substring(0, 2) : '';
+                            value = parts.join('.');
+                        } else {
+                            // If the value is -1, remove any decimal points
+                            value = value.split('.')[0];
+                        }
+
+                        // Set the formatted value back to the input
+                        input.value = value;
+                    }
 
                 </script>
             @endpush
