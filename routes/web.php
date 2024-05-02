@@ -7,6 +7,7 @@ use App\Http\Controllers\InstallmentController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\InvoicePackageTypeController;
 use App\Http\Controllers\LineItemController;
+use App\Http\Controllers\MockTestCodeController;
 use App\Http\Controllers\MonthlyInvoicePackageController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\ParentController;
@@ -218,5 +219,13 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], functio
     Route::patch('email-templates/{email_templates}', [App\Http\Controllers\EmailTemplateController::class, 'update'])->name('email-templates.update')->middleware(['permission:email_templates-edit']);
     Route::post('email-templates/upload-image', [App\Http\Controllers\EmailTemplateController::class, 'uploadImage'])->name('email-templates.upload-image')->middleware(['permission:email_templates-edit']);
     Route::post('email-templates/{email_templates}/send', [App\Http\Controllers\EmailTemplateController::class, 'send'])->name('email-templates.send')->middleware(['permission:email_templates-send']);
+    //Test Codes
+    Route::get('mock-test-codes', [MockTestCodeController::class, 'index'])->name('mock-test-codes.index')->middleware(['permission:mock_test_code-index']);
+    Route::get('mock-test-codes/create', [MockTestCodeController::class, 'create'])->name('mock-test-codes.create')->middleware(['permission:mock_test_code-create']);
+    Route::post('mock-test-codes', [MockTestCodeController::class, 'store'])->name('mock-test-codes.store')->middleware(['permission:mock_test_code-create']);
+    Route::get('mock-test-codes/{mock_test_code}', [MockTestCodeController::class, 'show'])->name('mock-test-codes.show')->middleware(['permission:mock_test_code-show']);
+    Route::get('mock-test-codes/{mock_test_code}/edit', [MockTestCodeController::class, 'edit'])->name('mock-test-codes.edit')->middleware(['permission:mock_test_code-edit']);
+    Route::patch('mock-test-codes/{mock_test_code}', [MockTestCodeController::class, 'update'])->name('mock-test-codes.update')->middleware(['permission:mock_test_code-edit']);
+    Route::delete('mock-test-codes/{mock_test_code}', [MockTestCodeController::class, 'destroy'])->name('mock-test-codes.destroy')->middleware(['permission:mock_test_code-destroy']);
 
 });

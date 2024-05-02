@@ -822,6 +822,47 @@ class PermissionSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
+            // Official Test Codes
+            [
+                'name' => 'mock_test_code-index',
+                'display_name' => 'Mock Test Code Index',
+                'description' => 'Mock Test Code Index',
+                'resource' => 'Mock Test Code',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'mock_test_code-create',
+                'display_name' => 'Mock Test Code Create',
+                'description' => 'Mock Test Code Create',
+                'resource' => 'Mock Test Code',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'mock_test_code-show',
+                'display_name' => 'Mock Test Code Show',
+                'description' => 'Mock Test Code Show',
+                'resource' => 'Mock Test Code',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'mock_test_code-edit',
+                'display_name' => 'Mock Test Code Edit',
+                'description' => 'Mock Test Code Edit',
+                'resource' => 'Mock Test Code',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'mock_test_code-destroy',
+                'display_name' => 'Mock Test Code Destroy',
+                'description' => 'Mock Test Code Destroy',
+                'resource' => 'Mock Test Code',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
         ]);
     }
 }

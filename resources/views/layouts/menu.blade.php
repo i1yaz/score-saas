@@ -113,9 +113,9 @@
     </a>
 </li>
 @endpermission
-@permission(['tutoring_package_type-index','subject-index','tutoring_location-index','school-index','invoice_package_type-index','client-index','tax-index','line_item-index','email_templates-index'])
-<li class="nav-item {{Request::is(['tutoring-package-types*','subjects*','tutoring-locations*','schools*','invoice-package-types*','taxes*','line-items*','clients*','email-templates*'])?'menu-is-opening menu-open active':''}}">
-    <a href="#" class="nav-link {{Request::is(['tutoring-package-types*','subjects*','tutoring-locations*','schools*','invoice-package-types*','taxes*','line-items*','clients*','email-templates*'])?'active':''}}">
+@permission(['tutoring_package_type-index','subject-index','tutoring_location-index','school-index','invoice_package_type-index','client-index','tax-index','line_item-index','email_templates-index','mock_test_code-index'])
+<li class="nav-item {{Request::is(['tutoring-package-types*','subjects*','tutoring-locations*','schools*','invoice-package-types*','taxes*','line-items*','clients*','email-templates*','mock-test-codes*'])?'menu-is-opening menu-open active':''}}">
+    <a href="#" class="nav-link {{Request::is(['tutoring-package-types*','subjects*','tutoring-locations*','schools*','invoice-package-types*','taxes*','line-items*','clients*','email-templates*','mock-test-codes*'])?'active':''}}">
         <i class="nav-icon fas fa-cog"></i>
         <p>
             Settings
@@ -176,6 +176,13 @@
         <li class="nav-item">
             <a href="{{ route('line-items.index') }}" class="nav-link {{ Request::is('line-items*') ? 'active' : '' }}">
                 <p>Line Items</p>
+            </a>
+        </li>
+        @endpermission
+        @permission('mock_test_code-index')
+        <li class="nav-item">
+            <a href="{{ route('mock-test-codes.index') }}" class="nav-link {{ Request::is('mock-test-codes*') ? 'active' : '' }}">
+                <p>Test Codes</p>
             </a>
         </li>
         @endpermission
