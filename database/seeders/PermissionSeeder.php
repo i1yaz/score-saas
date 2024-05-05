@@ -864,7 +864,6 @@ class PermissionSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
             //Mock Tests mock_test
-
             [
                 'name' => 'mock_test-index',
                 'display_name' => 'Mock Test Index',
@@ -902,6 +901,47 @@ class PermissionSeeder extends Seeder
                 'display_name' => 'Mock Test Destroy',
                 'description' => 'Mock Test Destroy',
                 'resource' => 'Mock Test',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            // Proctor
+            [
+                'name' => 'proctor-index',
+                'display_name' => 'Proctor Index',
+                'description' => 'Proctor Index',
+                'resource' => 'Proctor',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'proctor-create',
+                'display_name' => 'Proctor Create',
+                'description' => 'Proctor Create',
+                'resource' => 'Proctor',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'proctor-show',
+                'display_name' => 'Proctor Show',
+                'description' => 'Proctor Show',
+                'resource' => 'Proctor',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'proctor-edit',
+                'display_name' => 'Proctor Edit',
+                'description' => 'Proctor Edit',
+                'resource' => 'Proctor',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'proctor-destroy',
+                'display_name' => 'Proctor Destroy',
+                'description' => 'Proctor Destroy',
+                'resource' => 'Proctor',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],

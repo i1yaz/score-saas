@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\ParentUser;
+use App\Models\Proctor;
 use App\Models\Student;
 use App\Models\Tutor;
 use App\Models\User;
@@ -49,6 +50,7 @@ class RegisterController extends Controller
         $this->middleware('guest:parent');
         $this->middleware('guest:student');
         $this->middleware('guest:tutor');
+        $this->middleware('guest:proctor');
     }
 
     /**
@@ -94,6 +96,8 @@ class RegisterController extends Controller
             $user = $this->createTutor($request->all());
         } elseif ($request->registrationType == 'client') {
             $user = $this->createClient($request->all());
+        }elseif ($request->registrationType == 'proctor') {
+            $user = $this->createProctor($request->all());
         } else {
             $user = $this->create($request->all());
         }
@@ -154,5 +158,12 @@ class RegisterController extends Controller
         Validator::make($request, Client::$rules);
 
         return Client::create($request);
+    }
+
+    private function createProctor(array $request)
+    {
+        Validator::make($request, Proctor::$rules);
+
+        return Proctor::create($request);
     }
 }

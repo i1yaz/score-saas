@@ -11,7 +11,6 @@ class MockTest extends Model
     public $fillable = [
         'date',
         'location_id',
-        'proctor_id',
         'start_time',
         'end_time'
     ];
@@ -20,14 +19,16 @@ class MockTest extends Model
         'id' => 'integer',
         'date' => 'date',
         'location_id' => 'integer',
-        'proctor_id' => 'integer',
         'start_time' => 'string',
-        'end_time' => 'string'
+        'end_time' => 'string',
+
     ];
 
     public static array $rules = [
-        
+        'date' => 'required',
+        'location_id' => 'required',
+        'proctor_id' => 'required'
     ];
 
-    
+
 }

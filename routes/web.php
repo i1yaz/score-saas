@@ -14,6 +14,7 @@ use App\Http\Controllers\PackageController;
 use App\Http\Controllers\ParentController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentGateways\StripeController;
+use App\Http\Controllers\ProctorController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\StudentController;
@@ -56,6 +57,14 @@ Route::get('admin/login', [LoginController::class, 'showAdminLoginForm'])->name(
 Route::get('payment/success', [PaymentController::class, 'success'])->name('payment-success');
 Route::get('payment/failed', [PaymentController::class, 'failed'])->name('payment-failed');
 Route::post('stripe-webhooks', [StripeController::class, 'webhooks'])->name('stripe-webhooks');
+
+/**
+ * @return void
+ */
+function getProctorRoutes(): void
+{
+    Route::get('proctor/dashboard', [ProctorDashboardController::class, 'index'])->name('proctor-dashboard.index')->middleware('permission:proctor-dashboard');
+}
 
 Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -237,6 +246,15 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], functio
     Route::patch('mock-tests/{mock_test}',[MockTestController::class,'update'])->name('mock-tests.update')->middleware(['permission:mock_test-edit']);
     Route::delete('mock-tests/{mock_test}',[MockTestController::class,'destroy'])->name('mock-tests.destroy')->middleware(['permission:mock_test-destroy']);
     Route::get('mock-test-locations-ajax', [MockTestController::class, 'locationAjax'])->name('mock-test-location-ajax')->middleware(['permission:mock_test-create']);
-
+    //
+    getProctorRoutes();
+    Route::get('proctors', [ProctorController::class, 'index'])->name('proctors.index')->middleware(['permission:proctor-index']);
+    Route::get('proctors/create', [ProctorController::class, 'create'])->name('proctors.create')->middleware(['permission:proctor-create']);
+    Route::post('proctors', [ProctorController::class, 'store'])->name('proctors.store')->middleware(['permission:proctor-create']);
+    Route::get('proctors/{proctor}', [ProctorController::class, 'show'])->name('proctors.show')->middleware(['permission:proctor-show']);
+    Route::get('proctors/{proctor}/edit', [ProctorController::class, 'edit'])->name('proctors.edit')->middleware(['permission:proctor-edit']);
+    Route::patch('proctors/{proctor}', [ProctorController::class, 'update'])->name('proctors.update')->middleware(['permission:proctor-edit']);
+    Route::delete('proctors/{proctor}', [ProctorController::class, 'destroy'])->name('proctors.destroy')->middleware(['permission:proctor-destroy']);
+    Route::get('proctors-ajax', [ProctorController::class, 'proctorsAjax'])->name('proctors-ajax')->middleware(['permission:proctor-create']);
 
 });

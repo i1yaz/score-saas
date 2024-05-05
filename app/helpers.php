@@ -1182,3 +1182,13 @@ if (!function_exists('getInstallmentsAndDueDate')){
         ];
     }
 }
+
+if (!function_exists('booleanToActiveCheck')){
+    function booleanToActiveCheck(bool $status): string
+    {
+        return match ($status) {
+            true => "<span class='badge badge-success'>Active</span>",
+            false => "<span class='badge badge-danger'>Inactive </span>",
+        };
+    }
+}

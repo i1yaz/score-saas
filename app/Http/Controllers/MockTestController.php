@@ -6,6 +6,7 @@ use App\Http\Requests\CreateMockTestRequest;
 use App\Http\Requests\UpdateMockTestRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Repositories\MockTestRepository;
+use App\Repositories\ProctorRepository;
 use App\Repositories\TutoringLocationRepository;
 use Illuminate\Http\Request;
 use Flash;
@@ -46,11 +47,11 @@ class MockTestController extends AppBaseController
     {
         $input = $request->all();
 
-        $mockTest = $this->mockTestRepository->create($input);
+        $mockTest = $this->mockTestRepository->storeMockTest($input);
 
         Flash::success('Mock Test saved successfully.');
 
-        return redirect(route('mockTests.index'));
+        return redirect(route('mock-tests.index'));
     }
 
     /**
@@ -63,7 +64,7 @@ class MockTestController extends AppBaseController
         if (empty($mockTest)) {
             Flash::error('Mock Test not found');
 
-            return redirect(route('mockTests.index'));
+            return redirect(route('mock-tests.index'));
         }
 
         return view('mock_tests.show')->with('mockTest', $mockTest);
@@ -79,7 +80,7 @@ class MockTestController extends AppBaseController
         if (empty($mockTest)) {
             Flash::error('Mock Test not found');
 
-            return redirect(route('mockTests.index'));
+            return redirect(route('mock-tests.index'));
         }
 
         return view('mock_tests.edit')->with('mockTest', $mockTest);
@@ -95,14 +96,14 @@ class MockTestController extends AppBaseController
         if (empty($mockTest)) {
             Flash::error('Mock Test not found');
 
-            return redirect(route('mockTests.index'));
+            return redirect(route('mock-tests.index'));
         }
 
         $mockTest = $this->mockTestRepository->update($request->all(), $id);
 
         Flash::success('Mock Test updated successfully.');
 
-        return redirect(route('mockTests.index'));
+        return redirect(route('mock-tests.index'));
     }
 
     /**
@@ -117,14 +118,14 @@ class MockTestController extends AppBaseController
         if (empty($mockTest)) {
             Flash::error('Mock Test not found');
 
-            return redirect(route('mockTests.index'));
+            return redirect(route('mock-tests.index'));
         }
 
         $this->mockTestRepository->delete($id);
 
         Flash::success('Mock Test deleted successfully.');
 
-        return redirect(route('mockTests.index'));
+        return redirect(route('mock-tests.index'));
     }
 
     public function locationAjax(Request $request)

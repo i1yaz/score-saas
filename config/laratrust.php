@@ -104,6 +104,7 @@ return [
         'student' => \App\Models\Student::class,
         'tutor' => \App\Models\Tutor::class,
         'client' => \App\Models\Client::class,
+        'proctor' => \App\Models\Proctor::class,
     ],
 
     /*

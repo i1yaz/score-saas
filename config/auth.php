@@ -56,6 +56,10 @@ return [
             'driver' => 'session',
             'provider' => 'clients',
         ],
+        'proctor' => [
+            'driver' => 'session',
+            'provider' => 'proctors',
+        ],
     ],
 
     /*
@@ -95,6 +99,10 @@ return [
         'clients' => [
             'driver' => 'eloquent',
             'model' => \App\Models\Client::class,
+        ],
+        'proctors' => [
+            'driver' => 'eloquent',
+            'model' => \App\Models\Proctor::class,
         ],
         // 'users' => [
         //     'driver' => 'database',
