@@ -206,7 +206,7 @@
             $("#tutoring-package-type-id").select2({
                 dropdownAutoWidth: true, width: 'auto',
                 theme: 'bootstrap4',
-                minimumInputLength: 1: 1,
+                minimumInputLength: 1,
                 ajax: {
                     url: "{{route('tutoring-package-type-ajax')}}",
                     dataType: "json",

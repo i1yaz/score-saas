@@ -8,6 +8,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\InvoicePackageTypeController;
 use App\Http\Controllers\LineItemController;
 use App\Http\Controllers\MockTestCodeController;
+use App\Http\Controllers\MockTestController;
 use App\Http\Controllers\MonthlyInvoicePackageController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\ParentController;
@@ -227,5 +228,15 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], functio
     Route::get('mock-test-codes/{mock_test_code}/edit', [MockTestCodeController::class, 'edit'])->name('mock-test-codes.edit')->middleware(['permission:mock_test_code-edit']);
     Route::patch('mock-test-codes/{mock_test_code}', [MockTestCodeController::class, 'update'])->name('mock-test-codes.update')->middleware(['permission:mock_test_code-edit']);
     Route::delete('mock-test-codes/{mock_test_code}', [MockTestCodeController::class, 'destroy'])->name('mock-test-codes.destroy')->middleware(['permission:mock_test_code-destroy']);
+    //Mock Test Code
+    Route::get('mock-tests',[MockTestController::class,'index'])->name('mock-tests.index')->middleware(['permission:mock_test-index']);
+    Route::get('mock-tests/create',[MockTestController::class,'create'])->name('mock-tests.create')->middleware(['permission:mock_test-create']);
+    Route::post('mock-tests',[MockTestController::class,'store'])->name('mock-tests.store')->middleware(['permission:mock_test-create']);;
+    Route::get('mock-tests/{mock_test}',[MockTestController::class,'show'])->name('mock-tests.show')->middleware(['permission:mock_test-show']);
+    Route::get('mock-tests/{mock_test}/edit',[MockTestController::class,'edit'])->name('mock-tests.edit')->middleware(['permission:mock_test-edit']);
+    Route::patch('mock-tests/{mock_test}',[MockTestController::class,'update'])->name('mock-tests.update')->middleware(['permission:mock_test-edit']);
+    Route::delete('mock-tests/{mock_test}',[MockTestController::class,'destroy'])->name('mock-tests.destroy')->middleware(['permission:mock_test-destroy']);
+    Route::get('mock-test-locations-ajax', [MockTestController::class, 'locationAjax'])->name('mock-test-location-ajax')->middleware(['permission:mock_test-create']);
+
 
 });

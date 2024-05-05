@@ -113,6 +113,14 @@
     </a>
 </li>
 @endpermission
+@permission('mock_test-index')
+<li class="nav-item">
+    <a href="{{ route('mock-tests.index') }}" class="nav-link {{ Request::is('mock-tests*') ? 'active' : '' }}">
+        <i class="nav-icon fas fa-diagnoses"></i>
+        <p>Mock Tests</p>
+    </a>
+</li>
+@endpermission
 @permission(['tutoring_package_type-index','subject-index','tutoring_location-index','school-index','invoice_package_type-index','client-index','tax-index','line_item-index','email_templates-index','mock_test_code-index'])
 <li class="nav-item {{Request::is(['tutoring-package-types*','subjects*','tutoring-locations*','schools*','invoice-package-types*','taxes*','line-items*','clients*','email-templates*','mock-test-codes*'])?'menu-is-opening menu-open active':''}}">
     <a href="#" class="nav-link {{Request::is(['tutoring-package-types*','subjects*','tutoring-locations*','schools*','invoice-package-types*','taxes*','line-items*','clients*','email-templates*','mock-test-codes*'])?'active':''}}">

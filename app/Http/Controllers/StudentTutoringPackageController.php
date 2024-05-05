@@ -16,6 +16,7 @@ use App\Models\TutoringLocation;
 use App\Models\TutoringPackageType;
 use App\Repositories\InvoiceRepository;
 use App\Repositories\StudentTutoringPackageRepository;
+use App\Repositories\TutoringLocationRepository;
 use Flash;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -332,12 +333,7 @@ class StudentTutoringPackageController extends AppBaseController
 
     public function tutoringLocationAjax(Request $request)
     {
-        $name = trim($request->name);
-        $tutoringLocations = TutoringLocation::active()->select(['tutoring_locations.id as id', 'tutoring_locations.name as text'])
-            ->where('tutoring_locations.name', 'LIKE', "%{$name}%")
-            ->limit(5)
-            ->get();
-
+        $tutoringLocations = TutoringLocationRepository::getTutoringLocations($request->name);
         return response()->json($tutoringLocations->toArray());
 
     }

@@ -32,4 +32,13 @@ class TutoringLocationRepository extends BaseRepository
 
         return $model;
     }
+
+    public static function getTutoringLocations($name)
+    {
+        $name = trim($name);
+        return TutoringLocation::active()->select(['tutoring_locations.id as id', 'tutoring_locations.name as text'])
+            ->where('tutoring_locations.name', 'LIKE', "%{$name}%")
+            ->limit(5)
+            ->get();
+    }
 }
