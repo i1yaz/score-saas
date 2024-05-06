@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class MockTest extends Model
 {
@@ -29,6 +30,12 @@ class MockTest extends Model
         'location_id' => 'required',
         'proctor_id' => 'required'
     ];
+
+    //Relationships
+    public function students(): BelongsToMany
+    {
+        return $this->belongsToMany(Student::class)->withPivot('mock_test_code_id', 'notes_to_proctor')->withTimestamps();
+    }
 
 
 }

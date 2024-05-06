@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\TutoringLocation;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,9 +15,9 @@ return new class extends Migration
     public function up()
     {
         Schema::create('mock_tests', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
             $table->date('date');
-            $table->bigInteger('location_id');
+            $table->foreignIdFor(TutoringLocation::class)->constrained();
             $table->morphs('proctorable');
             $table->string('start_time')->nullable();
             $table->string('end_time')->nullable();

@@ -18,18 +18,18 @@
                         <div class='btn-group'>
                             @permission('line_item-show')
                             <a href="{{ route('line-items.show', [$lineItem->id]) }}"
-                               class='btn btn-default btn-xs'>
+                               class='btn btn-default btn-sm'>
                                 <i class="far fa-eye"></i>
                             </a>
                             @endpermission
                             @permission('line_item-edit')
                             <a href="{{ route('line-items.edit', [$lineItem->id]) }}"
-                               class='btn btn-default btn-xs'>
+                               class='btn btn-default btn-sm'>
                                 <i class="far fa-edit"></i>
                             </a>
                             @endpermission
                             @permission('line_item-destroy')
-                            {!! Form::button('<i class="far fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
+                            {!! Form::button('<i class="far fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-sm', 'onclick' => "return confirm('Are you sure?')"]) !!}
                             @endpermission
                         </div>
                         {!! Form::close() !!}

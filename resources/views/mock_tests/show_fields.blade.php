@@ -46,3 +46,39 @@
     <p>{{ $mockTest->updated_at }}</p>
 </div>
 
+@dd($mockTest->students)
+
+@if($mockTest->students->isNotEmpty())
+    <div class="col-sm-12">
+        <div class="card card-gray">
+            <div class="card-header">
+                <h5>Sessions</h5>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-striped" id="student-tutoring-packages-table">
+                    <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Student</th>
+                        <th>Extra Time</th>
+                        <th>Test Code Taken</th>
+                        <th>Notes To Proctor</th>
+                        <th>Proctor's Notes</th>
+                        <th>Attendance</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($studentTutoringPackage->students as $student)
+                        <tr>
+                            <td>{{ $student->id }}</td>
+                            <td>{{ $student->email }}</td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+@endif

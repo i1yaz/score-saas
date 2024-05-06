@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class MockTestCode extends Model
+class MockTestCode extends BaseModel
 {
     use SoftDeletes, HasFactory;
 
@@ -14,4 +14,6 @@ class MockTestCode extends Model
         'name',
         'test_type'
     ];
+
+
 }

@@ -31,4 +31,14 @@ class StudentRepository extends BaseRepository
     {
         return Student::class;
     }
+
+    public function getStudents($email,$limit = 5)
+    {
+        $email = trim($email);
+        return Student::active()
+            ->select(['students.id as id', 'students.email as text'])
+            ->where('students.email', 'LIKE', "%{$email}%")
+            ->limit($limit)
+            ->get();
+    }
 }

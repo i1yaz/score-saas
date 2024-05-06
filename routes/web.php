@@ -246,6 +246,10 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], functio
     Route::patch('mock-tests/{mock_test}',[MockTestController::class,'update'])->name('mock-tests.update')->middleware(['permission:mock_test-edit']);
     Route::delete('mock-tests/{mock_test}',[MockTestController::class,'destroy'])->name('mock-tests.destroy')->middleware(['permission:mock_test-destroy']);
     Route::get('mock-test-locations-ajax', [MockTestController::class, 'locationAjax'])->name('mock-test-location-ajax')->middleware(['permission:mock_test-create']);
+    Route::post('mock-tests/add-students',[MockTestController::class,'addStudents'])->name('mock-test-add-students')->middleware(['permission:mock_test-create']);
+    Route::post('mock-tests/{mock_test}/add-score',[MockTestController::class,'addScore'])->name('mock-test-add-score')->middleware(['permission:mock_test-score']);
+    Route::get('mock-test-student-email-ajax',[MockTestController::class,'getStudentsAjax'])->name('mock-test-student-email-ajax')->middleware(['permission:mock_test-score']);
+    Route::get('mock-test-code-ajax',[MockTestController::class,'geMockTestCodesAjax'])->name('mock-test-code-ajax')->middleware(['permission:mock_test-score']);
     //
     getProctorRoutes();
     Route::get('proctors', [ProctorController::class, 'index'])->name('proctors.index')->middleware(['permission:proctor-index']);

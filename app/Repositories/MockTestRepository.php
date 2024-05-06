@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\MockTest;
 use App\Models\Proctor;
 use App\Repositories\BaseRepository;
+use Illuminate\Support\Facades\Log;
 use PhpParser\Builder\Class_;
 
 class MockTestRepository extends BaseRepository
@@ -35,5 +36,17 @@ class MockTestRepository extends BaseRepository
             $input['proctor_id'] = $input['proctorable_id'];
         }
         return $this->create(array_filter($input));
+    }
+    public function addStudents($array)
+    {
+        try {
+            $mockTest = $this->find($array['mock_test_id']);
+            $mockTest->students()->attach($array['student_id'],['mock_test_code_id' => $array['mock_test_code_id'], 'notes_to_proctor' => $array['notes_to_proctor']]);
+            return true;
+        }catch (\Exception $e) {
+            Log::critical($e->getMessage(), ['file' => $e->getFile(), 'line' => $e->getLine()]);
+            return false;
+        }
+
     }
 }

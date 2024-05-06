@@ -904,47 +904,14 @@ class PermissionSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
-            // Proctor
             [
-                'name' => 'proctor-index',
-                'display_name' => 'Proctor Index',
-                'description' => 'Proctor Index',
-                'resource' => 'Proctor',
+                'name' => 'mock_test-score',
+                'display_name' => 'Mock Test Score',
+                'description' => 'Mock Test Score',
+                'resource' => 'Mock Test',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
-            ],
-            [
-                'name' => 'proctor-create',
-                'display_name' => 'Proctor Create',
-                'description' => 'Proctor Create',
-                'resource' => 'Proctor',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'name' => 'proctor-show',
-                'display_name' => 'Proctor Show',
-                'description' => 'Proctor Show',
-                'resource' => 'Proctor',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'name' => 'proctor-edit',
-                'display_name' => 'Proctor Edit',
-                'description' => 'Proctor Edit',
-                'resource' => 'Proctor',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'name' => 'proctor-destroy',
-                'display_name' => 'Proctor Destroy',
-                'description' => 'Proctor Destroy',
-                'resource' => 'Proctor',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
+            ]
         ]);
     }
 }

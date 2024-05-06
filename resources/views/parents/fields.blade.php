@@ -55,3 +55,8 @@
     {!! Form::label('referral_from_positive_experience_with_tutor', 'Referral From Positive Experience With Tutor:') !!}
     {!! Form::select('referral_from_positive_experience_with_tutor', ['yes' =>'YES','no'=>'NO'],booleanSelect($parent->referral_from_positive_experience_with_tutor??null), ['class' => 'form-control custom-select'])  !!}
 </div>
+@push('after_third_party_scripts')
+    <script type="text/javascript">
+        ajaxSubmit = false;
+    </script>
+@endpush

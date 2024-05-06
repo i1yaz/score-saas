@@ -15,6 +15,7 @@ use App\Models\Tutor;
 use App\Models\TutoringLocation;
 use App\Models\TutoringPackageType;
 use App\Repositories\InvoiceRepository;
+use App\Repositories\StudentRepository;
 use App\Repositories\StudentTutoringPackageRepository;
 use App\Repositories\TutoringLocationRepository;
 use Flash;
@@ -30,10 +31,12 @@ class StudentTutoringPackageController extends AppBaseController
     private StudentTutoringPackageRepository $studentTutoringPackageRepository;
 
     private InvoiceRepository $invoiceRepository;
+    private StudentRepository $studentRepository;
 
-    public function __construct(StudentTutoringPackageRepository $studentTutoringPackageRepo, InvoiceRepository $invoiceRepository)
+    public function __construct(StudentTutoringPackageRepository $studentTutoringPackageRepo, InvoiceRepository $invoiceRepository,StudentRepository $studentRepo)
     {
         $this->studentTutoringPackageRepository = $studentTutoringPackageRepo;
+        $this->studentRepository = $studentRepo;
         $this->invoiceRepository = $invoiceRepository;
     }
 
@@ -293,18 +296,12 @@ class StudentTutoringPackageController extends AppBaseController
     public function studentEmailAjax(Request $request)
     {
         $email = trim($request->email);
-        $students = Student::active()
-            ->select(['students.id as id', 'students.email as text'])
-            ->where('students.email', 'LIKE', "%{$email}%")
-            ->limit(5)
-            ->get();
-
+        $students = $this->studentRepository->getStudents($email);
         return response()->json($students->toArray());
     }
 
     public function tutorEmailAjax(Request $request)
     {
-
         $email = trim($request->email);
         $tutoring_package_id = trim($request->tutoring_package_id);
         $strict = (bool) $request->strict;

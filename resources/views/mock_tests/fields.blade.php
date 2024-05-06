@@ -28,7 +28,7 @@
     {!! Form::select('proctor_id', $proctor??[],null, ['class' => 'form-control', 'id' =>'proctor-id']) !!}
 </div>
 
-@push('page_scripts')
+@push('after_third_party_scripts')
     <script type="text/javascript">
         ajaxSubmit = false;
         $('#date').datepicker()
