@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('score')->nullable();
             $table->enum('score_report_type',['FILE','URL'])->default('FILE');
             $table->string('score_report_path')->nullable();
-            $table->json('score_report_data')->nullable();
+            $table->json('subsection_scores')->nullable();
             $table->tinyText('notes_to_proctor')->nullable();
             $table->timestamps();
         });

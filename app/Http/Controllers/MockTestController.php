@@ -170,4 +170,9 @@ class MockTestController extends AppBaseController
         $mockTestStudent = $this->mockTestRepository->getMockTestDetails($mock_test,$student_id);
         return view('mock_tests.add_score')->with('mockTestStudent',$mockTestStudent);
     }
+    public function storeScore(Request $request,$mock_test,$student_id)
+    {
+        $mockTestStudent = $this->mockTestRepository->storeScore($request,$mock_test,$student_id);
+        return redirect(route('mock-tests.show',$mock_test));
+    }
 }

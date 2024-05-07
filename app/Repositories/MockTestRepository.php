@@ -5,6 +5,8 @@ namespace App\Repositories;
 use App\Models\MockTest;
 use App\Models\Proctor;
 use App\Repositories\BaseRepository;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use PhpParser\Builder\Class_;
 
@@ -65,9 +67,21 @@ class MockTestRepository extends BaseRepository
 //            ->join('proctors','proctors.id','=','mock_tests.proctor_id')
         $mockTest = $mockTest->where('mock_tests.id',$mockTestId);
         if (!empty($studentId)) {
-            $mockTest = $mockTest->where('students.id',$studentId);
+            $mockTest = $mockTest->where('mock_test_student.id',$studentId);
             return $mockTest->first();
         }
         return $mockTest->get();
+    }
+
+    public function storeScore(Request $request, $mock_test, $student_id)
+    {
+        $data = $request->all();
+        $data = array_filter($data);
+        $mockTestStudent = DB::table('mock_test_student')->where('mock_test_id',$mock_test)->where('student_id',$student_id)->first();
+        if ($mockTestStudent){
+
+            DB::table('mock_test_student')->where('id',$mockTestStudent->id)->update($data);
+        }
+        return true;
     }
 }
