@@ -16,6 +16,7 @@ use App\Repositories\StudentRepository;
 use App\Repositories\TutoringLocationRepository;
 use Illuminate\Http\Request;
 use Flash;
+use Illuminate\Support\Facades\DB;
 
 class MockTestController extends AppBaseController
 {
@@ -69,15 +70,15 @@ class MockTestController extends AppBaseController
      */
     public function show($id)
     {
-        $mockTest = MockTest::with(['students'])->find($id);
+        $mockTestDetail = $this->mockTestRepository->getMockTestDetails($id);
 
-        if (empty($mockTest)) {
+        if ($mockTestDetail->isEmpty()) {
             Flash::error('Mock Test not found');
 
             return redirect(route('mock-tests.index'));
         }
 
-        return view('mock_tests.show')->with('mockTest', $mockTest);
+        return view('mock_tests.show')->with('mockTestDetail', $mockTestDetail);
     }
 
     /**
@@ -163,5 +164,10 @@ class MockTestController extends AppBaseController
         $name = trim($request->code);
         $students = $this->mockTestCodeRepository->getMockTestCodes($name);
         return response()->json($students->toArray());
+    }
+    public function getScore($mock_test,$student_id)
+    {
+        $mockTestStudent = $this->mockTestRepository->getMockTestDetails($mock_test,$student_id);
+        return view('mock_tests.add_score')->with('mockTestStudent',$mockTestStudent);
     }
 }

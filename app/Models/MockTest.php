@@ -34,7 +34,9 @@ class MockTest extends Model
     //Relationships
     public function students(): BelongsToMany
     {
-        return $this->belongsToMany(Student::class)->withPivot('mock_test_code_id', 'notes_to_proctor')->withTimestamps();
+        return $this->belongsToMany(Student::class)
+            ->withPivot('mock_test_code_id', 'notes_to_proctor','signup_status','extra_time')
+            ->withTimestamps();
     }
 
 

@@ -49,4 +49,25 @@ class MockTestRepository extends BaseRepository
         }
 
     }
+
+    public function getMockTestDetails($mockTestId,$studentId=null)
+    {
+        $mockTest =  MockTest::select(
+            [
+                'mock_tests.id as mock_test_id','date','tutoring_locations.name as location','start_time','end_time',
+                'students.first_name','students.id as student_id','students.last_name','students.email as student_email','mock_test_codes.name as mock_test_code','mock_test_codes.test_type',
+                'mock_test_student.notes_to_proctor','mock_test_student.signup_status','mock_test_student.extra_time','mock_tests.created_at as test_created_at'
+            ])
+            ->join('tutoring_locations','tutoring_locations.id','=','mock_tests.location_id')
+            ->join('mock_test_student','mock_test_student.mock_test_id','=','mock_tests.id')
+            ->join('students','students.id','=','mock_test_student.student_id')
+            ->join('mock_test_codes','mock_test_codes.id','=','mock_test_student.mock_test_code_id');
+//            ->join('proctors','proctors.id','=','mock_tests.proctor_id')
+        $mockTest = $mockTest->where('mock_tests.id',$mockTestId);
+        if (!empty($studentId)) {
+            $mockTest = $mockTest->where('students.id',$studentId);
+            return $mockTest->first();
+        }
+        return $mockTest->get();
+    }
 }
