@@ -212,6 +212,14 @@ class PermissionSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
             [
+                'name' => 'proctor_dashboard-index',
+                'display_name' => 'Proctor Dashboard',
+                'description' => 'show proctor Dashboard',
+                'resource' => 'Proctor',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
                 'name' => 'student_tutoring_package-index',
                 'display_name' => 'Student Tutoring Package Index',
                 'description' => 'Show all packages',

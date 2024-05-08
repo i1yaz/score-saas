@@ -1039,8 +1039,11 @@ if (! function_exists('getFutureDueDate')) {
 }
 
 if (! function_exists('getCurrentTenant')) {
-    function getCurrentTenant($slash): int|string
+    function getCurrentTenant($tenantNumberOnly=false,$slash=null): int|string
     {
+        if ($tenantNumberOnly){
+            return 1;
+        }
         return 'tenant_1'.$slash;
     }
 }

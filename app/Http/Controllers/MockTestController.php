@@ -38,6 +38,11 @@ class MockTestController extends AppBaseController
      */
     public function index(Request $request)
     {
+        if ($request->has(['start', 'end'])) {
+            $events = $this->mockTestRepository->getFullCalenderEvents($request);
+
+            return response()->json($events);
+        }
         $mockTests = $this->mockTestRepository->paginate(10);
 
         return view('mock_tests.index')

@@ -3,6 +3,7 @@
 use App\Helpers\MonthlyInstallments;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\Dashboards\ProctorDashboardController;
 use App\Http\Controllers\InstallmentController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\InvoicePackageTypeController;
@@ -63,7 +64,7 @@ Route::post('stripe-webhooks', [StripeController::class, 'webhooks'])->name('str
  */
 function getProctorRoutes(): void
 {
-    Route::get('proctor/dashboard', [ProctorDashboardController::class, 'index'])->name('proctor-dashboard.index')->middleware('permission:proctor-dashboard');
+    Route::get('proctor/dashboard', [ProctorDashboardController::class, 'index'])->name('proctor-dashboard.index')->middleware('permission:proctor_dashboard-index');
 }
 
 Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], function () {

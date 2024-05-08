@@ -120,7 +120,7 @@
                                 {!! Form::textarea('homework', null, ['class' => 'form-control col-sm-11']) !!}
                             </div>
                             <div class="form-group col-sm-12 w-100">
-                                {!! Form::label('internal_notes', 'Tutor internal_notes:') !!}
+                                {!! Form::label('internal_notes', 'Tutor internal notes:') !!}
                                 {!! Form::textarea('internal_notes', null, ['class' => 'form-control col-sm-11']) !!}
                             </div>
                             <div class="form-group col-sm-12 w-100">
