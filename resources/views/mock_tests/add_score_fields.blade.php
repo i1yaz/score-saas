@@ -14,16 +14,16 @@
 <div class="col-sm-12">
     <h4>Format of the Score Report</h4>
 </div>
-
+{{--@dd($mockTestStudent)--}}
 <div class="col-sm-12">
-    <input type="radio" id="file" name="score_format" value="file" checked onchange="updateInputField()">
+    <input type="radio" id="file" name="score_report_type" value="file" checked onchange="updateInputField()">
     <label for="file">File</label><br>
-    <input type="radio" id="url" name="score_format" value="url" {{ ($mockTestStudent->score_format ?? '') === 'url' ? 'checked' : '' }} onchange="updateInputField()">
+    <input type="radio" id="url" name="score_report_type" value="url" {{ strtolower($mockTestStudent->score_report_type ?? '') === 'url' ? 'checked' : '' }} onchange="updateInputField()">
     <label for="url">URL</label><br>
 </div>
 
 <div class="col-sm-12">
-    <input type="text" class="form-control" name="url" id="url_input" value="{{ $mockTestStudent->url ?? '' }}">
+    <input type="text" class="form-control" name="url" id="url_input" value="{{ $mockTestStudent->score_report_path ?? '' }}">
     <input type="file" class="form-control" name="file" id="file_input">
 </div>
 

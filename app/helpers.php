@@ -208,6 +208,7 @@ if (! function_exists('getMonthlyInvoicePackageCodeFromId')) {
 if (! function_exists('storeFile')) {
     function storeFile(string $path, File|UploadedFile $file, ?string $name = null): string
     {
+        $path = getCurrentTenant('/').$path;
         if (! empty($name)) {
             return Storage::putFileAs($path, $file, $name);
 
@@ -383,6 +384,7 @@ if (! function_exists('getInvoiceTypeFromClass')) {
 
             return $name;
         }
+        return "No invoice type for type {$type} and slug {$slug}";
     }
 }
 if (! function_exists('getInvoiceStatusFromId')) {
@@ -1037,9 +1039,9 @@ if (! function_exists('getFutureDueDate')) {
 }
 
 if (! function_exists('getCurrentTenant')) {
-    function getCurrentTenant(): int
+    function getCurrentTenant($slash): int|string
     {
-        return 1;
+        return 'tenant_1'.$slash;
     }
 }
 if (! function_exists('getLastThirtyDays')) {

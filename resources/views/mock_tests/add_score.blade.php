@@ -23,7 +23,7 @@
                     Add Score
                 </h3>
             </div>
-            {!! Form::model($mockTestStudent, ['route' => ['mock-test-add-score.store', $mockTestStudent->mock_test_id,$mockTestStudent->student_id], 'method' => 'post']) !!}
+            {!! Form::model($mockTestStudent, ['route' => ['mock-test-add-score.store', $mockTestStudent->mock_test_id,$mockTestStudent->student_id], 'method' => 'post','enctype' => 'multipart/form-data']) !!}
 
             <div class="card-body">
                 <div class="row justify-content-center">
@@ -44,3 +44,8 @@
         </div>
     </div>
 @endsection
+@push('after_third_party_scripts')
+    <script>
+        ajaxSubmit=false;
+    </script>
+@endpush

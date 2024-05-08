@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Requests\AddMockTestStudentRequest;
 use App\Http\Requests\CreateMockTestRequest;
+use App\Http\Requests\CreateMockTestScoreRequest;
 use App\Http\Requests\UpdateMockTestRequest;
 use App\Models\MockTest;
 use App\Models\MockTestCode;
@@ -168,11 +169,20 @@ class MockTestController extends AppBaseController
     public function getScore($mock_test,$student_id)
     {
         $mockTestStudent = $this->mockTestRepository->getMockTestDetails($mock_test,$student_id);
+        $subsection_scores = json_decode($mockTestStudent->subsection_scores,true);
+        foreach ($subsection_scores as $key => $value){
+            $mockTestStudent->$key = $value;
+        }
         return view('mock_tests.add_score')->with('mockTestStudent',$mockTestStudent);
     }
-    public function storeScore(Request $request,$mock_test,$student_id)
+    public function storeScore(CreateMockTestScoreRequest $request,$mock_test,$student_id)
     {
         $mockTestStudent = $this->mockTestRepository->storeScore($request,$mock_test,$student_id);
+        if ($mockTestStudent){
+            Flash::success('Score saved successfully');
+        }else{
+            Flash::error('Something went wrong. Please try again');
+        }
         return redirect(route('mock-tests.show',$mock_test));
     }
 }
