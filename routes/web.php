@@ -49,7 +49,7 @@ Route::get('invoice-reminder',function (){
     Artisan::call('invoice:payment-reminder');
 });
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('home');
 });
 
 Route::get('invoice/{invoice}/public-view/{type?}', [InvoiceController::class, 'showPublicInvoice']);
