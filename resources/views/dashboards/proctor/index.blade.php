@@ -38,8 +38,10 @@
                 </div>
             </div>
         </div>
-        @include('dashboards.proctor.store')
-        @include('dashboards.proctor.show')
+        @permission('mock_test-create')
+            @include('dashboards.proctor.mock-test-store')
+        @endpermission
+        @include('dashboards.proctor.mock-test-show')
     </div>
 @endsection
 @push('page_scripts')
@@ -64,7 +66,6 @@
                         url: `/mock-tests/${mockTestId}`,
                         type: 'GET',
                         success: function (response) {
-                            console.log(response);
                             $('#location-text').empty()
                             $('#date-text').empty()
                             $('#proctor-text').empty()
@@ -89,8 +90,8 @@
             });
             calendar.render();
         });
+        @permission('mock_test-create')
         $('#mock-test-form').submit(function (e) {
-            console.log('submitting')
             e.preventDefault();
             $.ajax({
                 url: '{{route('mock-tests.store')}}',
@@ -115,7 +116,7 @@
                 }
             });
         });
-
+        @endpermission
     </script>
 {{--    @include('sessions.includes.tutors_select2js',['strict'=>true])--}}
 @endpush

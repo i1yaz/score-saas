@@ -914,8 +914,16 @@ class PermissionSeeder extends Seeder
             ],
             [
                 'name' => 'mock_test-score',
-                'display_name' => 'Mock Test Score',
-                'description' => 'Mock Test Score',
+                'display_name' => 'Mock Test Add Score (works with Mock Test Show Permission)',
+                'description' => 'Add score to Mock Tests',
+                'resource' => 'Mock Test',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'mock_test-student',
+                'display_name' => 'Mock Test Add students',
+                'description' => 'Add students to Mock Test',
                 'resource' => 'Mock Test',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),

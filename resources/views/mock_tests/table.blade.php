@@ -8,7 +8,9 @@
 {{--                <th>Proctor Id</th>--}}
                 <th>Start Time</th>
                 <th>End Time</th>
+                @permission('mock_test-student')
                 <th>Add Students</th>
+                @endif
                 <th colspan="3">Action</th>
             </tr>
             </thead>
@@ -21,7 +23,7 @@
                     <td>{{ $mockTest->start_time }}</td>
                     <td>{{ $mockTest->end_time }}</td>
                     <td>
-                        @permission('mock_test-create')
+                        @permission('mock_test-student')
                         <button type="button" class="btn btn-default" data-toggle="modal" data-target="#add-student-to-mocktest-{{$mockTest->id}}">
                             <i class="fas fa-plus"></i>
                         </button>

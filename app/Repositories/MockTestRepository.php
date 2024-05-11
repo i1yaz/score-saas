@@ -145,10 +145,10 @@ class MockTestRepository extends BaseRepository
                 $q->on('mock_tests.proctorable_id', '=', 'tutors.id')->where('mock_tests.proctorable_type', '=', Tutor::class);
             });
         if (Auth::user()->hasRole('tutor') && Auth::user() instanceof Tutor) {
-            $mockTests = $mockTests->where('proctorable_type ',Tutor::class)->where('proctorable_id', Auth::id());
+            $mockTests = $mockTests->where('proctorable_type',Tutor::class)->where('proctorable_id', Auth::id());
         }
         if (Auth::user()->hasRole('proctor') && Auth::user() instanceof Proctor) {
-            $mockTests = $mockTests->where('proctorable_type ',Proctor::class)->where('proctorable_id', Auth::id());
+            $mockTests = $mockTests->where('proctorable_type',Proctor::class)->where('proctorable_id', Auth::id());
         }
 
         $mockTests = $mockTests->get();

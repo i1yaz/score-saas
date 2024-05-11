@@ -28,6 +28,9 @@ class HomeController extends Controller
      */
     public function index()
     {
+        if (Auth::user()->hasRole('proctor')) {
+            return redirect()->route('proctor-dashboard.index');
+        }
         if (Auth::user()->hasRole('tutor')) {
             return redirect()->route('tutor-dashboard.index');
         }
