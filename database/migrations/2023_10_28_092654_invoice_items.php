@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::drop('invoice_items');
+        Schema::drop('invoice_line_item');
     }
 };
