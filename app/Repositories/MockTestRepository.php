@@ -7,6 +7,7 @@ use App\Models\MockTestStudent;
 use App\Models\Proctor;
 use App\Models\Tutor;
 use Carbon\Carbon;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -61,12 +62,12 @@ class MockTestRepository extends BaseRepository
                 'students.first_name','students.id as student_id','students.last_name','students.email as student_email','mock_test_codes.name as mock_test_code','mock_test_codes.test_type',
                 'mock_test_student.notes_to_proctor','mock_test_student.signup_status','mock_test_student.extra_time','mock_tests.created_at as test_created_at',
                 'mock_test_student.score','mock_test_student.score_report_type','mock_test_student.score_report_path','mock_test_student.subsection_scores',
+                'mock_tests.proctorable_type','mock_tests.proctorable_id'
             ])
-            ->join('tutoring_locations','tutoring_locations.id','=','mock_tests.location_id')
-            ->join('mock_test_student','mock_test_student.mock_test_id','=','mock_tests.id')
-            ->join('students','students.id','=','mock_test_student.student_id')
-            ->join('mock_test_codes','mock_test_codes.id','=','mock_test_student.mock_test_code_id');
-//            ->join('proctors','proctors.id','=','mock_tests.proctor_id')
+            ->leftJoin('tutoring_locations','tutoring_locations.id','=','mock_tests.location_id')
+            ->leftJoin('mock_test_student','mock_test_student.mock_test_id','=','mock_tests.id')
+            ->leftJoin('students','students.id','=','mock_test_student.student_id')
+            ->leftJoin('mock_test_codes','mock_test_codes.id','=','mock_test_student.mock_test_code_id');
         $mockTest = $mockTest->where('mock_tests.id',$mockTestId);
         if (!empty($studentId)) {
             $mockTest = $mockTest->where('mock_test_student.id',$studentId);
@@ -192,5 +193,17 @@ class MockTestRepository extends BaseRepository
             });
 
         return $mockTest->where('mock_tests.id',$mockTestId)->first();
+    }
+    public function paginate(int $perPage, array $columns = ['*']): LengthAwarePaginator
+    {
+        $query = $this->allQuery();
+        if (Auth::user()->hasRole('tutor') && Auth::user() instanceof Tutor) {
+            $query = $query->where('proctorable_type',Tutor::class)->where('proctorable_id', Auth::id());
+        }
+        if (Auth::user()->hasRole('proctor') && Auth::user() instanceof Proctor) {
+            $query = $query->where('proctorable_type',Proctor::class)->where('proctorable_id', Auth::id());
+        }
+
+        return $query->paginate($perPage, $columns);
     }
 }

@@ -61,6 +61,9 @@
                     </thead>
                     <tbody>
                     @foreach($mockTestDetail as $student)
+                        @if($student->student_id === null)
+                            @continue
+                        @endif
                         <tr>
                             <td>{{ $student->student_id }}</td>
                             <td>

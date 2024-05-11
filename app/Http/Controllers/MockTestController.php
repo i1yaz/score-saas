@@ -82,7 +82,6 @@ class MockTestController extends AppBaseController
     {
         if (request()->ajax()) {
             $mockTestDetail = $this->mockTestRepository->showMockTestDetail($id);
-
             $mockTestDetail = $mockTestDetail->toArray();
             $mockTestDetail['scheduled_date'] = Carbon::parse($mockTestDetail['date'])->format('Y-m-d');
             $mockTestDetail['location'] = $mockTestDetail['location']??'';
@@ -95,10 +94,9 @@ class MockTestController extends AppBaseController
         }
         if ($mockTestDetail->isEmpty()) {
             Flash::error('Mock Test not found');
-
             return redirect(route('mock-tests.index'));
         }
-
+        $this->authorize('view', $mockTestDetail[0]??new MockTest());
         return view('mock_tests.show')->with('mockTestDetail', $mockTestDetail);
     }
 

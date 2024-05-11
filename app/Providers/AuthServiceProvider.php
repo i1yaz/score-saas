@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Client;
 use App\Models\Invoice;
+use App\Models\MockTest;
 use App\Models\MonthlyInvoicePackage;
 use App\Models\ParentUser;
 use App\Models\Payment;
@@ -13,6 +14,7 @@ use App\Models\StudentTutoringPackage;
 use App\Models\Tutor;
 use App\Policies\ClientPolicy;
 use App\Policies\InvoicePolicy;
+use App\Policies\MockTestPolicy;
 use App\Policies\MonthlyInvoicePackagePolicy;
 use App\Policies\ParentUserPolicy;
 use App\Policies\PaymentPolicy;
@@ -41,6 +43,7 @@ class AuthServiceProvider extends ServiceProvider
         StudentTutoringPackage::class => studentTutoringPackagePolicy::class,
         MonthlyInvoicePackage::class => MonthlyInvoicePackagePolicy::class,
         Tutor::class => TutorPolicy::class,
+        MockTest::class => MockTestPolicy::class,
     ];
 
     /**
