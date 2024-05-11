@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Proctor;
 use App\Repositories\BaseRepository;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
 class ProctorRepository extends BaseRepository
@@ -42,5 +43,15 @@ class ProctorRepository extends BaseRepository
     public function model(): string
     {
         return Proctor::class;
+    }
+
+    public function paginate(int $perPage, array $columns = ['*']): LengthAwarePaginator
+    {
+        $query = $this->allQuery();
+        if (auth()->user()->hasRole(['proctor'])) {
+            $query->where('id', auth()->id());
+        }
+
+        return $query->paginate($perPage, $columns);
     }
 }

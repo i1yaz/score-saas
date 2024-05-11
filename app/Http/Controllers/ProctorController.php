@@ -21,7 +21,7 @@ use Illuminate\Support\Str;
 class ProctorController extends AppBaseController
 {
     /** @var ProctorRepository $proctorRepository*/
-    private $proctorRepository;
+    private ProctorRepository $proctorRepository;
 
     public function __construct(ProctorRepository $proctorRepo)
     {
@@ -96,7 +96,7 @@ class ProctorController extends AppBaseController
     public function show($id)
     {
         $proctor = $this->proctorRepository->find($id);
-
+        $this->authorize('view', $proctor);
         if (empty($proctor)) {
             Flash::error('Proctor not found');
 
@@ -112,7 +112,7 @@ class ProctorController extends AppBaseController
     public function edit($id)
     {
         $proctor = $this->proctorRepository->find($id);
-
+        $this->authorize('update', $proctor);
         if (empty($proctor)) {
             Flash::error('Proctor not found');
 

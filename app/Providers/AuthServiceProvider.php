@@ -8,6 +8,7 @@ use App\Models\MockTest;
 use App\Models\MonthlyInvoicePackage;
 use App\Models\ParentUser;
 use App\Models\Payment;
+use App\Models\Proctor;
 use App\Models\Session;
 use App\Models\Student;
 use App\Models\StudentTutoringPackage;
@@ -18,6 +19,7 @@ use App\Policies\MockTestPolicy;
 use App\Policies\MonthlyInvoicePackagePolicy;
 use App\Policies\ParentUserPolicy;
 use App\Policies\PaymentPolicy;
+use App\Policies\ProctorPolicy;
 use App\Policies\SessionPolicy;
 use App\Policies\StudentPolicy;
 use App\Policies\studentTutoringPackagePolicy;
@@ -44,6 +46,7 @@ class AuthServiceProvider extends ServiceProvider
         MonthlyInvoicePackage::class => MonthlyInvoicePackagePolicy::class,
         Tutor::class => TutorPolicy::class,
         MockTest::class => MockTestPolicy::class,
+        Proctor::class => ProctorPolicy::class,
     ];
 
     /**
