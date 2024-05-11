@@ -1,4 +1,4 @@
-<div  class="modal fade" id="session-show" role="dialog" data-backdrop="static" data-keyboard="false">
+<div  class="modal fade" id="mock-test-show" role="dialog" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -10,49 +10,27 @@
                 <table class="table table-striped">
                     <tbody>
                     <tr>
-                        <td> <strong> Scheduled Date & Time</strong></td>
-                        <td id="scheduled-date-text"></td>
+                        <td> <strong> Location</strong></td>
+                        <td id="location-text"></td>
                     </tr>
                     <tr>
-                        <td> <strong> Session Location</strong></td>
-                        <td id="session-location-text"></td>
+                        <td> <strong> Date</strong></td>
+                        <td id="date-text"></td>
                     </tr>
                     <tr>
-                        <td> <strong> Student</strong></td>
-                        <td id="student-text"></td>
+                        <td> <strong> Proctor</strong></td>
+                        <td id="proctor-text"></td>
                     </tr>
                     <tr>
-                        <td> <strong> Attended Session Timer Manual Entry</strong></td>
-                        <td id="attended-sessions-manual-text"></td>
+                        <td> <strong> Created by</strong></td>
+                        <td id="created-by-text"></td>
                     </tr>
                     <tr>
-                        <td> <strong> Total Session Time Charged</strong></td>
-                        <td id="total-session-time-charged-text"></td>
-                    </tr>
-                    <tr>
-                        <td> <strong> Session Completion Code</strong></td>
-                        <td id="session-completion-code-text"></td>
-                    </tr>
-                    {{--                    <tr>--}}
-                    {{--                        <td> <strong> Pre Session Note</strong></td>--}}
-                    {{--                        <td id="pre-session-note-text"></td>--}}
-                    {{--                    </tr>--}}
-                    <tr>
-                        <td> <strong> Student/Parent Session Note</strong></td>
-                        <td id="student-session-notes-text"></td>
-                    </tr>
-
-                    <tr>
-                        <td> <strong> Tutor Internal Note</strong></td>
-                        <td id="tutor-internal-note-text"></td>
-                    </tr>
-                    <tr>
-                        <td> <strong> 80% homework completed?</strong></td>
-                        <td id="homework-completed-text"></td>
-                    </tr>
-                    <tr>
-                        <td> <strong> Homework</strong></td>
-                        <td id="homework-text"></td>
+                        <td colspan="2">
+                            <a href="{{ route('mock-tests.show', 1) }}" class='btn btn-primary' id="dashboard-show-button">
+                                <i class="far fa-edit"></i> View Details
+                            </a>
+                        </td>
                     </tr>
                     </tbody>
                 </table>

@@ -34,6 +34,7 @@ class LoginController extends Controller
         $this->middleware('guest:student')->except('logout');
         $this->middleware('guest:tutor')->except('logout');
         $this->middleware('guest:client')->except('logout');
+        $this->middleware('guest:proctor')->except('logout');
     }
 
     /**
@@ -60,6 +61,9 @@ class LoginController extends Controller
         }
         if ($request->type === 'client') {
             return $this->clientLogin($request);
+        }
+        if ($request->type === 'proctor') {
+            return $this->proctorLogin($request);
         }
 
         $this->validateLogin($request);
@@ -159,5 +163,11 @@ class LoginController extends Controller
     private function clientLogin(Request $request)
     {
         return $this->loginByRoleGuards($request, 'client');
+    }
+
+    private function proctorLogin(Request $request)
+    {
+        return $this->loginByRoleGuards($request, 'proctor');
+
     }
 }

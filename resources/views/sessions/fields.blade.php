@@ -18,8 +18,8 @@
     </p>
 </div>
 <div class="form-group col-sm-6">
-    {!! Form::label('student_tutoring_package_id', 'Tutoring Package:', ['class' => 'required']) !!}
-    {!! Form::select('student_tutoring_package_id',  $selectedTutoringPackage??[], null, ['class' => 'form-control select2','id'=>'tutoring-package-id']) !!}
+    {!! Form::label('tutoring_package_id', 'Tutoring Package:', ['class' => 'required']) !!}
+    {!! Form::select('tutoring_package_id',  $selectedTutoringPackage??[], null, ['class' => 'form-control select2','id'=>'tutoring-package-id']) !!}
 </div>
 
 <!-- Session Fields -->
@@ -30,11 +30,11 @@
             {!! Form::text('scheduled_date', null, ['class' => 'form-control date-input col-sm-11']) !!}
         </div>
         <div class="form-group">
-            {!! Form::label('start_time', 'Start Time:', ['class' => 'required']) !!}
+            {!! Form::label('start_time', 'Start Time:', ['class' => 'required','style'=>'width:150px']) !!}
             {!! Form::time('start_time', null, ['class' => 'form-control  col-sm-11','type'=>'time']) !!}
         </div>
         <div class="form-group">
-            {!! Form::label('end_time', 'End Time:', ['class' => 'required']) !!}
+            {!! Form::label('end_time', 'End Time:', ['class' => 'required','style'=>'width:150px']) !!}
             {!! Form::time('end_time', null, ['class' => 'form-control col-sm-11','type'=>'time']) !!}
         </div>
     </div>
@@ -64,11 +64,11 @@
             <div class="row" style="padding-left: 8px">
 
                 <div class="form-group flex-child @if(!(isset($session) && $session->session_completion_code===\App\Models\Session::PARTIAL_COMPLETION_CODE)) d-none @endif  attended-session-time">
-                    {!! Form::label('attended_start_time', 'Attended Session start time') !!}
+                    {!! Form::label('attended_start_time', 'Attended Session start time',['style'=>'width:150px']) !!}
                     {!! Form::time('attended_start_time', null, ['class' => 'form-control col-sm-11','type'=>'time']) !!}
                 </div>
                 <div class="form-group flex-child @if(!(isset($session) && $session->session_completion_code===\App\Models\Session::PARTIAL_COMPLETION_CODE)) d-none @endif attended-session-time">
-                    {!! Form::label('attended_end_time', 'Attended Session end time ') !!}
+                    {!! Form::label('attended_end_time', 'Attended Session end time ',['style'=>'width:150px']) !!}
                     {!! Form::time('attended_end_time', null, ['class' => 'form-control col-sm-11','type'=>'time']) !!}
                 </div>
                 <div class="form-group flex-child @if(!(isset($session) && $session->session_completion_code===\App\Models\Session::PARTIAL_COMPLETION_CODE)) d-none @endif attended-session-time">
@@ -114,7 +114,7 @@
             {!! Form::textarea('homework', null, ['class' => 'form-control date-input col-sm-11']) !!}
         </div>
         <div class="form-group col-sm-12 w-100">
-            {!! Form::label('internal_notes', 'Tutor internal_notes:') !!}
+            {!! Form::label('internal_notes', 'Tutor internal notes:') !!}
             {!! Form::textarea('internal_notes', null, ['class' => 'form-control date-input col-sm-11']) !!}
         </div>
         <div class="form-group col-sm-6 w-100">

@@ -38,8 +38,8 @@
                 </div>
             </div>
         </div>
-{{--        @include('dashboards.proctor.store')--}}
-{{--        @include('dashboards.proctor.show')--}}
+        @include('dashboards.proctor.store')
+        @include('dashboards.proctor.show')
     </div>
 @endsection
 @push('page_scripts')
@@ -59,34 +59,21 @@
                 lazyFetching: true,
                 events: "{{route('mock-tests.index')}}",
                 eventClick: function (calEvent) {
-                    var sessionId = calEvent.event.id;
+                    var mockTestId = calEvent.event.id;
                     $.ajax({
-                        url: `/sessions/${sessionId}`,
+                        url: `/mock-tests/${mockTestId}`,
                         type: 'GET',
                         success: function (response) {
-                            $('#scheduled-date-text').empty()
-                            $('#session-location-text').empty()
-                            $('#student-text').empty()
-                            $('#attended-sessions-manual-text').empty()
-                            $('#total-session-time-charged-text').empty()
-                            $('#session-completion-code-text').empty()
-                            $('#pre-session-note-text').empty()
-                            $('#student-session-notes-text').empty()
-                            $('#tutor-internal-note-text').empty()
-                            $('#homework-completed-text').empty()
-                            $('#homework-text').empty()
-                            document.getElementById("scheduled-date-text").innerHTML = response.scheduled_date + ' ' + response.start_time + ' - ' + response.end_time;
-                            document.getElementById("session-location-text").innerHTML = response.tutoring_location_name;
-                            document.getElementById("student-text").innerHTML = response.student_name;
-                            document.getElementById('attended-sessions-manual-text').innerHTML = '';
-                            document.getElementById('total-session-time-charged-text').innerHTML = response.total_session_time_charged;
-                            document.getElementById('session-completion-code-text').innerHTML = response.session_completion_code;
-                            // document.getElementById('pre-session-note-text').innerHTML = response.pre_session_note;
-                            document.getElementById('student-session-notes-text').innerHTML = response.student_parent_session_notes;
-                            document.getElementById('tutor-internal-note-text').innerHTML = response.internal_notes;
-                            document.getElementById('homework-completed-text').innerHTML = response.percent_homework_completed_80;
-                            document.getElementById('homework-text').innerHTML = response.homework;
-                            $('#session-show').modal('show')
+                            console.log(response);
+                            $('#location-text').empty()
+                            $('#date-text').empty()
+                            $('#proctor-text').empty()
+                            $('#created-by-text').empty()
+                            document.getElementById("location-text").innerHTML = response.location;
+                            document.getElementById("date-text").innerHTML = response.scheduled_date;
+                            document.getElementById("proctor-text").innerHTML = response.proctor;
+                            document.getElementById("created-by-text").innerHTML = response.created_by;
+                            $('#mock-test-show').modal('show')
                         },
                         error: function (xhr, status, error) {
                             toastr.error("something went wrong");
@@ -95,21 +82,22 @@
 
                 },
                 dateClick: function (start, end, allDays) {
-                    $('#session-store').modal('show');
-                    $('#scheduled_date').datepicker('setDate', new Date(start.dateStr));
+                    $('#mock-test-store').modal('show');
+                    $('#date').datepicker('setDate', new Date(start.dateStr));
 
                 }
             });
             calendar.render();
         });
-        $('#session-form').submit(function (e) {
+        $('#mock-test-form').submit(function (e) {
+            console.log('submitting')
             e.preventDefault();
             $.ajax({
-                url: '{{route('sessions.store')}}',
+                url: '{{route('mock-tests.store')}}',
                 type: 'POST',
                 data: $(this).serialize(),
                 success: function (response) {
-                    $('#session-store').modal('hide');
+                    $('#mock-test-store').modal('hide');
                     toastr.success(response.message);
                     calendar.refetchEvents()
                 },
@@ -127,72 +115,6 @@
                 }
             });
         });
-        $(document).ready(function () {
-            $("#location-id").select2({
-                theme: 'bootstrap4',
-                dropdownAutoWidth: true, width: 'auto',
-                minimumInputLength: 1,
-                ajax: {
-                    url: "{{route('location-ajax')}}",
-                    dataType: "json",
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            name: params.term
-                        };
-                    },
-                    processResults: function (data) {
-                        return {
-                            results: $.map(data, function (item) {
-                                return {
-                                    text: item.text,
-                                    id: item.id
-                                }
-                            })
-                        };
-                    },
-                    cache: true
-                },
-                placeholder: "Please type location name...",
-                escapeMarkup: function (markup) {
-                    return markup;
-                }
-            });
-            $("#tutoring-package-id").select2({
-                dropdownAutoWidth: true, width: 'auto',
-                dropdownParent: $('#session-store'),
-                theme: 'bootstrap4',
-                minimumInputLength: 1,
-                ajax: {
-                    url: "{{route('tutoring-package-ajax')}}",
-                    dataType: "json",
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            name: params.term
-                        };
-                    },
-                    processResults: function (data) {
-                        return {
-                            results: $.map(data, function (item) {
-                                return {
-                                    text: item.text,
-                                    id: item.id
-                                }
-                            })
-                        };
-                    },
-                    cache: true
-                },
-                placeholder: "Please type package name...",
-                escapeMarkup: function (markup) {
-                    return markup;
-                }
-            });
-        });
-        $('#session-completion-code').on('change', function (e) {
-            console.log()
-        })
 
     </script>
 {{--    @include('sessions.includes.tutors_select2js',['strict'=>true])--}}

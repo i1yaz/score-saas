@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::table('clients', function (Blueprint $table) {
             $table->boolean('status')->default(true)->after('address');
             $table->string('auth_guard')->after('status');
-            $table->bigInteger('added_by')->after('auth_guard');
+            $table->unsignedBigInteger('added_by')->after('auth_guard');
         });
     }
 

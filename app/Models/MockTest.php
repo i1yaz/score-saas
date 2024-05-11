@@ -13,7 +13,11 @@ class MockTest extends BaseModel
         'date',
         'location_id',
         'start_time',
-        'end_time'
+        'end_time',
+        'auth_guard',
+        'added_by',
+        'proctorable_type',
+        'proctorable_id',
     ];
 
     protected $casts = [

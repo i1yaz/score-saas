@@ -32,6 +32,10 @@
                                 <input class="custom-control-input" type="radio" id="client" name="type" value="client" {{ old("type") == 'client' ? 'checked' : '' }}>
                                 <label for="client" class="custom-control-label">Client</label>
                             </div>
+                            <div class="custom-control custom-radio">
+                                <input class="custom-control-input" type="radio" id="proctor" name="type" value="proctor" {{ old("type") == 'proctor' ? 'checked' : '' }}>
+                                <label for="proctor" class="custom-control-label">Proctor</label>
+                            </div>
                         </div>
 
                         <div class="input-group mb-3">

@@ -5,15 +5,11 @@ namespace App\Repositories;
 use App\Models\MockTest;
 use App\Models\MockTestStudent;
 use App\Models\Proctor;
-use App\Models\Session;
 use App\Models\Tutor;
-use App\Repositories\BaseRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use PhpParser\Builder\Class_;
 
 class MockTestRepository extends BaseRepository
 {
@@ -127,49 +123,74 @@ class MockTestRepository extends BaseRepository
     {
         $start = $request->start;
         $end = $request->end;
-        $sessions = Session::select([
-            'sessions.scheduled_date as start',
-            'sessions.scheduled_date as end',
-            'sessions.id as id',
-            'sessions.start_time',
-            'sessions.end_time',
-            'sessions.scheduled_date',
-            'sessions.monthly_invoice_package_id',
-            'sessions.student_tutoring_package_id',
+
+        $mockTests = MockTest::select([
+            'mock_tests.date as start',
+            'mock_tests.date as end',
+            'mock_tests.id as id',
+            'mock_tests.start_time',
+            'mock_tests.end_time',
+            'mock_tests.date as scheduled_date',
+            'tutoring_locations.name as title',
+            'mock_tests.proctorable_id',
+            'mock_tests.proctorable_type',
         ])
-            ->selectRaw("CONCAT(s1.first_name,' ',s1.last_name) as title")
-            ->selectRaw("CONCAT(s2.first_name,' ',s2.last_name) as title_s2")
-            ->leftJoin('student_tutoring_packages', 'student_tutoring_packages.id', '=', 'sessions.student_tutoring_package_id')
-            ->leftJoin('monthly_invoice_packages', 'monthly_invoice_packages.id', '=', 'sessions.monthly_invoice_package_id')
-            ->leftJoin('students as s1', 's1.id', '=', 'student_tutoring_packages.student_id')
-            ->leftJoin('students as s2', 's2.id', '=', 'monthly_invoice_packages.student_id')
-            ->where('sessions.scheduled_date', '>=', $start)
-            ->where('sessions.scheduled_date', '<=', $end);
+            ->join('tutoring_locations', 'tutoring_locations.id', '=', 'mock_tests.location_id')
+            ->where('mock_tests.date', '>=', $start)
+            ->where('mock_tests.date', '<=', $end)
+            ->leftJoin('proctors', function ($q) {
+                $q->on('mock_tests.proctorable_id', '=', 'proctors.id')->where('mock_tests.proctorable_type', '=', Proctor::class);
+            })
+            ->leftJoin('tutors', function ($q) {
+                $q->on('mock_tests.proctorable_id', '=', 'tutors.id')->where('mock_tests.proctorable_type', '=', Tutor::class);
+            });
         if (Auth::user()->hasRole('tutor') && Auth::user() instanceof Tutor) {
-            $sessions = $sessions->where('tutor_id', Auth::id());
+            $mockTests = $mockTests->where('proctorable_type ',Tutor::class)->where('proctorable_id', Auth::id());
+        }
+        if (Auth::user()->hasRole('proctor') && Auth::user() instanceof Proctor) {
+            $mockTests = $mockTests->where('proctorable_type ',Proctor::class)->where('proctorable_id', Auth::id());
         }
 
-        $sessions = $sessions->get();
+        $mockTests = $mockTests->get();
         $data = [];
         $i = 0;
-        foreach ($sessions as $session) {
-            $start_time = date('H:i', strtotime($session->start_time ?? ''));
-            $start_Date = date('Y-m-d', strtotime($session->scheduled_date));
+        foreach ($mockTests as $mockTest) {
+            $start_time = date('H:i', strtotime($mockTest->start_time ?? ''));
+            $start_Date = date('Y-m-d', strtotime($mockTest->scheduled_date??''));
             $scheduleDateTime = Carbon::createFromFormat('Y-m-d H:i', $start_Date.' '.$start_time);
             $tickMark = '';
             if ($scheduleDateTime->isPast()) {
                 $tickMark = '✓';
             }
-            $start_time = date('H:i', strtotime($session->start_time ?? ''));
-            $title = $session->title ?? $session->title_s2;
-            $packagePrefix = $session->monthly_invoice_package_id ? 'M' : ($session->student_tutoring_package_id ? 'T' : '');
-            $session['color'] = getHexColors($i);
-            $session['allDay'] = true;
-            $session['title'] = "{$packagePrefix} {$start_time} {$tickMark} {$title} ";
-            $data[] = $session;
+            $start_time = isset($mockTest->start_time)?date('H:i', strtotime($mockTest->start_time)):null;
+            $title = $mockTest->title;
+            $mockTest['color'] = getHexColors($i);
+            $mockTest['allDay'] = true;
+            $mockTest['title'] = "{$start_time} {$tickMark} {$title}";
+            $mockTest['proctor'] = "";
+            $data[] = $mockTest;
             $i++;
         }
 
         return $data;
+    }
+
+    public function showMockTestDetail($mockTestId)
+    {
+        $mockTest =  MockTest::select(
+            [
+                'mock_tests.id as mock_test_id','date','tutoring_locations.name as location','start_time','end_time',
+                'proctors.first_name as proctor_first_name','proctors.last_name as proctor_last_name','proctors.email as proctor_email',
+                'tutors.first_name as tutor_first_name','tutors.last_name as tutor_last_name','tutors.email as tutor_email'
+            ])
+            ->join('tutoring_locations','tutoring_locations.id','=','mock_tests.location_id')
+            ->leftJoin('proctors', function ($q) {
+                $q->on('mock_tests.proctorable_id', '=', 'proctors.id')->where('mock_tests.proctorable_type', '=', Proctor::class);
+            })
+            ->leftJoin('tutors', function ($q) {
+                $q->on('mock_tests.proctorable_id', '=', 'tutors.id')->where('mock_tests.proctorable_type', '=', Tutor::class);
+            });
+
+        return $mockTest->where('mock_tests.id',$mockTestId)->first();
     }
 }

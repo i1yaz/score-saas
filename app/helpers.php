@@ -337,8 +337,11 @@ if (! function_exists('cleanAmountWithCurrencyFormat')) {
 }
 
 if (! function_exists('formatDate')) {
-    function formatDate($date): string
+    function formatDate(Carbon|string $date): string
     {
+        if ($date instanceof Carbon){
+            return $date->format('m/d/Y');
+        }
         if (empty($date)) {
             return '';
         }
@@ -1195,5 +1198,19 @@ if (!function_exists('booleanToActiveCheck')){
             true => "<span class='badge badge-success'>Active</span>",
             false => "<span class='badge badge-danger'>Inactive </span>",
         };
+    }
+}
+if (!function_exists('getAddedByInfo')){
+    function getAddedByInfo(Model $model): string
+    {
+        $addedBy = $model->addedBy;
+        $auth_guard = $model->auth_guard;
+        if ($auth_guard=='web'){
+            $addedBy = User::where('id', $addedBy)->first();
+        }
+        if ($addedBy){
+            return $addedBy->email;
+        }
+        return 'System';
     }
 }

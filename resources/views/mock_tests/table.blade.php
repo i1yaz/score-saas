@@ -15,7 +15,7 @@
             <tbody>
             @foreach($mockTests as $mockTest)
                 <tr>
-                    <td>{{ $mockTest->date }}</td>
+                    <td>{{ formatDate($mockTest->date) }}</td>
 {{--                    <td>{{ $mockTest->location_id }}</td>--}}
 {{--                    <td>{{ $mockTest->proctor_id }}</td>--}}
                     <td>{{ $mockTest->start_time }}</td>
@@ -46,7 +46,7 @@
                                             {!! Form::select('mock_test_codes',$testCodeTaken??[],null, ['class' => 'form-control mock-test-codes-select2','id'=>'mock-test-code-id-'.$mockTest->id]) !!}
                                         </div>
                                         <div class="form-group col-sm-12">
-                                            {!! Form::label('notes_to_proctor', 'Notes To Proctor:') !!}
+                                            {!! Form::label('notes_to_proctor', 'Proctor\'s Notes:') !!}
                                             {!! Form::textarea('notes_to_proctor',null, ['class' => 'form-control','id'=>'notes-to-proctor-'.$mockTest->id]) !!}
                                         </div>
                                     </div>

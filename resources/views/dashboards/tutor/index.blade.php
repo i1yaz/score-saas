@@ -64,6 +64,7 @@
                         url: `/sessions/${sessionId}`,
                         type: 'GET',
                         success: function (response) {
+                            console.log(response);
                             $('#scheduled-date-text').empty()
                             $('#session-location-text').empty()
                             $('#student-text').empty()

@@ -15,6 +15,7 @@ use App\Repositories\MockTestRepository;
 use App\Repositories\ProctorRepository;
 use App\Repositories\StudentRepository;
 use App\Repositories\TutoringLocationRepository;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Flash;
 use Illuminate\Support\Facades\DB;
@@ -65,6 +66,9 @@ class MockTestController extends AppBaseController
         $input = $request->all();
 
         $mockTest = $this->mockTestRepository->storeMockTest($input);
+        if ($request->ajax()){
+            return response()->json(['success' => true, 'message' => 'Mock test saved successfully.']);
+        }
 
         Flash::success('Mock Test saved successfully.');
 
@@ -76,8 +80,19 @@ class MockTestController extends AppBaseController
      */
     public function show($id)
     {
-        $mockTestDetail = $this->mockTestRepository->getMockTestDetails($id);
+        if (request()->ajax()) {
+            $mockTestDetail = $this->mockTestRepository->showMockTestDetail($id);
 
+            $mockTestDetail = $mockTestDetail->toArray();
+            $mockTestDetail['scheduled_date'] = Carbon::parse($mockTestDetail['date'])->format('Y-m-d');
+            $mockTestDetail['location'] = $mockTestDetail['location']??'';
+            $mockTestDetail['proctor'] = $mockTestDetail['proctor_email']??$mockTestDetail['tutor_email']??'';
+            $mockTestDetail['created_by'] = $mockTestDetail['created_by_name']??'';
+
+            return response()->json($mockTestDetail);
+        }else{
+            $mockTestDetail = $this->mockTestRepository->getMockTestDetails($id);
+        }
         if ($mockTestDetail->isEmpty()) {
             Flash::error('Mock Test not found');
 
