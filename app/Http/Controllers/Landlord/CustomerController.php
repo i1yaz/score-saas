@@ -89,7 +89,15 @@ class CustomerController extends AppBaseController
 
     public function create() {
 
-        $packages = Package::Where('status', 'active')->get();
+        $activePackages = Package::select(['id','name','amount_monthly','amount_yearly'])->Where('status', 'active')->get();
+        if ($activePackages->isNotEmpty()){
+            foreach ($activePackages as $package){
+                $packages["{$package->id}_monthly"] = $package->name.' ('.formatAmountWithCurrency($package->amount_monthly).' / Month)';
+                $packages["{$package->id}_yearly"]  = $package->name.' ('.formatAmountWithCurrency($package->amount_yearly).' /Year)';
+            }
+        }else{
+            $packages = [];
+        }
         return view('landlord.customers.create', compact('packages'));
     }
 

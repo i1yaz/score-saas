@@ -29,47 +29,37 @@ class SubscriptionsRepository
      * @return object subscriptions collection
      */
     public function search($id = '') {
-
         $subscriptions = $this->subscription->newQuery();
-
-        // all client fields
         $subscriptions->selectRaw('*');
+        $subscriptions->leftJoin('users', 'users.id', '=', 'subscriptions.added_by');
+        $subscriptions->leftJoin('tenants', 'tenants.id', '=', 'subscriptions.customer_id');
 
-        //joins
-        $subscriptions->leftJoin('users', 'users.id', '=', 'subscriptions.subscription_creatorid');
-        $subscriptions->leftJoin('tenants', 'tenants.tenant_id', '=', 'subscriptions.subscription_customerid');
-
-        //default where
-        $subscriptions->whereRaw("1 = 1");
-
-        //filters: id
-        if (request()->filled('filter_subscription_id')) {
-            $subscriptions->where('subscription_id', request('filter_subscription_id'));
-        }
-        if (is_numeric($id)) {
-            $subscriptions->where('subscription_id', $id);
-        }
+//        //filters: id
+//        if (request()->filled('filter_subscription_id')) {
+//            $subscriptions->where('subscription_id', request('filter_subscription_id'));
+//        }
+//        if (is_numeric($id)) {
+//            $subscriptions->where('subscription_id', $id);
+//        }
 
         //search: various client columns and relationships (where first, then wherehas)
         if (request()->filled('search_query') || request()->filled('query')) {
             $subscriptions->where(function ($query) {
-                $query->orWhere('subscription_gateway_id', '=', request('search_query'));
-                $query->orWhere('subscription_gateway_name', '=', request('search_query'));
-                $query->orWhere('subscription_date_renewed', '=', request('search_query'));
-                $query->orWhere('subscription_date_started', '=', request('search_query'));
-                $query->orWhere('subscription_final_amount', '=', request('search_query'));
+                $query->orWhere('gateway_id', '=', request('search_query'));
+                $query->orWhere('gateway_name', '=', request('search_query'));
+                $query->orWhere('date_renewed', '=', request('search_query'));
+                $query->orWhere('date_started', '=', request('search_query'));
+                $query->orWhere('final_amount', '=', request('search_query'));
             });
         }
 
-        //sorting
+        //sorting Note: need to configure
         if (in_array(request('sortorder'), array('desc', 'asc')) && request('orderby') != '') {
-            //direct column name
             if (Schema::hasColumn('subscriptions', request('orderby'))) {
                 $subscriptions->orderBy(request('orderby'), request('sortorder'));
             }
         } else {
-            //default sorting
-            $subscriptions->orderBy('subscription_id', 'desc');
+            $subscriptions->orderBy('subscriptions.id', 'desc');
         }
 
         // Get the results and return them.
