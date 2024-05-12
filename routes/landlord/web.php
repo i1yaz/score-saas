@@ -4,14 +4,7 @@ use App\Http\Controllers\Landlord\Auth\AuthenticateController;
 use App\Http\Controllers\Landlord\CustomerController;
 use App\Http\Controllers\Landlord\DashboardController;
 use App\Http\Controllers\Landlord\PackageController;
-
-//Route::get('schools', [SchoolController::class, 'index'])->name('schools.index');
-//Route::get('schools/create', [SchoolController::class, 'create'])->name('schools.create');
-//Route::post('schools', [SchoolController::class, 'store'])->name('schools.store');
-//Route::get('schools/{school}', [SchoolController::class, 'show'])->name('schools.show');
-//Route::get('schools/{school}/edit', [SchoolController::class, 'edit'])->name('schools.edit');
-//Route::patch('schools/{school}', [SchoolController::class, 'update'])->name('schools.update');
-//Route::delete('schools/{school}', [SchoolController::class, 'destroy'])->name('schools.destroy');
+use App\Models\Landlord\Package;
 
 Route::middleware(['landlord'])->group(function () {
     Route::group(['prefix' => 'app-admin','as' => 'landlord.'], function () {
@@ -32,13 +25,10 @@ Route::middleware(['landlord'])->group(function () {
 });
 
 Route::middleware(['landlord','redirect.url','auth'])->group(function () {
-
     Route::group(['prefix' => 'app-admin','as' => 'landlord.'], function () {
         //HOME
         Route::any('/', [DashboardController::class,'index'])->name('root');
         Route::any('/home', [DashboardController::class,'index'])->name('home');
-
-
         //CUSTOMERS
         Route::group(['prefix' => 'customers','as'=>'customers.'], function () {
             Route::any("/search", "Landlord\Customers@index");
@@ -66,16 +56,9 @@ Route::middleware(['landlord','redirect.url','auth'])->group(function () {
             Route::delete('customers/{customer}', [CustomerController::class, 'destroy'])->name('destroy');
         });
         //PACKAGES
-        Route::group(['prefix' => 'packages','as'=>'packages.'], function () {
-            Route::any("/search", "Landlord\Packages@index");
-            Route::get("/{package}/archive", "Landlord\Packages@archive")->where('package', '[0-9]+');
-            Route::get("/{package}/restore", "Landlord\Packages@restore")->where('package', '[0-9]+');
-        });
-        Route::group(['as'=>'packages.'], function () {
-            Route::any("/search", "Landlord\Packages@index");
-            Route::get("/{package}/archive", "Landlord\Packages@archive")->where('package', '[0-9]+')->name('archive');
-            Route::get("/{package}/restore", "Landlord\Packages@restore")->where('package', '[0-9]+')->name('restore');
 
+        Route::group(['as'=>'packages.'], function () {
+            Route::post("/{package}/archive", [PackageController::class,'archive'])->where('package', '[0-9]+')->name('archive');
             Route::get('packages', [PackageController::class, 'index'])->name('index');
             Route::get('packages/create', [PackageController::class, 'create'])->name('create');
             Route::post('packages', [PackageController::class, 'store'])->name('store');

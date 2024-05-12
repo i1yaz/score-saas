@@ -30,7 +30,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('icon', 100)->nullable();
             $table->boolean('is_featured')->default(false);
-            $table->string('status', 10)->default('active')->comment('active|archived');
+            $table->boolean('status')->default(true);
             $table->string('visibility', 20)->default('visible')->comment('visible|hidden');
             $table->datetime('sync_date')->nullable();
             $table->string('sync_status', 40)->default('synced')->comment('awaiting-sync|syncing|synced');
