@@ -39,3 +39,8 @@
         </div>
     </div>
 @endsection
+@push('after_third_party_scripts')
+    <script>
+        ajaxSubmit = false;
+    </script>
+@endpush

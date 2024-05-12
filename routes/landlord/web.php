@@ -31,7 +31,7 @@ Route::middleware(['landlord'])->group(function () {
     });
 });
 
-Route::middleware(['landlord','redirect.url'])->group(function () {
+Route::middleware(['landlord','redirect.url','auth'])->group(function () {
 
     Route::group(['prefix' => 'app-admin','as' => 'landlord.'], function () {
         //HOME
@@ -73,8 +73,8 @@ Route::middleware(['landlord','redirect.url'])->group(function () {
         });
         Route::group(['as'=>'packages.'], function () {
             Route::any("/search", "Landlord\Packages@index");
-            Route::get("/{package}/archive", "Landlord\Packages@archive")->where('package', '[0-9]+');
-            Route::get("/{package}/restore", "Landlord\Packages@restore")->where('package', '[0-9]+');
+            Route::get("/{package}/archive", "Landlord\Packages@archive")->where('package', '[0-9]+')->name('archive');
+            Route::get("/{package}/restore", "Landlord\Packages@restore")->where('package', '[0-9]+')->name('restore');
 
             Route::get('packages', [PackageController::class, 'index'])->name('index');
             Route::get('packages/create', [PackageController::class, 'create'])->name('create');

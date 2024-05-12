@@ -22,13 +22,15 @@
         @include('flash::message')
 
         <div class="clearfix"></div>
-
-        <div class="card card-primary">
-            <div class="card-header">
-                <h3 class="card-title">Packages</h3>
-            </div>
-     
+        <div class="row">
+            @include('landlord.packages.table')
         </div>
+
+{{--        <div class="card card-primary">--}}
+{{--            <div class="card-header">--}}
+{{--                <h3 class="card-title">Packages</h3>--}}
+{{--            </div>--}}
+{{--        </div>--}}
     </div>
 
 @endsection

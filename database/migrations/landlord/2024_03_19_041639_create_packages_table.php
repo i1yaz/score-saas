@@ -30,9 +30,6 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('icon', 100)->nullable();
             $table->boolean('is_featured')->default(false);
-            $table->integer('limits_clients')->default('0')->comment('-1 is unlimited');
-            $table->integer('limits_team')->default('0')->comment('-1 is unlimited');
-            $table->integer('limits_projects')->default('0')->comment('-1 is unlimited');
             $table->string('status', 10)->default('active')->comment('active|archived');
             $table->string('visibility', 20)->default('visible')->comment('visible|hidden');
             $table->datetime('sync_date')->nullable();

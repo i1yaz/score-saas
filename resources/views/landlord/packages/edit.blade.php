@@ -6,7 +6,7 @@
             <div class="row mb-2">
                 <div class="col-sm-12">
                     <h1>
-                    Create Customer
+
                     </h1>
                 </div>
             </div>
@@ -17,21 +17,23 @@
 
         @include('adminlte-templates::common.errors')
 
-        <div class="card">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">                        Edit Package
+                </h3>
+            </div>
 
-            {!! Form::open(['route' => 'landlord.customers.store']) !!}
+            {!! Form::model($package, ['route' => ['landlord.packages.update', $package->id], 'method' => 'patch']) !!}
 
             <div class="card-body">
-
                 <div class="row">
-                    @include('landlord.customers.fields')
+                    @include('landlord.packages.fields')
                 </div>
-
             </div>
 
             <div class="card-footer">
                 {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
-                <a href="{{ route('landlord.customers.index') }}" class="btn btn-default"> Cancel </a>
+                <a href="{{ route('landlord.packages.index') }}" class="btn btn-default"> Cancel </a>
             </div>
 
             {!! Form::close() !!}
@@ -39,3 +41,8 @@
         </div>
     </div>
 @endsection
+@push('after_third_party_scripts')
+    <script>
+        ajaxSubmit = false;
+    </script>
+@endpush
