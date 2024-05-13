@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             StudentPermissionsSeeder::class,
             InvoicePaymentReminderSeeder::class,
             TutorPermissionsSeeder::class,
+
         ]);
 
         $user = User::create([

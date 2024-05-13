@@ -1,15 +1,8 @@
 <?php
 
-/** --------------------------------------------------------------------------------
- * This middleware class validates input requests for the template controller
- *
- * @package    Grow CRM | Nulled By raz0r
- * @author     NextLoop
- *----------------------------------------------------------------------------------*/
-
 namespace App\Http\Requests\Landlord\Customers;
 
-use App\Models\Landlord\Settings;
+use App\Models\Landlord\Setting;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -44,10 +37,10 @@ class CreateRequest extends FormRequest {
     public function rules() {
 
         $rules = [
-            'name' => [
+            'full_name' => [
                 'required',
             ],
-            'email' => [
+            'email_address' => [
                 'required',
                 Rule::unique('tenants', 'email')->ignore(request()->route('customer'), 'id'),
             ],
@@ -62,8 +55,8 @@ class CreateRequest extends FormRequest {
                 },
                 //validate reserved words
                 function ($attribute, $value, $fail) {
-                    $settings = Settings::on('landlord')->Where('settings_id', 'default')->first();
-                    $reserved_words = explode(',', $settings->settings_reserved_words);
+                    $settings = Setting::on('landlord')->Where('id', 'default')->first();
+                    $reserved_words = explode(',', $settings->reserved_words);
                     $reserved_words = array_map('trim', $reserved_words);
                     if (in_array($value, $reserved_words)) {
                         return $fail(__('lang.reserved_words_error'));
@@ -94,17 +87,5 @@ class CreateRequest extends FormRequest {
         return $rules;
     }
 
-    /**
-     * Deal with the errors - send messages to the frontend
-     */
-    public function failedValidation(Validator $validator) {
 
-        $errors = $validator->errors();
-        $messages = '';
-        foreach ($errors->all() as $message) {
-            $messages .= "<li>$message</li>";
-        }
-
-        abort(409, $messages);
-    }
 }

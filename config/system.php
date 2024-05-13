@@ -114,5 +114,5 @@ return [
     'settings_system_logo_frontend_name' => 'logo-frontend.png',
     'frontend-domain' => env('FRONTEND_DOMAIN',''),
     'landlord-domain' => env('LANDLORD_DOMAIN',''),
-    'settings_system_pagination_limits' => 20
+    'settings_system_pagination_limits' => 20,
 ];

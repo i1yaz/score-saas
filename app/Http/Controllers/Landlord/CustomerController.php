@@ -2,18 +2,21 @@
 
 namespace App\Http\Controllers\Landlord;
 
-use App\DataTables\InvoiceDataTable;
 use App\DataTables\Landlord\CustomerDataTable;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Requests\Landlord\Customers\SetActiveValidation;
 use App\Http\Requests\Landlord\Customers\CreateRequest;
 use App\Http\Requests\Landlord\Customers\UpdatePasswordValidation;
 use App\Http\Requests\Landlord\Customers\UpdateValidation;
+use App\Mail\Landlord\Customer\NewCustomerWelcome;
 use App\Models\Landlord\Package;
 use App\Repositories\Landlord\CreateTenantRepository;
 use App\Repositories\Landlord\SubscriptionsRepository;
 use App\Repositories\Landlord\tenantsRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Spatie\Multitenancy\Models\Tenant;
 
 class CustomerController extends AppBaseController
@@ -102,71 +105,62 @@ class CustomerController extends AppBaseController
     }
 
     public function store(CreateRequest $request, CreateTenantRepository $createTenantRepo) {
-        dd($request);
-        //defaults
-        $free_trial = 'no';
-        $subscription_trial_end = null;
-        $subscription_date_started = null;
+        $trial_end = null;
+        $date_started = null;
+        list($planId,$planType) = explode('_',$request->plan);
 
-        //get the package
-        $package = Package::Where('package_id', request('plan'))->first();
+        $package = Package::Where('id', $planId)->first();
 
-        //free packages
-        if ($package->subscription_options == 'free') {
-            $status = 'active';
-            $subscription_amount = 0;
-            $subscription_date_started = now();
-        }
+        //DISABLED:: free packages  free packages are not available
+//        if ($package->subscription_options == 'free') {
+//            $status = 'active';
+//            $amount = 0;
+//            $date_started = now();
+//        }
 
-        //general settings for paid subscriptions
-        if ($package->subscription_options == 'paid') {
-            if (request('billing_cycle') == 'monthly') {
-                $subscription_amount = $package->amount_monthly;
+        //NOTE::general settings for paid subscriptions always paid
+        if ($package->subscription_options == 'paid' || true) {
+            if ($planType == 'monthly') {
+                $amount = $package->amount_monthly;
             } else {
-                $subscription_amount = $package->amount_yearly;
+                $amount = $package->amount_yearly;
             }
         }
 
-        //paid packages - free trial
-        if ($package->subscription_options == 'paid' && request('free_trial') == 'yes') {
-            $status = 'free-trial';
-            $free_trial = 'yes';
-            $subscription_trial_end = \Carbon\Carbon::now()->addDays(request('free_trial_days'))->format('Y-m-d');
-        }
+        //DISABLED:: paid packages - free trial
+//        if ($package->subscription_options == 'paid' && request('free_trial') == 'yes') {
+//            $status = 'free-trial';
+//            $free_trial = 'yes';
+//            $trial_end = \Carbon\Carbon::now()->addDays(request('free_trial_days'))->format('Y-m-d');
+//        }
 
-        //paid packages - free trial
-        if ($package->subscription_options == 'paid' && request('free_trial') == 'no') {
+        //paid packages - no free trial Note:: &&  request('free_trial') == 'no' can be added when trail will be enabled
+        if ($package->subscription_options == 'paid' ) {
             $status = 'awaiting-payment';
         }
 
-        //generate a customer password (or for demo mode use 'growcrm')
-        if (config('app.application_demo_mode')) {
-            $password = 'growcrm';
-        } else {
-            $password = random_string(10);
-        }
-
-        $encrypted_password = Hash::make($password);
+        //generate a customer password
+        $password =Str::password(20);
+        $hashedPassword = App::environment(['production']) ? Hash::make($password) : Hash::make('abcd1234');
 
         //create tenant
         $customer = new \App\Models\Landlord\Tenant();
-        $customer->domain = strtolower(request('account_name') . '.' . config('system.settings_base_domain'));
+        $customer->domain = strtolower(request('account_name') . '.' . config('system.base_domain'));
         $customer->subdomain = request('account_name');
-        $customer->tenant_creatorid = auth()->id();
-        $customer->tenant_name = request('full_name');
-        $customer->tenant_email = request('email_address');
-        $customer->tenant_status = $status;
-        $customer->tenant_email_local_email = strtolower(request('account_name') . '@' . config('system.settings_email_domain'));
-        $customer->tenant_email_forwarding_email = request('email_address');
-        $customer->tenant_email_config_type = 'local';
-        $customer->tenant_email_config_status = 'pending';
-        $customer->tenant_password = $encrypted_password; //(hashed password)
-        $customer->tenant_updating_current_version = config('system.settings_version');
+        $customer->added_by = auth()->id();
+        $customer->name = request('full_name');
+        $customer->email = request('email_address');
+        $customer->status = $status;
+        $customer->email_local_email = strtolower(request('account_name') . '@' . config('system.email_domain'));
+        $customer->email_forwarding_email = request('email_address');
+        $customer->email_config_type = 'local';
+        $customer->email_config_status = 'pending';
+        $customer->password = $hashedPassword; //(hashed password)
+        $customer->updating_current_version = config('system.version');
         $customer->save();
 
         //temp authentication key
         $auth_key = Str::random(30);
-
         //create tenant database
         if (!$createTenantRepo->createTenant($customer, $package, $auth_key)) {
             $customer->delete();
@@ -174,37 +168,22 @@ class CustomerController extends AppBaseController
         }
 
         //account url
-        $protocol = (request()->secure()) ? 'https://' : 'http://';
-        $account_url = $protocol . $customer->domain . "/auth?id_key=$auth_key";
+        $account_url = "https://{$customer->domain}/auth?id_key={$auth_key}";
 
         //create subscription
         $subscription = new \App\Models\Landlord\Subscription();
-        $subscription->subscription_creatorid = auth()->id();
-        $subscription->subscription_customerid = $customer->tenant_id;
-        $subscription->subscription_uniqueid = str_unique();
-        $subscription->subscription_type = $package->subscription_options;
-        $subscription->subscription_amount = $subscription_amount;
-        $subscription->subscription_trial_end = $subscription_trial_end;
-        $subscription->subscription_date_started = $subscription_date_started;
-        $subscription->subscription_package_id = $package->id;
-        $subscription->subscription_payment_method = request('subscription_payment_method');
-        $subscription->subscription_status = $status;
-        $subscription->subscription_gateway_billing_cycle = request('billing_cycle');
+        $subscription->added_by  = auth()->id();
+        $subscription->customer_id = $customer->tenant_id;
+        $subscription->unique_id = str_unique();
+        $subscription->type = $package->subscription_options;
+        $subscription->amount = $amount;
+        $subscription->trial_end = $trial_end;
+        $subscription->date_started = $date_started;
+        $subscription->package_id = $package->id;
+        $subscription->payment_method = request('payment_method');
+        $subscription->status = $status;
+        $subscription->gateway_billing_cycle = $planType;
         $subscription->save();
-
-        /** ----------------------------------------------
-         * record event
-         * ----------------------------------------------*/
-        $event = new \App\Models\Landlord\Event();
-        $event->event_creatorid = $customer->tenant_id;
-        $event->event_type = 'account-created';
-        $event->event_creator_type = 'customer';
-        $event->event_customer_id = $customer->tenant_id;
-        $event->event_item_id = $customer->tenant_id;
-        $event->event_payload_1 = $customer->tenant_name;
-        $event->event_payload_2 = $package->name;
-        $event->event_payload_3 = '';
-        $event->save();
 
         /** ----------------------------------------------
          * send email to customer & Admin
@@ -219,16 +198,11 @@ class CustomerController extends AppBaseController
                 'password' => $password,
             ];
             //customer
-            $mail = new \App\Mail\Landlord\Customer\NewCustomerWelcome($customer, $data, $package);
+            $mail = new NewCustomerWelcome($customer, $data, $package);
             $mail->build();
         }
 
-        //redirect
-        $jsondata['redirect_url'] = url('app-admin/customers');
-
-        //ajax response
-        return response()->json($jsondata);
-
+        return redirect(route('landlord.customers.index'));
     }
 
     /**
@@ -289,20 +263,6 @@ class CustomerController extends AppBaseController
         $customers = $this->tenantsRepo->search($id);
         $customer = $customers->first();
 
-        /** ----------------------------------------------
-         * record event [comment]
-         * see database table to details of each key
-         * ----------------------------------------------*/
-        $event = new \App\Models\Landlord\Event();
-        $event->event_creatorid = auth()->id();
-        $event->event_type = 'account-updated';
-        $event->event_creator_type = 'admin';
-        $event->event_customer_id = $customer->tenant_id;
-        $event->event_item_id = $customer->tenant_id;
-        $event->event_payload_1 = $customer->tenant_name;
-        $event->event_payload_2 = '';
-        $event->event_payload_3 = '';
-        $event->save();
 
         //payload
         $payload = [
@@ -598,19 +558,6 @@ class CustomerController extends AppBaseController
             abort(409, $e->getMessage());
         }
 
-        /** ----------------------------------------------
-         * record event
-         * ----------------------------------------------*/
-        $event = new \App\Models\Landlord\Event();
-        $event->event_creatorid = auth()->id();
-        $event->event_type = 'password-updated';
-        $event->event_creator_type = 'admin';
-        $event->event_customer_id = $customer->tenant_id;
-        $event->event_item_id = $customer->tenant_id;
-        $event->event_payload_1 = $customer->tenant_name;
-        $event->event_payload_2 = '';
-        $event->event_payload_3 = '';
-        $event->save();
 
         //close modal
         $jsondata['dom_visibility'][] = [
@@ -705,19 +652,6 @@ class CustomerController extends AppBaseController
             abort(409, $e->getMessage());
         }
 
-        /** ----------------------------------------------
-         * record event
-         * ----------------------------------------------*/
-        $event = new \App\Models\Landlord\Event();
-        $event->event_creatorid = auth()->id();
-        $event->event_type = 'account-updated';
-        $event->event_creator_type = 'admin';
-        $event->event_customer_id = $customer->tenant_id;
-        $event->event_item_id = $customer->tenant_id;
-        $event->event_payload_1 = $customer->tenant_name;
-        $event->event_payload_2 = '';
-        $event->event_payload_3 = '';
-        $event->save();
 
         //close modal
         $jsondata['dom_visibility'][] = [
@@ -806,19 +740,6 @@ class CustomerController extends AppBaseController
             abort(409, $e->getMessage());
         }
 
-        /** ----------------------------------------------
-         * record event
-         * ----------------------------------------------*/
-        $event = new \App\Models\Landlord\Event();
-        $event->event_creatorid = auth()->id();
-        $event->event_type = 'account-synced';
-        $event->event_creator_type = 'admin';
-        $event->event_customer_id = $customer->tenant_id;
-        $event->event_item_id = $customer->tenant_id;
-        $event->event_payload_1 = $customer->tenant_name;
-        $event->event_payload_2 = '';
-        $event->event_payload_3 = '';
-        $event->save();
 
         //close modal
         $jsondata['dom_visibility'][] = [
