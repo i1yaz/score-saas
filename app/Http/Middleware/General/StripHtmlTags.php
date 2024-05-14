@@ -52,7 +52,7 @@ class StripHtmlTags {
 
         return [
             'settings_offline_payments_details',
-            'emailtemplate_body',
+            'body',
             'settings_code_head',
             'settings_code_body',
             'frontend_data_3',
@@ -89,7 +89,7 @@ class StripHtmlTags {
             'project_description',
             'reminder_notes',
             'settings_bank_details',
-            'emailtemplate_body',
+            'body',
             'settings_estimates_default_terms_conditions',
             'webform_thankyou_message',
             'settings_invoices_default_terms_conditions',
@@ -116,7 +116,7 @@ class StripHtmlTags {
             'faq_content',
             'frontend_data_3',
             'settings_code_meta_description',
-            'emailtemplate_body',
+            'body',
             'settings_offline_payments_details',
             'contact_message',
         ];

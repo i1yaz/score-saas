@@ -55,7 +55,7 @@ class TenantsRepository
             $tenants->orderBy('tenants.id', 'asc');
         }
 
-        return $tenants->paginate(config('system.settings_system_pagination_limits'));
+        return $tenants->paginate(config('system.system_pagination_limits'));
     }
 
     /**

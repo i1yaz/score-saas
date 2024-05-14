@@ -272,13 +272,13 @@ function runtimeLandlordCronConfig() {
     }
 
     //get email signature
-    if ($template = \App\Models\Landlord\EmailTemplate::on('landlord')->Where('emailtemplate_name', 'Email Signature')->first()) {
-        $email_signature = $template->emailtemplate_body;
+    if ($template = \App\Models\Landlord\EmailTemplate::on('landlord')->Where('name', 'Email Signature')->first()) {
+        $email_signature = $template->body;
     }
 
     //get email footer
-    if ($template = \App\Models\Landlord\EmailTemplate::on('landlord')->Where('emailtemplate_name', 'Email Footer')->first()) {
-        $email_footer = $template->emailtemplate_body;
+    if ($template = \App\Models\Landlord\EmailTemplate::on('landlord')->Where('name', 'Email Footer')->first()) {
+        $email_footer = $template->body;
     }
 
     //set configs
@@ -600,13 +600,13 @@ function middlewareBootMail() {
     $email_footer = '';
 
     //get email signature
-    if ($template = \App\Models\EmailTemplate::Where('emailtemplate_name', 'Email Signature')->first()) {
-        $email_signature = $template->emailtemplate_body;
+    if ($template = \App\Models\EmailTemplate::Where('name', 'Email Signature')->first()) {
+        $email_signature = $template->body;
     }
 
     //get email footer
-    if ($template = \App\Models\EmailTemplate::Where('emailtemplate_name', 'Email Footer')->first()) {
-        $email_footer = $template->emailtemplate_body;
+    if ($template = \App\Models\EmailTemplate::Where('name', 'Email Footer')->first()) {
+        $email_footer = $template->body;
     }
 
     //customer is using their own SMTP servr

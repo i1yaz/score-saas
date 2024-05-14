@@ -23,6 +23,14 @@
         </div>
     </div>
 </div>
+<div class="form-group col-sm-6">
+    <div class="custom-control custom-checkbox">
+        <input type="checkbox" class="custom-control-input" id="send-welcome-email" name="send_welcome_email" value="yes" checked>
+        <label class="custom-control-label" for="send-welcome-email">Send Welcome Email</label>
+    </div>
+</div>
+
+</div>
 @push('after_third_party_scripts')
     <script>
         ajaxSubmit = false;

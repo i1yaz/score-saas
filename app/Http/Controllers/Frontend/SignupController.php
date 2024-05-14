@@ -37,7 +37,7 @@ class SignupController extends Controller
         $subscription_date_started = null;
 
         //validate terms
-        if (config('system.settings_terms_of_service_status') == 'enabled') {
+        if (config('system.terms_of_service_status') == 'enabled') {
             if (request('signup_agree_terms') != 'on') {
                 abort(409, __('lang.agree_to_terms_of_service'));
             }
@@ -68,31 +68,31 @@ class SignupController extends Controller
         }
 
         //paid packages - free trial
-        if ($package->subscription_options == 'paid' && config('system.settings_free_trial') == 'yes') {
+        if ($package->subscription_options == 'paid' && config('system.free_trial') == 'yes') {
             $status = 'free-trial';
             $free_trial = 'yes';
-            $subscription_trial_end = \Carbon\Carbon::now()->addDays(config('system.settings_free_trial_days'))->format('Y-m-d');
+            $subscription_trial_end = \Carbon\Carbon::now()->addDays(config('system.free_trial_days'))->format('Y-m-d');
         }
 
         //paid packages - free trial
-        if ($package->subscription_options == 'paid' && config('system.settings_free_trial') == 'no') {
+        if ($package->subscription_options == 'paid' && config('system.free_trial') == 'no') {
             $status = 'awaiting-payment';
         }
 
         //create tenant
         $customer = new \App\Models\Landlord\Tenant();
-        $customer->domain = strtolower(request('account_name') . '.' . config('system.settings_base_domain'));
+        $customer->domain = strtolower(request('account_name') . '.' . config('system.base_domain'));
         $customer->subdomain = strtolower(request('account_name'));
         $customer->tenant_creatorid = 0;
         $customer->tenant_name = request('full_name');
         $customer->tenant_email = request('email_address');
         $customer->tenant_status = $status;
-        $customer->tenant_email_local_email = strtolower(request('account_name') . '@' . config('system.settings_email_domain'));
+        $customer->tenant_email_local_email = strtolower(request('account_name') . '@' . config('system.email_domain'));
         $customer->tenant_email_forwarding_email = request('email_address');
         $customer->tenant_email_config_type = 'local';
         $customer->tenant_email_config_status = 'pending';
         $customer->tenant_password = bcrypt(request('password'));
-        $customer->tenant_updating_current_version = config('system.settings_version');
+        $customer->tenant_updating_current_version = config('system.version');
         $customer->save();
 
         //temp authentication key

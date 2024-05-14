@@ -105,6 +105,7 @@ class CustomerController extends AppBaseController
     }
 
     public function store(CreateRequest $request, CreateTenantRepository $createTenantRepo) {
+        dd( $payload = config('mail.data'));
         $trial_end = null;
         $date_started = null;
         list($planId,$planType) = explode('_',$request->plan);
@@ -180,7 +181,7 @@ class CustomerController extends AppBaseController
         $subscription->trial_end = $trial_end;
         $subscription->date_started = $date_started;
         $subscription->package_id = $package->id;
-        $subscription->payment_method = request('payment_method');
+        $subscription->payment_method = 'automatic';
         $subscription->status = $status;
         $subscription->gateway_billing_cycle = $planType;
         $subscription->save();
@@ -188,7 +189,7 @@ class CustomerController extends AppBaseController
         /** ----------------------------------------------
          * send email to customer & Admin
          * ----------------------------------------------*/
-        if (request('send_welcome_email') == 'on') {
+        if (request('send_welcome_email') == 'yes') {
             $data = [
                 'subscription_type' => $subscription->subscription_type,
                 'account_name' => $customer->domain,
@@ -251,7 +252,7 @@ class CustomerController extends AppBaseController
         //store record
         $customer->tenant_name = request('full_name');
         $customer->tenant_email = request('email_address');
-        $customer->domain = strtolower(request('account_name') . '.' . config('system.settings_base_domain'));
+        $customer->domain = strtolower(request('account_name') . '.' . config('system.base_domain'));
         $customer->subdomain = strtolower(request('account_name'));
         $customer->save();
 

@@ -44,8 +44,8 @@ class StripHtmlTagsX {
             'contact_name',
             'email',
             'email_address',
-            'emailtemplate_status',
-            'emailtemplate_subject',
+            'status',
+            'subject',
             'expiry_date',
             'faq_title',
             'first_name',
@@ -154,7 +154,7 @@ class StripHtmlTagsX {
             'settings_code_meta_description',
             'settings_code_head',
             'settings_code_meta_description',
-            
+
             'foo',
             'foo',
             'foo',

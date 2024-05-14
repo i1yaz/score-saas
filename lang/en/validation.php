@@ -363,8 +363,8 @@ return [
         'comment_text' => strtolower(__('lang.comment')),
 
         //email templates
-        'emailtemplate_body' => strtolower(__('lang.email_body')),
-        'emailtemplate_subject' => strtolower(__('lang.email_subject')),
+        'body' => strtolower(__('lang.email_body')),
+        'subject' => strtolower(__('lang.email_subject')),
 
         //settings - payment methods
         'settings_paypal_currency' => strtolower(__('lang.currency')),

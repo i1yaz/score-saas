@@ -13,6 +13,8 @@
  *--------------------------------------------------------------------------------------------------------------*/
 
 namespace App\Http\Middleware\Landlord;
+use App\Models\Landlord\EmailTemplate;
+use App\Models\Landlord\Setting;
 use Closure;
 
 class BootMail {
@@ -24,30 +26,17 @@ class BootMail {
      * @return mixed
      */
     public function handle($request, Closure $next) {
-        
-        //do not run this for SETUP path
-        if (env('SETUP_STATUS') != 'COMPLETED') {
-            return $next($request);
-        }
 
-        //get settings
-        $settings = \App\Models\Landlord\Settings::Where('settings_id', 'default')->first();
-
-        //defaults
+        $settings = Setting::Where('id', 'default')->first();
         $email_signature = '';
         $email_footer = '';
-
-        //get email signature
-        if ($template = \App\Models\Landlord\EmailTemplate::Where('emailtemplate_name', 'Email Signature')->first()) {
-            $email_signature = $template->emailtemplate_body;
+        if ($template = EmailTemplate::Where('name', 'Email Signature')->first()) {
+            $email_signature = $template->body;
+        }
+        if ($template = EmailTemplate::Where('name', 'Email Footer')->first()) {
+            $email_footer = $template->body;
         }
 
-        //get email footer
-        if ($template = \App\Models\Landlord\EmailTemplate::Where('emailtemplate_name', 'Email Footer')->first()) {
-            $email_footer = $template->emailtemplate_body;
-        }
-
-        //save to config
         config([
             'mail.driver' => $settings->settings_email_server_type,
             'mail.host' => $settings->settings_email_smtp_host,

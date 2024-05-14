@@ -30,7 +30,7 @@ $(document).ready(function () {
 function NXSaaSEmailTemplates() {
 
     //text editor
-    nxTinyMCEAdvanced(500, '#emailtemplate_body', 'fullpage spellchecker', '');
+    nxTinyMCEAdvanced(500, '#body', 'fullpage spellchecker', '');
     setTimeout(function () {
         $("#email-templates-editing").removeClass('loading');
         $("#email-templates-editing-container").show();

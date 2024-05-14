@@ -10,14 +10,14 @@ class EmailTemplate  extends BaseModel
 
         //validate
         if (!is_array($data) || !in_array($section, ['body', 'subject'])) {
-            return $this->emailtemplate_body;
+            return $this->body;
         }
 
         //set the content
         if ($section == 'body') {
-            $content = $this->emailtemplate_body;
+            $content = $this->body;
         } else {
-            $content = $this->emailtemplate_subject;
+            $content = $this->subject;
         }
 
         //parse the content and inject actual data
