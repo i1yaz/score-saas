@@ -789,7 +789,7 @@ function runtimeDate($date = '', $alternative = '---') {
     }
 
     if ($date != '') {
-        $date_format = config('system.settings_system_date_format');
+        $date_format = config('system.system_date_format');
         return \Carbon\Carbon::parse($date)->format($date_format);
     }
 

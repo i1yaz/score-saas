@@ -22,7 +22,6 @@
         @include('flash::message')
 
         <div class="clearfix"></div>
-
         <div class="card card-primary">
             <div class="card-header">
                 <h3 class="card-title">Customers</h3>

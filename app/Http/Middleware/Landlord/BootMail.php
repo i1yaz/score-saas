@@ -38,14 +38,14 @@ class BootMail {
         }
 
         config([
-            'mail.driver' => $settings->settings_email_server_type,
-            'mail.host' => $settings->settings_email_smtp_host,
-            'mail.port' => $settings->settings_email_smtp_port,
-            'mail.username' => $settings->settings_email_smtp_username,
-            'mail.password' => $settings->settings_email_smtp_password,
-            'mail.encryption' => ($settings->settings_email_smtp_encryption == 'none') ? '' : $settings->settings_email_smtp_encryption,
+            'mail.driver' => $settings->email_server_type,
+            'mail.host' => $settings->email_smtp_host,
+            'mail.port' => $settings->email_smtp_port,
+            'mail.username' => $settings->email_smtp_username,
+            'mail.password' => $settings->email_smtp_password,
+            'mail.encryption' => ($settings->email_smtp_encryption == 'none') ? '' : $settings->email_smtp_encryption,
             'mail.data' => [
-                'company_name' => config('system.settings_company_name'),
+                'company_name' => config('system.company_name'),
                 'todays_date' => runtimeDate(date('Y-m-d')),
                 'email_signature' => $email_signature,
                 'email_footer' => $email_footer,

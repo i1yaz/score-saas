@@ -55,8 +55,8 @@ class CreateAccountRequest extends FormRequest
                 },
                 //validate reserved words
                 function ($attribute, $value, $fail) {
-                    $settings = Setting::on('landlord')->Where('settings_id', 'default')->first();
-                    $reserved_words = explode(',', $settings->settings_reserved_words);
+                    $settings = Setting::on('landlord')->Where('id', 'default')->first();
+                    $reserved_words = explode(',', $settings->reserved_words);
                     $reserved_words = array_map('trim', $reserved_words);
                     if (in_array($value, $reserved_words)) {
                         return $fail(__('lang.reserved_words_error'));

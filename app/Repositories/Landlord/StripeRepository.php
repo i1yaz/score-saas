@@ -28,7 +28,7 @@ class StripeRepository
     public function initialiseStripe($data = []): bool
     {
         try {
-            Stripe::setApiKey($data['settings_stripe_secret_key']);
+            Stripe::setApiKey($data['stripe_secret_key']);
             Stripe::setApiVersion($this->api_version);
         } catch (Exception $e) {
             Log::critical("unable to connect to stripe - error: " . $e->getMessage(), ['process' => '[initialiseStripe]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
@@ -52,7 +52,7 @@ class StripeRepository
         }
 
         try {
-            $stripe = new StripeClient($data['settings_stripe_secret_key']);
+            $stripe = new StripeClient($data['stripe_secret_key']);
             $prices = $stripe->prices->all(['product' => $product_id]);
         } catch (AuthenticationException$e) {
             Log::error("getting product prices ($product_id) from stripe failed - Unable to authenticate with Stripe. Check your API keys", ['process' => '[stripe-get-products-prices]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);

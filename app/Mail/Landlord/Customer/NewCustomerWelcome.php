@@ -9,6 +9,7 @@
 
 namespace App\Mail\Landlord\Customer;
 
+use App\Models\Landlord\EmailQueue;
 use App\Models\Landlord\EmailTemplate;
 use App\Models\Landlord\Package;
 use App\Models\Landlord\Tenant;
@@ -84,7 +85,7 @@ class NewCustomerWelcome extends Mailable {
         ];
 
         //save in the database queue
-        $queue = new \App\Models\Landlord\EmailQueue();
+        $queue = new EmailQueue();
         $queue->setConnection('landlord');
         $queue->to = $this->customer->tenant_email;
         $queue->subject = $template->parse('subject', $payload);

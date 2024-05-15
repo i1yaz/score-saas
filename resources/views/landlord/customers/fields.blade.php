@@ -19,7 +19,7 @@
     <div class="input-group">
         <input type="text" class="form-control" id="account-name" name="account_name" placeholder="Account Url" required>
         <div class="input-group-append">
-            <span class="input-group-text">.{{config('saas.settings_base_domain')}}</span>
+            <span class="input-group-text">.{{config('saas.base_domain')}}</span>
         </div>
     </div>
 </div>

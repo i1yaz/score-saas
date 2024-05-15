@@ -56,7 +56,7 @@ class General {
 
         //check if clients are allowed to login to the system
         if (auth()->check() && auth()->user()->is_client) {
-            if (config('system.settings_clients_app_login') != 'enabled') {
+            if (config('system.clients_app_login') != 'enabled') {
                 if (request()->ajax()) {
                     abort(409, __('lang.clients_disabled_login_error'));
                     return $next($request);
@@ -123,7 +123,7 @@ class General {
          *      - remove leading zeros
          * */
         if (request()->filled('payment_invoiceid')) {
-            $payment_invoiceid = str_replace(config('system.settings_invoices_prefix'), '', request('payment_invoiceid'));
+            $payment_invoiceid = str_replace(config('system.invoices_prefix'), '', request('payment_invoiceid'));
             $payment_invoiceid = preg_replace("/[^0-9]/", '', $payment_invoiceid);
             $payment_invoiceid = ltrim($payment_invoiceid, '0');
             request()->merge(['payment_invoiceid' => $payment_invoiceid]);

@@ -6,22 +6,22 @@
                 <th>ID</th>
                 <th>Name</th>
                 <th>Created</th>
-                <th>Account</th>
+                <th>Domain</th>
                 <th>Plan</th>
                 <th>Type</th>
                 <th>Status</th>
-                <th colspan="3">Action</th>
+                <th>Action</th>
             </tr>
         </table>
     </div>
 </div>
 
-@push('page_scripts')
+@push('after_third_party_scripts')
 
     <script>
         $(document).ready(function() {
 
-            $('#customer').DataTable({
+            $('#customer-table').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
@@ -35,7 +35,7 @@
                     { data: 'id', name: 'id', orderable: true },
                     { data: 'name', name: 'name', orderable: false },
                     { data: 'created_at', name: 'created_at', orderable: false },
-                    { data: 'account', name: 'account', orderable: false },
+                    { data: 'domain', name: 'domain', orderable: false },
                     { data: 'plan', name: 'plan', orderable: false },
                     { data: 'type', name: 'type', orderable: false },
                     { data: 'status', name: 'status', orderable: false },

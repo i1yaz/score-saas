@@ -49,14 +49,14 @@ class BootTheme {
         });
 
         //check if default theme exists
-        if (!in_array($settings->settings_theme_name, $directories)) {
-            Log::critical("The selected theme directory could not be found", ['process' => '[validating theme]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'Theme Directory: ' => '/public/themes/' . $settings->settings_theme_name]);
-            abort(409, __('lang.default_theme_not_found') . ' [' . runtimeThemeName($settings->settings_theme_name) . ']');
+        if (!in_array($settings->theme_name, $directories)) {
+            Log::critical("The selected theme directory could not be found", ['process' => '[validating theme]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'Theme Directory: ' => '/public/themes/' . $settings->theme_name]);
+            abort(409, __('lang.default_theme_not_found') . ' [' . runtimeThemeName($settings->theme_name) . ']');
         }
 
         //check if css file exists
-        if (!is_file(BASE_DIR . '/public/themes/' . $settings->settings_theme_name . '/css/style.css')) {
-            Log::critical("The selected theme does not seem to have a style.css files", ['process' => '[validating theme]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'Theme Directory: ' => '/public/themes/' . $settings->settings_theme_name]);
+        if (!is_file(BASE_DIR . '/public/themes/' . $settings->theme_name . '/css/style.css')) {
+            Log::critical("The selected theme does not seem to have a style.css files", ['process' => '[validating theme]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'Theme Directory: ' => '/public/themes/' . $settings->theme_name]);
             abort(409, __('lang.selected_theme_is_invalid'));
         }
 
@@ -71,14 +71,14 @@ class BootTheme {
         //set global data
         config([
             'theme.list' => $list,
-            'theme.selected_name' => $settings->settings_theme_name,
+            'theme.selected_name' => $settings->theme_name,
             //main css file
-            'theme.selected_theme_css' => 'public/themes/' . $settings->settings_theme_name . '/css/style.css?v=' . $settings->settings_system_javascript_versioning,
+            'theme.selected_theme_css' => 'public/themes/' . $settings->theme_name . '/css/style.css?v=' . $settings->system_javascript_versioning,
             //invoice/estimate pdf (web preview)
             //[8 Aug 2021] all themes should now use the 'default' theme's bill-pdf.css file (public/themes/default/css/bill-pdf.css)
-            'theme.selected_theme_pdf_css' => 'public/themes/default/css/bill-pdf.css?v=' . $settings->settings_system_javascript_versioning,
+            'theme.selected_theme_pdf_css' => 'public/themes/default/css/bill-pdf.css?v=' . $settings->system_javascript_versioning,
             //[MT]
-            'theme.selected_theme_saas_css' => 'public/themes/' . $settings->settings_theme_name . '/css/saas.css?v=' . $settings->settings_system_javascript_versioning,
+            'theme.selected_theme_saas_css' => 'public/themes/' . $settings->theme_name . '/css/saas.css?v=' . $settings->system_javascript_versioning,
         ]);
 
         return $next($request);

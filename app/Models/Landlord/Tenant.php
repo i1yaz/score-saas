@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tenant extends BaseModel
 {
-
+    protected $guarded = ['id'];
 }

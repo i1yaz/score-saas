@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('landlord')->create('email_queue', function (Blueprint $table) {
+        Schema::connection('landlord')->create('email_queues', function (Blueprint $table) {
             $table->id('id');
             $table->datetime('created')->nullable();
             $table->datetime('updated')->nullable();
@@ -38,6 +38,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::connection('landlord')->dropIfExists('email_queue');
+        Schema::connection('landlord')->dropIfExists('email_queues');
     }
 };

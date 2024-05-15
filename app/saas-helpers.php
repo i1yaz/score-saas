@@ -260,7 +260,7 @@ function runtimeLandlordCronConfig() {
     $email_footer = '';
 
     //get settings
-    $settings = \App\Models\Landlord\Settings::on('landlord')->Where('settings_id', 'default')->first();
+    $settings = \App\Models\Landlord\Settings::on('landlord')->Where('id', 'default')->first();
 
     //currency symbol position setting
     if ($settings->settings_system_currency_position == 'left') {

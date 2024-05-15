@@ -335,6 +335,17 @@ if (! function_exists('cleanAmountWithCurrencyFormat')) {
     }
 }
 
+if (! function_exists('formatDateTime')) {
+    function formatDateTime($date): string
+    {
+        if (empty($date)) {
+            return '';
+        }
+
+        return date('m/d/Y H:i', strtotime($date));
+    }
+}
+
 if (! function_exists('formatDate')) {
     function formatDate($date): string
     {

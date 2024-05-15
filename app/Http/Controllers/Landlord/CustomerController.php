@@ -35,10 +35,11 @@ class CustomerController extends AppBaseController
                 0 => 'id',
                 1 => 'name',
                 2 => 'created_at',
-                3 => 'account',
+                3 => 'domain',
                 4 => 'name',
                 5 => 'type',
                 6 => 'status',
+                7 => 'action',
             ];
             $limit = $request->input('length');
             $start = $request->input('start');
@@ -49,6 +50,7 @@ class CustomerController extends AppBaseController
             $customers = CustomerDataTable::sortAndFilterRecords($search, $start, $limit, $order, $dir);
             $totalFiltered = CustomerDataTable::totalFilteredRecords($search);
             $data = CustomerDataTable::populateRecords($customers);
+
             $json_data = [
                 'draw' => intval($request->input('draw')),
                 'recordsTotal' => intval($totalData),
@@ -105,7 +107,6 @@ class CustomerController extends AppBaseController
     }
 
     public function store(CreateRequest $request, CreateTenantRepository $createTenantRepo) {
-        dd( $payload = config('mail.data'));
         $trial_end = null;
         $date_started = null;
         list($planId,$planType) = explode('_',$request->plan);
@@ -147,7 +148,7 @@ class CustomerController extends AppBaseController
         //create tenant
         $customer = new \App\Models\Landlord\Tenant();
         $customer->domain = strtolower(request('account_name') . '.' . config('system.base_domain'));
-        $customer->subdomain = request('account_name');
+        $customer->subdomain = strtolower(request('account_name'));
         $customer->added_by = auth()->id();
         $customer->name = request('full_name');
         $customer->email = request('email_address');
@@ -174,7 +175,7 @@ class CustomerController extends AppBaseController
         //create subscription
         $subscription = new \App\Models\Landlord\Subscription();
         $subscription->added_by  = auth()->id();
-        $subscription->customer_id = $customer->tenant_id;
+        $subscription->customer_id = $customer->id;
         $subscription->unique_id = str_unique();
         $subscription->type = $package->subscription_options;
         $subscription->amount = $amount;

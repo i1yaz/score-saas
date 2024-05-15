@@ -63,7 +63,7 @@ class SubscriptionsRepository
         }
 
         // Get the results and return them.
-        return $subscriptions->paginate(config('system.settings_system_pagination_limits'));
+        return $subscriptions->paginate(config('system.system_pagination_limits'));
     }
 
     /**

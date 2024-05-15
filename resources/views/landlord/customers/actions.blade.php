@@ -1,16 +1,11 @@
-{!! Form::open(['route' => ['landlord.customer.destroy', $customer->id], 'method' => 'delete']) !!}
+{!! Form::open(['route' => ['landlord.customers.destroy', $customer->id], 'method' => 'delete']) !!}
 <div class='btn-group'>
-    <a href="{{ route('students.create', ['customer' => $customer->id]) }}"
-       class='btn btn-default btn-sm'>
-        <i class="fas fa-plus"></i>
-    </a>
-
-    <a href="{{ route('landlord.customer.show', [$customer->id]) }}"
+    <a href="{{ route('landlord.customers.show', [$customer->id]) }}"
        class='btn btn-default btn-sm'>
         <i class="far fa-eye"></i>
     </a>
 
-    <a href="{{ route('landlord.customer.edit', [$customer->id]) }}"
+    <a href="{{ route('landlord.customers.edit', [$customer->id]) }}"
        class='btn btn-default btn-sm'>
         <i class="far fa-edit"></i>
     </a>

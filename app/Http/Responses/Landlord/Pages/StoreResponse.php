@@ -52,7 +52,7 @@ class StoreResponse implements Responsable {
         $jsondata['dom_attributes'][] = [
             'selector' => '#pages-buttons-save-preview',
             'attr' => 'href',
-            'value' => 'https://' . config('system.settings_frontend_domain') . '/page/' . $content->page_permanent_link . '?preview=' . $content->page_uniqueid,
+            'value' => 'https://' . config('system.frontend_domain') . '/page/' . $content->page_permanent_link . '?preview=' . $content->page_uniqueid,
         ];
 
         //notice error

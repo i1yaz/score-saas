@@ -13,12 +13,12 @@ class CustomerDataTable implements IDataTables
 {
     protected static array $columns = [
         'id' =>'tenants.id',
-        'name' =>'tenants.name',
-        'created_at' => 'tenants.created_at',
-        'account' => 'tenants.account_url',
-        'plan' => 'packages.plan',
-        'type' => 'subscriptions.type',
-        'status' => 'packages.status',
+//        'name' =>'tenants.name',
+//        'created_at' => 'tenants.created_at',
+//        'domain' => 'tenants.domain',
+//        'plan' => 'packages.plan',
+//        'type' => 'subscriptions.type',
+//        'status' => 'packages.status',
     ];
 
     public static function sortAndFilterRecords(mixed $search, mixed $start, mixed $limit, string $order, mixed $dir): Collection|array
@@ -63,8 +63,8 @@ class CustomerDataTable implements IDataTables
             foreach ($records as $customer) {
                 $nestedData['id'] = $customer->id;
                 $nestedData['name'] = $customer->name;
-                $nestedData['created_at'] = $customer->created_at;
-                $nestedData['account_url'] = $customer->domain;
+                $nestedData['created_at'] = formatDateTime($customer->created_at);
+                $nestedData['domain'] = "<a href='https://{$customer->domain}' target='_blank'>{$customer->domain}</a>";
                 $nestedData['plan'] = $customer->plan;
                 $nestedData['type'] = $customer->type;
                 $nestedData['status'] = $customer->status;
