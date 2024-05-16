@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Laracasts\Flash\Flash;
 use Spatie\Multitenancy\Models\Tenant;
 
 class CustomerController extends AppBaseController
@@ -65,12 +66,10 @@ class CustomerController extends AppBaseController
 
     public function show($id) {
 
-        //validate exist
-        if (\App\Models\Landlord\Tenant::Where('tenant_id', $id)->doesntExist()) {
+        if (\App\Models\Landlord\Tenant::Where('id', $id)->doesntExist()) {
             abort(404);
         }
 
-        //get the item
         $customers = $this->tenantsRepo->search($id);
         $customer = $customers->first();
 
@@ -94,7 +93,7 @@ class CustomerController extends AppBaseController
 
     public function create() {
 
-        $activePackages = Package::select(['id','name','amount_monthly','amount_yearly'])->Where('status', 'active')->get();
+        $activePackages = Package::active()->select(['id','name','amount_monthly','amount_yearly'])->get();
         if ($activePackages->isNotEmpty()){
             foreach ($activePackages as $package){
                 $packages["{$package->id}_monthly"] = $package->name.' ('.formatAmountWithCurrency($package->amount_monthly).' / Month)';
@@ -203,36 +202,14 @@ class CustomerController extends AppBaseController
             $mail = new NewCustomerWelcome($customer, $data, $package);
             $mail->build();
         }
-
+        Flash::success('Tenant Customer created successfully.');
         return redirect(route('landlord.customers.index'));
     }
 
-    /**
-     * show the form to edit a resource
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function edit($id) {
-
-        //get the customer
-        $customer = \App\Models\Landlord\Tenant::Where('tenant_id', $id)->first();
-
-        //page
-        $html = view('landlord/customers/modal/basic-edit', compact('customer'))->render();
-        $jsondata['dom_html'][] = [
-            'selector' => '#commonModalBody',
-            'action' => 'replace',
-            'value' => $html,
-        ];
-
-        //postrun
-        $jsondata['postrun_functions'][] = [
-            'value' => 'NXCustomerBasicEdit',
-        ];
-
-        //render
-        return response()->json($jsondata);
-
+        $customer = \App\Models\Landlord\Tenant::Where('id', $id)->select(['id','name','email','subdomain'])->firstOrFail();
+        return view('landlord.customers.edit', compact('customer'));
     }
 
     /**
@@ -241,42 +218,16 @@ class CustomerController extends AppBaseController
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateValidation $request, $id) {
-
-        //[demo check]
-        if (config('app.application_demo_mode') && in_array($id, [1, 2, 3])) {
-            abort(409, 'Demo Mode: You cannot edit the main demo accounts. You can create new ones for testing');
-        }
-
-        //get the customer
-        $customer = \App\Models\Landlord\Tenant::Where('tenant_id', $id)->first();
-
+        $customer = \App\Models\Landlord\Tenant::Where('id', $id)->first();
         //store record
-        $customer->tenant_name = request('full_name');
-        $customer->tenant_email = request('email_address');
-        $customer->domain = strtolower(request('account_name') . '.' . config('system.base_domain'));
-        $customer->subdomain = strtolower(request('account_name'));
+        $customer->tenant_name = $request->full_name;
+        $customer->tenant_email = $request->email_address;
+        $customer->domain = strtolower($request->account_name) . '.' . config('system.base_domain');
+        $customer->subdomain = strtolower($request->account_name);
         $customer->save();
 
-        //count rows
-        $customers = $this->tenantsRepo->search();
-        $count = count($customers);
-
-        //get friendly row
-        $customers = $this->tenantsRepo->search($id);
-        $customer = $customers->first();
-
-
-        //payload
-        $payload = [
-            'customers' => $customers,
-            'customer' => $customer,
-            'count' => $count,
-            'page' => $this->pageSettings(),
-        ];
-
-        //render
-        return new UpdateResponse($payload);
-
+        Flash::success('Tenant Customer updated successfully.');
+        return redirect(route('landlord.customers.index'));
     }
 
     /**
@@ -417,9 +368,8 @@ class CustomerController extends AppBaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy(SubscriptionsRepository $subscriptionsrepo, $id) {
+    public function destroy(SubscriptionsRepository $subscriptionsRepo, $id) {
 
-        //get the record
         $customer = \App\Models\Landlord\Tenant::Where('tenant_id', $id)->first();
 
         //[demo check]

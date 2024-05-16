@@ -50,7 +50,8 @@ function saasToggleSubscriptionOption($type = '', $option = '') {
  * @param string $type lable|background
  * @return string bootstrap label class
  */
-function runtimeCustomerStatusColors($status = '') {
+function runtimeCustomerStatusColors($status = '',$type='badge'): string
+{
 
     //default colour
     $colour = 'default';
@@ -61,6 +62,7 @@ function runtimeCustomerStatusColors($status = '') {
             $colour = 'warning';
             break;
 
+        case 'failed':
         case 'cancelled':
             $colour = 'danger';
             break;
@@ -70,22 +72,13 @@ function runtimeCustomerStatusColors($status = '') {
             $colour = 'success';
             break;
 
-        case 'failed':
-            $colour = 'danger';
-            break;
-
     }
 
     //return the css
-    return bootstrapColors($colour, 'label');
+    return bootstrapColors($colour, $type??'label');
 }
 
-/**
- * bootstrap class, based on value
- * @param string $status the status of the ticket
- * @param string $type lable|background
- * @return string bootstrap label class
- */
+
 function runtimeCustomerStatusLang($status = '') {
 
     //default colour
@@ -122,7 +115,7 @@ function runtimeCustomerStatusLang($status = '') {
  * @param string $type lable|background
  * @return string bootstrap label class
  */
-function runtimeSubscriptionStatusColors($status = '') {
+function runtimeSubscriptionStatusColors($status = '', string $type = 'badge') {
 
     //default colour
     $colour = 'default';
@@ -148,7 +141,7 @@ function runtimeSubscriptionStatusColors($status = '') {
     }
 
     //return the css
-    return bootstrapColors($colour, 'label');
+    return bootstrapColors($colour, $type??'label');
 }
 
 /**

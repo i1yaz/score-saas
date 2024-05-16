@@ -19,7 +19,7 @@
 
         <div class="card">
 
-            {!! Form::model($customer, ['route' => ['landlord.customer.update', $customer->id], 'method' => 'patch']) !!}
+            {!! Form::model($customer, ['route' => ['landlord.customers.update', $customer->id], 'method' => 'patch']) !!}
 
             <div class="card-body">
                 <div class="row">
@@ -29,7 +29,7 @@
 
             <div class="card-footer">
                 {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
-                <a href="{{ route('landlord.customer.index') }}" class="btn btn-default"> Cancel </a>
+                <a href="{{ route('landlord.customers.index') }}" class="btn btn-default"> Cancel </a>
             </div>
 
             {!! Form::close() !!}

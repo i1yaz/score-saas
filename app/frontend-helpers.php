@@ -591,6 +591,9 @@ function bootstrapColors($colour = '', $type = '') {
             if ($type == 'text') {
                 return 'text-default';
             }
+            if ($type == 'badge') {
+                return 'badge-default';
+            }
             break;
         case 'info':
             if ($type == 'label') {
@@ -602,6 +605,9 @@ function bootstrapColors($colour = '', $type = '') {
             if ($type == 'text') {
                 return 'text-info';
             }
+            if ($type == 'badge') {
+                return 'badge-info';
+            }
             break;
         case 'success':
             if ($type == 'label') {
@@ -612,6 +618,9 @@ function bootstrapColors($colour = '', $type = '') {
             }
             if ($type == 'text') {
                 return 'text-success';
+            }
+            if ($type == 'badge') {
+                return 'badge-success';
             }
             break;
 
@@ -625,6 +634,9 @@ function bootstrapColors($colour = '', $type = '') {
             if ($type == 'text') {
                 return 'text-warning';
             }
+            if ($type == 'badge') {
+                return 'badge-warning';
+            }
             break;
         case 'danger':
             if ($type == 'label') {
@@ -635,6 +647,9 @@ function bootstrapColors($colour = '', $type = '') {
             }
             if ($type == 'text') {
                 return 'text-danger';
+            }
+            if ($type == 'badge') {
+                return 'badge-danger';
             }
             break;
         case 'megna':
@@ -647,6 +662,9 @@ function bootstrapColors($colour = '', $type = '') {
             if ($type == 'text') {
                 return 'text-megna';
             }
+            if ($type == 'badge') {
+                return 'badge-megna';
+            }
             break;
         case 'purple':
             if ($type == 'label') {
@@ -657,6 +675,9 @@ function bootstrapColors($colour = '', $type = '') {
             }
             if ($type == 'text') {
                 return 'text-purple';
+            }
+            if ($type == 'badge') {
+                return 'badge-purple';
             }
             break;
         case 'green':
@@ -669,6 +690,9 @@ function bootstrapColors($colour = '', $type = '') {
             if ($type == 'text') {
                 return 'text-green';
             }
+            if ($type == 'badge') {
+                return 'badge-green';
+            }
             break;
         case 'lime':
             if ($type == 'label') {
@@ -679,6 +703,9 @@ function bootstrapColors($colour = '', $type = '') {
             }
             if ($type == 'text') {
                 return 'text-lime';
+            }
+            if ($type == 'badge') {
+                return 'badge-lime';
             }
             break;
         case 'brown':
@@ -691,6 +718,9 @@ function bootstrapColors($colour = '', $type = '') {
             if ($type == 'text') {
                 return 'text-brown';
             }
+            if ($type == 'badge') {
+                return 'badge-brown';
+            }
             break;
         case 'primary':
             if ($type == 'label') {
@@ -702,6 +732,9 @@ function bootstrapColors($colour = '', $type = '') {
             if ($type == 'text') {
                 return 'text-purple';
             }
+            if ($type == 'badge') {
+                return 'badge-purple';
+            }
             break;
         default:
             if ($type == 'label') {
@@ -712,6 +745,9 @@ function bootstrapColors($colour = '', $type = '') {
             }
             if ($type == 'text') {
                 return 'text-info';
+            }
+            if ($type == 'badge') {
+                return 'badge-info';
             }
             break;
     }

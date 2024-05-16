@@ -55,11 +55,11 @@ class UpdateValidation extends FormRequest {
             ],
             'email_address' => [
                 'required',
-                Rule::unique('tenants', 'tenant_email')->ignore(request()->route('customer'), 'tenant_id'),
+                Rule::unique('tenants', 'email')->ignore(request()->route('customer'), 'id'),
             ],
             'account_name' => [
                 'required',
-                Rule::unique('tenants', 'subdomain')->ignore(request()->route('customer'), 'tenant_id'),
+                Rule::unique('tenants', 'subdomain')->ignore(request()->route('customer'), 'id'),
                 function ($attribute, $value, $fail) {
                     //validate domain name characters (a-z A-Z 0-9 . -)
                     if (!preg_match('/^[a-zA-Z0-9]+[a-zA-Z0-9-._]*[a-zA-Z0-9]+$/', $value)) {

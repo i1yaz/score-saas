@@ -37,7 +37,7 @@ class CustomerDataTable implements IDataTables
     public static function buildQuery(): Builder
     {
         $tenants = Tenant::query();
-        $tenants->select(['tenants.id', 'tenants.name', 'tenants.created_at', 'tenants.domain', 'packages.name as plan', 'subscriptions.type', 'packages.status as status']);
+        $tenants->select(['tenants.id', 'tenants.name', 'tenants.created_at', 'tenants.domain', 'packages.name as plan', 'subscriptions.type', 'tenants.status as status']);
 
         $tenants->leftJoin('subscriptions', function($join) {
             $join->on('subscriptions.customer_id', '=', 'tenants.id')
@@ -66,8 +66,10 @@ class CustomerDataTable implements IDataTables
                 $nestedData['created_at'] = formatDateTime($customer->created_at);
                 $nestedData['domain'] = "<a href='https://{$customer->domain}' target='_blank'>{$customer->domain}</a>";
                 $nestedData['plan'] = $customer->plan;
-                $nestedData['type'] = $customer->type;
-                $nestedData['status'] = $customer->status;
+                $nestedData['type'] = runtimeLang($customer->type);
+                $color = runtimeCustomerStatusColors($customer->status);
+                $text = runtimeCustomerStatusLang($customer->status);
+                $nestedData['status'] = "<span class='badge {$color}'>{$text}</span>";
                 $nestedData['action'] = view('landlord.customers.actions', ['customer' => $customer])->render();
                 $data[] = $nestedData;
             }

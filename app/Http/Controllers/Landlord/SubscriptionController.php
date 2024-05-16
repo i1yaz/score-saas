@@ -21,7 +21,12 @@ class SubscriptionController extends Controller
 
     public function index()
     {
-        $subscriptions = $this->subscriptionsRepo->search();
+        $subscriptions = $this->subscriptionsRepo->search(
+            [
+                'subscriptions.id', 'subscriptions.first_name', 'subscriptions.last_name','subscriptions.created_at',
+                'subscriptions.amount', 'subscriptions.date_renewed', 'subscriptions.gateway_billing_cycle','subscriptions.status',
+                'subscriptions.gateway_name'
+            ]);
         return view('landlord.subscriptions.index', compact('subscriptions'));
     }
 

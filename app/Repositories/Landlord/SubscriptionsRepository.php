@@ -16,10 +16,10 @@ class SubscriptionsRepository
      */
     public function __construct(
         Subscription $subscription,
-        StripeRepository $striperepo) {
+        StripeRepository $stripeRepo) {
 
         $this->subscription = $subscription;
-        $this->striperepo = $striperepo;
+        $this->striperepo = $stripeRepo;
 
     }
 
@@ -28,9 +28,9 @@ class SubscriptionsRepository
      * @param int $id optional for getting a single, specified record
      * @return object subscriptions collection
      */
-    public function search($id = '') {
+    public function search($id = '',$columns = ['*']) {
         $subscriptions = $this->subscription->newQuery();
-        $subscriptions->selectRaw('*');
+        $subscriptions->select($columns);
         $subscriptions->leftJoin('users', 'users.id', '=', 'subscriptions.added_by');
         $subscriptions->leftJoin('tenants', 'tenants.id', '=', 'subscriptions.customer_id');
 

@@ -31,34 +31,39 @@ Route::middleware(['landlord','redirect.url','auth'])->group(function () {
         Route::any('/', [DashboardController::class,'index'])->name('root');
         Route::any('/home', [DashboardController::class,'index'])->name('home');
         //CUSTOMERS
-        Route::group(['prefix' => 'customers','as'=>'customers.'], function () {
-//            Route::any("/search", "Landlord\Customers@index");
-//            Route::get("/{customer}/events", "Landlord\Customers@events")->where('customer', '[0-9]+');
-//            Route::delete("/{customer}/delete", "Landlord\Customers@destroy")->where('customer', '[0-9]+');
-//            Route::get("/{customer}/subscription", "Landlord\Customers@showSubscription")->where('customer', '[0-9]+');
-//            Route::get("/{customer}/update-password", "Landlord\Customers@editPassword")->where('customer', '[0-9]+');
-//            Route::post("/{customer}/update-password", "Landlord\Customers@updatePassword")->where('customer', '[0-9]+');
-//            Route::get("/{customer}/set-active", "Landlord\Customers@setStatusActive")->where('customer', '[0-9]+');
-//            Route::post("/{customer}/set-active", "Landlord\Customers@updateStatusActive")->where('customer', '[0-9]+');
-//            Route::get("/{customer}/sync-account", "Landlord\Customers@syncAccount")->where('customer', '[0-9]+');
-//            Route::post("/{customer}/sync-account", "Landlord\Customers@updateSyncAccount")->where('customer', '[0-9]+');
-//            Route::get("/{customer}/email", "Landlord\Customers@showEmailSettings")->where('customer', '[0-9]+');
-//            Route::get("/{customer}/updated-email-forwarding", "Landlord\Customers@markEmailSettingsDone")->where('customer', '[0-9]+');
-//            Route::get("/{customer}/login", "Landlord\Customers@LoginAsCustomer")->where('customer', '[0-9]+');
-            Route::resource('/', CustomerController::class);
+        Route::group(['as'=>'customers.'], function () {
+            Route::get('customers/', [CustomerController::class, 'index'])->name('index');
+            Route::get('customers/create', [CustomerController::class, 'create'])->name('create');
+            Route::post('customers/', [CustomerController::class, 'store'])->name('store');
+            Route::get('customers/{customer}', [CustomerController::class, 'show'])->name('show');
+            Route::get('customers/{customer}/edit', [CustomerController::class, 'edit'])->name('edit');
+            Route::patch('customers/{customer}', [CustomerController::class, 'update'])->name('update');
+            Route::delete('customers/{customer}', [CustomerController::class, 'destroy'])->name('destroy');
         });
         //PACKAGES
         Route::group(['as'=>'packages.'], function () {
-            Route::resource('/', PackageController::class);
-            Route::post("/{package}/archive", [PackageController::class,'archive'])->where('package', '[0-9]+')->name('archive');
+            Route::get('packages/', [PackageController::class, 'index'])->name('index');
+            Route::get('packages/create', [PackageController::class, 'create'])->name('create');
+            Route::post('packages/', [PackageController::class, 'store'])->name('store');
+            Route::get('packages/{package}', [PackageController::class, 'show'])->name('show');
+            Route::get('packages/{package}/edit', [PackageController::class, 'edit'])->name('edit');
+            Route::patch('packages/{package}', [PackageController::class, 'update'])->name('update');
+            Route::delete('packages/{package}', [PackageController::class, 'destroy'])->name('destroy');
+            Route::post("packages/{package}/archive", [PackageController::class,'archive'])->where('package', '[0-9]+')->name('archive');
         });
         //SUBSCRIPTIONS
-        Route::group(['prefix' => 'subscriptions','as'=>'subscriptions.'], function () {
-            Route::get("/{subscription}/info", "Landlord\Subscriptions@subscriptionInfo")->where('subscription', '[0-9]+');
-            Route::post("/{subscription}/cancel", "Landlord\Subscriptions@cancelSubscription")->where('subscription', '[0-9]+');
-            Route::get("/{customer}/create-edit-plan", "Landlord\Subscriptions@createEditPlan")->where('customer', '[0-9]+');
-            Route::post("/{customer}/create-edit-plan", "Landlord\Subscriptions@storeUpdatePlan")->where('customer', '[0-9]+');
-            Route::resource('/', SubscriptionController::class);
+        Route::group(['as'=>'subscriptions.'], function () {
+            Route::get("subscriptions/{subscription}/info", "Landlord\Subscriptions@subscriptionInfo")->where('subscription', '[0-9]+');
+            Route::post("subscriptions/{subscription}/cancel", "Landlord\Subscriptions@cancelSubscription")->where('subscription', '[0-9]+');
+            Route::get("subscriptions/{customer}/create-edit-plan", "Landlord\Subscriptions@createEditPlan")->where('customer', '[0-9]+');
+            Route::post("subscriptions/{customer}/create-edit-plan", "Landlord\Subscriptions@storeUpdatePlan")->where('customer', '[0-9]+');
+            Route::get('subscriptions/', [SubscriptionController::class, 'index'])->name('index');
+            Route::get('subscriptions/create', [SubscriptionController::class, 'create'])->name('create');
+            Route::post('subscriptions/', [SubscriptionController::class, 'store'])->name('store');
+            Route::get('subscriptions/{subscription}', [SubscriptionController::class, 'show'])->name('show');
+            Route::get('subscriptions/{subscription}/edit', [SubscriptionController::class, 'edit'])->name('edit');
+            Route::patch('subscriptions/{subscription}', [SubscriptionController::class, 'update'])->name('update');
+            Route::delete('subscriptions/{subscription}', [SubscriptionController::class, 'destroy'])->name('destroy');
         });
 
 //

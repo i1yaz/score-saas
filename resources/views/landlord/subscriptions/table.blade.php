@@ -18,12 +18,12 @@
             @foreach($subscriptions as $subscription)
                 <tr>
                     <td>{{ $subscription->id }}</td>
-                    <td>{{ $subscription->customer_name }}</td>
-                    <td>{{ $subscription->subscription_date }}</td>
+                    <td>{{ $subscription->first_name }} {{ $subscription->last_name }}</td>
+                    <td>{{ $subscription->created_at }}</td>
                     <td>{{ $subscription->amount }}</td>
                     <td>{{ $subscription->date_renewed }}</td>
                     <td>{{ $subscription->gateway_billing_cycle }}</td>
-                    <td>{{ $subscription->status }}</td>
+                    <td><span class="badge {{runtimeSubscriptionStatusColors($subscription->status)}}">{{runtimeSubscriptionStatusLang($subscription->status)}}</span></td>
                     <td>{{ $subscription->gateway_name }}</td>
                     <td  style="width: 120px">
                         {!! Form::open(['route' => ['taxes.destroy', $subscription->id], 'method' => 'delete']) !!}
