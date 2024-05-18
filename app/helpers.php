@@ -1193,3 +1193,13 @@ if (!function_exists('getInstallmentsAndDueDate')){
         ];
     }
 }
+if(!function_exists('twoIndexArrayToKeyValue')){
+    function twoIndexArrayToKeyValue(array $input,$keyColumn=0,$valueColumn=1): array
+    {
+        $result = [];
+        foreach ($input as  $value) {
+            $result[$value[$keyColumn]] = $value[$valueColumn];
+        }
+        return $result;
+    }
+}

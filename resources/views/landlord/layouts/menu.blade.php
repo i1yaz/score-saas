@@ -22,6 +22,38 @@
         <p>Subscriptions</p>
     </a>
 </li>
+<li class="nav-item {{Request::is(['app-admin/settings*'])?'menu-is-opening menu-open active':''}}">
+    <a href="#" class="nav-link {{Request::is(['app-admin/settings*'])?'active':''}}">
+        <i class="nav-icon fas fa-cog"></i>
+        <p>
+            Settings
+            <i class="fas fa-angle-left right"></i>
+        </p>
+    </a>
+    <ul class="nav nav-treeview">
+        <li class="nav-item">
+            <a href="{{route('landlord.settings.general.show')}}" class="nav-link {{ Request::is('app-admin/settings/general') ? 'active' : '' }}">
+                <p>General Settings</p>
+            </a>
+            <a href="{{route('landlord.settings.company.show')}}" class="nav-link {{ Request::is('app-admin/settings/company') ? 'active' : '' }}">
+                <p>Company Details</p>
+            </a>
+        </li>
+        <li class="nav-item {{Request::is(['app-admin/settings/email-templates*'])?'menu-is-opening menu-open active':''}}">
+            <a href="#" class="nav-link {{Request::is(['app-admin/settings/email-templates*'])?'active':''}}">
+                <p>
+                    Email
+                    <i class="fas fa-angle-left right"></i>
+                </p>
+            </a>
+            <a href="{{route('landlord.settings.email-templates.show')}}" class="nav-link {{ Request::is('app-admin/settings/email-templates') ? 'active' : '' }}">
+                <p>Email Templates</p>
+            </a>
+        </li>
+    </ul>
+</li>
+
+
 {{--@permission('tutor_dashboard-index')--}}
 {{--<li class="nav-item">--}}
 {{--    <a href="{{ route('tutor-dashboard.index') }}" class="nav-link {{ Request::is('tutor/dashboard') ? 'active' : '' }}">--}}

@@ -779,3 +779,18 @@ function pagePermalinkSlug($input) {
     $slug = preg_replace('/-+/', '-', $slug);
     return $slug;
 }
+if(!function_exists('getDateFormats')){
+    function getDateFormats(): array
+    {
+        return [
+            'd-m-Y' => 'd-m-Y',
+            'd/m/Y' => 'd/m/Y',
+            'm-d-Y' => 'm-d-Y',
+            'm/d/Y' => 'm/d/Y',
+            'Y-m-d' => 'Y-m-d',
+            'Y/m/d' => 'Y/m/d',
+            'Y-d-m' => 'Y-d-m',
+            'Y/d/m' => 'Y/d/m',
+        ];
+    }
+}

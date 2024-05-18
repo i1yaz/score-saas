@@ -4,6 +4,9 @@ use App\Http\Controllers\Landlord\Auth\AuthenticateController;
 use App\Http\Controllers\Landlord\CustomerController;
 use App\Http\Controllers\Landlord\DashboardController;
 use App\Http\Controllers\Landlord\PackageController;
+use App\Http\Controllers\Landlord\Settings\CompanyDetailController;
+use App\Http\Controllers\Landlord\Settings\EmailTemplateController;
+use App\Http\Controllers\Landlord\Settings\GeneralController;
 use App\Http\Controllers\Landlord\SubscriptionController;
 use App\Models\Landlord\Package;
 
@@ -105,61 +108,56 @@ Route::middleware(['landlord','redirect.url','auth'])->group(function () {
 //        Route::resource('team', 'Landlord\Team');
 //
 //        //SETTINGS
-//        Route::group(['prefix' => 'settings'], function () {
-//            Route::get("/general", "Landlord\Settings\General@show");
-//            Route::post("/general", "Landlord\Settings\General@update")->middleware(['demoModeCheck']);
-//            Route::get("/domain", "Landlord\Settings\Domain@show");
-//            Route::post("/domain", "Landlord\Settings\Domain@update")->middleware(['demoModeCheck']);
-//            Route::get("/company", "Landlord\Settings\Company@show");
-//            Route::post("/company", "Landlord\Settings\Company@update")->middleware(['demoModeCheck']);
-//            Route::get("/freetrial", "Landlord\Settings\Freetrial@show");
-//            Route::post("/freetrial", "Landlord\Settings\Freetrial@update")->middleware(['demoModeCheck']);
-//            Route::get("/offlinepayments", "Landlord\Settings\Offlinepayments@show");
-//            Route::post("/offlinepayments", "Landlord\Settings\Offlinepayments@update")->middleware(['demoModeCheck']);
-//            Route::get("/currency", "Landlord\Settings\Currency@show");
-//            Route::post("/currency", "Landlord\Settings\Currency@update")->middleware(['demoModeCheck']);
-//            Route::get("/emailtemplates", "Landlord\Settings\Emailtemplates@show");
-//            Route::post("/emailtemplates", "Landlord\Settings\Emailtemplates@update")->middleware(['demoModeCheck']);
-//            Route::get("/emailtemplates/{id}", "Landlord\Settings\Emailtemplates@showTemplate")->where('id', '[0-9]+');
-//            Route::post("/emailtemplates/{id}", "Landlord\Settings\Emailtemplates@update")->where('id', '[0-9]+')->middleware(['demoModeCheck']);
-//            Route::get("/email", "Landlord\Settings\Email@show");
-//            Route::post("/email", "Landlord\Settings\Email@update")->middleware(['demoModeCheck']);
-//            Route::get("/smtp", "Landlord\Settings\Smtp@show");
-//            Route::post("/smtp", "Landlord\Settings\Smtp@update")->middleware(['demoModeCheck']);
-//            Route::get("/testsmtp", "Landlord\Settings\Smtp@testSMTP")->middleware(['demoModeCheck']);
-//            Route::get("/updates", "Landlord\Settings\Updates@show");
-//            Route::post("/updates", "Landlord\Settings\Updates@update")->middleware(['demoModeCheck']);
-//            Route::post("/updates/check", "Landlord\Settings\Updates@checkUpdates")->middleware(['demoModeCheck']);
-//            Route::get("/logo", "Landlord\Settings\Logo@show");
-//            Route::get("/logo/uploadlogo", "Landlord\Settings\Logo@edit");
-//            Route::put("/logo/uploadlogo", "Landlord\Settings\Logo@update")->middleware(['demoModeCheck']);
-//            Route::get("/cronjob", "Landlord\Settings\Cronjob@show");
-//            Route::post("/cronjob", "Landlord\Settings\Cronjob@update")->middleware(['demoModeCheck']);
-//            Route::get("/email/testemail", "Landlord\Settings\Email@testEmail")->middleware(['demoModeCheck']);
-//            Route::post("/email/testemail", "Landlord\Settings\Email@testEmailAction")->middleware(['demoModeCheck']);
-//            Route::get("/gateways", "Landlord\Settings\Gateways@show");
-//            Route::post("/gateways", "Landlord\Settings\Gateways@update")->middleware(['demoModeCheck']);
-//            Route::get("/database", "Landlord\Settings\Database@show");
-//            Route::post("/database/user", "Landlord\Settings\Database@updateUser")->middleware(['demoModeCheck']);
-//            Route::post("/database/cpanel", "Landlord\Settings\Database@updateCpanel")->middleware(['demoModeCheck']);
-//            Route::post("/database/plesk", "Landlord\Settings\Database@updatePlesk")->middleware(['demoModeCheck']);
-//            Route::get("/system", "Landlord\Settings\System@show");
-//            Route::get("/emaillog", "Landlord\Settings\Email@logShow");
-//            Route::get("/emaillog/{id}", "Landlord\Settings\Email@logRead")->where('id', '[0-9]+');
-//            Route::delete("/emaillog/{id}", "Landlord\Settings\Email@logDelete")->where('id', '[0-9]+');
-//            Route::delete("/emaillog/purge", "Landlord\Settings\Email@logPurge");
-//            Route::get("/updateslog", "Landlord\Settings\Updateslog@logShow");
-//            Route::get("/updateslog/{id}", "Landlord\Settings\Updateslog@logRead")->where('id', '[0-9]+');
-//            Route::get("/errorlogs", "Landlord\Settings\Errorlogs@index");
-//            Route::delete("/errorlogs/delete", "Landlord\Settings\Errorlogs@delete")->where('id', '[0-9]+');
-//            Route::get("/errorlogs/download", "Landlord\Settings\Errorlogs@download");
-//            Route::get("/defaults", "Landlord\Settings\Defaults@show");
-//            Route::post("/defaults", "Landlord\Settings\Defaults@update")->middleware(['demoModeCheck']);
-//
-//            //payment gateways
-//            Route::get("/stripe", "Landlord\Settings\Gateways\Stripe@show");
-//            Route::post("/stripe", "Landlord\Settings\Gateways\Stripe@update")->middleware(['demoModeCheck']);
-//
+        Route::group(['prefix' => 'settings','as' => 'settings.'], function () {
+            Route::get("/general", [GeneralController::class, "show"])->name('general.show');
+            Route::post("/general", [GeneralController::class, "update"])->name('general.update');
+//            Route::get("/domain", "Landlord\Settings\Domain@show")->name('domain.show');
+//            Route::post("/domain", "Landlord\Settings\Domain@update")->name('domain.update');
+            Route::get("/company", [CompanyDetailController::class, "show"])->name('company.show');
+            Route::post("/company", [CompanyDetailController::class, "update"])->name('company.update');
+            Route::get("/free-trial", "Landlord\Settings\Freetrial@show")->name('free-trial.show');
+            Route::post("/free-trial", "Landlord\Settings\Freetrial@update")->name('free-trial.update');
+            Route::get("/offline-payments", "Landlord\Settings\Offlinepayments@show")->name('offline-payments.show');
+            Route::post("/offline-payments", "Landlord\Settings\Offlinepayments@update")->name('offline-payments.update');
+//            Route::get("/currency", "Landlord\Settings\Currency@show")->name('currency.show');
+//            Route::post("/currency", "Landlord\Settings\Currency@update")->name('currency.update');
+            Route::get("/email-templates", [EmailTemplateController::class,'show'])->name('email-templates.show');
+//            Route::post("/email-templates", [EmailTemplateController::class,'update'])->name('email-templates.update');
+            Route::get("/email-templates/{id}", [EmailTemplateController::class, "showTemplate"])->name('email-templates.showTemplate')->where('id', '[0-9]+');
+            Route::post("/email-templates/{id}", [EmailTemplateController::class, "update"])->name('email-templates.update')->where('id', '[0-9]+');
+            Route::get("/email", "Landlord\Settings\Email@show")->name('email.show');
+            Route::post("/email", "Landlord\Settings\Email@update")->name('email.update');
+            Route::get("/smtp", "Landlord\Settings\Smtp@show")->name('smtp.show');
+            Route::post("/smtp", "Landlord\Settings\Smtp@update")->name('smtp.update');
+            Route::get("/test-smtp", "Landlord\Settings\Smtp@testSMTP")->name('smtp.test-smtp');
+            Route::get("/logo", "Landlord\Settings\Logo@show")->name('logo.show');
+            Route::get("/logo/upload", "Landlord\Settings\Logo@edit")->name('logo.edit');
+            Route::put("/logo/upload", "Landlord\Settings\Logo@update")->name('logo.update');
+            Route::get("/cronjob", "Landlord\Settings\Cronjob@show")->name('cronjob.show');
+            Route::post("/cronjob", "Landlord\Settings\Cronjob@update")->name('cronjob.update');
+            Route::get("/email/test-email", "Landlord\Settings\Email@testEmail")->name('cronjob.test-email');
+            Route::post("/email/test-email", "Landlord\Settings\Email@testEmailAction")->name('cronjob.test-email-action');
+            Route::get("/gateways", "Landlord\Settings\Gateways@show")->name('gateways.show');
+            Route::post("/gateways", "Landlord\Settings\Gateways@update")->name('gateways.update');
+            Route::get("/database", "Landlord\Settings\Database@show")->name('database.show');
+            Route::post("/database/user", "Landlord\Settings\Database@updateUser")->name('database.update-user');
+            Route::get("/system", "Landlord\Settings\System@show")->name('system.show');
+            Route::get("/email-log", "Landlord\Settings\Email@logShow")->name('email-log.show');
+            Route::get("/email-log/{id}", "Landlord\Settings\Email@logRead")->name('email-log.read')->where('id', '[0-9]+');
+            Route::delete("/email-log/{id}", "Landlord\Settings\Email@logDelete")->name('email-log.delete')->where('id', '[0-9]+');
+            Route::delete("/email-log/purge", "Landlord\Settings\Email@logPurge")->name('email-log.purge');
+            Route::get("/updates-log", "Landlord\Settings\Updateslog@logShow")->name('update-log.show');
+            Route::get("/updates-log/{id}", "Landlord\Settings\Updateslog@logRead")->name('update-log.read')->where('id', '[0-9]+');
+            Route::get("/error-logs", "Landlord\Settings\Errorlogs@index")->name('error-logs.index');
+            Route::delete("/error-logs/delete", "Landlord\Settings\Errorlogs@delete")->name('error-log.delete')->where('id', '[0-9]+');
+            Route::get("/error-logs/download", "Landlord\Settings\Errorlogs@download")->name('update-log.download');
+            Route::get("/defaults", "Landlord\Settings\Defaults@show")->name('defaults.show');
+            Route::post("/defaults", "Landlord\Settings\Defaults@update")->name('defaults.update');
+
+            //payment gateways
+            Route::get("/stripe", "Landlord\Settings\Gateways\Stripe@show")->name('stripe.show');
+            Route::post("/stripe", "Landlord\Settings\Gateways\Stripe@update")->name('stripe.update');
+
 //            Route::get("/paypal", "Landlord\Settings\Gateways\Paypal@show");
 //            Route::post("/paypal", "Landlord\Settings\Gateways\Paypal@update")->middleware(['demoModeCheck']);
 //
@@ -168,7 +166,7 @@ Route::middleware(['landlord','redirect.url','auth'])->group(function () {
 //
 //            Route::get("/razorpay", "Landlord\Settings\Gateways\Razorpay@show");
 //            Route::post("/razorpay", "Landlord\Settings\Gateways\Razorpay@update")->middleware(['demoModeCheck']);
-//        });
+        });
 //
 //        //FRONTEND
 //        Route::group(['prefix' => 'frontend'], function () {
