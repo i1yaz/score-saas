@@ -8,5 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tenant extends BaseModel
 {
+    protected $connection = 'landlord';
     protected $guarded = ['id'];
 }

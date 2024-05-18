@@ -49,6 +49,15 @@
             <a href="{{route('landlord.settings.email-templates.show')}}" class="nav-link {{ Request::is('app-admin/settings/email-templates') ? 'active' : '' }}">
                 <p>Email Templates</p>
             </a>
+            <a href="{{route('landlord.settings.email.show')}}" class="nav-link {{ Request::is('app-admin/settings/email') ? 'active' : '' }}">
+                <p>Email Settings</p>
+            </a>
+{{--            <a href="{{route('landlord.settings.logo.show')}}" class="nav-link {{ Request::is('app-admin/settings/email-log') ? 'active' : '' }}">--}}
+{{--                <p>Email Log</p>--}}
+{{--            </a>--}}
+            <a href="{{route('landlord.settings.smtp.show')}}" class="nav-link {{ Request::is('app-admin/settings/smtp') ? 'active' : '' }}">
+                <p>SMTP Settings</p>
+            </a>
         </li>
     </ul>
 </li>

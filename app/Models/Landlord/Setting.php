@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Setting extends BaseModel
 {
-
+    protected $connection = 'landlord';
 }

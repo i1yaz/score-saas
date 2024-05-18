@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Landlord\EmailTemplate;
 use App\Models\Landlord\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class EmailTemplateController extends Controller
 {
@@ -36,8 +37,42 @@ class EmailTemplateController extends Controller
     public function showTemplate($id)
     {
         $template = EmailTemplate::where('id', $id)->firstOrFail();
-        $html = view('landlord.settings.email_templates_form', compact('template'))->render();
-        return view('landlord.settings.email_template', compact('template'));
+        $variables['template'] = explode(',', $template->variables);
+        $variables['general'] = explode(',', config('system.email_general_variables'));
+        $html = view('landlord.settings.email_templates_form', compact('template','variables'))->render();
+        return response()->json(['html' => $html]);
+    }
+    public function updateTemplate(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'subject' => 'required',
+            'body' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()->first()], 400);
+        }
+        EmailTemplate::where('id', $id)->update([
+            'subject' => $request->subject,
+            'body' => $request->body,
+        ]);
+        return response()->json(['message' => 'Email template updated successfully']);
+    }
+    public function uploadImage(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|size:500',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()->first()], 400);
+        }
+
+        $image = $request->file('image');
+        $imageName = time().'.'.$image->getClientOriginalExtension();
+        $path = "pictures/app-admin/email-images/{$request->template_id}";
+        storeFile($path, $image, $imageName);
+        return response()->json(['url' => asset("{$path}/{$imageName}")]);
     }
 
 }

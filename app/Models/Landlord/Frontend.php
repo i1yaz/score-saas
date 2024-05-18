@@ -8,5 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Frontend extends BaseModel
 {
+    protected $connection = 'landlord';
     protected $table = 'frontend';
 }

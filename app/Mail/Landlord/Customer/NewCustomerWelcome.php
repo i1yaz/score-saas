@@ -56,7 +56,7 @@ class NewCustomerWelcome extends Mailable {
     public function build() {
 
         //email template
-        if (!$template = EmailTemplate::on('landlord')->Where('name', 'New Customer Welcome')->first()) {
+        if (!$template = EmailTemplate::on('landlord')->where('name', 'New Customer Welcome')->first()) {
             return false;
         }
 
