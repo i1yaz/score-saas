@@ -1224,19 +1224,10 @@ function runtimeChecklistCheckbox($value = '') {
  */
 function runtimeNumberFormat($number = '') {
 
-    //validation
     if (!is_numeric($number)) {
         $number = 0;
     }
-
-    //decimal separator
-    $decimal = runtimeCurrrencySeperators(config('system.settings_system_decimal_separator'));
-
-    //thousand separator
-    $thousands = runtimeCurrrencySeperators(config('system.settings_system_thousand_separator'));
-
-    //format the number
-    return number_format($number, 2, $decimal, $thousands);
+    return formatAmountWithoutCurrency($number);
 }
 
 /**

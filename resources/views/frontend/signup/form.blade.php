@@ -31,7 +31,7 @@
             <input type="text" class="form-control" name="account_name" placeholder="{{ $section->data_4 }}"
                 aria-describedby="basic-addon2">
             <span class="input-group-addon x-sub-domain"
-                id="basic-addon2">.{{ config('saas.settings_base_domain') }}</span>
+                id="basic-addon2">.{{ config('saas.base_domain') }}</span>
         </div>
 
         <!--item-->
@@ -40,17 +40,17 @@
                 <select class="select2-basic form-control form-control-sm x-packages-list select2-preselected" id="plan"
                     name="plan" data-preselected="{{ request('ref') ?? ''}}">
                     @foreach($packages as $package)
-                    @if($package->package_subscription_options == 'paid')
-                    <option data-option="monthly" value="monthly_{{  $package->package_id }}">
-                        {{  $package->package_name }}
-                        ({{ runtimeMoneyFormat($package->package_amount_monthly) }} / @lang('lang.month'))
+                    @if($package->subscription_options == 'paid')
+                    <option data-option="monthly" value="monthly_{{  $package->id }}">
+                        {{  $package->name }}
+                        ({{ runtimeMoneyFormat($package->amount_monthly) }} / @lang('lang.month'))
                     </option>
-                    <option data-option="yearly" value="yearly_{{  $package->package_id }}">
-                        {{  $package->package_name }}
-                        ({{ runtimeMoneyFormat($package->package_amount_yearly) }} / @lang('lang.year'))
+                    <option data-option="yearly" value="yearly_{{  $package->id }}">
+                        {{  $package->name }}
+                        ({{ runtimeMoneyFormat($package->amount_yearly) }} / @lang('lang.year'))
                     </option>
                     @else
-                    <option data-option="free" value="free_{{  $package->package_id }}">{{  $package->package_name }}
+                    <option data-option="free" value="free_{{  $package->id }}">{{  $package->name }}
                         (@lang('lang.free'))</option>
                     @endif
                     @endforeach
@@ -60,14 +60,14 @@
         </div>
 
         <!--terms-->
-        @if(config('system.settings_terms_of_service_status') == 'enabled')
+        @if(config('system.terms_of_service_status') == 'enabled')
         <div class="form-group form-group-checkbox row terms-of-service-link">
             <div class="col-12 p-t-5">
                 <input type="checkbox" id="signup_agree_terms" name="signup_agree_terms"
                     class="filled-in chk-col-light-blue signup_agree_terms">
                 <label class="p-l-10" for="signup_agree_terms">
                     <a href="#" data-toggle="modal" data-target="#termsModal">
-                        {{ config('system.settings_terms_of_service_text') }}
+                        {{ config('system.terms_of_service_text') }}
                     </a>
                 </label>
             </div>

@@ -16,26 +16,24 @@ class SignupController extends Controller
     public function index() {
 
         //get packages
-        $packages = Package::Where('status', 'active')->Where('visibility', 'visible')->get();
+        $packages = Package::active()->get();
 
         $page = $this->pageSettings('index');
 
         //main menu
-        $mainmenu = Frontend::Where('group', 'main-menu')->orderBy('name', 'asc')->get();
+        $main_menu = Frontend::Where('group', 'main-menu')->orderBy('name', 'asc')->get();
 
         //get the item
         $section = Frontend::Where('name', 'page-signup')->first();
 
-        return view('frontend/signup/page', compact('page', 'packages', 'mainmenu', 'section'))->render();
+        return view('frontend/signup/page', compact('page', 'packages', 'main_menu', 'section'));
 
     }
-    public function createAccount(CreateAccountRequest $request, CreateTenantRepository $createtenantrepo) {
-
-        //defaults
+    public function createAccount(CreateAccountRequest $request, CreateTenantRepository $createTenantRepo) {
         $free_trial = 'no';
         $subscription_trial_end = null;
         $subscription_date_started = null;
-
+        dd($request,$createTenantRepo);
         //validate terms
         if (config('system.terms_of_service_status') == 'enabled') {
             if (request('signup_agree_terms') != 'on') {

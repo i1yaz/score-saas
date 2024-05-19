@@ -45,9 +45,7 @@
             </div>
         </div>
         <div class="col-lg-6">
-
             @include('frontend.signup.form')
-
         </div>
 
     </div>
