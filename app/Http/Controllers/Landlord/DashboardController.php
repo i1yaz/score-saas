@@ -4,74 +4,56 @@ namespace App\Http\Controllers\Landlord;
 
 use App\Http\Controllers\AppBaseController;
 use App\Http\Responses\Landlord\Home\IndexResponse;
+use App\Models\Landlord\Payment;
+use App\Models\Landlord\Tenant;
+use Carbon\Carbon;
 
 class DashboardController extends AppBaseController
 {
-    public function index() {
-
+    public function index()
+    {
         $stats = $this->topStats();
-
-        $payload['income'] = $this->yearlyIncome([
-            'period' => 'this_year',
-        ]);
-
-        $payload = [
-            'page' => $this->pageSettings('index'),
-            'stats' => $stats,
-            'income' => $this->yearlyIncome(),
-        ];
-
-        return new IndexResponse($payload);
+        $income = $this->yearlyIncome([ 'period' => 'this_year']);
+        return view('landlord.dashboard.home', compact('stats', 'income'));
     }
 
-    public function topStats() {
-
-        //vars
+    private function topStats() {
         $stats = [];
 
-        //dates
-        $today = \Carbon\Carbon::now()->format('Y-m-d');
-        $this_year_start = \Carbon\Carbon::now()->startOfYear()->format('Y-m-d');
-        $this_year_end = \Carbon\Carbon::now()->endOfYear()->format('Y-m-d');
-        $this_month_start = \Carbon\Carbon::now()->startOfMonth()->format('Y-m-d');
-        $this_month_end = \Carbon\Carbon::now()->endOfMonth()->format('Y-m-d');
-
+        $today = Carbon::now()->format('Y-m-d');
+        $this_year_start = Carbon::now()->startOfYear()->format('Y-m-d');
+        $this_year_end = Carbon::now()->endOfYear()->format('Y-m-d');
+        $this_month_start = Carbon::now()->startOfMonth()->format('Y-m-d');
+        $this_month_end = Carbon::now()->endOfMonth()->format('Y-m-d');
         //income - today
-        $stats['income_today'] = 1000;
-
+        $stats['income_today'] = Payment::where('date', $today)->sum('amount');
         //income - this month
-        $stats['income_this_month'] = 800*30;
-
+        $stats['income_this_month'] = Payment::where('date', '>=', $this_month_start)
+            ->where('date', '<=', $this_month_end)
+            ->sum('amount');
         //income - this year
-        $stats['income_this_year'] = 1100*365;
-
+        $stats['income_this_year'] = Payment::where('date', '>=', $this_year_start)
+            ->where('date', '<=', $this_year_end)
+            ->sum('amount');
         //count records
-        $stats['count_customers'] =50;
-
-        //return
+        $stats['count_customers'] = Tenant::count();
         return $stats;
     }
 
-    public function yearlyIncome() {
-
-        $year = \Carbon\Carbon::now()->format('Y');
-
-        //vars
+    public function yearlyIncome(array $params = []) {
+        $year = Carbon::now()->format('Y');
         $stats = [
             'total' => 0,
             'monthly' => [],
             'year' => $year,
         ];
-
-        //every month of the year
         for ($i = 1; $i <= 12; $i++) {
-            //amount
-            $start_date = \Carbon\Carbon::create($year, $i)->startOfMonth()->format('Y-m-d');
-            $end_date = \Carbon\Carbon::create($year, $i)->lastOfMonth()->format('Y-m-d');
-
-            //amount
-            $amount = 800;
-
+            $start_date = Carbon::create($year, $i)->startOfMonth()->format('Y-m-d');
+            $end_date = Carbon::create($year, $i)->lastOfMonth()->format('Y-m-d');
+            //Note::We can do that one query to get all the months income
+            $amount = Payment::where('date', '>=', $start_date)
+                ->where('date', '<=', $end_date)
+                ->sum('amount');
             //get income for the month
             $stats['monthly'][] = $amount;
             //running total
