@@ -10,6 +10,7 @@ use App\Http\Requests\Landlord\Customers\UpdatePasswordValidation;
 use App\Http\Requests\Landlord\Customers\UpdateValidation;
 use App\Mail\Landlord\Customer\NewCustomerWelcome;
 use App\Models\Landlord\Package;
+use App\Models\Landlord\Subscription;
 use App\Repositories\Landlord\CreateTenantRepository;
 use App\Repositories\Landlord\SubscriptionsRepository;
 use App\Repositories\Landlord\tenantsRepository;
@@ -65,8 +66,8 @@ class CustomerController extends AppBaseController
     }
 
     public function show($id) {
-
-        if (\App\Models\Landlord\Tenant::Where('id', $id)->doesntExist()) {
+        abort(403,'Not implemented.Coming Soon!');
+        if (\App\Models\Landlord\Tenant::where('id', $id)->doesntExist()) {
             abort(404);
         }
 
@@ -74,20 +75,14 @@ class CustomerController extends AppBaseController
         $customer = $customers->first();
 
         //get customers subscription if there is one
-        if ($subscription = \App\Models\Landlord\Subscription::Where('subscription_customerid', $id)
-            ->where('subscription_archived', 'no')
+        if ($subscription = Subscription::Where('customer_id', $id)
+            ->where('archived', 'no')
             ->first()) {
             config(['visibility.has_subscription' => true]);
-            config(['subscription_status' => $subscription->subscription_status]);
+            config(['status' => $subscription->subscription_status]);
         } else {
             $subscription = [];
         }
-        $page = $this->pageSettings('show');
-        request()->merge([
-            'resource_query' => "payment_tenant_id=$id",
-        ]);
-
-        return view('landlord/customer/wrapper', compact('page', 'customer', 'subscription'))->render();
 
     }
 
@@ -172,7 +167,7 @@ class CustomerController extends AppBaseController
         $account_url = "https://{$customer->domain}/auth?id_key={$auth_key}";
 
         //create subscription
-        $subscription = new \App\Models\Landlord\Subscription();
+        $subscription = new Subscription();
         $subscription->added_by  = auth()->id();
         $subscription->customer_id = $customer->id;
         $subscription->unique_id = str_unique();
@@ -237,7 +232,7 @@ class CustomerController extends AppBaseController
     public function showSubscription($id) {
 
         //get the customers subscription
-        if ($subscription = \App\Models\Landlord\Subscription::Where('subscription_customerid', $id)
+        if ($subscription = Subscription::Where('subscription_customerid', $id)
             ->where('subscription_archived', 'no')
             ->leftJoin('packages', 'packages.package_id', '=', 'subscriptions.subscription_package_id')
             ->first()) {
@@ -387,7 +382,7 @@ class CustomerController extends AppBaseController
         $customer->delete();
 
         //delete subsciption locally and at schedule for deleting at the payment gateay
-        if ($subscription = \App\Models\Landlord\Subscription::Where('subscription_customerid', $id)->first()) {
+        if ($subscription = Subscription::Where('subscription_customerid', $id)->first()) {
             if ($subscription->subscription_status == 'active' || $subscription->subscription_status == 'failed') {
                 if ($subscription->subscription_gateway_id != '' && $subscription->subscription_gateway_name != '') {
                     $scheduled = new \App\Models\Landlord\Schedule();
@@ -405,7 +400,7 @@ class CustomerController extends AppBaseController
         }
 
         //delete any other subscriptions
-        \App\Models\Landlord\Subscription::Where('subscription_customerid', $id)->delete();
+        Subscription::Where('subscription_customerid', $id)->delete();
 
         //remove table row
         $jsondata['dom_visibility'][] = array(

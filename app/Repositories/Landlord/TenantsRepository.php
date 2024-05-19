@@ -11,7 +11,6 @@ class TenantsRepository
     }
 
     public function search($id = '') {
-
         $tenants = $this->tenant->newQuery();
 
         // all client fields
