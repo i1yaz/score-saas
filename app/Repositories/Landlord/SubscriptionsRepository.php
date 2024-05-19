@@ -122,7 +122,7 @@ class SubscriptionsRepository
                 //queue for cancelling at the payment gateway (will be done via cronjob)
                 if ($subscription->subscription_type == 'paid' && $subscription->subscription_payment_method == 'automatic') {
                     if ($subscription->subscription_status == 'active' || $subscription->subscription_status == 'failed') {
-                        $schedule = new \App\Models\Landlord\Scheduled();
+                        $schedule = new \App\Models\Landlord\Schedule();
                         $schedule->setConnection('landlord');
                         $schedule->scheduled_gateway = $subscription->subscription_gateway_name;
                         $schedule->scheduled_type = 'cancel-subscription';

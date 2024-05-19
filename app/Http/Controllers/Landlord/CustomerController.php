@@ -378,7 +378,7 @@ class CustomerController extends AppBaseController
         }
 
         //schedule for cronjob - delete database
-        $schedule = new \App\Models\Landlord\Scheduled();
+        $schedule = new \App\Models\Landlord\Schedule();
         $schedule->scheduled_type = 'delete-database';
         $schedule->scheduled_payload_1 = $customer->database;
         $schedule->save();
@@ -390,7 +390,7 @@ class CustomerController extends AppBaseController
         if ($subscription = \App\Models\Landlord\Subscription::Where('subscription_customerid', $id)->first()) {
             if ($subscription->subscription_status == 'active' || $subscription->subscription_status == 'failed') {
                 if ($subscription->subscription_gateway_id != '' && $subscription->subscription_gateway_name != '') {
-                    $scheduled = new \App\Models\Landlord\Scheduled();
+                    $scheduled = new \App\Models\Landlord\Schedule();
                     $scheduled->scheduled_gateway = $subscription->subscription_gateway_name;
                     $scheduled->scheduled_type = 'cancel-subscription';
                     $scheduled->scheduled_payload_1 = $subscription->subscription_gateway_id;

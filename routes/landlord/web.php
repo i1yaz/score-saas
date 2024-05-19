@@ -5,8 +5,11 @@ use App\Http\Controllers\Landlord\CustomerController;
 use App\Http\Controllers\Landlord\DashboardController;
 use App\Http\Controllers\Landlord\PackageController;
 use App\Http\Controllers\Landlord\Settings\CompanyDetailController;
+use App\Http\Controllers\Landlord\Settings\CronJobController;
 use App\Http\Controllers\Landlord\Settings\EmailController;
 use App\Http\Controllers\Landlord\Settings\EmailTemplateController;
+use App\Http\Controllers\Landlord\Settings\GatewayController;
+use App\Http\Controllers\Landlord\Settings\Gateways\StripeController;
 use App\Http\Controllers\Landlord\Settings\GeneralController;
 use App\Http\Controllers\Landlord\Settings\SmtpController;
 use App\Http\Controllers\Landlord\SubscriptionController;
@@ -136,12 +139,12 @@ Route::middleware(['landlord','redirect.url','auth'])->group(function () {
             Route::get("/logo", "Landlord\Settings\Logo@show")->name('logo.show');
             Route::get("/logo/upload", "Landlord\Settings\Logo@edit")->name('logo.edit');
             Route::put("/logo/upload", "Landlord\Settings\Logo@update")->name('logo.update');
-            Route::get("/cronjob", "Landlord\Settings\Cronjob@show")->name('cronjob.show');
-            Route::post("/cronjob", "Landlord\Settings\Cronjob@update")->name('cronjob.update');
+//            Route::get("/cronjob", [CronJobController::class,'show'])->name('cronjob.show');
+//            Route::post("/cronjob", [CronJobController::class,'update'])->name('cronjob.update');
             Route::get("/email/test-email", [EmailController::class,'testEmail'])->name('email.test-email');
             Route::post("/email/test-email", [EmailController::class,'testEmailAction'])->name('email.test-email-action');
-            Route::get("/gateways", "Landlord\Settings\Gateways@show")->name('gateways.show');
-            Route::post("/gateways", "Landlord\Settings\Gateways@update")->name('gateways.update');
+            Route::get("/gateways", [GatewayController::class,'show'])->name('gateways.show');
+            Route::post("/gateways", [GatewayController::class,'update'])->name('gateways.update');
             Route::get("/database", "Landlord\Settings\Database@show")->name('database.show');
             Route::post("/database/user", "Landlord\Settings\Database@updateUser")->name('database.update-user');
             Route::get("/system", "Landlord\Settings\System@show")->name('system.show');
@@ -158,8 +161,8 @@ Route::middleware(['landlord','redirect.url','auth'])->group(function () {
             Route::post("/defaults", "Landlord\Settings\Defaults@update")->name('defaults.update');
 
             //payment gateways
-            Route::get("/stripe", "Landlord\Settings\Gateways\Stripe@show")->name('stripe.show');
-            Route::post("/stripe", "Landlord\Settings\Gateways\Stripe@update")->name('stripe.update');
+            Route::get("/stripe", [StripeController::class,'show'])->name('stripe.show');
+            Route::post("/stripe", [StripeController::class,'update'])->name('stripe.update');
 
 //            Route::get("/paypal", "Landlord\Settings\Gateways\Paypal@show");
 //            Route::post("/paypal", "Landlord\Settings\Gateways\Paypal@update")->middleware(['demoModeCheck']);
@@ -268,19 +271,19 @@ Route::middleware(['landlord','redirect.url','auth'])->group(function () {
 //            Route::get("/customers", "Landlord\Feed@customerNames");
 //        });
 //
-//        //PAYMENT GATEWAY WEB HOOKS
-//        Route::group(['prefix' => 'webhooks'], function () {
-//
-//            //NOTE - must add any new routes (names) to this file to avoid error - ..\Middleware\General\StripHtmlTags.php
-//            Route::any("/stripe", "Landlord\Webhooks\Stripe\Stripe@index")->name('webhooks-stripe');
-//            Route::any("/paypal", "Landlord\Webhooks\Paypal\Paypal@index")->name('webhooks-paypal');
-//            Route::any("/paystack", "Landlord\Webhooks\Paystack\Paystack@index")->name('webhooks-paystack');
-//            //Route::any("/razorpay", "Landlord\Webhooks\Razorpay\Razorpay@index")->name('webhooks-razorpay');
-//            Route::any("/razorpay2", "Landlord\Webhooks\Razorpay\Razorpay@index")->name('webhooks-razorpay'); //temp
-//
-//            //NOTE - must add any new routes (names) to this file to avoid error - ..\Middleware\General\StripHtmlTags.php
-//
-//        });
+        //PAYMENT GATEWAY WEB HOOKS
+        Route::group(['prefix' => 'webhooks'], function () {
+
+            //NOTE - must add any new routes (names) to this file to avoid error - ..\Middleware\General\StripHtmlTags.php
+            Route::any("/stripe", "Landlord\Webhooks\Stripe\Stripe@index")->name('webhooks-stripe');
+            Route::any("/paypal", "Landlord\Webhooks\Paypal\Paypal@index")->name('webhooks-paypal');
+            Route::any("/paystack", "Landlord\Webhooks\Paystack\Paystack@index")->name('webhooks-paystack');
+            //Route::any("/razorpay", "Landlord\Webhooks\Razorpay\Razorpay@index")->name('webhooks-razorpay');
+            Route::any("/razorpay2", "Landlord\Webhooks\Razorpay\Razorpay@index")->name('webhooks-razorpay'); //temp
+
+            //NOTE - must add any new routes (names) to this file to avoid error - ..\Middleware\General\StripHtmlTags.php
+
+        });
 
     });
 

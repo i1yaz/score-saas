@@ -14,12 +14,5 @@
         </nav>
     </div>
 
-    <div class="sidebar">
-        <nav class="mt-2">
-            <ul class="nav nav-pills nav-child-indent nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                @include('landlord.layouts.menu')
-            </ul>
-        </nav>
-    </div>
 
 </aside>
