@@ -10,6 +10,7 @@ use App\Http\Requests\Landlord\Customers\UpdatePasswordValidation;
 use App\Http\Requests\Landlord\Customers\UpdateValidation;
 use App\Mail\Landlord\Customer\NewCustomerWelcome;
 use App\Models\Landlord\Package;
+use App\Models\Landlord\Schedule;
 use App\Models\Landlord\Subscription;
 use App\Repositories\Landlord\CreateTenantRepository;
 use App\Repositories\Landlord\SubscriptionsRepository;
@@ -136,7 +137,7 @@ class CustomerController extends AppBaseController
         }
 
         //generate a customer password
-        $password =Str::password(20);
+        $password = Str::password(20);
         $hashedPassword = App::environment(['production']) ? Hash::make($password) : Hash::make('abcd1234');
 
         //create tenant
@@ -365,34 +366,31 @@ class CustomerController extends AppBaseController
      */
     public function destroy(SubscriptionsRepository $subscriptionsRepo, $id) {
 
-        $customer = \App\Models\Landlord\Tenant::Where('tenant_id', $id)->first();
-
-        //[demo check]
-        if (config('app.application_demo_mode') && in_array($id, [1, 2, 3])) {
-            abort(409, 'Demo Mode: You cannot delete the main demo accounts. You can create new ones for testing');
-        }
+        $customer = \App\Models\Landlord\Tenant::Where('id', $id)->first();
 
         //schedule for cronjob - delete database
-        $schedule = new \App\Models\Landlord\Schedule();
-        $schedule->scheduled_type = 'delete-database';
-        $schedule->scheduled_payload_1 = $customer->database;
-        $schedule->save();
+        if (!empty($customer->database)){
+            $schedule = new Schedule();
+            $schedule->type = 'delete-database';
+            $schedule->payload_1 = $customer->database;
+            $schedule->save();
+        }
 
         //delete record
         $customer->delete();
 
-        //delete subsciption locally and at schedule for deleting at the payment gateay
-        if ($subscription = Subscription::Where('subscription_customerid', $id)->first()) {
-            if ($subscription->subscription_status == 'active' || $subscription->subscription_status == 'failed') {
-                if ($subscription->subscription_gateway_id != '' && $subscription->subscription_gateway_name != '') {
-                    $scheduled = new \App\Models\Landlord\Schedule();
-                    $scheduled->scheduled_gateway = $subscription->subscription_gateway_name;
-                    $scheduled->scheduled_type = 'cancel-subscription';
-                    $scheduled->scheduled_payload_1 = $subscription->subscription_gateway_id;
-                    $scheduled->scheduled_payload_2 = $subscription->subscription_checkout_reference_2;
-                    $scheduled->scheduled_payload_3 = $subscription->subscription_checkout_reference_3;
-                    $scheduled->scheduled_payload_4 = $subscription->subscription_checkout_reference_4;
-                    $scheduled->scheduled_payload_5 = $subscription->subscription_checkout_reference_5;
+        //delete subscription locally and at schedule for deleting at the payment gateway
+        if ($subscription = Subscription::Where('customer_id', $id)->first()) {
+            if ($subscription->status == 'active' || $subscription->status == 'failed') {
+                if ($subscription->gateway_id != '' && $subscription->gateway_name != '') {
+                    $scheduled = new Schedule();
+                    $scheduled->gateway = $subscription->gateway_name;
+                    $scheduled->type = 'cancel-subscription';
+                    $scheduled->payload_1 = $subscription->gateway_id;
+                    $scheduled->payload_2 = $subscription->checkout_reference_2;
+                    $scheduled->payload_3 = $subscription->checkout_reference_3;
+                    $scheduled->payload_4 = $subscription->checkout_reference_4;
+                    $scheduled->payload_5 = $subscription->checkout_reference_5;
                     $scheduled->save();
                 }
             }
@@ -400,25 +398,8 @@ class CustomerController extends AppBaseController
         }
 
         //delete any other subscriptions
-        Subscription::Where('subscription_customerid', $id)->delete();
-
-        //remove table row
-        $jsondata['dom_visibility'][] = array(
-            'selector' => '#customer_' . $id,
-            'action' => 'slideup-slow-remove',
-        );
-
-        //success
-        $jsondata['notification'] = array('type' => 'success', 'value' => __('lang.request_has_been_completed'));
-
-        if (request('source') == 'page') {
-            $jsondata['redirect_url'] = url('/app-admin/customers');
-            request()->session()->flash('success-notification', __('lang.request_has_been_completed'));
-        }
-
-        //response
-        return response()->json($jsondata);
-
+        Subscription::Where('customer_id', $id)->delete();
+        return redirect(route('landlord.customers.index'));
     }
 
     /**

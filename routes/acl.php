@@ -4,7 +4,7 @@ use App\Http\Controllers\ACL\PermissionsController;
 use App\Http\Controllers\ACL\RolesAssignmentController;
 use App\Http\Controllers\ACL\RolesController;
 
-Route::group(['middleware' => ['auth', 'acl.access','redirect.url']], function () {
+Route::group(['middleware' => ['auth', 'acl.access']], function () {
     //Permissions
     Route::get('acl/permissions', [PermissionsController::class, 'index'])->name('acl.permissions.index');
     Route::get('acl/permissions/create', [PermissionsController::class, 'create'])->name('acl.permissions.create');

@@ -10,6 +10,7 @@
 namespace App\Http\Middleware\General;
 
 use Closure;
+use Illuminate\Support\Facades\Auth;
 use Log;
 
 
@@ -25,10 +26,9 @@ class AdminCheck {
      */
     public function handle($request, Closure $next) {
         //check if user is admin. If user is not, show errors
-        if (auth()->user()->role->role_id !== 1) {
+        if (!Auth::user()->hasRole(['super-admin','admin'])) {
             abort(403);
         }
-        //continue
         return $next($request);
     }
 }

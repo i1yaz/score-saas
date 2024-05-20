@@ -62,7 +62,6 @@ class RouteServiceProvider extends ServiceProvider
             ->group(
                 function ($router) {
                     require base_path('routes/web.php');
-                    require base_path('routes/acl.php');
                     require base_path('routes/dashboards/tutor.php');
                     require base_path('routes/dashboards/student.php');
                     require base_path('routes/dashboards/parent.php');
@@ -85,6 +84,7 @@ class RouteServiceProvider extends ServiceProvider
             ->namespace($this->namespace)
             ->group(
                 function ($router) {
+                    require base_path('routes/acl.php');
                     require base_path('routes/landlord/web.php');
                 }
             );

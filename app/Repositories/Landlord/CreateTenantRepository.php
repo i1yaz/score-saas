@@ -19,7 +19,7 @@ class CreateTenantRepository
 
         //create database
         if ($database_name = $this->databaseRepository->createDatabase()) {
-            Tenant::where('id', $customer->tenant_id)
+            Tenant::where('id', $customer->id)
                 ->update([
                     'database' => $database_name,
                 ]);
@@ -37,7 +37,7 @@ class CreateTenantRepository
 
     }
     public function configureDB($customer = [], $package = [], $auth_key = '') {
-        $tenant_id = $customer->tenant_id;
+        $tenant_id = $customer->id;
         Log::info("importing sql for customer id ($tenant_id)", ['process' => '[create-tenant-database]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'project_id' => 1]);
 //        $sql_file = BASE_DIR . '/tenant.sql';
 //
@@ -52,10 +52,10 @@ class CreateTenantRepository
             $redirect = 'home';
         }
 
-        $defaults = Defaults::On('landlord')->Where('id', 1)->first();
+        $defaults = Defaults::Where('id', 1)->first();
         \Spatie\Multitenancy\Models\Tenant::forgetCurrent();
 
-        if ($new_customer = \Spatie\Multitenancy\Models\Tenant::Where('id', $tenant_id)->first()) {
+        if ($new_customer = \Spatie\Multitenancy\Models\Tenant::where('id', $tenant_id)->first()) {
             try {
                 //switch to this tenants DB
                 $new_customer->makeCurrent();
@@ -85,59 +85,43 @@ class CreateTenantRepository
                 }
 
                 //update general settings
-                DB::connection('tenant')
-                    ->table('settings')
-                    ->where('id', 1)
-                    ->update([
-                        'company_name' => $customer->subdomain,
-                        'company_address_line_1' => null,
-                        'company_state' => null,
-                        'company_city' => null,
-                        'company_zipcode' => null,
-                        'company_country' => null,
-                        'company_telephone' => null,
-                        'email_from_address' => $customer->tenant_email,
-                        'email_from_name' => $customer->tenant_name,
-                        'email_server_type' => 'sendmail',
-                        'saas_tenant_id' => $customer->tenant_id,
-                        'saas_status' => $customer->tenant_status,
-                        'saas_onetimelogin_key' => $auth_key,
-                        'saas_onetimelogin_destination' => $redirect,
-                        'saas_package_id' => $package->package_id,
-                        'saas_package_limits_clients' => $package->package_limits_clients,
-                        'saas_package_limits_team' => $package->package_limits_team,
-                        'saas_package_limits_projects' => $package->package_limits_projects,
-                        'modules_projects' => ($package->package_module_projects == 'yes') ? 'enabled' : 'disabled',
-                        'saas_email_server_type' => 'local',
-                        'saas_email_forwarding_address' => $customer->tenant_email,
-                        'saas_email_local_address' => $customer->tenant_email_local_email,
-                        'modules_tasks' => ($package->package_module_tasks == 'yes') ? 'enabled' : 'disabled',
-                        'modules_invoices' => ($package->package_module_invoices == 'yes') ? 'enabled' : 'disabled',
-                        'modules_payments' => 'enabled',
-                        'modules_leads' => ($package->package_module_leads == 'yes') ? 'enabled' : 'disabled',
-                        'modules_knowledgebase' => ($package->package_module_knowledgebase == 'yes') ? 'enabled' : 'disabled',
-                        'modules_estimates' => ($package->package_module_estimates == 'yes') ? 'enabled' : 'disabled',
-                        'modules_expenses' => ($package->package_module_expense == 'yes') ? 'enabled' : 'disabled',
-                        'modules_notes' => 'enabled',
-                        'modules_subscriptions' => ($package->package_module_subscriptions == 'yes') ? 'enabled' : 'disabled',
-                        'modules_tickets' => ($package->package_module_tickets == 'yes') ? 'enabled' : 'disabled',
-                        'modules_timetracking' => ($package->package_module_timetracking == 'yes') ? 'enabled' : 'disabled',
-                        'modules_reminders' => ($package->package_module_reminders == 'yes') ? 'enabled' : 'disabled',
-                        'modules_proposals' => ($package->package_module_proposals == 'yes') ? 'enabled' : 'disabled',
-                        'modules_contracts' => ($package->package_module_contracts == 'yes') ? 'enabled' : 'disabled',
-                        'modules_messages' => ($package->package_module_messages == 'yes') ? 'enabled' : 'disabled',
-
-                        //defaults
-                        'system_language_default' => $defaults->defaults_language_default,
-                        'system_timezone' => $defaults->defaults_timezone,
-                        'system_date_format' => $defaults->defaults_date_format,
-                        'system_datepicker_format' => $defaults->defaults_datepicker_format,
-                        'system_currency_code' => $defaults->defaults_currency_code,
-                        'system_currency_symbol' => $defaults->defaults_currency_symbol,
-                        'system_currency_position' => $defaults->defaults_currency_position,
-                        'system_decimal_separator' => $defaults->defaults_decimal_separator,
-                        'system_thousand_separator' => $defaults->defaults_thousand_separator,
-                    ]);
+//                DB::connection('tenant')
+//                    ->table('settings')
+//                    ->where('id', 1)
+//                    ->update([
+//                        'company_name' => $customer->subdomain,
+//                        'company_address_line_1' => null,
+//                        'company_state' => null,
+//                        'company_city' => null,
+//                        'company_zipcode' => null,
+//                        'company_country' => null,
+//                        'company_telephone' => null,
+//                        'email_from_address' => $customer->tenant_email,
+//                        'email_from_name' => $customer->tenant_name,
+//                        'email_server_type' => 'sendmail',
+//                        'saas_tenant_id' => $customer->tenant_id,
+//                        'saas_status' => $customer->tenant_status,
+//                        'saas_onetimelogin_key' => $auth_key,
+//                        'saas_onetimelogin_destination' => $redirect,
+//                        'saas_package_id' => $package->package_id,
+//                        'saas_package_limits_clients' => $package->package_limits_clients,
+//                        'saas_package_limits_team' => $package->package_limits_team,
+//                        'saas_package_limits_projects' => $package->package_limits_projects,
+//                        'saas_email_server_type' => 'local',
+//                        'saas_email_forwarding_address' => $customer->tenant_email,
+//                        'saas_email_local_address' => $customer->tenant_email_local_email,
+//
+//                        //defaults
+//                        'system_language_default' => $defaults->defaults_language_default,
+//                        'system_timezone' => $defaults->defaults_timezone,
+//                        'system_date_format' => $defaults->defaults_date_format,
+//                        'system_datepicker_format' => $defaults->defaults_datepicker_format,
+//                        'system_currency_code' => $defaults->defaults_currency_code,
+//                        'system_currency_symbol' => $defaults->defaults_currency_symbol,
+//                        'system_currency_position' => $defaults->defaults_currency_position,
+//                        'system_decimal_separator' => $defaults->defaults_decimal_separator,
+//                        'system_thousand_separator' => $defaults->defaults_thousand_separator,
+//                    ]);
 
                 //update user profile
                 $tmp = explode(" ", $customer->tenant_name);

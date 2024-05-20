@@ -7,7 +7,7 @@ use App\Http\Controllers\Frontend\LoginController;
 use App\Http\Controllers\Frontend\PricingController;
 use App\Http\Controllers\Frontend\SignupController;
 
-Route::middleware(['landlord','redirect.url'])->group(function () {
+Route::middleware(['landlord'])->group(function () {
     Route::get('/', [HomeController::class, 'home']);
     Route::get('/faq', [FaqController::class, 'index']);
     Route::get('/pricing', [PricingController::class, 'index']);

@@ -33,7 +33,7 @@ Route::middleware(['landlord'])->group(function () {
     });
 });
 
-Route::middleware(['landlord','redirect.url','auth'])->group(function () {
+Route::middleware(['landlord','auth'])->group(function () {
     Route::group(['prefix' => 'app-admin','as' => 'landlord.'], function () {
         //HOME
         Route::any('/', [DashboardController::class,'index'])->name('root');
