@@ -41,8 +41,7 @@ return new class extends Migration
             $table->string('favicon_frontend_filename', 100)->nullable();
             $table->string('free_trial', 10)->default('no')->comment('yes|no');
             $table->integer('free_trial_days')->default(0)->comment('optional');
-            $table->string('frontend_status', 100)->default('enabled')->comment('enabled|disabed');
-            $table->string('purchase_code', 100)->nullable();
+            $table->string('frontend_status', 100)->default('enabled')->comment('enabled|disabled');
             $table->text('reserved_words')->nullable();
             $table->string('system_timezone', 100)->nullable();
             $table->string('system_date_format', 100)->nullable();
@@ -64,8 +63,6 @@ return new class extends Migration
             $table->text('offline_payments_details')->nullable();
             $table->text('offline_proof_of_payment_message')->nullable();
             $table->text('offline_proof_of_payment_thank_you')->nullable();
-            $table->string('onboarding_status', 50)->default('disabled')->comment('enabled|disabled');
-            $table->text('onboarding_content')->nullable();
             $table->string('stripe_secret_key', 150)->nullable();
             $table->string('stripe_public_key', 150)->nullable();
             $table->string('stripe_webhooks_key', 150)->nullable();

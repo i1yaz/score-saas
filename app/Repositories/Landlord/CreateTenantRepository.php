@@ -59,30 +59,15 @@ class CreateTenantRepository
             try {
                 //switch to this tenants DB
                 $new_customer->makeCurrent();
-//                DB::connection('tenant')->unprepared(file_get_contents($sql_file));
-                //import the sql file into the tenants database
+                Artisan::call('migrate', [
+                    '--database' => 'tenant',
+                    '--force' => true,
+                ]);
 
-                try {
-                    DB::connection('tenant')->beginTransaction();
-                    Artisan::call('migrate', [
-                        '--database' => 'tenant',
-                        '--force' => true,
-                    ]);
-
-                    Artisan::call('db:seed', [
-                        '--database' => 'tenant',
-                        '--force' => true,
-                    ]);
-
-                    DB::connection('tenant')->commit();
-                } catch (\Exception $e) {
-                    DB::connection('tenant')->rollBack();
-                    throw $e;
-                } catch (\Throwable $e) {
-                    Log::critical("Something went wrong in migration", ['process' => '[create-tenant-database]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'migration_error' => $e->getMessage()]);
-
-                    return false;
-                }
+                Artisan::call('db:seed', [
+                    '--database' => 'tenant',
+                    '--force' => true,
+                ]);
 
                 //update general settings
 //                DB::connection('tenant')
