@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Subject extends BaseModel
 {
+    protected $connection = 'tenant';
     public $table = 'subjects';
 
     public $fillable = [

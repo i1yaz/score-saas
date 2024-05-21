@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class LineItem extends Model
 {
     public $table = 'line_items';
+    protected $connection = 'tenant';
 
     public $fillable = [
         'name',

@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 class MonthlyInvoicePackage extends BaseModel
 {
     use HasFactory;
+    protected $connection = 'tenant';
 
     public $table = 'monthly_invoice_packages';
 

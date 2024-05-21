@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 class StudentTutoringPackage extends BaseModel
 {
     use HasFactory;
+    protected $connection = 'tenant';
 
     const FLAT_DISCOUNT = 1;
 

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class InvoicePackageType extends Model
 {
     use HasFactory;
+    protected $connection = 'tenant';
 
     public $table = 'invoice_package_types';
 

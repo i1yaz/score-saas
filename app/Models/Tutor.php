@@ -15,7 +15,7 @@ use Laravel\Sanctum\HasApiTokens;
 class Tutor extends Authenticatable implements LaratrustUser
 {
     use HasApiTokens, HasFactory, HasRolesAndPermissions,Notifiable;
-
+    protected $connection = 'tenant';
     protected string $guard = 'tutors';
 
     protected static function boot(): void

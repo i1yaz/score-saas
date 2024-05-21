@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Cache;
 class Session extends Model
 {
     use HasFactory;
+    protected $connection = 'tenant';
 
     protected static function boot(): void
     {

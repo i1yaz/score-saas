@@ -6,5 +6,7 @@ use Laratrust\Models\Role as RoleModel;
 
 class Role extends RoleModel
 {
+    protected $connection = 'tenant';
+
     public $guarded = [];
 }

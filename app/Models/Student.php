@@ -16,6 +16,7 @@ use Laravel\Sanctum\HasApiTokens;
 class Student extends Authenticatable implements LaratrustUser
 {
     use HasApiTokens, HasFactory, HasRolesAndPermissions,Notifiable;
+    protected $connection = 'tenant';
 
     public $table = 'students';
 
