@@ -76,7 +76,6 @@ return new class extends Migration
             $table->smallInteger('invoices_recurring_grace_period')->nullable()->comment('Number of days for due date on recurring invoices. If set to zero, invoices will be given due date same as invoice date');
             $table->text('invoices_default_terms_conditions')->nullable();
             $table->string('invoices_show_view_status')->nullable();
-
             $table->string('stripe_secret_key')->nullable();
             $table->string('stripe_public_key')->nullable();
             $table->text('stripe_webhooks_key')->nullable()->comment('from strip dashboard');

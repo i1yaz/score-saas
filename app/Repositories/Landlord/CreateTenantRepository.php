@@ -69,44 +69,43 @@ class CreateTenantRepository
                     '--force' => true,
                 ]);
 
-                //update general settings
-//                DB::connection('tenant')
-//                    ->table('settings')
-//                    ->where('id', 1)
-//                    ->update([
-//                        'company_name' => $customer->subdomain,
-//                        'company_address_line_1' => null,
-//                        'company_state' => null,
-//                        'company_city' => null,
-//                        'company_zipcode' => null,
-//                        'company_country' => null,
-//                        'company_telephone' => null,
-//                        'email_from_address' => $customer->tenant_email,
-//                        'email_from_name' => $customer->tenant_name,
-//                        'email_server_type' => 'sendmail',
-//                        'saas_tenant_id' => $customer->tenant_id,
-//                        'saas_status' => $customer->tenant_status,
-//                        'saas_onetimelogin_key' => $auth_key,
-//                        'saas_onetimelogin_destination' => $redirect,
-//                        'saas_package_id' => $package->package_id,
-//                        'saas_package_limits_clients' => $package->package_limits_clients,
-//                        'saas_package_limits_team' => $package->package_limits_team,
-//                        'saas_package_limits_projects' => $package->package_limits_projects,
-//                        'saas_email_server_type' => 'local',
-//                        'saas_email_forwarding_address' => $customer->tenant_email,
-//                        'saas_email_local_address' => $customer->tenant_email_local_email,
-//
-//                        //defaults
-//                        'system_language_default' => $defaults->defaults_language_default,
-//                        'system_timezone' => $defaults->defaults_timezone,
-//                        'system_date_format' => $defaults->defaults_date_format,
-//                        'system_datepicker_format' => $defaults->defaults_datepicker_format,
-//                        'system_currency_code' => $defaults->defaults_currency_code,
-//                        'system_currency_symbol' => $defaults->defaults_currency_symbol,
-//                        'system_currency_position' => $defaults->defaults_currency_position,
-//                        'system_decimal_separator' => $defaults->defaults_decimal_separator,
-//                        'system_thousand_separator' => $defaults->defaults_thousand_separator,
-//                    ]);
+                DB::connection('tenant')
+                    ->table('settings')
+                    ->where('id', 1)
+                    ->update([
+                        'company_name' => $customer->subdomain,
+                        'company_address_line_1' => null,
+                        'company_state' => null,
+                        'company_city' => null,
+                        'company_zipcode' => null,
+                        'company_country' => null,
+                        'company_telephone' => null,
+                        'email_from_address' => $customer->tenant_email,
+                        'email_from_name' => $customer->tenant_name,
+                        'email_server_type' => 'sendmail',
+                        'saas_tenant_id' => $customer->tenant_id,
+                        'saas_status' => $customer->tenant_status,
+                        'saas_onetime_login_key' => $auth_key,
+                        'saas_onetime_login_destination' => $redirect,
+                        'saas_package_id' => $package->package_id,
+                        'saas_package_limits_tutors' => $package->package_limits_clients,
+                        'saas_package_limits_students' => $package->max_students,
+                        'saas_package_limits_monthly_packages' => $package->max_monthly_packages,
+                        'saas_package_limits_student_packages' => $package->max_student_packages,
+                        'saas_email_server_type' => 'local',
+                        'saas_email_forwarding_address' => $customer->tenant_email,
+                        'saas_email_local_address' => $customer->tenant_email_local_email,
+                        //defaults
+                        'system_language_default' => $defaults->defaults_language_default,
+                        'system_timezone' => $defaults->defaults_timezone,
+                        'system_date_format' => $defaults->defaults_date_format,
+                        'system_datepicker_format' => $defaults->defaults_datepicker_format,
+                        'system_currency_code' => $defaults->defaults_currency_code,
+                        'system_currency_symbol' => $defaults->defaults_currency_symbol,
+                        'system_currency_position' => $defaults->defaults_currency_position,
+                        'system_decimal_separator' => $defaults->defaults_decimal_separator,
+                        'system_thousand_separator' => $defaults->defaults_thousand_separator,
+                    ]);
 
                 //update user profile
                 $tmp = explode(" ", $customer->tenant_name);

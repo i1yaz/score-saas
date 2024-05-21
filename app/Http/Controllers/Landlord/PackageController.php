@@ -82,7 +82,7 @@ class PackageController extends Controller
         $package->max_students = $request->max_students;
         $package->max_student_packages = $request->max_student_packages;
         $package->max_monthly_packages = $request->max_monthly_packages;
-        $package->max_teacher = $request->max_teacher;
+        $package->max_tutors = $request->max_tutors;
         $package->save();
 
         //reset featured

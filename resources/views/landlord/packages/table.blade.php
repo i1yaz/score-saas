@@ -8,7 +8,7 @@
             </div>
             <div class="card-body" style="text-align: center" >
                 <p><strong>{{$package->max_students}} </strong> Students</p><hr>
-                <p><strong>{{$package->max_teachers}} </strong> Teachers</p><hr>
+                <p><strong>{{$package->max_tutors}} </strong> Teachers</p><hr>
                 <p><strong>{{$package->max_student_packages}} </strong> Student Packages</p><hr>
                 <p><strong>{{$package->max_monthly_packages}} </strong> Monthly Packages</p><hr>
             </div>

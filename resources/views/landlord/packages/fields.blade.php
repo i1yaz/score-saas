@@ -44,8 +44,8 @@
             {!! Form::number('max_students', null, ['class' => 'form-control']) !!}
         </div>
         <div class="form-group col-sm-6">
-            {!! Form::label('max_teacher', 'Maximum Teachers:',['class' => '']) !!}
-            {!! Form::number('max_teacher', null, ['class' => 'form-control']) !!}
+            {!! Form::label('max_tutors', 'Maximum Tutors:',['class' => '']) !!}
+            {!! Form::number('max_tutors', null, ['class' => 'form-control']) !!}
         </div>
         <div class="form-group col-sm-6">
             {!! Form::label('max_student_packages', 'Maximum Student Packages:',['class' => '']) !!}

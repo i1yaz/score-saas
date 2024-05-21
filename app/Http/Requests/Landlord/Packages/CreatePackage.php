@@ -20,7 +20,7 @@ class CreatePackage extends FormRequest
             'max_students' => 'sometimes|nullable|integer',
             'max_student_packages' => 'sometimes|nullable|integer',
             'max_monthly_packages' => 'sometimes|nullable|integer',
-            'max_teacher' => 'sometimes|nullable|integer',
+            'max_tutors' => 'sometimes|nullable|integer',
         ];
     }
 }

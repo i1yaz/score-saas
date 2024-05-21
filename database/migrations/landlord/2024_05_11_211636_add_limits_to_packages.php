@@ -15,7 +15,7 @@ return new class extends Migration
             $table->integer('max_students')->default('0')->comment('-1 is unlimited')->after('is_featured');
             $table->integer('max_student_packages')->default('0')->comment('-1 is unlimited')->after('is_featured');
             $table->integer('max_monthly_packages')->default('0')->comment('-1 is unlimited')->after('is_featured');
-            $table->integer('max_teacher')->default('0')->comment('-1 is unlimited')->after('is_featured');
+            $table->integer('max_tutors')->default('0')->comment('-1 is unlimited')->after('is_featured');
         });
     }
 
@@ -28,7 +28,7 @@ return new class extends Migration
             $table->dropColumn('max_students');
             $table->dropColumn('max_student_packages');
             $table->dropColumn('max_monthly_packages');
-            $table->dropColumn('max_teacher');
+            $table->dropColumn('max_tutors');
         });
     }
 };
