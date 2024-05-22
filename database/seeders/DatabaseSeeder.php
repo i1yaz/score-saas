@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
             ClientPermissionsSeeder::class,
             ParentPermissionsSeeder::class,
             StudentPermissionsSeeder::class,
-            InvoicePaymentReminderSeeder::class,
+            InvoicePaymentReminderTemplateSeeder::class,
             TutorPermissionsSeeder::class,
 
         ]);

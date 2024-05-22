@@ -504,12 +504,11 @@ function runtimeFrontendMenuSignup($url = '') {
 function middlwareBootSystem() {
 
     //save system settings into config array
-    $settings = \App\Models\Setting::leftJoin('settings2', 'settings2.settings2_id', '=', 'settings.settings_id')
-        ->Where('settings_id', 1)
+    $settings = \App\Models\Setting::Where('id', 1)
         ->first();
 
     //set timezone
-    date_default_timezone_set($settings->settings_system_timezone);
+    date_default_timezone_set($settings->system_timezone);
 
     //currency symbol position setting
     if ($settings->settings_system_currency_position == 'left') {
@@ -520,36 +519,23 @@ function middlwareBootSystem() {
         $settings['currency_symbol_left'] = '';
     }
 
-    //lead statuses
-    $settings['lead_statuses'] = [];
-    foreach (\App\Models\LeadStatus::get() as $status) {
-        $key = $status->leadstatus_id;
-        $value = $status->leadstatus_color;
-        $settings['lead_statuses'] += [
-            $key => $value,
-        ];
-    }
-
     //Just a list of all payment geteways - used in dropdowns and filters
     $settings['gateways'] = [
-        'Paypal',
+//        'Paypal',
         'Stripe',
-        'Bank',
-        'Cash',
+//        'Bank',
+//        'Cash',
     ];
 
     //cronjob path
     $settings['cronjob_path'] = '/usr/local/bin/php ' . BASE_DIR . '/application/artisan schedule:run >> /dev/null 2>&1';
 
-    //all team members
-    $settings['team_members'] = \App\Models\User::Where('type', 'team')->Where('status', 'active')->get();
-
     //javascript file versioning to avoid caching when making updates
-    $settings['versioning'] = $settings->settings_system_javascript_versioning;
+    $settings['versioning'] = $settings->system_javascript_versioning;
 
     //[saas] set the customers 'from' email address for users using [local] email
     if ($settings->settings_saas_email_server_type == 'local') {
-        $settings['settings_email_from_address'] = $settings->settings_saas_email_local_address;
+        $settings['settings_email_from_address'] = $settings->saas_email_local_address;
     }
 
     //set path for pdf css file (for use in bill-pdf.blade.php)
@@ -557,9 +543,6 @@ function middlwareBootSystem() {
 
     //save once to config
     config(['system' => $settings]);
-
-    $categories = \App\Models\Category::Where('category_type', 'project')->orderBy('category_name', 'asc')->get();
-    config(['projects_categories' => $categories]);
 
     /**
      * how many rows to show in settings. Defaults to a hard set value, if not present
@@ -574,8 +557,8 @@ function middlwareBootSystem() {
     config(['settings.custom_fields_display_limit' => config('settings.custom_fields_display_limit') ?? 5]);
     //recaptcha
     config([
-        'recaptcha.api_site_key' => $settings->settings2_captcha_api_site_key,
-        'recaptcha.api_secret_key' => $settings->settings2_captcha_api_secret_key,
+        'recaptcha.api_site_key' => $settings->captcha_api_site_key,
+        'recaptcha.api_secret_key' => $settings->captcha_api_secret_key,
     ]);
 
 }
@@ -583,53 +566,53 @@ function middlwareBootSystem() {
 function middlewareBootMail() {
 
     //get tenant settings
-    $settings = \App\Models\Settings::find(1);
+    $settings = \App\Models\Setting::find(1);
 
     //get landlord settings
-    $landlord_settings = \App\Models\Landlord\Settings::On('landlord')->Where('settings_id', 'default')->first();
+    $landlord_settings = \App\Models\Landlord\Setting::On('landlord')->Where('id', 'default')->first();
 
     //defaults
     $email_signature = '';
     $email_footer = '';
 
-    //get email signature
-    if ($template = \App\Models\EmailTemplate::Where('name', 'Email Signature')->first()) {
-        $email_signature = $template->body;
-    }
-
-    //get email footer
-    if ($template = \App\Models\EmailTemplate::Where('name', 'Email Footer')->first()) {
-        $email_footer = $template->body;
-    }
+//    //get email signature
+//    if ($template = \App\Models\EmailTemplate::Where('name', 'Email Signature')->first()) {
+//        $email_signature = $template->body;
+//    }
+//
+//    //get email footer
+//    if ($template = \App\Models\EmailTemplate::Where('name', 'Email Footer')->first()) {
+//        $email_footer = $template->body;
+//    }
 
     //customer is using their own SMTP servr
     if ($settings->settings_saas_email_server_type == 'smtp') {
         config([
-            'mail.driver' => $settings->settings_email_server_type,
-            'mail.host' => $settings->settings_email_smtp_host,
-            'mail.port' => $settings->settings_email_smtp_port,
-            'mail.username' => $settings->settings_email_smtp_username,
-            'mail.password' => $settings->settings_email_smtp_password,
-            'mail.encryption' => ($settings->settings_email_smtp_encryption == 'none') ? '' : $settings->settings_email_smtp_encryption,
+            'mail.driver' => $settings->email_server_type,
+            'mail.host' => $settings->email_smtp_host,
+            'mail.port' => $settings->email_smtp_port,
+            'mail.username' => $settings->email_smtp_username,
+            'mail.password' => $settings->email_smtp_password,
+            'mail.encryption' => ($settings->email_smtp_encryption == 'none') ? '' : $settings->email_smtp_encryption,
             'mail.data' => [
-                'our_company_name' => config('system.settings_company_name'),
+                'our_company_name' => config('system.company_name'),
                 'todays_date' => runtimeDate(date('Y-m-d')),
-                'email_signature' => $email_signature,
-                'email_footer' => $email_footer,
+                'email_signature' => $email_signature??'ss',
+                'email_footer' => $email_footer??'ff',
                 'dashboard_url' => url('/'),
             ],
         ]);
     }
 
     //customer is using local (landlord) mail settings
-    if ($settings->settings_saas_email_server_type == 'local') {
+    if ($settings->saas_email_server_type == 'local') {
         config([
-            'mail.driver' => $landlord_settings->settings_email_server_type,
-            'mail.host' => $landlord_settings->settings_email_smtp_host,
-            'mail.port' => $landlord_settings->settings_email_smtp_port,
-            'mail.username' => $landlord_settings->settings_email_smtp_username,
-            'mail.password' => $landlord_settings->settings_email_smtp_password,
-            'mail.encryption' => ($landlord_settings->settings_email_smtp_encryption == 'none') ? '' : $landlord_settings->settings_email_smtp_encryption,
+            'mail.driver' => $landlord_settings->email_server_type,
+            'mail.host' => $landlord_settings->email_smtp_host,
+            'mail.port' => $landlord_settings->email_smtp_port,
+            'mail.username' => $landlord_settings->email_smtp_username,
+            'mail.password' => $landlord_settings->email_smtp_password,
+            'mail.encryption' => ($landlord_settings->email_smtp_encryption == 'none') ? '' : $landlord_settings->email_smtp_encryption,
             'mail.data' => [
                 'our_company_name' => config('system.settings_company_name'),
                 'todays_date' => runtimeDate(date('Y-m-d')),
@@ -638,26 +621,6 @@ function middlewareBootMail() {
                 'dashboard_url' => url('/'),
             ],
         ]);
-    }
-}
-
-/**
- * Return friendly name of the database creation method
- * @param string $type
- * @return string
- */
-function db_creation_method($type = '') {
-
-    //get the right value
-    switch ($type) {
-        case 'mysql_user':
-            return __('lang.mysql_root_user');
-        case 'cpanel':
-            return 'Cpanel API';
-        case 'plesk':
-            return 'Plesk API';
-        default:
-            return '---';
     }
 }
 

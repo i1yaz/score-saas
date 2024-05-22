@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class TutoringLocation extends BaseModel
 {
     use HasFactory;
-    protected $connection = 'tenant';
 
     public $table = 'tutoring_locations';
 

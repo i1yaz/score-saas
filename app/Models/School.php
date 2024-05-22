@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Cache;
 class School extends BaseModel
 {
     use HasFactory;
-    protected $connection = 'tenant';
 
     public $table = 'schools';
 

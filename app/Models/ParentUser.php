@@ -16,7 +16,6 @@ use Laravel\Sanctum\HasApiTokens;
 class ParentUser extends Authenticatable implements LaratrustUser
 {
     use HasApiTokens, HasFactory, HasRolesAndPermissions,Notifiable;
-    protected $connection = 'tenant';
 
     protected static function boot(): void
     {

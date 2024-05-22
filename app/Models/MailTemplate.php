@@ -6,7 +6,6 @@ use Spatie\MailTemplates\Models\MailTemplate as SpatieMailTemplate;
 
 class MailTemplate extends SpatieMailTemplate
 {
-    protected $connection = 'tenant';
 
     protected $casts = [
         'status' => 'boolean'

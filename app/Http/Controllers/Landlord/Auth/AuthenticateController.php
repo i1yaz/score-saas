@@ -43,6 +43,7 @@ class AuthenticateController extends  AppBaseController
     }
 
     public function logInAction(Request $request) {
+        //validate
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password], true)) {
             if (auth()->user()->status != 'active') {

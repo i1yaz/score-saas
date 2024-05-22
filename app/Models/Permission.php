@@ -6,7 +6,6 @@ use Laratrust\Models\Permission as PermissionModel;
 
 class Permission extends PermissionModel
 {
-    protected $connection = 'tenant';
 
     protected $fillable = [
         'name',

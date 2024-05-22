@@ -49,6 +49,10 @@ Route::get('invoice-reminder',function (){
     Artisan::call('invoice:payment-reminder');
 });
 
+Route::get('/',function (){
+    return redirect('/login');
+});
+
 Route::get('invoice/{invoice}/public-view/{type?}', [InvoiceController::class, 'showPublicInvoice']);
 Auth::routes(['register' => false]);
 Route::get('admin/login', [LoginController::class, 'showAdminLoginForm'])->name('admin.login');

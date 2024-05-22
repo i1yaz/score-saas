@@ -3,6 +3,7 @@
 namespace App\Repositories\Landlord;
 
 use App\Models\Landlord\Defaults;
+use App\Models\Landlord\Package;
 use App\Models\Landlord\Tenant;
 use Exception;
 use Illuminate\Support\Facades\Artisan;
@@ -15,11 +16,11 @@ class CreateTenantRepository
     {
     }
 
-    public function createTenant($customer = [], $package = [], $auth_key = '') {
+    public function createTenant(Tenant $tenant, Package $package , $auth_key = '') {
 
         //create database
         if ($database_name = $this->databaseRepository->createDatabase()) {
-            Tenant::where('id', $customer->id)
+            Tenant::where('id', $tenant->id)
                 ->update([
                     'database' => $database_name,
                 ]);
@@ -28,7 +29,7 @@ class CreateTenantRepository
         }
 
         //populate the database
-        if (!$this->configureDB($customer, $package, $auth_key)) {
+        if (!$this->configureDB($tenant, $package, $auth_key)) {
             return false;
         }
 
@@ -36,8 +37,8 @@ class CreateTenantRepository
         return true;
 
     }
-    public function configureDB($customer = [], $package = [], $auth_key = '') {
-        $tenant_id = $customer->id;
+    public function configureDB($tenant = [], $package = [], $auth_key = '') {
+        $tenant_id = $tenant->id;
         Log::info("importing sql for customer id ($tenant_id)", ['process' => '[create-tenant-database]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'project_id' => 1]);
 //        $sql_file = BASE_DIR . '/tenant.sql';
 //
@@ -46,7 +47,7 @@ class CreateTenantRepository
 //            Log::critical("tenant sql file is missing", ['process' => '[create-tenant-database]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'sql_file' => $sql_file]);
 //            return false;
 //        }
-        if ($customer->tenant_status == 'awaiting-payment') {
+        if ($tenant->status == 'awaiting-payment') {
             $redirect = 'payment';
         } else {
             $redirect = 'home';
@@ -72,19 +73,19 @@ class CreateTenantRepository
                 DB::connection('tenant')
                     ->table('settings')
                     ->where('id', 1)
-                    ->update([
-                        'company_name' => $customer->subdomain,
+                    ->updateOrInsert([
+                        'company_name' => $tenant->subdomain,
                         'company_address_line_1' => null,
                         'company_state' => null,
                         'company_city' => null,
                         'company_zipcode' => null,
                         'company_country' => null,
                         'company_telephone' => null,
-                        'email_from_address' => $customer->tenant_email,
-                        'email_from_name' => $customer->tenant_name,
+                        'email_from_address' => $tenant->email,
+                        'email_from_name' => $tenant->name,
                         'email_server_type' => 'sendmail',
-                        'saas_tenant_id' => $customer->tenant_id,
-                        'saas_status' => $customer->tenant_status,
+                        'saas_tenant_id' => $tenant->id,
+                        'saas_status' => $tenant->status,
                         'saas_onetime_login_key' => $auth_key,
                         'saas_onetime_login_destination' => $redirect,
                         'saas_package_id' => $package->package_id,
@@ -93,33 +94,33 @@ class CreateTenantRepository
                         'saas_package_limits_monthly_packages' => $package->max_monthly_packages,
                         'saas_package_limits_student_packages' => $package->max_student_packages,
                         'saas_email_server_type' => 'local',
-                        'saas_email_forwarding_address' => $customer->tenant_email,
-                        'saas_email_local_address' => $customer->tenant_email_local_email,
+                        'saas_email_forwarding_address' => $tenant->email,
+                        'saas_email_local_address' => $tenant->email_local_email,
                         //defaults
-                        'system_language_default' => $defaults->defaults_language_default,
-                        'system_timezone' => $defaults->defaults_timezone,
-                        'system_date_format' => $defaults->defaults_date_format,
-                        'system_datepicker_format' => $defaults->defaults_datepicker_format,
-                        'system_currency_code' => $defaults->defaults_currency_code,
-                        'system_currency_symbol' => $defaults->defaults_currency_symbol,
-                        'system_currency_position' => $defaults->defaults_currency_position,
-                        'system_decimal_separator' => $defaults->defaults_decimal_separator,
-                        'system_thousand_separator' => $defaults->defaults_thousand_separator,
+                        'system_language_default' => $defaults->language_default??'english',
+                        'system_timezone' => $defaults->timezone,
+                        'system_date_format' => $defaults->date_format,
+                        'system_datepicker_format' => $defaults->datepicker_format,
+                        'system_currency_code' => $defaults->currency_code,
+                        'system_currency_symbol' => $defaults->currency_symbol,
+                        'system_currency_position' => $defaults->currency_position,
+                        'system_decimal_separator' => $defaults->decimal_separator,
+                        'system_thousand_separator' => $defaults->thousand_separator,
                     ]);
 
                 //update user profile
-                $tmp = explode(" ", $customer->tenant_name);
+                $tmp = explode(" ", $tenant->name);
                 $firstname = $tmp[0];
-                $lastname = trim(str_replace($firstname, '', $customer->tenant_name));
+                $lastname = trim(str_replace($firstname, '', $tenant->name));
                 DB::connection('tenant')
                     ->table('users')
                     ->where('id', 1)
                     ->update([
                         'first_name' => $firstname,
                         'last_name' => $lastname,
-                        'email' => $customer->tenant_email,
-                        'password' => $customer->tenant_password,
-                        'welcome_email_sent' => 'yes',
+                        'email' => $tenant->email,
+                        'password' => $tenant->password,
+                        'is_welcome_email_sent' => true,
                         'created_at' => now(),
                         'last_seen_at' => now(),
                     ]);

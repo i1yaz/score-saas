@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class MonthlyInvoiceSubscription extends Model
 {
     use HasFactory;
-    protected $connection = 'tenant';
 
     const STATUS_ACTIVE = 1;//only for migration
 

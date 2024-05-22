@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Cache;
 
 class Payment extends Model
 {
-    protected $connection = 'tenant';
 
     protected static function boot(): void
     {

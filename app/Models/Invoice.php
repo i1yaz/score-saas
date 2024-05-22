@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class Invoice extends BaseModel
 {
     use HasFactory;
-    protected $connection = 'tenant';
 
     public $table = 'invoices';
 

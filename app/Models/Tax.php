@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tax extends Model
 {
-    protected $connection = 'tenant';
     public $table = 'taxes';
 
     public $fillable = [

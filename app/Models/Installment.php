@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Installment extends BaseModel
 {
-    protected $connection = 'tenant';
 
     protected $fillable = [
        'invoice_id',

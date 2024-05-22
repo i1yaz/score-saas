@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Spatie\MailTemplates\Models\MailTemplate;
 
-class InvoicePaymentReminderSeeder extends Seeder
+class InvoicePaymentReminderTemplateSeeder extends Seeder
 {
     public function run(): void
     {

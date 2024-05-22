@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class NonInvoicePackage extends Model
 {
     use HasFactory;
-    protected $connection = 'tenant';
 
     const CODE_START = 5000;
 

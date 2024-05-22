@@ -33,7 +33,6 @@ class SignupController extends Controller
         $free_trial = 'no';
         $subscription_trial_end = null;
         $subscription_date_started = null;
-        dd($request,$createTenantRepo);
         //validate terms
         if (config('system.terms_of_service_status') == 'enabled') {
             if (request('signup_agree_terms') != 'on') {
