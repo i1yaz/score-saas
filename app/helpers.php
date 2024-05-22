@@ -1214,3 +1214,9 @@ if (!function_exists('getAddedByInfo')){
         return 'System';
     }
 }
+if (!function_exists('getActiveInactiveArray')){
+    function getActiveInactiveArray(): array
+    {
+        return ['yes' =>'Active','no'=>'Inactive'];
+    }
+}

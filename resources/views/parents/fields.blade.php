@@ -48,7 +48,7 @@
 <!-- Status Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('status', 'Status:') !!}
-    {!! Form::select('status', ['yes' =>'YES','no'=>'NO'],booleanSelect($parent->status??null), ['class' => 'form-control custom-select'])  !!}
+    {!! Form::select('status', getActiveInactiveArray(),booleanSelect($parent->status??null), ['class' => 'form-control custom-select'])  !!}
 </div>
 <!-- Referral From Positive Experience With Tutor Field -->
 <div class="form-group col-sm-6">

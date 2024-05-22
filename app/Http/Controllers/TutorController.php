@@ -35,6 +35,7 @@ class TutorController extends AppBaseController
      */
     public function index(Request $request)
     {
+
         if ($request->ajax()) {
             $columns = [
                 'email',

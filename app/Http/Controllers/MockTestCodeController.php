@@ -16,7 +16,7 @@ class MockTestCodeController extends Controller
     }
     public function create()
     {
-        $testTypes = ['SAT', 'ACT'];
+        $testTypes = ['SAT' =>'SAT', 'ACT' => 'ACT'];
         return view('mock_test_codes.create', compact('testTypes'));
     }
     public function store(Request $request)
