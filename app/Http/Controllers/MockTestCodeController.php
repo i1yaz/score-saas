@@ -35,7 +35,7 @@ class MockTestCodeController extends Controller
     }
     public function edit($id)
     {
-        $testTypes = ['SAT', 'ACT'];
+        $testTypes = ['SAT' =>'SAT', 'ACT' => 'ACT'];
         $mockTestCode = MockTestCode::findOrFail($id);
         return view('mock_test_codes.edit')
             ->with('mockTestCode', $mockTestCode)
