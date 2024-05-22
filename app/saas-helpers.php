@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\Landlord\EmailTemplate;
+use App\Models\Landlord\Setting;
+
 
 /**
  * @param string $status the status of the toggled form section (show or hide)
@@ -253,24 +256,24 @@ function runtimeLandlordCronConfig() {
     $email_footer = '';
 
     //get settings
-    $settings = \App\Models\Landlord\Settings::on('landlord')->Where('id', 'default')->first();
+    $settings = Setting::on('landlord')->Where('id', 'default')->first();
 
     //currency symbol position setting
-    if ($settings->settings_system_currency_position == 'left') {
-        $settings['currency_symbol_left'] = $settings->settings_system_currency_symbol;
+    if ($settings->system_currency_position == 'left') {
+        $settings['currency_symbol_left'] = $settings->system_currency_symbol;
         $settings['currency_symbol_right'] = '';
     } else {
-        $settings['currency_symbol_right'] = $settings->settings_system_currency_symbol;
+        $settings['currency_symbol_right'] = $settings->system_currency_symbol;
         $settings['currency_symbol_left'] = '';
     }
 
     //get email signature
-    if ($template = \App\Models\Landlord\EmailTemplate::on('landlord')->Where('name', 'Email Signature')->first()) {
+    if ($template = EmailTemplate::on('landlord')->Where('name', 'Email Signature')->first()) {
         $email_signature = $template->body;
     }
 
     //get email footer
-    if ($template = \App\Models\Landlord\EmailTemplate::on('landlord')->Where('name', 'Email Footer')->first()) {
+    if ($template = EmailTemplate::on('landlord')->Where('name', 'Email Footer')->first()) {
         $email_footer = $template->body;
     }
 
@@ -281,14 +284,14 @@ function runtimeLandlordCronConfig() {
 
     //save to config
     config([
-        'mail.driver' => $settings->settings_email_server_type,
-        'mail.host' => $settings->settings_email_smtp_host,
-        'mail.port' => $settings->settings_email_smtp_port,
-        'mail.username' => $settings->settings_email_smtp_username,
-        'mail.password' => $settings->settings_email_smtp_password,
-        'mail.encryption' => ($settings->settings_email_smtp_encryption == 'none') ? '' : $settings->settings_email_smtp_encryption,
+        'mail.driver' => $settings->email_server_type,
+        'mail.host' => $settings->email_smtp_host,
+        'mail.port' => $settings->email_smtp_port,
+        'mail.username' => $settings->email_smtp_username,
+        'mail.password' => $settings->email_smtp_password,
+        'mail.encryption' => ($settings->email_smtp_encryption == 'none') ? '' : $settings->email_smtp_encryption,
         'mail.data' => [
-            'company_name' => config('system.settings_company_name'),
+            'company_name' => config('system.company_name'),
             'todays_date' => runtimeDate(date('Y-m-d')),
             'email_signature' => $email_signature,
             'email_footer' => $email_footer,
@@ -569,7 +572,7 @@ function middlewareBootMail() {
     $settings = \App\Models\Setting::find(1);
 
     //get landlord settings
-    $landlord_settings = \App\Models\Landlord\Setting::On('landlord')->Where('id', 'default')->first();
+    $landlord_settings = Setting::On('landlord')->Where('id', 'default')->first();
 
     //defaults
     $email_signature = '';
