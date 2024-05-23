@@ -505,20 +505,14 @@ function runtimeFrontendMenuSignup($url = '') {
 }
 
 function middlwareBootSystem() {
-
-    //save system settings into config array
-    $settings = \App\Models\Setting::Where('id', 1)
+    $settings = \App\Models\Setting::where('id', 1)
         ->first();
-
-    //set timezone
     date_default_timezone_set($settings->system_timezone);
-
-    //currency symbol position setting
-    if ($settings->settings_system_currency_position == 'left') {
-        $settings['currency_symbol_left'] = $settings->settings_system_currency_symbol;
+    if ($settings->system_currency_position == 'left') {
+        $settings['currency_symbol_left'] = $settings->system_currency_symbol;
         $settings['currency_symbol_right'] = '';
     } else {
-        $settings['currency_symbol_right'] = $settings->settings_system_currency_symbol;
+        $settings['currency_symbol_right'] = $settings->system_currency_symbol;
         $settings['currency_symbol_left'] = '';
     }
 
@@ -530,10 +524,8 @@ function middlwareBootSystem() {
 //        'Cash',
     ];
 
-    //cronjob path
     $settings['cronjob_path'] = '/usr/local/bin/php ' . BASE_DIR . '/application/artisan schedule:run >> /dev/null 2>&1';
 
-    //javascript file versioning to avoid caching when making updates
     $settings['versioning'] = $settings->system_javascript_versioning;
 
     //[saas] set the customers 'from' email address for users using [local] email
@@ -568,13 +560,9 @@ function middlwareBootSystem() {
 
 function middlewareBootMail() {
 
-    //get tenant settings
     $settings = \App\Models\Setting::find(1);
-
-    //get landlord settings
     $landlord_settings = Setting::On('landlord')->Where('id', 'default')->first();
 
-    //defaults
     $email_signature = '';
     $email_footer = '';
 
@@ -589,7 +577,7 @@ function middlewareBootMail() {
 //    }
 
     //customer is using their own SMTP servr
-    if ($settings->settings_saas_email_server_type == 'smtp') {
+    if ($settings->saas_email_server_type == 'smtp') {
         config([
             'mail.driver' => $settings->email_server_type,
             'mail.host' => $settings->email_smtp_host,

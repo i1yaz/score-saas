@@ -355,7 +355,7 @@ class StripeRepository
         $plan_id = $data['plan_id'];
         Log::info("updating plan name ($plan_id) at stripe - started", ['process' => '[stripe-update-product-name]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'data' => $data]);
         try {
-            $stripe = new StripeClient($data['settings_stripe_secret_key']);
+            $stripe = new StripeClient($data['stripe_secret_key']);
             $stripe->products->update(
                 $data['plan_id'],
                 [
@@ -549,8 +549,8 @@ class StripeRepository
     }
     public function updatePlanPrice($package = '', $data = []): bool
     {
-        Log::info("updating package ($package->package_name) [price] at stripe - started", ['process' => '[stripe-update-plan-price]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'data' => $data]);
-        Log::info("we will be creating a new plan for the packge ($package->package_name)", ['process' => '[stripe-update-plan-price]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'data' => $data]);
+        Log::info("updating package ($package->name) [price] at stripe - started", ['process' => '[stripe-update-plan-price]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'data' => $data]);
+        Log::info("we will be creating a new plan for the packge ($package->name)", ['process' => '[stripe-update-plan-price]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'data' => $data]);
         if (empty($data['product_id'])) {
             Log::info("the package does not have a stripe [product_id] - this update process is not needed - will now exit", ['process' => '[stripe-update-plan-price]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
             return true;

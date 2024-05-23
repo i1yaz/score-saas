@@ -7,13 +7,12 @@
  * @author     NextLoop
  *----------------------------------------------------------------------------------*/
 
-namespace App\Mail\Landlord;
+namespace App\Mail;
 
-use App\Models\Landlord\EmailQueue;
+use App\Models\EmailQueue;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Log;
 
 class SendQueued extends Mailable {
     use Queueable, SerializesModels;
@@ -46,30 +45,25 @@ class SendQueued extends Mailable {
         }
 
         //[attachment] send emil with an attachments
-        $email = $this->from(config('system.email_from_address'), config('system.email_from_name'))
-            ->subject($this->data->subject)
-            ->with([
-                'content' => $this->data->message,
-            ])
-            ->view('landlord.emails.template');
-
-        //attachments
-        if ($this->data->attachments != '') {
-            //convert to array
-            $attachments = json_decode($this->data->attachments, true);
-            //loop and attach
-            if (is_array($attachments)) {
-                foreach ($attachments as $attachment) {
-                    $file_path = BASE_DIR . "/storage/files/".$attachment['directory']."/".$attachment['filename'];
-                    Log::info("attachment: $file_path");
-                    if (file_exists($file_path)) {
-                        $email->attach($file_path);
-                    }
-                }
-            }
+        if (is_array($this->attachment)) {
+            return $this->from(config('system.email_from_address'), config('system.email_from_name'))
+                ->subject($this->data->subject)
+                ->with([
+                    'content' => $this->data->message,
+                ])
+                ->view('pages.emails.template')
+                ->attach($this->attachment['filepath'], [
+                    'as' => $this->attachment['filename'],
+                    'mime' => 'application/pdf',
+                ]);
+        } else {
+            //[no attachment] send email without any attahments
+            return $this->from(config('system.email_from_address'), config('system.email_from_name'))
+                ->subject($this->data->subject)
+                ->with([
+                    'content' => $this->data->message,
+                ])
+                ->view('pages.emails.template');
         }
-
-        //send email
-        return $email;
     }
 }

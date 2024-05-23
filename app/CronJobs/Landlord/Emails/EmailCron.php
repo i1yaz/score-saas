@@ -1,9 +1,10 @@
 <?php
 
-namespace App\CronJobs\Emails;
+namespace App\CronJobs\Landlord\Emails;
 use App\Mail\Landlord\SendQueued;
 use App\Models\Landlord\EmailLog;
 use App\Models\Landlord\EmailQueue;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Mail;
 use Spatie\Multitenancy\Models\Tenant;
 
@@ -34,9 +35,8 @@ class EmailCron {
             foreach ($emails as $email) {
 
                 //send the email (only to a valid email address)
-                if ($email->to != '') {
+                if ( filter_var($email->to, FILTER_VALIDATE_EMAIL) ) {
                     Mail::to($email->to)->send(new SendQueued($email));
-                    //log email
                     $log = new EmailLog();
                     $log->setConnection('landlord');
                     $log->email = $email->to;
@@ -45,13 +45,10 @@ class EmailCron {
                     $log->save();
 
                 }
-                //delete email from the queue
                 EmailQueue::On('landlord')->Where('id', $email->id)->delete();
             }
         }
-
-        //reset last cron run data
-        \App\Models\Setting::On('landlord')->Where('id', 'default')
+        Setting::On('landlord')->Where('id', 'default')
             ->update([
                 'cronjob_has_run' => 'yes',
                 'cronjob_last_run' => now(),
