@@ -6,5 +6,5 @@ use App\Models\BaseModel;
 
 class EmailQueue extends BaseModel
 {
-    protected $connection = 'landlord';
+
 }

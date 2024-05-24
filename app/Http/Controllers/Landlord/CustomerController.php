@@ -37,12 +37,13 @@ class CustomerController extends AppBaseController
             $columns = [
                 0 => 'id',
                 1 => 'name',
-                2 => 'created_at',
-                3 => 'domain',
-                4 => 'name',
-                5 => 'type',
-                6 => 'status',
-                7 => 'action',
+                2 => 'email',
+                3 => 'created_at',
+                4 => 'domain',
+                5 => 'name',
+                6 => 'type',
+                7 => 'status',
+                8 => 'action',
             ];
             $limit = $request->input('length');
             $start = $request->input('start');

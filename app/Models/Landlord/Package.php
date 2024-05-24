@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Package extends BaseModel
 {
-    protected $connection = 'landlord';
 
     protected function maxTutors(): Attribute
     {

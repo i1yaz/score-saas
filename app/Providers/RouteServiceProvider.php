@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -61,6 +62,7 @@ class RouteServiceProvider extends ServiceProvider
             ->namespace($this->namespace)
             ->group(
                 function ($router) {
+                    require base_path('routes/acl.php');
                     require base_path('routes/web.php');
                     require base_path('routes/dashboards/tutor.php');
                     require base_path('routes/dashboards/student.php');
@@ -84,7 +86,6 @@ class RouteServiceProvider extends ServiceProvider
             ->namespace($this->namespace)
             ->group(
                 function ($router) {
-                    require base_path('routes/acl.php');
                     require base_path('routes/landlord/web.php');
                 }
             );
@@ -124,8 +125,8 @@ class RouteServiceProvider extends ServiceProvider
             return true;
         }
 
-        if (strpos($this->app->request->url(), '/app-admin') === false) {
-            return false;
+        if (Str::contains($this->app->request->url(),config('system.landlord-domain') )) {
+            return true;
         }
 
         $domains_list = explode(',', preg_replace('/\s+/', '', config('system.landlord-domain')));

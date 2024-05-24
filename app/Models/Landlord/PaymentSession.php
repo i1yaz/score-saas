@@ -9,5 +9,5 @@ use Illuminate\Database\Eloquent\Model;
 class PaymentSession extends BaseModel
 {
     use HasFactory;
-    protected $connection = 'landlord';
+
 }

@@ -14,7 +14,6 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable implements LaratrustUser
 {
     use HasApiTokens, HasFactory, HasRolesAndPermissions,Notifiable;
-
     /**
      * The attributes that are mass assignable.
      *

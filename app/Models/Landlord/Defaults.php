@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Defaults extends BaseModel
 {
-    protected $connection = 'landlord';
     protected $table = 'defaults';
 
 }

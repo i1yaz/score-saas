@@ -25,11 +25,14 @@ class BootSystem {
      * @return mixed
      */
     public function handle($request, Closure $next) {
-
-        //boot system settings (see notes in main comment above)
+        $this->setupDatabase();
         middlwareBootSystem();
-
         return $next($request);
+
+    }
+    public function setupDatabase(): void
+    {
+        config()->set('database.default', 'tenant');
 
     }
 

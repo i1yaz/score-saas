@@ -6,7 +6,6 @@ use App\Models\BaseModel;
 
 class EmailTemplate  extends BaseModel
 {
-    protected $connection = 'landlord';
     public function parse($section = 'body', $data) {
 
         //validate

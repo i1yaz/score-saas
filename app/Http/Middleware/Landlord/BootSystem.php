@@ -30,13 +30,8 @@ class BootSystem {
      */
     public function handle($request, Closure $next) {
 
-
-        //set up the landlord database
         $this->setupDatabase();
-
-        //default settings
         $this->systemSettings();
-
         return $next($request);
 
     }

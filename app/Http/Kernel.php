@@ -94,8 +94,8 @@ class Kernel extends HttpKernel
             StripHtmlTags::class,
         ],
         'tenant' => [
-
             NeedsTenant::class,
+            Middleware\General\BootSystem::class,
             //system middleware
             EncryptCookies::class,
             AddQueuedCookiesToResponse::class,
@@ -104,14 +104,8 @@ class Kernel extends HttpKernel
             ShareErrorsFromSession::class,
             VerifyCsrfToken::class,
             SubstituteBindings::class,
-
             //BOOTING
-            Middleware\General\BootSystem::class,
-            BootTheme::class,
             Middleware\General\BootMail::class,
-
-            //[settings middleware]
-            Settings::class,
             //[general middleware]
             General::class,
 
@@ -172,10 +166,5 @@ class Kernel extends HttpKernel
         'generalMiddleware' => \App\Http\Middleware\General\General::class,
         'FileSecurityCheck' => \App\Http\Middleware\FileUpload\FileSecurityCheck::class,
 
-        //[authentication]
-        'authenticationMiddlewareGeneral' => \App\Http\Middleware\Authenticate\General::class,
-
-        //[authentication]
-        'categoriesMiddlewareGeneral' => \App\Http\Middleware\Categories\General::class,
     ];
 }

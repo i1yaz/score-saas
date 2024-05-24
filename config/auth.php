@@ -56,6 +56,11 @@ return [
             'driver' => 'session',
             'provider' => 'clients',
         ],
+        //MULTITENANCY
+        'landlord' => [
+            'driver' => 'session',
+            'provider' => 'landlord',
+        ],
     ],
 
     /*
@@ -95,6 +100,10 @@ return [
         'clients' => [
             'driver' => 'eloquent',
             'model' => \App\Models\Client::class,
+        ],
+        'landlord' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Landlord\User::class,
         ],
         // 'users' => [
         //     'driver' => 'database',

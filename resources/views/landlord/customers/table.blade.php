@@ -5,6 +5,7 @@
             <tr>
                 <th>ID</th>
                 <th>Name</th>
+                <th>Email</th>
                 <th>Created</th>
                 <th>Domain</th>
                 <th>Plan</th>
@@ -34,6 +35,7 @@
                 columns: [
                     { data: 'id', name: 'id', orderable: true },
                     { data: 'name', name: 'name', orderable: false },
+                    { data: 'email', name: 'email', orderable: false },
                     { data: 'created_at', name: 'created_at', orderable: false },
                     { data: 'domain', name: 'domain', orderable: false },
                     { data: 'plan', name: 'plan', orderable: false },
