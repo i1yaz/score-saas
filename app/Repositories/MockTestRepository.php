@@ -56,6 +56,7 @@ class MockTestRepository extends BaseRepository
 
     public function getMockTestDetails($mockTestId,$studentId=null)
     {
+
         $mockTest =  MockTest::select(
             [
                 'mock_tests.id as mock_test_id','date','tutoring_locations.name as location','start_time','end_time',
@@ -69,8 +70,9 @@ class MockTestRepository extends BaseRepository
             ->leftJoin('students','students.id','=','mock_test_student.student_id')
             ->leftJoin('mock_test_codes','mock_test_codes.id','=','mock_test_student.mock_test_code_id');
         $mockTest = $mockTest->where('mock_tests.id',$mockTestId);
+
         if (!empty($studentId)) {
-            $mockTest = $mockTest->where('mock_test_student.id',$studentId);
+            $mockTest = $mockTest->where('mock_test_student.student_id',$studentId);
             return $mockTest->first();
         }
         return $mockTest->get();
@@ -101,7 +103,7 @@ class MockTestRepository extends BaseRepository
         $mockTestStudent = MockTestStudent::where('mock_test_id',$mock_test)->where('student_id',$student_id)->first();
         if ($mockTestStudent){
             $updateData = [
-                'score' => $data['score'],
+                'score' => $data['score']??0,
                 'score_report_type' => strtoupper($data['score_report_type']),
                 'score_report_path' => $score_report_path??null,
                 'subsection_scores' => json_encode($data['subsection_scores'])

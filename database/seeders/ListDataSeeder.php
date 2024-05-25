@@ -49,6 +49,34 @@ class ListDataSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
+            [
+                'list_id' => 2,
+                'name' => 'SAT',
+                'description' => 'SAT',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'list_id' => 2,
+                'name' => 'ACT',
+                'description' => 'ACT',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'list_id' => 2,
+                'name' => 'ISEE',
+                'description' => 'ISEE',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'list_id' => 2,
+                'name' => 'SSAT',
+                'description' => 'SSAT',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
         ]);
     }
 }

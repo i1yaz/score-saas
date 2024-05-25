@@ -187,7 +187,7 @@ class MockTestController extends AppBaseController
     public function getScore($mock_test,$student_id)
     {
         $mockTestStudent = $this->mockTestRepository->getMockTestDetails($mock_test,$student_id);
-        $subsection_scores = json_decode($mockTestStudent->subsection_scores,true);
+        $subsection_scores = json_decode($mockTestStudent->subsection_scores??'{}',true);
         foreach ($subsection_scores as $key => $value){
             $mockTestStudent->$key = $value;
         }

@@ -7,7 +7,7 @@
     <p>{{ $mockTestStudent->mock_test_code }} ({{$mockTestStudent->test_type}})</p>
 </div>
 <div class="col-sm-12">
-    {!! Form::label('score', 'Score') !!}
+    {!! Form::label('score', 'Score',['class' => 'required']) !!}
     {!! Form::number('score', null, ['class' => 'form-control']) !!}
 </div>
 
@@ -31,7 +31,7 @@
     <h4>Subsection Scores</h4>
 </div>
 
-@if($mockTestStudent->test_type==='ACT')
+@if((int)$mockTestStudent->test_type===6)
     <div class="col-sm-12">
         {!! Form::label('english_score', 'English') !!}
         {!! Form::number('english_score', null, ['class' => 'form-control']) !!}
@@ -49,7 +49,7 @@
         {!! Form::number('science_score', null, ['class' => 'form-control']) !!}
     </div>
 
-@elseif($mockTestStudent->test_type==='SAT')
+@elseif((int)$mockTestStudent->test_type===7)
     <div class="col-sm-12">
         {!! Form::label('english_score', 'English') !!}
         {!! Form::number('english_score', null, ['class' => 'form-control']) !!}
