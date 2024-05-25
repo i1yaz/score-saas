@@ -13,6 +13,7 @@ use App\Http\Responses\Account\Notices\SubscriptionCancelledFailedResponse;
 use App\Models\Setting;
 use Cache;
 use Closure;
+use Illuminate\Support\Facades\DB;
 
 class General {
 
@@ -25,7 +26,7 @@ class General {
     public function handle($request, Closure $next) {
         $this->lastSeen();
         $this->setLanguage();
-        $this->isPaymentCompleted();
+//        $this->isPaymentCompleted();
         //check account status
         if (auth('web')->check()) {
 
@@ -108,20 +109,14 @@ class General {
 
     private function isPaymentCompleted()
     {
-        $settings = Setting::Where('settings_id', 1)->first();
+        $settings = Setting::Where('id', 1)->first();
         if (!$subscription = DB::connection('landlord')
             ->table('subscriptions')
-            ->where('subscription_customerid', $settings->settings_saas_tenant_id)
-            ->where('subscription_archived', 'no')
+            ->where('customer_id', $settings->saas_tenant_id)
+            ->where('archived', 'no')
             ->first()) {
-            Log::info("unable to fetch the tenants subscription from landlord database - record not found", ['process' => '[tenant-notices]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'tenant_id' => $settings->settings_saas_tenant_id]);
-            if (request()->ajax()) {
-                return response()->json(array(
-                    'redirect_url' => '/app/settings/account/packages',
-                ));
-            } else {
-                return redirect('/app/settings/account/packages');
-            }
+            Log::info("unable to fetch the tenants subscription from landlord database - record not found", ['process' => '[tenant-notices]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'tenant_id' => $settings->saas_tenant_id]);
+//            return redirect('/settings/account/packages');
         }
 
         //get admin payment gateway settings
