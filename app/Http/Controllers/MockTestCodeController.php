@@ -32,7 +32,7 @@ class MockTestCodeController extends Controller
             'name' => 'required',
             'test_type' => ['required'],
         ]);
-        $mockTest = MockTestCode::create(array_merge($request->all(),['auth_guard' => Auth::user()->auth_guard,'added_by' => Auth::id()]));
+        $mockTest = MockTestCode::create(array_merge($request->all(),['auth_guard' => Auth::guard()->name,'added_by' => Auth::id()]));
         if ($mockTest) {
             Flash::success('Mock Test Code created successfully.');
         } else {
@@ -58,7 +58,7 @@ class MockTestCodeController extends Controller
             'test_type' => ['required'],
         ]);
         $mockTestCode = MockTestCode::findOrFail($id);
-        $mockTestCode = $mockTestCode->update($request->all());
+        $mockTestCode = $mockTestCode->update(array_merge($request->all(),['auth_guard' => Auth::guard()->name,'added_by' => Auth::id()]));
         if ($mockTestCode) {
             Flash::success('Mock Test Code updated successfully.');
         } else {

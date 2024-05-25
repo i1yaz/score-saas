@@ -187,11 +187,15 @@ class MockTestController extends AppBaseController
     public function getScore($mock_test,$student_id)
     {
         $mockTestStudent = $this->mockTestRepository->getMockTestDetails($mock_test,$student_id);
+        $customFields = $this->mockTestRepository->getCustomFields($mockTestStudent);
         $subsection_scores = json_decode($mockTestStudent->subsection_scores??'{}',true);
         foreach ($subsection_scores as $key => $value){
             $mockTestStudent->$key = $value;
         }
-        return view('mock_tests.add_score')->with('mockTestStudent',$mockTestStudent);
+
+        return view('mock_tests.add_score')
+            ->with('mockTestStudent',$mockTestStudent)
+            ->with('customFields',$customFields);
     }
     public function storeScore(CreateMockTestScoreRequest $request,$mock_test,$student_id)
     {

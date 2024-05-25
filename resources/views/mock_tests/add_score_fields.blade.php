@@ -30,35 +30,45 @@
 <div class="col-sm-12 mt-2">
     <h4>Subsection Scores</h4>
 </div>
-
-@if((int)$mockTestStudent->test_type===6)
+@foreach($customFields as $customField)
+@php
+    $input_value = $mockTestStudent->{$customField['input_name']};
+@endphp
     <div class="col-sm-12">
-        {!! Form::label('english_score', 'English') !!}
-        {!! Form::number('english_score', null, ['class' => 'form-control']) !!}
-    </div>
-    <div class="col-sm-12">
-        {!! Form::label('math_score', 'Math') !!}
-        {!! Form::number('math_score', null, ['class' => 'form-control']) !!}
-    </div>
-    <div class="col-sm-12">
-        {!! Form::label('reading_score', 'Reading') !!}
-        {!! Form::number('reading_score', null, ['class' => 'form-control']) !!}
-    </div>
-    <div class="col-sm-12">
-        {!! Form::label('science_score', 'Science') !!}
-        {!! Form::number('science_score', null, ['class' => 'form-control']) !!}
+        <label for="{{$customField['label_for']}}" class=@if($customField['input_required']) "required" @endif>{{$customField['label_text']}}</label>
+        <input class="form-control {{$customField['input_class']}}" name="{{$customField['input_name']}}" type="{{$customField['input_type']}}" value="{{ old($customField['input_name'],$input_value) }}" placeholder="{{$customField['input_placeholder']}}" id="{{$customField['input_id']}}">
     </div>
 
-@elseif((int)$mockTestStudent->test_type===7)
-    <div class="col-sm-12">
-        {!! Form::label('english_score', 'English') !!}
-        {!! Form::number('english_score', null, ['class' => 'form-control']) !!}
-    </div>
-    <div class="col-sm-12">
-        {!! Form::label('math_score', 'Math') !!}
-        {!! Form::number('math_score', null, ['class' => 'form-control']) !!}
-    </div>
-@endif
+@endforeach
+
+{{--@if((int)$mockTestStudent->test_type===6)--}}
+{{--    <div class="col-sm-12">--}}
+{{--        {!! Form::label('english_score', 'English') !!}--}}
+{{--        {!! Form::number('english_score', null, ['class' => 'form-control']) !!}--}}
+{{--    </div>--}}
+{{--    <div class="col-sm-12">--}}
+{{--        {!! Form::label('math_score', 'Math') !!}--}}
+{{--        {!! Form::number('math_score', null, ['class' => 'form-control']) !!}--}}
+{{--    </div>--}}
+{{--    <div class="col-sm-12">--}}
+{{--        {!! Form::label('reading_score', 'Reading') !!}--}}
+{{--        {!! Form::number('reading_score', null, ['class' => 'form-control']) !!}--}}
+{{--    </div>--}}
+{{--    <div class="col-sm-12">--}}
+{{--        {!! Form::label('science_score', 'Science') !!}--}}
+{{--        {!! Form::number('science_score', null, ['class' => 'form-control']) !!}--}}
+{{--    </div>--}}
+
+{{--@elseif((int)$mockTestStudent->test_type===7)--}}
+{{--    <div class="col-sm-12">--}}
+{{--        {!! Form::label('english_score', 'English') !!}--}}
+{{--        {!! Form::number('english_score', null, ['class' => 'form-control']) !!}--}}
+{{--    </div>--}}
+{{--    <div class="col-sm-12">--}}
+{{--        {!! Form::label('math_score', 'Math') !!}--}}
+{{--        {!! Form::number('math_score', null, ['class' => 'form-control']) !!}--}}
+{{--    </div>--}}
+{{--@endif--}}
 
 <script>
     function updateInputField() {

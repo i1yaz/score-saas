@@ -87,17 +87,21 @@ class MockTestRepository extends BaseRepository
         }elseif ($request->score_report_type === 'url'){
             $score_report_path = $request->url;
         }
-        if ($request->has('english_score')){
-            $data['subsection_scores']['english_score'] = $request->english_score;
+        if ($request->has('score')){
+            $data['score'] = $request->score;
         }
-        if ($request->has('math_score')){
-            $data['subsection_scores']['math_score'] = $request->math_score;
-        }
-        if ($request->has('reading_score')){
-            $data['subsection_scores']['reading_score'] = $request->reading_score;
-        }
-        if ($request->has('science_score')){
-            $data['subsection_scores']['science_score'] = $request->science_score;
+
+        $keys = [
+            'english_score', 'math_score', 'reading_score', 'science_score',
+            'verbal_reasoning_score', 'quantitative_reasoning_score',
+            'reading_comprehension_score', 'mathematics_achievement_score',
+            'quantitative_reasoning_1_score', 'quantitative_reasoning_2_score',
+            'verbal_reasoning_score'
+        ];
+        foreach ($keys as $key) {
+            if ($request->has($key)) {
+                $data['subsection_scores'][$key] = $request->$key;
+            }
         }
 
         $mockTestStudent = MockTestStudent::where('mock_test_id',$mock_test)->where('student_id',$student_id)->first();
@@ -207,5 +211,180 @@ class MockTestRepository extends BaseRepository
         }
 
         return $query->paginate($perPage, $columns);
+    }
+
+    public function getCustomFields(MockTest $mockTestStudent)
+    {
+        $test_type = $mockTestStudent->test_type;
+        if($test_type==6){
+            return [
+                [
+                    'label_for' => 'english_score',
+                    'label_text' => 'English',
+                    'input_required' => false,
+                    'input_type' => 'number',
+                    'input_name' => 'english_score',
+                    'input_id' => 'english-score',
+                    'input_class' => 'form-control',
+                    'input_placeholder' => '',
+                    'input_value' => null,
+                ],
+                [
+                    'label_for' => 'math_score',
+                    'label_text' => 'Math',
+                    'input_required' => false,
+                    'input_type' => 'number',
+                    'input_name' => 'math_score',
+                    'input_id' => 'math-score',
+                    'input_class' => 'form-control',
+                    'input_placeholder' => '',
+                    'input_value' => null,
+                ],
+                [
+                    'label_for' => 'reading_score',
+                    'label_text' => 'Reading',
+                    'input_required' => false,
+                    'input_type' => 'number',
+                    'input_name' => 'reading_score',
+                    'input_id' => 'reading-score',
+                    'input_class' => 'form-control',
+                    'input_placeholder' => '',
+                    'input_value' => null,
+                ],
+                [
+                    'label_for' => 'science_score',
+                    'label_text' => 'Science',
+                    'input_required' => false,
+                    'input_type' => 'number',
+                    'input_name' => 'science_score',
+                    'input_id' => 'science-score',
+                    'input_class' => 'form-control',
+                    'input_placeholder' => '',
+                    'input_value' => null,
+                ],
+
+            ];
+        }elseif($test_type==7){
+            return [
+                [
+                    'label_for' => 'english_score',
+                    'label_text' => 'English',
+                    'input_required' => false,
+                    'input_type' => 'number',
+                    'input_name' => 'english_score',
+                    'input_id' => 'english-score',
+                    'input_class' => 'form-control',
+                    'input_placeholder' => '',
+                    'input_value' => null,
+                ],
+                [
+                    'label_for' => 'math_score',
+                    'label_text' => 'Math',
+                    'input_required' => false,
+                    'input_type' => 'number',
+                    'input_name' => 'math_score',
+                    'input_id' => 'math-score',
+                    'input_class' => 'form-control',
+                    'input_placeholder' => '',
+                    'input_value' => null,
+                ]
+            ];
+        }elseif ($test_type==8){
+            return [
+                [
+                    'label_for' => 'verbal_reasoning_score',
+                    'label_text' => 'Verbal Reasoning',
+                    'input_required' => false,
+                    'input_type' => 'number',
+                    'input_name' => 'verbal_reasoning_score',
+                    'input_id' => 'verbal-reasoning-score',
+                    'input_class' => 'form-control',
+                    'input_placeholder' => '',
+                    'input_value' => null,
+                ],
+                [
+                    'label_for' => 'quantitative_reasoning_score',
+                    'label_text' => 'Quantitative Reasoning',
+                    'input_required' => false,
+                    'input_type' => 'number',
+                    'input_name' => 'quantitative_reasoning_score',
+                    'input_id' => 'quantitative-reasoning-score',
+                    'input_class' => 'form-control',
+                    'input_placeholder' => '',
+                    'input_value' => null,
+                ],
+                [
+                    'label_for' => 'reading_comprehension_score',
+                    'label_text' => 'Reading Comprehension',
+                    'input_required' => false,
+                    'input_type' => 'number',
+                    'input_name' => 'reading_comprehension_score',
+                    'input_id' => 'reading-comprehension-score',
+                    'input_class' => 'form-control',
+                    'input_placeholder' => '',
+                    'input_value' => null,
+                ],
+                [
+                    'label_for' => 'mathematics_achievement_score',
+                    'label_text' => 'Mathematics Achievement',
+                    'input_required' => false,
+                    'input_type' => 'number',
+                    'input_name' => 'mathematics_achievement_score',
+                    'input_id' => 'mathematics-achievement-score',
+                    'input_class' => 'form-control',
+                    'input_placeholder' => '',
+                    'input_value' => null,
+                ]
+            ];
+        }elseif ($test_type==9){
+            return [
+                [
+                    'label_for' => 'quantitative_reasoning_1_score',
+                    'label_text' => 'Quantitative Reasoning 1',
+                    'input_required' => false,
+                    'input_type' => 'number',
+                    'input_name' => 'quantitative_reasoning_1_score',
+                    'input_id' => 'quantitative-reasoning-1-score',
+                    'input_class' => 'form-control',
+                    'input_placeholder' => '',
+                    'input_value' => null,
+                ],
+                [
+                    'label_for' => 'reading_comprehension_score',
+                    'label_text' => 'Reading Comprehension',
+                    'input_required' => false,
+                    'input_type' => 'number',
+                    'input_name' => 'reading_comprehension_score',
+                    'input_id' => 'reading-comprehension-score',
+                    'input_class' => 'form-control',
+                    'input_placeholder' => '',
+                    'input_value' => null,
+                ],
+                [
+                    'label_for' => 'verbal_reasoning_score',
+                    'label_text' => 'Verbal Reasoning',
+                    'input_required' => false,
+                    'input_type' => 'number',
+                    'input_name' => 'verbal_reasoning_score',
+                    'input_id' => 'verbal-reasoning-score',
+                    'input_class' => 'form-control',
+                    'input_placeholder' => '',
+                    'input_value' => null,
+                ],
+                [
+                    'label_for' => 'quantitative_reasoning_2_score',
+                    'label_text' => 'Quantitative Reasoning 2',
+                    'input_required' => false,
+                    'input_type' => 'number',
+                    'input_name' => 'quantitative_reasoning_2_score',
+                    'input_id' => 'quantitative-reasoning-2-score',
+                    'input_class' => 'form-control',
+                    'input_placeholder' => '',
+                    'input_value' => null,
+                ]
+            ];
+        }
+
+
     }
 }

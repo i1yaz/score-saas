@@ -13,7 +13,9 @@ class MockTestCode extends BaseModel
 
     protected $fillable = [
         'name',
-        'test_type'
+        'test_type',
+        'auth_guard',
+        'added_by',
     ];
     const LIST_DATA_LIST_ID = 2;
 
