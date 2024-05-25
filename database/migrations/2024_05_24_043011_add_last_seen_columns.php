@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->timestamp('last_seen_at')->nullable()->after('email');
             $table->string('last_ip_address')->nullable()->after('email');
         });
         Schema::table('tutors', function (Blueprint $table) {

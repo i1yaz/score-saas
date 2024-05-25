@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -10,7 +11,7 @@ use Laratrust\Contracts\LaratrustUser;
 use Laratrust\Traits\HasRolesAndPermissions;
 use Laravel\Sanctum\HasApiTokens;
 
-class Client extends Authenticatable implements LaratrustUser
+class Client extends Authenticatable implements LaratrustUser, MustVerifyEmail
 {
     use HasApiTokens, HasFactory, HasRolesAndPermissions,Notifiable;
     protected $connection = 'tenant';

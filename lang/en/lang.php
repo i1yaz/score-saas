@@ -14,6 +14,7 @@ return [
     'accept' => "Accept",
     'accepted' => "Accepted",
     'account_has_been_suspended' => "Your account has been suspended",
+    'account_has_been_deactivated' => "Your account has been deactivated",
     'account_not_found' => "Account does not exist",
     'account_number' => "Account Number",
     'account_owner' => "Account Owner",
@@ -2392,7 +2393,7 @@ return [
     'webhooks_secret' => "Webhooks Secret",
     'webhooks_secret_info' => "Create this inside your payment gateway dashboard",
     'api_key_id' => "API Key ID",
-    
+
     //VERSION 2.3
     'adjustment_amount' => "Adjustment Amount",
     'adjustment_description' => "Adjustment Description",
@@ -2521,9 +2522,5 @@ return [
     'public_key' => "Public Key",
     'paystack_general_info' => "Get this from inside your Paystack dashboard",
     'select_section_above_to_start' => "Select a section above to get started",
-    'foo' => "bar",
-    'foo' => "bar",
-    'foo' => "bar",
-    'foo' => "bar",
-    'foo' => "bar",
+    'email_verification_required' => "Email Verification Required",
 ];

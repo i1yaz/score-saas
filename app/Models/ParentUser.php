@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Student as Children;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,7 +14,7 @@ use Laratrust\Contracts\LaratrustUser;
 use Laratrust\Traits\HasRolesAndPermissions;
 use Laravel\Sanctum\HasApiTokens;
 
-class ParentUser extends Authenticatable implements LaratrustUser
+class ParentUser extends Authenticatable implements LaratrustUser, MustVerifyEmail
 {
     use HasApiTokens, HasFactory, HasRolesAndPermissions,Notifiable;
 

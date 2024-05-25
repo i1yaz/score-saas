@@ -78,11 +78,8 @@ class Kernel extends HttpKernel
             SubstituteBindings::class,
         ],
         'landlord' => [
-
-            //Next loop Middleware (run this first, before system middleware)
             BootSystem::class,
             BootMail::class,
-            //System Middleware
             EncryptCookies::class,
             AddQueuedCookiesToResponse::class,
             StartSession::class,
@@ -90,13 +87,11 @@ class Kernel extends HttpKernel
             ShareErrorsFromSession::class,
             VerifyCsrfToken::class,
             SubstituteBindings::class,
-            // strip tags from specified post requests
             StripHtmlTags::class,
         ],
         'tenant' => [
             NeedsTenant::class,
             Middleware\General\BootSystem::class,
-            //system middleware
             EncryptCookies::class,
             AddQueuedCookiesToResponse::class,
             StartSession::class,
@@ -104,12 +99,8 @@ class Kernel extends HttpKernel
             ShareErrorsFromSession::class,
             VerifyCsrfToken::class,
             SubstituteBindings::class,
-            //BOOTING
             Middleware\General\BootMail::class,
-            //[general middleware]
             General::class,
-
-            //strip tags from specified post requests
             StripHtmlTags::class,
         ],
         'frontend' => [
