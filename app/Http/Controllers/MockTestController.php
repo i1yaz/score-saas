@@ -65,7 +65,7 @@ class MockTestController extends AppBaseController
     {
         $input = $request->all();
 
-        $mockTest = $this->mockTestRepository->storeMockTest($input);
+        $mockTest = $this->mockTestRepository->storeUpdateMockTest($input);
         if ($request->ajax()){
             return response()->json(['success' => true, 'message' => 'Mock test saved successfully.']);
         }
@@ -129,7 +129,7 @@ class MockTestController extends AppBaseController
             return redirect(route('mock-tests.index'));
         }
 
-        $mockTest = $this->mockTestRepository->update($request->all(), $id);
+        $mockTest = $this->mockTestRepository->storeUpdateMockTest($request->all(), $id);
 
         Flash::success('Mock Test updated successfully.');
 

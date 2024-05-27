@@ -32,13 +32,19 @@ class MockTestRepository extends BaseRepository
         return MockTest::class;
     }
 
-    public function storeMockTest($input)
+    public function storeUpdateMockTest($input,$id)
     {
         list($input['proctorable_type'], $input['proctorable_id']) = explode('_',  $input['proctor_id']);
         if ($input['proctorable_type']==='proctor') {
             $input['proctorable_type'] = Proctor::class;
             $input['proctor_id'] = $input['proctorable_id'];
         }
+        if ($id) {
+            $mockTest = $this->find($id);
+            return $mockTest->update(array_filter($input));
+        }
+
+
         return $this->create(array_filter($input));
     }
     public function addStudents($array)

@@ -40,36 +40,6 @@
     </div>
 
 @endforeach
-
-{{--@if((int)$mockTestStudent->test_type===6)--}}
-{{--    <div class="col-sm-12">--}}
-{{--        {!! Form::label('english_score', 'English') !!}--}}
-{{--        {!! Form::number('english_score', null, ['class' => 'form-control']) !!}--}}
-{{--    </div>--}}
-{{--    <div class="col-sm-12">--}}
-{{--        {!! Form::label('math_score', 'Math') !!}--}}
-{{--        {!! Form::number('math_score', null, ['class' => 'form-control']) !!}--}}
-{{--    </div>--}}
-{{--    <div class="col-sm-12">--}}
-{{--        {!! Form::label('reading_score', 'Reading') !!}--}}
-{{--        {!! Form::number('reading_score', null, ['class' => 'form-control']) !!}--}}
-{{--    </div>--}}
-{{--    <div class="col-sm-12">--}}
-{{--        {!! Form::label('science_score', 'Science') !!}--}}
-{{--        {!! Form::number('science_score', null, ['class' => 'form-control']) !!}--}}
-{{--    </div>--}}
-
-{{--@elseif((int)$mockTestStudent->test_type===7)--}}
-{{--    <div class="col-sm-12">--}}
-{{--        {!! Form::label('english_score', 'English') !!}--}}
-{{--        {!! Form::number('english_score', null, ['class' => 'form-control']) !!}--}}
-{{--    </div>--}}
-{{--    <div class="col-sm-12">--}}
-{{--        {!! Form::label('math_score', 'Math') !!}--}}
-{{--        {!! Form::number('math_score', null, ['class' => 'form-control']) !!}--}}
-{{--    </div>--}}
-{{--@endif--}}
-
 <script>
     function updateInputField() {
         if (document.getElementById('url').checked) {
