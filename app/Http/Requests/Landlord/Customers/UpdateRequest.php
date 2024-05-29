@@ -9,11 +9,12 @@
 
 namespace App\Http\Requests\Landlord\Customers;
 
+use App\Models\Landlord\Tenant;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UpdateValidation extends FormRequest {
+class UpdateRequest extends FormRequest {
 
     //use App\Http\Requests\Foo\TemplateValidation;
     //function update(TemplateValidation $request,
@@ -64,6 +65,12 @@ class UpdateValidation extends FormRequest {
                     //validate domain name characters (a-z A-Z 0-9 . -)
                     if (!preg_match('/^[a-zA-Z0-9]+[a-zA-Z0-9-._]*[a-zA-Z0-9]+$/', $value)) {
                         return $fail(__('lang.account_url_is_invalid'));
+                    }
+                    if (preg_match('/^ns\d+$/',$value)){
+                        return $fail(__('lang.reserved_words_error'));
+                    }
+                    if (in_array($value,Tenant::RESTRICTED_SUBDOMAINS)){
+                        return $fail(__('lang.reserved_words_error'));
                     }
                 },
                 //validate reserved words

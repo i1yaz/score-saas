@@ -2,7 +2,12 @@
 
 namespace App\Repositories\Landlord;
 
+use App\Models\Landlord\Package;
+use App\Models\Landlord\Payment;
+use App\Models\Landlord\Schedule;
 use App\Models\Landlord\Subscription;
+use App\Models\Landlord\Tenant;
+use Illuminate\Support\Facades\Log;
 
 class SubscriptionsRepository
 {
@@ -99,86 +104,83 @@ class SubscriptionsRepository
      */
     public function changeCustomersPlan($data) {
 
-        //changing customers subsccription
+        //changing customers subscription
         Log::info("changing customers subscription plan - started", ['process' => '[change-customers-subscription-plan]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'data' => $data]);
 
         //get current subscription from database
-        if (!$customer = \App\Models\Landlord\Tenant::On('landlord')->Where('tenant_id', $data['customer_id'])->first()) {
+        if (!$customer = Tenant::On('landlord')->Where('id', $data['customer_id'])->first()) {
             Log::error("customer could not be found in the tenant database", ['process' => '[change-customers-subscription-plan]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'data' => $data]);
             return false;
         }
 
         //get the package
-        if (!$package = \App\Models\Landlord\Package::On('landlord')->Where('package_id', $data['package_id'])->first()) {
+        if (!$package = Package::On('landlord')->Where('id', $data['package_id'])->first()) {
             Log::error("the package could not be found", ['process' => '[change-customers-subscription-plan]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'data' => $data]);
             return false;
         }
 
         //remove existing subscriptions (set it to
-        if ($subscriptions = \App\Models\Landlord\Subscription::On('landlord')->Where('subscription_customerid', $data['customer_id'])->get()) {
-
+        if ($subscriptions = Subscription::On('landlord')->Where('customer_id', $data['customer_id'])->get()) {
             foreach ($subscriptions as $subscription) {
 
                 //queue for cancelling at the payment gateway (will be done via cronjob)
-                if ($subscription->subscription_type == 'paid' && $subscription->subscription_payment_method == 'automatic') {
-                    if ($subscription->subscription_status == 'active' || $subscription->subscription_status == 'failed') {
-                        $schedule = new \App\Models\Landlord\Schedule();
+                if ($subscription->type == 'paid' && $subscription->payment_method == 'automatic') {
+                    if ($subscription->status == 'active' || $subscription->status == 'failed') {
+                        $schedule = new Schedule();
                         $schedule->setConnection('landlord');
-                        $schedule->scheduled_gateway = $subscription->subscription_gateway_name;
-                        $schedule->scheduled_type = 'cancel-subscription';
-                        $schedule->scheduled_payload_1 = $subscription->subscription_gateway_id;
-                        $schedule->scheduled_payload_2 = $subscription->subscription_checkout_reference_2;
-                        $schedule->scheduled_payload_3 = $subscription->subscription_checkout_reference_3;
-                        $schedule->scheduled_payload_4 = $subscription->subscription_checkout_reference_4;
-                        $schedule->scheduled_payload_5 = $subscription->subscription_checkout_reference_5;
+                        $schedule->gateway = $subscription->gateway_name;
+                        $schedule->type = 'cancel-subscription';
+                        $schedule->payload_1 = $subscription->gateway_id;
+                        $schedule->payload_2 = $subscription->checkout_reference_2;
+                        $schedule->payload_3 = $subscription->checkout_reference_3;
+                        $schedule->payload_4 = $subscription->checkout_reference_4;
+                        $schedule->payload_5 = $subscription->checkout_reference_5;
                         $schedule->save();
                     }
                 }
-
-                //control
                 $archive = true;
 
                 //if it was a free plan - delete it
-                if ($subscription->subscription_type == 'free') {
+                if ($subscription->type == 'free') {
                     $subscription->delete();
                     $archive = false;
                 }
 
                 //if it had no previous payments - delete it
-                if (\App\Models\Landlord\Payment::On('landlord')->Where('payment_subscription_id', $subscription->subscription_id)->doesntExist()) {
+                if (Payment::On('landlord')->Where('subscription_id', $subscription->id)->doesntExist()) {
                     $subscription->delete();
                     $archive = false;
                 }
 
                 //archive subscription record - this subscription was once active and paid - let us keep it in our database
                 if ($archive) {
-                    $subscription->subscription_archived = 'yes';
-                    $subscription->subscription_status = 'cancelled';
+                    $subscription->archived = 'yes';
+                    $subscription->status = 'cancelled';
                     $subscription->save();
                 }
             }
         }
 
         //paid packages - free trial
-        if ($package->package_subscription_options == 'paid' && $data['free_trial'] == 'yes') {
+        if ($package->subscription_options == 'paid' && $data['free_trial'] == 'yes') {
             $subscription_status = 'free-trial';
             $free_trial = 'yes';
             $subscription_trial_end = \Carbon\Carbon::now()->addDays($data['free_trial_days'])->format('Y-m-d');
-            $subscription_amount = ($data['billing_cycle'] == 'monthly') ? $package->package_amount_monthly : $package->package_amount_yearly;
+            $subscription_amount = ($data['billing_cycle'] == 'monthly') ? $package->amount_monthly : $package->amount_yearly;
             $subscription_date_started = null;
         }
 
         //paid packages - free trial
-        if ($package->package_subscription_options == 'paid' && $data['free_trial'] == 'no') {
+        if ($package->subscription_options == 'paid' && $data['free_trial'] == 'no') {
             $subscription_status = 'awaiting-payment';
             $free_trial = 'no';
             $subscription_trial_end = null;
-            $subscription_amount = ($data['billing_cycle'] == 'monthly') ? $package->package_amount_monthly : $package->package_amount_yearly;
+            $subscription_amount = ($data['billing_cycle'] == 'monthly') ? $package->amount_monthly : $package->amount_yearly;
             $subscription_date_started = null;
         }
 
         //free packages
-        if ($package->package_subscription_options == 'free') {
+        if ($package->subscription_options == 'free') {
             $subscription_status = 'active';
             $free_trial = 'no';
             $subscription_trial_end = null;
@@ -186,23 +188,23 @@ class SubscriptionsRepository
             $subscription_date_started = now();
         }
 
-        $subscription = new \App\Models\Landlord\Subscription();
+        $subscription = new Subscription();
         $subscription->setConnection('landlord');
-        $subscription->subscription_creatorid = auth()->id();
-        $subscription->subscription_uniqueid = str_unique();
-        $subscription->subscription_customerid = $customer->tenant_id;
-        $subscription->subscription_type = $package->package_subscription_options;
-        $subscription->subscription_payment_method = $data['billing_type'];
-        $subscription->subscription_amount = $subscription_amount;
-        $subscription->subscription_trial_end = $subscription_trial_end;
-        $subscription->subscription_date_started = $subscription_date_started;
-        $subscription->subscription_package_id = $package->package_id;
-        $subscription->subscription_status = $subscription_status;
-        $subscription->subscription_gateway_billing_cycle = $data['billing_cycle'];
+        $subscription->added_by  = auth()->id();
+        $subscription->unique_id = str_unique();
+        $subscription->customer_id = $customer->id;
+        $subscription->type = $package->subscription_options;
+        $subscription->payment_method = $data['billing_type'];
+        $subscription->amount = $subscription_amount;
+        $subscription->trial_end = $subscription_trial_end;
+        $subscription->date_started = $subscription_date_started;
+        $subscription->package_id = $package->id;
+        $subscription->status = $subscription_status;
+        $subscription->gateway_billing_cycle = $data['billing_cycle'];
         $subscription->save();
 
         //change customer status
-        $customer->tenant_status = $subscription_status;
+        $customer->status = $subscription_status;
         $customer->save();
 
         Log::info("changing customers subscription plan - completed", ['process' => '[change-customers-subscription-plan]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'subscription' => $subscription]);

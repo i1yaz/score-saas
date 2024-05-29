@@ -10,6 +10,10 @@ use Illuminate\Database\Eloquent\Model;
 class Package extends BaseModel
 {
 
+    protected $casts = [
+        'status' => 'boolean'
+    ];
+
     protected function maxTutors(): Attribute
     {
         return Attribute::make(

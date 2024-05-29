@@ -186,6 +186,11 @@
             </a>
         </li>
         @endpermission
+        <li class="nav-item">
+            <a href="{{ route('settings-billing.show-packages') }}" class="nav-link {{ Request::is('settings-billing.show-packages') ? 'active' : '' }}">
+                <p>Packages</p>
+            </a>
+        </li>
     </ul>
 </li>
 @endpermission

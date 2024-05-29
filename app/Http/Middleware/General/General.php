@@ -14,6 +14,7 @@ use App\Models\Setting;
 use Cache;
 use Closure;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class General {
 
@@ -26,7 +27,7 @@ class General {
     public function handle($request, Closure $next) {
         $this->lastSeen();
         $this->setLanguage();
-//        $this->isPaymentCompleted();
+        $this->isPaymentCompleted();
         //check account status
         if (auth('web')->check()) {
 
@@ -113,10 +114,10 @@ class General {
         if (!$subscription = DB::connection('landlord')
             ->table('subscriptions')
             ->where('customer_id', $settings->saas_tenant_id)
-            ->where('archived', 'no')
+            ->where('archived', 'yes')
             ->first()) {
             Log::info("unable to fetch the tenants subscription from landlord database - record not found", ['process' => '[tenant-notices]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'tenant_id' => $settings->saas_tenant_id]);
-//            return redirect('/settings/account/packages');
+            return redirect('/settings/billing/packages');
         }
 
         //get admin payment gateway settings

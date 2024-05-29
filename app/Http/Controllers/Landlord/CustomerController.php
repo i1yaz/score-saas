@@ -7,7 +7,7 @@ use App\Http\Controllers\AppBaseController;
 use App\Http\Requests\Landlord\Customers\SetActiveValidation;
 use App\Http\Requests\Landlord\Customers\CreateRequest;
 use App\Http\Requests\Landlord\Customers\UpdatePasswordValidation;
-use App\Http\Requests\Landlord\Customers\UpdateValidation;
+use App\Http\Requests\Landlord\Customers\UpdateRequest;
 use App\Mail\Landlord\Customer\NewCustomerWelcome;
 use App\Models\Landlord\Package;
 use App\Models\Landlord\Schedule;
@@ -214,7 +214,7 @@ class CustomerController extends AppBaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateValidation $request, $id) {
+    public function update(UpdateRequest $request, $id) {
         $customer = \App\Models\Landlord\Tenant::Where('id', $id)->first();
         //store record
         $customer->tenant_name = $request->full_name;

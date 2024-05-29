@@ -2523,4 +2523,11 @@ return [
     'paystack_general_info' => "Get this from inside your Paystack dashboard",
     'select_section_above_to_start' => "Select a section above to get started",
     'email_verification_required' => "Email Verification Required",
+    'students' => "Students",
+    'student' => "Student",
+    'tutors' => "Tutors",
+    'tutor' => "Tutor",
+    'student_packages' => "Student Packages",
+    'monthly_packages' => "Monthly Packages",
+
 ];

@@ -224,6 +224,7 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], functio
     Route::post('email-templates/upload-image', [App\Http\Controllers\EmailTemplateController::class, 'uploadImage'])->name('email-templates.upload-image')->middleware(['permission:email_templates-edit']);
     Route::post('email-templates/{email_templates}/send', [App\Http\Controllers\EmailTemplateController::class, 'send'])->name('email-templates.send')->middleware(['permission:email_templates-send']);
     //Settings
-    Route::get('settings/billing/packages', [App\Http\Controllers\Settings\BillingController::class, 'showPackages'])->name('settings-billing.show-packages')->middleware(['permission:settings_billing-show_packages']);
+    Route::get('settings/billing/packages', [App\Http\Controllers\Settings\BillingController::class, 'showPackages'])->name('settings-billing.show-packages');
+    Route::post('settings/billing/{package}/change-packages', [App\Http\Controllers\Settings\BillingController::class, 'changePackage'])->name('settings-billing.change-package');
 
 });
