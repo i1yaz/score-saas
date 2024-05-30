@@ -226,5 +226,6 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], functio
     //Settings
     Route::get('settings/billing/packages', [App\Http\Controllers\Settings\BillingController::class, 'showPackages'])->name('settings-billing.show-packages');
     Route::post('settings/billing/{package}/change-packages', [App\Http\Controllers\Settings\BillingController::class, 'changePackage'])->name('settings-billing.change-package');
+    Route::post('settings/billing/{unique_id}/pay', [App\Http\Controllers\Settings\BillingController::class, 'pay'])->name('settings-billing.pay');
 
 });

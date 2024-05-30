@@ -7,24 +7,28 @@ use App\Models\Landlord\Payment;
 use App\Models\Landlord\Schedule;
 use App\Models\Landlord\Subscription;
 use App\Models\Landlord\Tenant;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class SubscriptionsRepository
 {
 
     //repos
-    protected $subscription;
-    protected $striperepo;
+    protected Subscription $subscription;
+    protected StripeRepository $striperepo;
+    private CheckoutRepository $checkoutRepo;
 
     /**
      * Inject dependecies
      */
     public function __construct(
         Subscription $subscription,
-        StripeRepository $stripeRepo) {
+        StripeRepository $stripeRepo,
+        CheckoutRepository $checkoutRepo) {
 
         $this->subscription = $subscription;
         $this->striperepo = $stripeRepo;
+        $this->checkoutRepo = $checkoutRepo;
 
     }
 
@@ -210,6 +214,48 @@ class SubscriptionsRepository
         Log::info("changing customers subscription plan - completed", ['process' => '[change-customers-subscription-plan]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'subscription' => $subscription]);
 
         return $subscription;
+
+    }
+
+    public function paySubscription(Request $request,$id)
+    {
+
+        if (!$payment_data = $this->checkoutRepo->getPaymentData($id)) {
+            abort(409, __('lang.error_request_could_not_be_completed'));
+        }
+        $subscription = $payment_data['subscription'];
+        $package = $payment_data['package'];
+        $settings = $payment_data['settings'];
+
+        //payment payload
+        $data = [
+            'package' => $package,
+            'package_id' => $package->id,
+            'stripe_secret_key' => $settings->stripe_secret_key,
+            'currency' => $settings->system_currency_code,
+            'tenant_id' => config('system.saas_tenant_id'),
+            'subscription_id' => $subscription->id,
+            'billing_cycle' => $subscription->gateway_billing_cycle,
+            'cancel_url' => route('settings-billing.show-packages'),
+        ];
+
+        //create a new stripe session
+        if (!$checkout_session_id = $this->striperepo->initiateSubscriptionPayment($data)) {
+            Log::error("unable to create a stripe checkout session", ['process' => '[permissions]', config('stripe-paynow-button'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'tenant_id' => config('system.settings_saas_tenant_id')]);
+            abort(409, __('lang.error_request_could_not_be_completed'));
+        }
+
+        //update subscription with stripe data
+        $subscription->gateway_plan_id = ($subscription->gateway_billing_cycle == 'monthly') ? $package->gateway_stripe_product_monthly : $package->gateway_stripe_product_yearly;
+        $subscription->gateway_price_id = ($subscription->gateway_billing_cycle == 'monthly') ? $package->gateway_stripe_price_monthly : $package->gateway_stripe_price_yearly;
+        $subscription->save();
+
+        return [
+            'checkout_session_id' => $checkout_session_id,
+            'stripe_public_key' => $settings->stripe_public_key,
+            'landlord_settings' => $settings,
+        ];
+
 
     }
 

@@ -86,7 +86,7 @@ class StripeRepository
             return false;
         }
         try {
-            $stripe = new StripeClient($data['settings_stripe_secret_key']);
+            $stripe = new StripeClient($data['stripe_secret_key']);
             $product = $stripe->products->retrieve($product_id, []);
         } catch (AuthenticationException$e) {
             Log::error("retrieving a product ($product_id) from stripe failed - Unable to authenticate with Stripe. Check your API keys", ['process' => '[stripe-get-product]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
@@ -119,7 +119,7 @@ class StripeRepository
             return false;
         }
         try {
-            $stripe = new StripeClient($data['settings_stripe_secret_key']);
+            $stripe = new StripeClient($data['stripe_secret_key']);
             $price = $stripe->prices->retrieve($price_id, []);
         } catch (AuthenticationException$e) {
             Log::error("retrieving a price ($price_id) from stripe failed - Unable to authenticate with Stripe. Check your API keys", ['process' => '[stripe-get-products-prices]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
@@ -151,7 +151,7 @@ class StripeRepository
             return false;
         }
         try {
-            $stripe = new StripeClient($data['settings_stripe_secret_key']);
+            $stripe = new StripeClient($data['stripe_secret_key']);
             $subscription = $stripe->subscriptions->retrieve(
                 $subscription_stripe_id,
                 []
@@ -183,7 +183,7 @@ class StripeRepository
             return false;
         }
         try {
-            $stripe = new StripeClient($data['settings_stripe_secret_key']);
+            $stripe = new StripeClient($data['stripe_secret_key']);
             $checkout_session = $stripe->checkout->sessions->retrieve(
                 $checkout_session_id,
                 []
@@ -216,7 +216,7 @@ class StripeRepository
             return false;
         }
         try {
-            $stripe = new StripeClient($data['settings_stripe_secret_key']);
+            $stripe = new StripeClient($data['stripe_secret_key']);
             $stripe->subscriptions->cancel(
                 $subscription_stripe_id,
                 []
@@ -241,7 +241,7 @@ class StripeRepository
     public function createPlan($data = []) {
         Log::info("creating a plan at stripe - started", ['process' => '[stripe-create-plan]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'data' => $data]);
         try {
-            $stripe = new StripeClient($data['settings_stripe_secret_key']);
+            $stripe = new StripeClient($data['stripe_secret_key']);
             $plan = $stripe->plans->create([
                 'amount' => $data['amount'],
                 'currency' => $data['currency'],
@@ -270,7 +270,7 @@ class StripeRepository
         $product_id = $data['product_id'];
         Log::info("creating a new price at stripe - started", ['process' => '[stripe-archive-price]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'data' => $data]);
         try {
-            $stripe = new StripeClient($data['settings_stripe_secret_key']);
+            $stripe = new StripeClient($data['stripe_secret_key']);
             $price = $stripe->prices->create([
                 'unit_amount' => $data['price_amount'],
                 'currency' => $data['price_currency'],
@@ -298,7 +298,7 @@ class StripeRepository
         $plan_id = $data['plan_id'];
         Log::info("archiving a plan ($plan_id) at stripe - started", ['process' => '[stripe-archive-plan]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'data' => $data]);
         try {
-            $stripe = new StripeClient($data['settings_stripe_secret_key']);
+            $stripe = new StripeClient($data['stripe_secret_key']);
             $stripe->products->update(
                 $data['plan_id'],
                 [
@@ -326,7 +326,7 @@ class StripeRepository
         $price_id = $data['price_id'];
         Log::info("archiving a price ($price_id) at stripe - started", ['process' => '[stripe-archive-price]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'data' => $data]);
         try {
-            $stripe = new StripeClient($data['settings_stripe_secret_key']);
+            $stripe = new StripeClient($data['stripe_secret_key']);
             $stripe->prices->update(
                 $data['price_id'],
                 [
@@ -387,59 +387,59 @@ class StripeRepository
             return false;
         }
         if (!is_array($data)) {
-            Log::error("initiating a subscription payment session at stripee failed - invalid paymment payload data", ['process' => '[stripe-initiating-a-payment-session]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
+            Log::error("initiating a subscription payment session at stripe failed - invalid paymment payload data", ['process' => '[stripe-initiating-a-payment-session]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
             return false;
         }
         if ($package = $this->validateGatewayPlans($data)) {
-            $data['price_id'] = ($data['billing_cycle'] == 'monthly') ? $package->package_gateway_stripe_price_monthly : $package->package_gateway_stripe_price_yearly;
+            $data['price_id'] = ($data['billing_cycle'] == 'monthly') ? $package->gateway_stripe_price_monthly : $package->gateway_stripe_price_yearly;
         } else {
             Log::error("stripe subscription plans could not be validated for this package", ['process' => '[stripe-initiating-a-payment-session]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
             return false;
         }
         if (!$price = $this->getPrice($data)) {
-            Log::error("initiating a subscription payment session at stripee failed - unable to get the price", ['process' => '[stripe-initiating-a-payment-session]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
+            Log::error("initiating a subscription payment session at stripe failed - unable to get the price", ['process' => '[stripe-initiating-a-payment-session]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
             return false;
         }
         if ($customer = $this->getCustomer($data)) {
             $data['customer_id'] = $customer->id;
         } else {
-            Log::error("initiating a subscription payment session at stripee failed - unable to retrieve the customer", ['process' => '[stripe-initiating-a-payment-session]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
+            Log::error("initiating a subscription payment session at stripe failed - unable to retrieve the customer", ['process' => '[stripe-initiating-a-payment-session]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
             return false;
         }
 
         if (!$session = $this->createSubscriptionPaymentSession($data, $package)) {
-            Log::error("initiating a subscription payment session at stripee failed - unable to create a payment session", ['process' => '[stripe-initiating-a-payment-session]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
+            Log::error("initiating a subscription payment session at stripe failed - unable to create a payment session", ['process' => '[stripe-initiating-a-payment-session]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
             return false;
         }
 
         $payment_session = new PaymentSession();
         $payment_session->setConnection('landlord');
-        $payment_session->session_creatorid = auth()->id();
-        $payment_session->session_creator_fullname = auth()->user()->first_name . ' ' . auth()->user()->last_name;
-        $payment_session->session_creator_email = auth()->user()->email;
-        $payment_session->session_gateway_name = 'stripe';
-        $payment_session->session_gateway_ref = $session->id;
-        $payment_session->session_amount = $price->unit_amount / 100;
-        $payment_session->session_invoices = null;
-        $payment_session->session_subscription_id = $data['subscription_id'];
-        $payment_session->session_payload = json_encode($session);
+        $payment_session->added_by = auth()->id();
+        $payment_session->creator_fullname = auth()->user()->first_name . ' ' . auth()->user()->last_name;
+        $payment_session->creator_email = auth()->user()->email;
+        $payment_session->gateway_name = 'stripe';
+        $payment_session->gateway_ref = $session->id;
+        $payment_session->amount = $price->unit_amount / 100;
+        $payment_session->invoices = null;
+        $payment_session->subscription_id = $data['subscription_id'];
+        $payment_session->payload = json_encode($session);
         $payment_session->save();
-        Log::info("initiating a subscription payment session at stripee - completed", ['process' => '[stripe-initiating-a-payment-session]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
+        Log::info("initiating a subscription payment session at stripe - completed", ['process' => '[stripe-initiating-a-payment-session]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
         return $session->id;
 
     }
     public function getCustomer($data = []) {
         Log::info("fetching a customer from stripe - started", ['process' => '[get-stripe-customer]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'data' => $data]);
         $tenant_id = $data['tenant_id'];
-        if (!$tenant = \App\Models\Landlord\Tenant::On('landlord')->Where('tenant_id', $tenant_id)->first()) {
+        if (!$tenant = \App\Models\Landlord\Tenant::On('landlord')->Where('id', $tenant_id)->first()) {
             Log::error("getting a customer from stripe failed - the tenant could not be found in the landlord db", ['process' => '[get-stripe-customer]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
             return false;
         }
-        $tenant_stripe_customer_id = $tenant->tenant_stripe_customer_id;
-        if ($tenant->tenant_stripe_customer_id != '') {
+        $tenant_stripe_customer_id = $tenant->stripe_customer_id;
+        if ($tenant->stripe_customer_id != '') {
             try {
-                $customer = \Stripe\Customer::retrieve($tenant->tenant_stripe_customer_id);
-                Log::info("getting a customer ($tenant->tenant_stripe_customer_id) from stripe- completed", ['process' => '[get-stripe-customer]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
+                $customer = \Stripe\Customer::retrieve($tenant->stripe_customer_id);
+                Log::info("getting a customer ($tenant->stripe_customer_id) from stripe- completed", ['process' => '[get-stripe-customer]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
                 return $customer;
             } catch (exception $e) {
                 Log::info("this tenant has a stripe customer id ($tenant_stripe_customer_id), but the user was not found in stripe - will now create a new user", ['process' => '[get-stripe-customer]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
@@ -456,7 +456,7 @@ class StripeRepository
                     'tenant_id' => $tenant_id,
                 ],
             ]);
-            $tenant->tenant_stripe_customer_id = $customer->id;
+            $tenant->stripe_customer_id = $customer->id;
             $tenant->save();
             Log::info("creating a new customer ($customer->id) at stripe - completed", ['process' => '[get-stripe-customer]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
             return $customer;
@@ -493,54 +493,54 @@ class StripeRepository
     public function validateGatewayPlans($data) {
         Log::info("validating the package's plans (prices) at stripe", ['process' => '[stripe-validate-gateway-plans]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'data' => $data]);
         $package = $data['package'];
-        if ($package->package_gateway_stripe_price_monthly) {
+        if ($package->gateway_stripe_price_monthly) {
             if ($this->getPrice([
-                'settings_stripe_secret_key' => $data['settings_stripe_secret_key'],
-                'price_id' => $package->package_gateway_stripe_price_monthly,
+                'stripe_secret_key' => $data['stripe_secret_key'],
+                'price_id' => $package->gateway_stripe_price_monthly,
             ])) {
             } else {
-                $package->package_gateway_stripe_price_monthly = '';
-                $package->package_gateway_stripe_product_monthly = '';
+                $package->gateway_stripe_price_monthly = '';
+                $package->gateway_stripe_product_monthly = '';
                 $package->save();
                 Log::info("the plan (price) could not be loaded from the stripe. Will now delete it from the package and recreate in stripe", ['process' => '[stripe-validate-gateway-plans]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
             }
         }
-        if ($package->package_gateway_stripe_price_yearly) {
+        if ($package->gateway_stripe_price_yearly) {
             if ($this->getPrice([
-                'settings_stripe_secret_key' => $data['settings_stripe_secret_key'],
-                'price_id' => $package->package_gateway_stripe_price_yearly,
+                'stripe_secret_key' => $data['stripe_secret_key'],
+                'price_id' => $package->gateway_stripe_price_yearly,
             ])) {
             } else {
-                $package->package_gateway_stripe_price_yearly = '';
-                $package->package_gateway_stripe_product_yearly = '';
+                $package->gateway_stripe_price_yearly = '';
+                $package->gateway_stripe_product_yearly = '';
                 $package->save();
                 Log::info("the plan (price) could not be loaded from the stripe. Will now delete it from the package and recreate in stripe", ['process' => '[stripe-validate-gateway-plans]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
             }
         }
-        if ($package->package_gateway_stripe_price_monthly == '') {
+        if ($package->gateway_stripe_price_monthly == '') {
             if ($plan = $this->createPlan([
-                'settings_stripe_secret_key' => $data['settings_stripe_secret_key'],
-                'amount' => $package->package_amount_monthly * 100,
+                'stripe_secret_key' => $data['stripe_secret_key'],
+                'amount' => $package->amount_monthly * 100,
                 'currency' => $data['currency'],
                 'cycle' => 'month',
-                'name' => $package->package_name,
+                'name' => $package->name,
             ])) {
-                $package->package_gateway_stripe_price_monthly = $plan->id;
-                $package->package_gateway_stripe_product_monthly = $plan->product;
+                $package->gateway_stripe_price_monthly = $plan->id;
+                $package->gateway_stripe_product_monthly = $plan->product;
                 $package->save();
             }
         }
 
-        if ($package->package_gateway_stripe_price_yearly == '') {
+        if ($package->gateway_stripe_price_yearly == '') {
             if ($plan = $this->createPlan([
-                'settings_stripe_secret_key' => $data['settings_stripe_secret_key'],
-                'amount' => $package->package_amount_yearly * 100,
+                'stripe_secret_key' => $data['stripe_secret_key'],
+                'amount' => $package->amount_yearly * 100,
                 'currency' => $data['currency'],
                 'cycle' => 'year',
-                'name' => $package->package_name,
+                'name' => $package->name,
             ])) {
-                $package->package_gateway_stripe_price_yearly = $plan->id;
-                $package->package_gateway_stripe_product_yearly = $plan->product;
+                $package->gateway_stripe_price_yearly = $plan->id;
+                $package->gateway_stripe_product_yearly = $plan->product;
                 $package->save();
             }
         }
@@ -566,13 +566,13 @@ class StripeRepository
 
         //(1) archive current price
         $this->archivePrice([
-            'settings_stripe_secret_key' => $data['stripe_secret_key'],
+            'stripe_secret_key' => $data['stripe_secret_key'],
             'price_id' => $data['price_id'],
         ]);
 
         //(2) create a new price
         if ($price = $this->createPrice([
-            'settings_stripe_secret_key' => $data['stripe_secret_key'],
+            'stripe_secret_key' => $data['stripe_secret_key'],
             'product_id' => $data['product_id'],
             'price_amount' => $data['price_amount'],
             'price_currency' => $data['price_currency'],

@@ -86,51 +86,23 @@
         $(document).ready(function () {
             $('#payment_now_method_selector').on('change', function () {
                 var paymentMethod = $(this).val();
-                if (paymentMethod === 'stripe') {
-                    $('#payment_now_placeholder_button').html('Pay with Stripe');
-                    $('#payment_now_placeholder_button').removeClass('btn-default');
-                    $('#payment_now_placeholder_button').addClass('btn-primary');
-                    $('#payment_now_placeholder_button').prop('disabled', false);
-                    $('#payment_now_placeholder_button').on('click', function () {
-                        window.location.href = '{{url('app-admin/settings/stripe')}}';
+                //send ajax request
+                if(paymentMethod !='' || paymentMethod != "Select Payment Method"){
+                    $.ajax({
+                        url: '{{route('settings-billing.pay',$subscription->unique_id)}}',
+                        type: 'POST',
+                        data: {
+                            payment_method: paymentMethod,
+                            subscription_id: '{{$subscription->id}}',
+                            _token: '{{csrf_token()}}'
+                        },
+                        success: function (response) {
+                            $('#payment_now_buttons_container').html(response);
+                        }
                     });
-                } else if (paymentMethod === 'paypal') {
-                    $('#payment_now_placeholder_button').html('Pay with PayPal');
-                    $('#payment_now_placeholder_button').removeClass('btn-default');
-                    $('#payment_now_placeholder_button').addClass('btn-primary');
-                    $('#payment_now_placeholder_button').prop('disabled', false);
-                    $('#payment_now_placeholder_button').on('click', function () {
-                        window.location.href = '{{url('app-admin/settings/paypal')}}';
-                    });
-                } else if (paymentMethod === 'paystack') {
-                    $('#payment_now_placeholder_button').html('Pay with Paystack');
-                    $('#payment_now_placeholder_button').removeClass('btn-default');
-                    $('#payment_now_placeholder_button').addClass('btn-primary');
-                    $('#payment_now_placeholder_button').prop('disabled', false);
-                    $('#payment_now_placeholder_button').on('click', function () {
-                        window.location.href = '{{url('app-admin/settings/paystack')}}';
-                    });
-                } else if (paymentMethod === 'razorpay') {
-                    $('#payment_now_placeholder_button').html('Pay with Razorpay');
-                    $('#payment_now_placeholder_button').removeClass('btn-default');
-                    $('#payment_now_placeholder_button').addClass('btn-primary');
-                    $('#payment_now_placeholder_button').prop('disabled', false);
-                    $('#payment_now_placeholder_button').on('click', function () {
-                        window.location.href = '{{url('app-admin/settings/razorpay')}}';
-                    });
-                } else if (paymentMethod === 'offline') {
-                    $('#payment_now_placeholder_button').html('Pay Offline');
-                    $('#payment_now_placeholder_button').removeClass('btn-default');
-                    $('#payment_now_placeholder_button').addClass('btn-primary');
-                    $('#payment_now_placeholder_button').prop('disabled', false);
-                    $('#payment_now_placeholder_button').on('click', function () {
-                        window.location.href = '{{url('app-admin/settings/offline-payments')}}'
-                    });
-                } else {
-                    $('#payment_now_placeholder_button').html('Pay Now');
-                    $('#payment_now_placeholder_button').removeClass('btn-primary');
-                    $('#payment_now_placeholder_button').addClass('btn-default');
-                    $('#payment_now_placeholder_button').prop('disabled', true);
                 }
+            });
+        });
+
     </script>
 @endpush

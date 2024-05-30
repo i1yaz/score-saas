@@ -137,4 +137,15 @@ class BillingController extends Controller
         return view('settings.billing.notices', compact('payload','package','subscription','landlord_settings'));
 
     }
+
+    public function pay(Request $request,$unique_id)
+    {
+        if ($request->payment_method == 'stripe'){
+            $payload = $this->subscriptionsRepo->paySubscription($request,$unique_id);
+            $html = view('settings.billing.notices.stripe-button', compact( 'payload'))->render();
+            return response()->json(['html' => $html]);
+        }
+
+    }
+
 }
