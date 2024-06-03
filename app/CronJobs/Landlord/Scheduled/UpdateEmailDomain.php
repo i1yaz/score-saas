@@ -1,6 +1,6 @@
 <?php
 
-namespace App\CronJobs\Scheduled;
+namespace App\CronJobs\Landlord\Scheduled;
 use App\Models\Landlord\Schedule;
 use App\Models\Setting;
 use Exception;

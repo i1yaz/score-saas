@@ -59,8 +59,6 @@ class RoutineTasks {
      * @return null
      */
     private function cancelSubscriptions() {
-
-        //get some scheduled tasks
         $limit = 1;
         if ($scheduled = Schedule::on('landlord')->Where('type', 'cancel-subscription')
             ->Where('status', 'new')
@@ -69,18 +67,14 @@ class RoutineTasks {
             foreach ($scheduled as $schedule) {
                 $errors = false;
                 $payment_gateway = $schedule->gateway;
-
-                //log
                 Log::info("found a scheduled task to cancel a subscription at payment gateway ($payment_gateway)", ['process' => '[payment-gateways-cron]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'schedule_id' => $schedule->id]);
-
-                //set to processing
                 $schedule->status = 'processing';
                 $schedule->save();
 
                 //[stripe]
                 if ($payment_gateway == 'stripe') {
                     if ($this->stripeRepo->cancelSubscription([
-                        'settings_stripe_secret_key' => config('system.stripe_secret_key'),
+                        'stripe_secret_key' => config('system.stripe_secret_key'),
                         'subscription_stripe_id' => $schedule->payload_1,
                     ])) {
                         $schedule->status = 'completed';
@@ -316,7 +310,7 @@ class RoutineTasks {
         //update monthly plan [name]
         if ($package->gateway_stripe_product_monthly != '') {
             if ($this->stripeRepo->updatePlanName([
-                'settings_stripe_secret_key' => config('system.stripe_secret_key'),
+                'stripe_secret_key' => config('system.stripe_secret_key'),
                 'plan_id' => $package->gateway_stripe_product_monthly,
                 'plan_name' => $package->name,
             ])) {
@@ -327,7 +321,7 @@ class RoutineTasks {
         //update yearly plan [name]
         if ($package->package_gateway_stripe_product_yearly != '') {
             if ($this->stripeRepo->updatePlanName([
-                'settings_stripe_secret_key' => config('system.stripe_secret_key'),
+                'stripe_secret_key' => config('system.stripe_secret_key'),
                 'plan_id' => $package->package_gateway_stripe_product_yearly,
                 'plan_name' => $package->package_name,
             ])) {

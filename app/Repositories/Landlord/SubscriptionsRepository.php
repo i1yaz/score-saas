@@ -237,6 +237,7 @@ class SubscriptionsRepository
             'subscription_id' => $subscription->id,
             'billing_cycle' => $subscription->gateway_billing_cycle,
             'cancel_url' => route('settings-billing.show-packages'),
+            'success_url' => url('package/payment/success/stripe?checkout_session_id={CHECKOUT_SESSION_ID}')
         ];
 
         //create a new stripe session

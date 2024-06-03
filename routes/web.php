@@ -18,6 +18,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentGateways\StripeController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\SessionController;
+use App\Http\Controllers\Settings\BillingController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentTutoringPackageController;
 use App\Http\Controllers\SubjectController;
@@ -59,6 +60,9 @@ Route::get('admin/login', [LoginController::class, 'showAdminLoginForm'])->name(
 Route::get('payment/success', [PaymentController::class, 'success'])->name('payment-success');
 Route::get('payment/failed', [PaymentController::class, 'failed'])->name('payment-failed');
 Route::post('stripe-webhooks', [StripeController::class, 'webhooks'])->name('stripe-webhooks');
+
+Route::any('package/payment/success/{gateway}', [BillingController::class, 'packagePaymentSuccess'])->name('package-payment-success');
+Route::any('package/payment/failed/{gateway}', [BillingController::class, 'packagePaymentFailed'])->name('package-payment-failed');
 
 Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -224,8 +228,8 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], functio
     Route::post('email-templates/upload-image', [App\Http\Controllers\EmailTemplateController::class, 'uploadImage'])->name('email-templates.upload-image')->middleware(['permission:email_templates-edit']);
     Route::post('email-templates/{email_templates}/send', [App\Http\Controllers\EmailTemplateController::class, 'send'])->name('email-templates.send')->middleware(['permission:email_templates-send']);
     //Settings
-    Route::get('settings/billing/packages', [App\Http\Controllers\Settings\BillingController::class, 'showPackages'])->name('settings-billing.show-packages');
-    Route::post('settings/billing/{package}/change-packages', [App\Http\Controllers\Settings\BillingController::class, 'changePackage'])->name('settings-billing.change-package');
-    Route::post('settings/billing/{unique_id}/pay', [App\Http\Controllers\Settings\BillingController::class, 'pay'])->name('settings-billing.pay');
+    Route::get('settings/billing/packages', [BillingController::class, 'showPackages'])->name('settings-billing.show-packages');
+    Route::post('settings/billing/{package}/change-packages', [BillingController::class, 'changePackage'])->name('settings-billing.change-package');
+    Route::post('settings/billing/{unique_id}/pay', [BillingController::class, 'pay'])->name('settings-billing.pay');
 
 });

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
-use App\Http\Responses\Account\UpdatePlanResponse;
 use App\Models\Landlord\Package;
 use App\Models\Landlord\Setting;
 use App\Models\MonthlyInvoicePackage;
@@ -140,12 +139,22 @@ class BillingController extends Controller
 
     public function pay(Request $request,$unique_id)
     {
-        if ($request->payment_method == 'stripe'){
+        if ($request->payment_method == 'stripe' && $request->Ajax()){
             $payload = $this->subscriptionsRepo->paySubscription($request,$unique_id);
             $html = view('settings.billing.notices.stripe-button', compact( 'payload'))->render();
             return response()->json(['html' => $html]);
         }
 
+    }
+
+    public function packagePaymentSuccess(Request $request)
+    {
+        dd($request);
+    }
+
+    public function packagePaymentFailed(Request $request)
+    {
+        dd($request);
     }
 
 }

@@ -29,6 +29,7 @@ class General {
         $this->setLanguage();
         $this->isPaymentCompleted();
         //check account status
+
         if (auth('web')->check()) {
 
             if (empty(auth()->user()->email_verified_at)) {

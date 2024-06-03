@@ -88,6 +88,7 @@
                 var paymentMethod = $(this).val();
                 //send ajax request
                 if(paymentMethod !='' || paymentMethod != "Select Payment Method"){
+                    $('#payment_now_placeholder_button').text("Please wait...");
                     $.ajax({
                         url: '{{route('settings-billing.pay',$subscription->unique_id)}}',
                         type: 'POST',
@@ -97,7 +98,10 @@
                             _token: '{{csrf_token()}}'
                         },
                         success: function (response) {
-                            $('#payment_now_buttons_container').html(response);
+                            $('#payment_now_buttons_container').html(response.html);
+                        },
+                        error: function (error) {
+                            $('#payment_now_placeholder_button').text("Pay Now");
                         }
                     });
                 }

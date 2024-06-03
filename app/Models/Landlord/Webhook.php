@@ -5,7 +5,8 @@ namespace App\Models\Landlord;
 use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-class Payment extends BaseModel
+
+class Webhook extends BaseModel
 {
     use HasFactory;
 }

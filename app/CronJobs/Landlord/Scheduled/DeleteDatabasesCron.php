@@ -1,6 +1,6 @@
 <?php
 
-namespace App\CronJobs\Scheduled;
+namespace App\CronJobs\Landlord\Scheduled;
 
 use App\Repositories\Landlord\DatabaseRepository;
 use Illuminate\Support\Facades\Log;

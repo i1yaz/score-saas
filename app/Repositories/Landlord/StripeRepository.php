@@ -477,7 +477,7 @@ class StripeRepository
                     'quantity' => 1,
                 ]],
                 'mode' => 'subscription',
-                'success_url' => url('app/settings/account/thankyou/stripe?checkout_session_id={CHECKOUT_SESSION_ID}'),
+                'success_url' => $data['success_url'],
                 'cancel_url' => $data['cancel_url'],
                 'metadata' => [
                     'subscription_id' => $data['subscription_id'],

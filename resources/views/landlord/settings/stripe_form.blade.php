@@ -20,7 +20,7 @@
 
 <div class="form-group col-sm-12">
     {!! Form::label('stripe_webhooks_url', 'Webhook URL:') !!}
-    {!! Form::text('stripe_webhooks_url', route('landlord.webhooks-stripe'), ['class' => 'form-control']) !!}
+    {!! Form::text('stripe_webhooks_url', route('landlord.admin-stripe-webhooks'), ['class' => 'form-control']) !!}
 </div>
 
 <div class="form-group col-sm-12">

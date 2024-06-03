@@ -13,10 +13,15 @@ use App\Http\Controllers\Landlord\Settings\Gateways\StripeController;
 use App\Http\Controllers\Landlord\Settings\GeneralController;
 use App\Http\Controllers\Landlord\Settings\SmtpController;
 use App\Http\Controllers\Landlord\SubscriptionController;
+use App\Http\Controllers\Settings\BillingController;
 use App\Models\Landlord\Package;
+
 
 Route::middleware(['landlord'])->group(function () {
     Route::group(['prefix' => 'app-admin','as' => 'landlord.'], function () {
+        //Webhooks
+        Route::any('/webhook-stripe', [SubscriptionController::class, 'packagePaymentWebhooks'])->name('admin-stripe-webhooks');
+
         //LOGIN & SIGNUP
         Route::get("/login", [AuthenticateController::class, 'logIn'])->name('login');
         Route::post("/login", [AuthenticateController::class, 'logInAction'])->name('login-action');
