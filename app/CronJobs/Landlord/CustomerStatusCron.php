@@ -7,7 +7,7 @@
  * @author     NextLoop
  *---------------------------------------------------------------------------------------------------*/
 
-namespace App\Cronjobs\Landlord;
+namespace App\CronJobs\Landlord;
 
 use App\Models\Landlord\Tenant as LandlordTenant;
 use DB;
