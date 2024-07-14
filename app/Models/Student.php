@@ -14,6 +14,35 @@ use Laratrust\Contracts\LaratrustUser;
 use Laratrust\Traits\HasRolesAndPermissions;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * 
+ *
+ * @property-read string $full_name
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
+ * @property-read int|null $notifications_count
+ * @property-read \App\Models\ParentUser|null $parentUser
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Permission> $permissions
+ * @property-read int|null $permissions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Role> $roles
+ * @property-read int|null $roles_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
+ * @property-read int|null $tokens_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StudentTutoringPackage> $tutoringPackages
+ * @property-read int|null $tutoring_packages_count
+ * @method static Builder|Student active()
+ * @method static \Database\Factories\StudentFactory factory($count = null, $state = [])
+ * @method static Builder|Student inActive()
+ * @method static Builder|Student newModelQuery()
+ * @method static Builder|Student newQuery()
+ * @method static Builder|Student orWhereHasPermission(\BackedEnum|array|string $permission = '', ?mixed $team = null)
+ * @method static Builder|Student orWhereHasRole(\BackedEnum|array|string $role = '', ?mixed $team = null)
+ * @method static Builder|Student query()
+ * @method static Builder|Student whereDoesntHavePermissions()
+ * @method static Builder|Student whereDoesntHaveRoles()
+ * @method static Builder|Student whereHasPermission(\BackedEnum|array|string $permission = '', ?mixed $team = null, string $boolean = 'and')
+ * @method static Builder|Student whereHasRole(\BackedEnum|array|string $role = '', ?mixed $team = null, string $boolean = 'and')
+ * @mixin \Eloquent
+ */
 class Student extends Authenticatable implements LaratrustUser, MustVerifyEmail
 {
     use HasApiTokens, HasFactory, HasRolesAndPermissions,Notifiable;

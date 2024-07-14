@@ -7,6 +7,27 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
+/**
+ * 
+ *
+ * @property-read string $student_tutoring_package_code
+ * @property-read \App\Models\Invoice|null $invoice
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Session> $sessions
+ * @property-read int|null $sessions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Student> $student
+ * @property-read int|null $student_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Subject> $subjects
+ * @property-read int|null $subjects_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Tutor> $tutors
+ * @property-read int|null $tutors_count
+ * @method static Builder|StudentTutoringPackage active()
+ * @method static \Database\Factories\StudentTutoringPackageFactory factory($count = null, $state = [])
+ * @method static Builder|StudentTutoringPackage inActive()
+ * @method static \Illuminate\Database\Eloquent\Builder|StudentTutoringPackage newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|StudentTutoringPackage newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|StudentTutoringPackage query()
+ * @mixin \Eloquent
+ */
 class StudentTutoringPackage extends BaseModel
 {
     use HasFactory;

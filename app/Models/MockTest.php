@@ -5,6 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+/**
+ * 
+ *
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Student> $students
+ * @property-read int|null $students_count
+ * @method static Builder|MockTest active()
+ * @method static Builder|MockTest inActive()
+ * @method static \Illuminate\Database\Eloquent\Builder|MockTest newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|MockTest newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|MockTest query()
+ * @mixin \Eloquent
+ */
 class MockTest extends BaseModel
 {
     public $table = 'mock_tests';

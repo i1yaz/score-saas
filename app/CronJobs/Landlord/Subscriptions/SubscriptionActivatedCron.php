@@ -108,6 +108,6 @@ class SubscriptionActivatedCron {
             }
 
         }
-
+        Log::info('SubscriptionActivatedCron: Ran successfully');
     }
 }

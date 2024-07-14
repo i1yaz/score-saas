@@ -4,6 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * 
+ *
+ * @method static Builder|TutoringLocation active()
+ * @method static \Database\Factories\TutoringLocationFactory factory($count = null, $state = [])
+ * @method static Builder|TutoringLocation inActive()
+ * @method static \Illuminate\Database\Eloquent\Builder|TutoringLocation newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|TutoringLocation newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|TutoringLocation query()
+ * @mixin \Eloquent
+ */
 class TutoringLocation extends BaseModel
 {
     use HasFactory;

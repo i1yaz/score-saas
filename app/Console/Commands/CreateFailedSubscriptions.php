@@ -2,11 +2,12 @@
 
 namespace App\Console\Commands;
 
+use Carbon\Carbon;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use App\Models\MonthlyInvoicePackage;
 use App\Models\MonthlyInvoiceSubscription;
 use App\Repositories\MonthlyInvoicePackageRepository;
-use Carbon\Carbon;
-use Illuminate\Console\Command;
 
 class CreateFailedSubscriptions extends Command
 {
@@ -53,5 +54,6 @@ class CreateFailedSubscriptions extends Command
             }
 
         }
+        Log::info('CreateFailedSubscriptions: Ran successfully');
     }
 }

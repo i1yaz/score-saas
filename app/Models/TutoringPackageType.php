@@ -4,6 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * 
+ *
+ * @method static Builder|TutoringPackageType active()
+ * @method static \Database\Factories\TutoringPackageTypeFactory factory($count = null, $state = [])
+ * @method static Builder|TutoringPackageType inActive()
+ * @method static \Illuminate\Database\Eloquent\Builder|TutoringPackageType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|TutoringPackageType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|TutoringPackageType query()
+ * @mixin \Eloquent
+ */
 class TutoringPackageType extends BaseModel
 {
     use HasFactory;

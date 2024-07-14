@@ -6,6 +6,18 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+/**
+ * 
+ *
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Invoice> $invoices
+ * @property-read int|null $invoices_count
+ * @method static Builder|LineItem active()
+ * @method static Builder|LineItem inActive()
+ * @method static Builder|LineItem newModelQuery()
+ * @method static Builder|LineItem newQuery()
+ * @method static Builder|LineItem query()
+ * @mixin \Eloquent
+ */
 class LineItem extends Model
 {
     public $table = 'line_items';

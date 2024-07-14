@@ -7,6 +7,25 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
+/**
+ * 
+ *
+ * @property-read string $invoice_code
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Installment> $installments
+ * @property-read int|null $installments_count
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $invoiceable
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LineItem> $items
+ * @property-read int|null $items_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Payment> $payments
+ * @property-read int|null $payments_count
+ * @method static Builder|Invoice active()
+ * @method static \Database\Factories\InvoiceFactory factory($count = null, $state = [])
+ * @method static Builder|Invoice inActive()
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Invoice query()
+ * @mixin \Eloquent
+ */
 class Invoice extends BaseModel
 {
     use HasFactory;

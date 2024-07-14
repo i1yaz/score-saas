@@ -13,6 +13,7 @@
 namespace App\CronJobs;
 use App\Mail\SendQueued;
 use App\Models\EmailQueue;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Spatie\Multitenancy\Models\Tenant;
 
@@ -62,6 +63,6 @@ class EmailCron {
                     'cronjob_last_run' => now(),
                 ]);
         }
-
+        Log::info('EmailCron: Ran successfully');
     }
 }

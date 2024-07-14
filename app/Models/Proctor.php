@@ -10,6 +10,31 @@ use Laratrust\Contracts\LaratrustUser;
 use Laratrust\Traits\HasRolesAndPermissions;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * 
+ *
+ * @property mixed $password
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
+ * @property-read int|null $notifications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Permission> $permissions
+ * @property-read int|null $permissions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Role> $roles
+ * @property-read int|null $roles_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
+ * @property-read int|null $tokens_count
+ * @method static Builder|Proctor active()
+ * @method static Builder|Proctor inActive()
+ * @method static Builder|Proctor newModelQuery()
+ * @method static Builder|Proctor newQuery()
+ * @method static Builder|Proctor orWhereHasPermission(\BackedEnum|array|string $permission = '', ?mixed $team = null)
+ * @method static Builder|Proctor orWhereHasRole(\BackedEnum|array|string $role = '', ?mixed $team = null)
+ * @method static Builder|Proctor query()
+ * @method static Builder|Proctor whereDoesntHavePermissions()
+ * @method static Builder|Proctor whereDoesntHaveRoles()
+ * @method static Builder|Proctor whereHasPermission(\BackedEnum|array|string $permission = '', ?mixed $team = null, string $boolean = 'and')
+ * @method static Builder|Proctor whereHasRole(\BackedEnum|array|string $role = '', ?mixed $team = null, string $boolean = 'and')
+ * @mixin \Eloquent
+ */
 class Proctor extends  Authenticatable implements LaratrustUser
 {
     use HasApiTokens, HasFactory, HasRolesAndPermissions,Notifiable;

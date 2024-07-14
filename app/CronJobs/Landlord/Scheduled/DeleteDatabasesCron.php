@@ -18,6 +18,7 @@ class DeleteDatabasesCron {
         runtimeLandlordCronConfig();
         $this->databaseRepo = $databaseRepo;
         $this->deleteDatabases();
+        Log::info('DeleteDatabasesCron: Ran successfully');
     }
 
     /**

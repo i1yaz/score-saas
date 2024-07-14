@@ -84,7 +84,7 @@ class SubscriptionPaymentFailedCron {
             }
 
         }
-
+        Log::info('SubscriptionPaymentFailedCron: Ran successfully');
     }
 
     /**

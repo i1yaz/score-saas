@@ -2,14 +2,15 @@
 
 namespace App\Console\Commands;
 
-use App\Mail\SessionSubmittedMail;
+use Carbon\Carbon;
+use App\Models\Session;
 use App\Models\MailTemplate;
+use Illuminate\Console\Command;
+use App\Mail\SessionSubmittedMail;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use App\Models\MonthlyInvoicePackage;
 use App\Models\MonthlyInvoiceSubscription;
-use App\Models\Session;
-use Carbon\Carbon;
-use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Mail;
 
 class ReportMonthlyPackageUsageCommand extends Command
 {
@@ -84,5 +85,6 @@ class ReportMonthlyPackageUsageCommand extends Command
 
         }
         $this->info('Command executed at '.$now->toDateTimeString());
+        Log::info('ReportMonthlyPackageUsageCommand: Ran successfully');
     }
 }

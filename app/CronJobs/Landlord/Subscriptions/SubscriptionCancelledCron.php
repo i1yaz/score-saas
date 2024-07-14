@@ -136,7 +136,7 @@ class SubscriptionCancelledCron {
             }
 
         }
-
+        Log::info('SubscriptionCancelledCron: Ran successfully');
     }
 
     /**

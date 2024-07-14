@@ -6,6 +6,7 @@ use App\Models\Landlord\EmailLog;
 use App\Models\Landlord\EmailQueue;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Mail;
+use Log;
 use Spatie\Multitenancy\Models\Tenant;
 
 class EmailCron {
@@ -53,6 +54,6 @@ class EmailCron {
                 'cronjob_has_run' => 'yes',
                 'cronjob_last_run' => now(),
             ]);
-
+        Log::info('EmailCron: Ran successfully');
     }
 }

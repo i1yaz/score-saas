@@ -14,6 +14,35 @@ use Laratrust\Contracts\LaratrustUser;
 use Laratrust\Traits\HasRolesAndPermissions;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * 
+ *
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Children> $family
+ * @property-read int|null $family_count
+ * @property-read string $family_code
+ * @property-read string $full_name
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
+ * @property-read int|null $notifications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Permission> $permissions
+ * @property-read int|null $permissions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Role> $roles
+ * @property-read int|null $roles_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
+ * @property-read int|null $tokens_count
+ * @method static Builder|ParentUser active()
+ * @method static \Database\Factories\ParentUserFactory factory($count = null, $state = [])
+ * @method static Builder|ParentUser inActive()
+ * @method static Builder|ParentUser newModelQuery()
+ * @method static Builder|ParentUser newQuery()
+ * @method static Builder|ParentUser orWhereHasPermission(\BackedEnum|array|string $permission = '', ?mixed $team = null)
+ * @method static Builder|ParentUser orWhereHasRole(\BackedEnum|array|string $role = '', ?mixed $team = null)
+ * @method static Builder|ParentUser query()
+ * @method static Builder|ParentUser whereDoesntHavePermissions()
+ * @method static Builder|ParentUser whereDoesntHaveRoles()
+ * @method static Builder|ParentUser whereHasPermission(\BackedEnum|array|string $permission = '', ?mixed $team = null, string $boolean = 'and')
+ * @method static Builder|ParentUser whereHasRole(\BackedEnum|array|string $role = '', ?mixed $team = null, string $boolean = 'and')
+ * @mixin \Eloquent
+ */
 class ParentUser extends Authenticatable implements LaratrustUser, MustVerifyEmail
 {
     use HasApiTokens, HasFactory, HasRolesAndPermissions,Notifiable;

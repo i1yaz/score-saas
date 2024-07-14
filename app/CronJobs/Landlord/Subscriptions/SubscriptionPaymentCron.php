@@ -175,6 +175,7 @@ class SubscriptionPaymentCron {
                 }
             }
         }
+        Log::info('SubscriptionPaymentCron: Ran successfully');
     }
 
     /**

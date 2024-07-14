@@ -5,6 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * 
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|MonthlyInvoiceSubscription newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|MonthlyInvoiceSubscription newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|MonthlyInvoiceSubscription query()
+ * @mixin \Eloquent
+ */
 class MonthlyInvoiceSubscription extends Model
 {
     use HasFactory;

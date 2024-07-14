@@ -45,6 +45,7 @@ class RoutineTasks {
 
         //update the default product teh payment gateways like (Paypal)
         $this->updateDefaultProduct();
+        Log::info('RoutineTasks: Ran successfully');
     }
 
     /**

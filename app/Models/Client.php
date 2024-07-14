@@ -11,6 +11,32 @@ use Laratrust\Contracts\LaratrustUser;
 use Laratrust\Traits\HasRolesAndPermissions;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * 
+ *
+ * @property-read string $full_name
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
+ * @property-read int|null $notifications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Permission> $permissions
+ * @property-read int|null $permissions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Role> $roles
+ * @property-read int|null $roles_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
+ * @property-read int|null $tokens_count
+ * @method static Builder|Client active()
+ * @method static \Database\Factories\ClientFactory factory($count = null, $state = [])
+ * @method static Builder|Client inActive()
+ * @method static Builder|Client newModelQuery()
+ * @method static Builder|Client newQuery()
+ * @method static Builder|Client orWhereHasPermission(\BackedEnum|array|string $permission = '', ?mixed $team = null)
+ * @method static Builder|Client orWhereHasRole(\BackedEnum|array|string $role = '', ?mixed $team = null)
+ * @method static Builder|Client query()
+ * @method static Builder|Client whereDoesntHavePermissions()
+ * @method static Builder|Client whereDoesntHaveRoles()
+ * @method static Builder|Client whereHasPermission(\BackedEnum|array|string $permission = '', ?mixed $team = null, string $boolean = 'and')
+ * @method static Builder|Client whereHasRole(\BackedEnum|array|string $role = '', ?mixed $team = null, string $boolean = 'and')
+ * @mixin \Eloquent
+ */
 class Client extends Authenticatable implements LaratrustUser, MustVerifyEmail
 {
     use HasApiTokens, HasFactory, HasRolesAndPermissions,Notifiable;

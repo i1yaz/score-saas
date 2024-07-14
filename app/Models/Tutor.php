@@ -13,6 +13,36 @@ use Laratrust\Contracts\LaratrustUser;
 use Laratrust\Traits\HasRolesAndPermissions;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * 
+ *
+ * @property-read string $full_name
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MonthlyInvoicePackage> $monthlyInvoicePackages
+ * @property-read int|null $monthly_invoice_packages_count
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
+ * @property-read int|null $notifications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Permission> $permissions
+ * @property-read int|null $permissions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Role> $roles
+ * @property-read int|null $roles_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StudentTutoringPackage> $studentTutoringPackages
+ * @property-read int|null $student_tutoring_packages_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
+ * @property-read int|null $tokens_count
+ * @method static Builder|Tutor active()
+ * @method static \Database\Factories\TutorFactory factory($count = null, $state = [])
+ * @method static Builder|Tutor inActive()
+ * @method static Builder|Tutor newModelQuery()
+ * @method static Builder|Tutor newQuery()
+ * @method static Builder|Tutor orWhereHasPermission(\BackedEnum|array|string $permission = '', ?mixed $team = null)
+ * @method static Builder|Tutor orWhereHasRole(\BackedEnum|array|string $role = '', ?mixed $team = null)
+ * @method static Builder|Tutor query()
+ * @method static Builder|Tutor whereDoesntHavePermissions()
+ * @method static Builder|Tutor whereDoesntHaveRoles()
+ * @method static Builder|Tutor whereHasPermission(\BackedEnum|array|string $permission = '', ?mixed $team = null, string $boolean = 'and')
+ * @method static Builder|Tutor whereHasRole(\BackedEnum|array|string $role = '', ?mixed $team = null, string $boolean = 'and')
+ * @mixin \Eloquent
+ */
 class Tutor extends Authenticatable implements LaratrustUser, MustVerifyEmail
 {
     use HasApiTokens, HasFactory, HasRolesAndPermissions,Notifiable;

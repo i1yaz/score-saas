@@ -2,14 +2,15 @@
 
 namespace App\Console\Commands;
 
-use App\Mail\SendInvoicePaymentReminderMail;
+use Carbon\Carbon;
 use App\Models\Invoice;
 use App\Models\MailTemplate;
-use App\Models\NonInvoicePackage;
-use App\Models\StudentTutoringPackage;
-use Carbon\Carbon;
 use Illuminate\Console\Command;
+use App\Models\NonInvoicePackage;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use App\Models\StudentTutoringPackage;
+use App\Mail\SendInvoicePaymentReminderMail;
 
 class InvoicePaymentReminderCommand extends Command
 {
@@ -74,5 +75,6 @@ class InvoicePaymentReminderCommand extends Command
 
             }
         }
+        Log::info('InvoicePaymentReminderCommand: Ran successfully');
     }
 }

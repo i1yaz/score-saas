@@ -6,6 +6,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * 
+ *
+ * @property-read \App\Models\Invoice|null $invoice
+ * @method static Builder|Installment active()
+ * @method static Builder|Installment inActive()
+ * @method static \Illuminate\Database\Eloquent\Builder|Installment newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Installment newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Installment query()
+ * @mixin \Eloquent
+ */
 class Installment extends BaseModel
 {
 

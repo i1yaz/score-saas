@@ -5,6 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * 
+ *
+ * @method static Builder|Tax active()
+ * @method static Builder|Tax inActive()
+ * @method static Builder|Tax newModelQuery()
+ * @method static Builder|Tax newQuery()
+ * @method static Builder|Tax query()
+ * @mixin \Eloquent
+ */
 class Tax extends Model
 {
     public $table = 'taxes';

@@ -19,6 +19,7 @@ class UpdateEmailDomain {
         runtimeLandlordCronConfig();
         //update the email domain for each tenant
         $this->updateDomain();
+        Log::info('UpdateEmailDomain: Ran successfully');
     }
 
     /**

@@ -8,6 +8,28 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
+/**
+ * 
+ *
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Session> $LastMonthUnbilledSessions
+ * @property-read int|null $last_month_unbilled_sessions_count
+ * @property-read \App\Models\Invoice|null $invoice
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Session> $sessions
+ * @property-read int|null $sessions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Student> $student
+ * @property-read int|null $student_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Subject> $subjects
+ * @property-read int|null $subjects_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Tutor> $tutors
+ * @property-read int|null $tutors_count
+ * @method static Builder|MonthlyInvoicePackage active()
+ * @method static \Database\Factories\MonthlyInvoicePackageFactory factory($count = null, $state = [])
+ * @method static Builder|MonthlyInvoicePackage inActive()
+ * @method static \Illuminate\Database\Eloquent\Builder|MonthlyInvoicePackage newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|MonthlyInvoicePackage newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|MonthlyInvoicePackage query()
+ * @mixin \Eloquent
+ */
 class MonthlyInvoicePackage extends BaseModel
 {
     use HasFactory;
