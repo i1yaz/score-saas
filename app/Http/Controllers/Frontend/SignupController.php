@@ -31,6 +31,7 @@ class SignupController extends Controller
     }
     public function createAccount(CreateAccountRequest $request, CreateTenantRepository $createTenantRepo) {
         $free_trial = 'no';
+        $status = 'awaiting-payment';
         $subscription_trial_end = null;
         $subscription_date_started = null;
         //validate terms
@@ -42,7 +43,6 @@ class SignupController extends Controller
 
         //correct the plain id by removing extra strings
         $plan_id = str_replace(['monthly_', 'yearly_', 'free_'], '', request('plan'));
-
         //get the package
         if (!$package = Package::Where('id', $plan_id)->first()) {
             abort(409, __('lang.package_not_found'));
@@ -64,12 +64,12 @@ class SignupController extends Controller
             }
         }
 
-        //paid packages - free trial
-        if ($package->subscription_options == 'paid' && config('system.free_trial') == 'yes') {
-            $status = 'free-trial';
-            $free_trial = 'yes';
-            $subscription_trial_end = \Carbon\Carbon::now()->addDays(config('system.free_trial_days'))->format('Y-m-d');
-        }
+//        //paid packages - free trial
+//        if ($package->subscription_options == 'paid' && config('system.free_trial') == 'yes') {
+//            $status = 'free-trial';
+//            $free_trial = 'yes';
+//            $subscription_trial_end = \Carbon\Carbon::now()->addDays(config('system.free_trial_days'))->format('Y-m-d');
+//        }
 
         //paid packages - free trial
         if ($package->subscription_options == 'paid' && config('system.free_trial') == 'no') {
@@ -80,23 +80,23 @@ class SignupController extends Controller
         $customer = new \App\Models\Landlord\Tenant();
         $customer->domain = strtolower(request('account_name') . '.' . config('system.base_domain'));
         $customer->subdomain = strtolower(request('account_name'));
-        $customer->tenant_creatorid = 0;
-        $customer->tenant_name = request('full_name');
-        $customer->tenant_email = request('email_address');
-        $customer->tenant_status = $status;
-        $customer->tenant_email_local_email = strtolower(request('account_name') . '@' . config('system.email_domain'));
-        $customer->tenant_email_forwarding_email = request('email_address');
-        $customer->tenant_email_config_type = 'local';
-        $customer->tenant_email_config_status = 'pending';
-        $customer->tenant_password = bcrypt(request('password'));
-        $customer->tenant_updating_current_version = config('system.version');
+        $customer->added_by = 0;
+        $customer->name = request('full_name');
+        $customer->email = request('email_address');
+        $customer->status = $status;
+        $customer->email_local_email = strtolower(request('account_name') . '@' . config('system.email_domain'));
+        $customer->email_forwarding_email = request('email_address');
+        $customer->email_config_type = 'local';
+        $customer->email_config_status = 'pending';
+        $customer->password = bcrypt(request('password'));
+        $customer->updating_current_version = config('system.version');
         $customer->save();
 
         //temp authentication key
         $auth_key = Str::random(30);
 
         //create tenant database
-        if (!$createtenantrepo->createTenant($customer, $package, $auth_key)) {
+        if (!$createTenantRepo->createTenant($customer, $package, $auth_key)) {
             $customer->delete();
             abort(409, __('lang.error_request_could_not_be_completed'));
         }
@@ -107,39 +107,39 @@ class SignupController extends Controller
 
         //create subscription
         $subscription = new \App\Models\Landlord\Subscription();
-        $subscription->subscription_uniqueid = str_unique();
-        $subscription->subscription_creatorid = 0;
-        $subscription->subscription_customerid = $customer->tenant_id;
-        $subscription->subscription_type = $package->subscription_options;
-        $subscription->subscription_amount = $subscription_amount;
-        $subscription->subscription_trial_end = $subscription_trial_end;
-        $subscription->subscription_date_started = $subscription_date_started;
-        $subscription->subscription_id = $package->id;
-        $subscription->subscription_status = $status;
-        $subscription->subscription_gateway_billing_cycle = request('billing_cycle');
+        $subscription->unique_id = str_unique();
+        $subscription->added_by = 0;
+        $subscription->customer_id = $customer->id;
+        $subscription->type = $package->subscription_options;
+        $subscription->amount = $subscription_amount;
+        $subscription->trial_end = $subscription_trial_end;
+        $subscription->date_started = $subscription_date_started;
+        $subscription->package_id  = $package->id;
+        $subscription->status = $status;
+        $subscription->gateway_billing_cycle = request('billing_cycle');
         $subscription->save();
 
-        /** ----------------------------------------------
-         * record event
-         * ----------------------------------------------*/
-        $event = new \App\Models\Landlord\Event();
-        $event->event_creatorid = $customer->tenant_id;
-        $event->event_type = 'account-created';
-        $event->event_creator_type = 'customer';
-        $event->event_item_id = $customer->tenant_id;
-        $event->event_payload_1 = $customer->tenant_name;
-        $event->event_payload_2 = $package->name;
-        $event->event_payload_3 = '';
-        $event->save();
+//        /** ----------------------------------------------
+//         * record event
+//         * ----------------------------------------------*/
+//        $event = new \App\Models\Landlord\Event();
+//        $event->event_creatorid = $customer->tenant_id;
+//        $event->event_type = 'account-created';
+//        $event->event_creator_type = 'customer';
+//        $event->event_item_id = $customer->tenant_id;
+//        $event->event_payload_1 = $customer->tenant_name;
+//        $event->event_payload_2 = $package->name;
+//        $event->event_payload_3 = '';
+//        $event->save();
 
         /** ----------------------------------------------
          * send email to customer & Admin
          * ----------------------------------------------*/
         $data = [
-            'subscription_type' => $subscription->subscription_type,
+            'subscription_type' => $subscription->type,
             'account_name' => $customer->domain,
-            'customer_name' => $customer->tenant_name,
-            'customer_id' => $customer->tenant_id,
+            'customer_name' => $customer->name,
+            'customer_id' => $customer->id,
             'account_url' => $account_url,
             'password' => __('lang.as_set_during_signup'),
         ];

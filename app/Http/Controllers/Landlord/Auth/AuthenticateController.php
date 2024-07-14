@@ -7,7 +7,7 @@ use App\Http\Controllers\Landlord\Validator;
 use App\Http\Responses\Landlord\Authentication\AuthenticateResponse;
 use App\Mail\Landlord\Admin\ForgotPassword;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth; 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;

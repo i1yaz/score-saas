@@ -3,21 +3,6 @@
 return [
 
     /**
-     * Various project statuses, with their corresponding bootstrap colors (colors are used for labels etc)
-     * [IMPORTANT WARNING]
-     * Only change the color values
-     * [AVAILABLE VALUES]
-     * default|info|warning|success|danger|primary|green|lime|brown
-     */
-    'project_statuses' => [
-        'not_started' => 'default',
-        'in_progress' => 'info',
-        'on_hold' => 'warning',
-        'cancelled' => 'purple',
-        'completed' => 'success',
-    ],
-
-    /**
      * Various invoice statuses, with their corresponding bootstrap colors (colors are used for labels etc)
      * [IMPORTANT WARNING]
      * Only change the color values
@@ -32,75 +17,6 @@ return [
         'part_paid' => 'info',
     ],
 
-    /**
-     * Various estimate statuses, with their corresponding bootstrap colors (colors are used for labels etc)
-     * [IMPORTANT WARNING]
-     * Only change the color values
-     * [AVAILABLE VALUES]
-     * default|info|warning|success|danger|primary|green|lime|brown
-     */
-    'estimate_statuses' => [
-        'draft' => 'default',
-        'sent' => 'info',
-        'accepted' => 'success',
-        'declined' => 'danger',
-        'expired' => 'warning',
-    ],
-
-    /**
-     * Various task statuses, with their corresponding bootstrap colors (colors are used for labels etc)
-     * [IMPORTANT WARNING]
-     * Only change the color values
-     * [AVAILABLE VALUES]
-     * default|info|warning|success|danger|primary|green|lime|brown
-     */
-    'task_statuses' => [
-        'new' => 'default',
-        'in_progress' => 'info',
-        'testing' => 'purple',
-        'awaiting_feedback' => 'warning',
-        'completed' => 'success',
-    ],
-
-    /**
-     * Various task priority, with their corresponding bootstrap colors (colors are used for labels etc)
-     * [IMPORTANT WARNING]
-     * Only change the color values
-     * [AVAILABLE VALUES]
-     * default|info|warning|success|danger|primary|green|lime|brown
-     */
-    'task_priority' => [
-        'normal' => 'info',
-        'high' => 'warning',
-        'urgent' => 'danger',
-    ],
-
-    /**
-     * Various ticket statuses, with their corresponding bootstrap colors (colors are used for labels etc)
-     * [IMPORTANT WARNING]
-     * Only change the color values
-     * [AVAILABLE VALUES]
-     * default|info|warning|success|danger|primary|green|lime|brown
-     */
-    'ticket_statuses' => [
-        'open' => 'info',
-        'on_hold' => 'warning',
-        'answered' => 'success',
-        'closed' => 'default',
-    ],
-
-    /**
-     * Various ticket priority, with their corresponding bootstrap colors (colors are used for labels etc)
-     * [IMPORTANT WARNING]
-     * Only change the color values
-     * [AVAILABLE VALUES]
-     * default|info|warning|success|danger|primary|green|lime|brown
-     */
-    'ticket_priority' => [
-        'normal' => 'info',
-        'high' => 'warning',
-        'urgent' => 'danger',
-    ],
 
     /**
      * Show task timer seconds, when displaying the timers (excluding the timesheet page, which will always display seconds)
@@ -114,5 +30,6 @@ return [
     'settings_system_logo_frontend_name' => 'logo-frontend.png',
     'frontend-domain' => env('FRONTEND_DOMAIN',''),
     'landlord-domain' => env('LANDLORD_DOMAIN',''),
+    'landlord-domain-without-protocol' => env('FRONTEND_DOMAIN_WITHOUT_PROTOCOL',''),
     'settings_system_pagination_limits' => 20,
 ];

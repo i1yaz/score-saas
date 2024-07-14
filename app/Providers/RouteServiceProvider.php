@@ -44,8 +44,12 @@ class RouteServiceProvider extends ServiceProvider
         if ($this->isLandlordRequest()) {
             $this->mapLandlordRoutes();
         }
+        $host = request()->getHost();
+        $subdomain = explode('.', $host)[0];
+        if ($subdomain !== 'www' && $subdomain !== explode('.',config('system.landlord-domain-without-protocol'))[0]) {
+            $this->mapTenantRoutes();
+        }
 
-        $this->mapTenantRoutes();
 
     }
 

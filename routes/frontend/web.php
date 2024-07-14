@@ -18,5 +18,18 @@ Route::middleware(['landlord'])->group(function () {
         Route::post("/signup", [SignupController::class, 'createAccount']);
         Route::any("/login", [LoginController::class, 'index']);
         Route::post("/login", [LoginController::class, 'getAccount']);
+        Route::post("/login", [LoginController::class, 'getAccount']);
     });
+});
+Route::get('/list-routes', function () {
+    $routes = collect(\Route::getRoutes())->map(function ($route) {
+        return [
+            'uri' => $route->uri(),
+            'method' => $route->methods()[0],
+            'name' => $route->getName(),
+            'action' => $route->getActionName(),
+        ];
+    });
+
+    return response()->json($routes);
 });

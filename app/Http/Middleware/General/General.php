@@ -39,8 +39,8 @@ class General {
                 } else {
                     request()->session()->flash('error-notification-long', __('lang.email_verification_required'));
                     auth()->logout();
-                    abort(409, __('lang.email_verification_required'));
-                    return $next($request);
+                    return redirect(route('account-status', ['status' => 'not-verified']));
+
                 }
             }
 
@@ -51,8 +51,7 @@ class General {
                 } else {
                     request()->session()->flash('error-notification-long', __('lang.account_has_been_deactivated'));
                     auth()->logout();
-                    abort(409, __('lang.account_has_been_deactivated'));
-                    return $next($request);
+                    return redirect(route('account-status', ['status' => 'deactivated']));
                 }
             }
         }

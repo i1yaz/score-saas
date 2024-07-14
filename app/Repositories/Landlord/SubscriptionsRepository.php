@@ -40,18 +40,9 @@ class SubscriptionsRepository
     public function search($id = '',$columns = ['*']) {
         $subscriptions = $this->subscription->newQuery();
         $subscriptions->select($columns);
-        $subscriptions->leftJoin('users', 'users.id', '=', 'subscriptions.added_by');
-        $subscriptions->leftJoin('tenants', 'tenants.id', '=', 'subscriptions.customer_id');
+        $subscriptions->join('users', 'users.id', '=', 'subscriptions.added_by');
+        $subscriptions->join('tenants', 'tenants.id', '=', 'subscriptions.customer_id');
 
-//        //filters: id
-//        if (request()->filled('filter_subscription_id')) {
-//            $subscriptions->where('subscription_id', request('filter_subscription_id'));
-//        }
-//        if (is_numeric($id)) {
-//            $subscriptions->where('subscription_id', $id);
-//        }
-
-        //search: various client columns and relationships (where first, then wherehas)
         if (request()->filled('search_query') || request()->filled('query')) {
             $subscriptions->where(function ($query) {
                 $query->orWhere('gateway_id', '=', request('search_query'));

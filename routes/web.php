@@ -12,6 +12,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\InvoicePackageTypeController;
 use App\Http\Controllers\LineItemController;
 use App\Http\Controllers\MonthlyInvoicePackageController;
+use App\Http\Controllers\OnetimeAuthController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\ParentController;
 use App\Http\Controllers\PaymentController;
@@ -50,21 +51,33 @@ Route::get('invoice-reminder',function (){
     Artisan::call('invoice:payment-reminder');
 });
 
-//Route::get('/',function (){
-//    return redirect('/login');
-//});
+$host = config('system.landlord-domain-without-protocol');
+
+
+
+Route::get('/', function () {
+    return redirect('/login');
+});
+
+
+
+Route::get("auth", [OnetimeAuthController::class, 'OnetimeAuthentication']);
 
 Route::get('invoice/{invoice}/public-view/{type?}', [InvoiceController::class, 'showPublicInvoice']);
 Auth::routes(['register' => false]);
+Route::get('admin', function () {
+    return redirect('admin/login');
+});
 Route::get('admin/login', [LoginController::class, 'showAdminLoginForm'])->name('admin.login');
 Route::get('payment/success', [PaymentController::class, 'success'])->name('payment-success');
 Route::get('payment/failed', [PaymentController::class, 'failed'])->name('payment-failed');
 Route::post('stripe-webhooks', [StripeController::class, 'webhooks'])->name('stripe-webhooks');
+Route::get('account-status/{status}', [LoginController::class, 'accountStatus'])->name('account-status');
 
 Route::any('package/payment/success/{gateway}', [BillingController::class, 'packagePaymentSuccess'])->name('package-payment-success');
 Route::any('package/payment/failed/{gateway}', [BillingController::class, 'packagePaymentFailed'])->name('package-payment-failed');
 
-Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], function () {
+Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], function ($subdomain) {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     //Parent
     Route::get('parents', [ParentController::class, 'index'])->name('parents.index')->middleware(['permission:parent-index']);

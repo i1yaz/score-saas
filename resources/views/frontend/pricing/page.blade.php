@@ -49,171 +49,46 @@
                                     class="text-muted">/
                                     @lang('lang.month')</small></h1>
                             <ul class="list-unstyled mt-3 mb-4">
-
-
-                                <!--package_limits_team-->
                                 <li>
-                                    @if($package->limits_team > 0 || $package->limits_team == -1)
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
+                                    @if($package->max_students > 0 || $package->max_students == -1)
+                                        <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
+                                        <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
                                     @endif
-                                    <span class="x-text font-weight-500">@lang('lang.team') (@lang('lang.users')) -
-                                        {{ runtimeCheckUnlimited($package->limits_team) }}</span>
+                                    <span class="x-text font-weight-500">@lang('lang.max_students') -
+                                        {{ runtimeCheckUnlimited($package->max_students) }}</span>
+                                </li>
+                                <li>
+                                    @if($package->max_tutors > 0 || $package->max_tutors == -1)
+                                        <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
+                                    @else
+                                        <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
+                                    @endif
+                                    <span class="x-text font-weight-500">@lang('lang.max_tutors') -
+                                        {{ runtimeCheckUnlimited($package->max_tutors) }}</span>
                                 </li>
 
-                                <!--package_limits_clients-->
                                 <li>
-                                    @if($package->limits_clients > 0 || $package->limits_clients == -1)
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
+                                    @if($package->max_student_packages > 0 || $package->max_student_packages == -1)
+                                        <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
+                                        <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
                                     @endif
-                                    <span class="x-text font-weight-500">@lang('lang.clients') -
-                                        {{ runtimeCheckUnlimited($package->limits_clients) }}</span>
+                                    <span class="x-text font-weight-500">@lang('lang.max_student_packages') -
+                                        {{ runtimeCheckUnlimited($package->max_student_packages) }}</span>
+                                </li>
+
+                                <li>
+                                    @if($package->max_monthly_packages > 0 || $package->max_monthly_packages == -1)
+                                        <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
+                                    @else
+                                        <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
+                                    @endif
+                                    <span class="x-text font-weight-500">@lang('lang.max_monthly_packages') -
+                                        {{ runtimeCheckUnlimited($package->max_monthly_packages) }}</span>
                                 </li>
 
 
-                                <!--package_limits_projects-->
-                                <li>
-                                    @if($package->limits_projects > 0 || $package->limits_projects == -1)
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
-                                    @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
-                                    @endif
-                                    <span class="x-text font-weight-500">@lang('lang.projects') -
-                                        {{ runtimeCheckUnlimited($package->limits_projects) }}</span>
-                                </li>
-
-                                <!--package_module_tasks-->
-                                <li>
-                                    @if($package->module_tasks == 'yes')
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
-                                    @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
-                                    @endif
-                                    <span class="x-text">@lang('lang.tasks')</span>
-                                </li>
-
-                                <!--package_module_leads-->
-                                <li>
-                                    @if($package->module_leads == 'yes')
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
-                                    @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
-                                    @endif
-                                    <span class="x-text">@lang('lang.leads')</span>
-                                </li>
-
-                                <!--package_module_invoices-->
-                                <li>
-                                    @if($package->module_invoices == 'yes')
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
-                                    @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
-                                    @endif
-                                    <span class="x-text">@lang('lang.invoices')</span>
-                                </li>
-
-                                <!--package_module_estimates-->
-                                <li>
-                                    @if($package->module_estimates == 'yes')
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
-                                    @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
-                                    @endif
-                                    <span class="x-text">@lang('lang.estimates')</span>
-                                </li>
-
-                                <!--package_module_subscriptions-->
-                                <li>
-                                    @if($package->module_subscriptions == 'yes')
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
-                                    @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
-                                    @endif
-                                    <span class="x-text">@lang('lang.subscriptions')</span>
-                                </li>
-
-                                <!--package_module_contracts-->
-                                <li>
-                                    @if($package->module_contracts == 'yes')
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
-                                    @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
-                                    @endif
-                                    <span class="x-text">@lang('lang.contracts')</span>
-                                </li>
-
-                                <!--package_module_proposals-->
-                                <li>
-                                    @if($package->module_proposals == 'yes')
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
-                                    @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
-                                    @endif
-                                    <span class="x-text">@lang('lang.proposals')</span>
-                                </li>
-
-                                <!--package_module_tickets-->
-                                <li>
-                                    @if($package->module_tickets == 'yes')
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
-                                    @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
-                                    @endif
-                                    <span class="x-text">@lang('lang.tickets')</span>
-                                </li>
-
-                                <!--package_module_expense-->
-                                <li>
-                                    @if($package->module_expense == 'yes')
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
-                                    @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
-                                    @endif
-                                    <span class="x-text">@lang('lang.expenses')</span>
-                                </li>
-
-                                <!--package_module_messages-->
-                                <li>
-                                    @if($package->module_messages == 'yes')
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
-                                    @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
-                                    @endif
-                                    <span class="x-text">@lang('lang.instant_messaging')</span>
-                                </li>
-
-                                <!--package_module_timetracking-->
-                                <li>
-                                    @if($package->module_timetracking == 'yes')
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
-                                    @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
-                                    @endif
-                                    <span class="x-text">@lang('lang.time_tracking')</span>
-                                </li>
-
-                                <!--package_module_knowledgebase-->
-                                <li>
-                                    @if($package->module_knowledgebase == 'yes')
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
-                                    @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
-                                    @endif
-                                    <span class="x-text">@lang('lang.knowledgebase')</span>
-                                </li>
-
-                                <!--package_module_reminders-->
-                                <li>
-                                    @if($package->module_reminders == 'yes')
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
-                                    @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
-                                    @endif
-                                    <span class="x-text">@lang('lang.reminders')</span>
-                                </li>
                             </ul>
                             @if($package->subscription_options == 'free')
                             <a type="button" href="{{ url('account/signup?ref=free_'.$package->id) }}"
@@ -246,170 +121,45 @@
                                     @lang('lang.year')</small></h1>
                             <ul class="list-unstyled mt-3 mb-4">
 
-
-                                <!--package_limits_team-->
                                 <li>
-                                    @if($package->limits_clients > 0)
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
+                                    @if($package->max_students > 0 || $package->max_students == -1)
+                                        <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
+                                        <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
                                     @endif
-                                    <span class="x-text font-weight-500">@lang('lang.team') (@lang('lang.users')) -
-                                        {{ runtimeCheckUnlimited($package->limits_team) }}</span>
+                                    <span class="x-text font-weight-500">@lang('lang.max_students') -
+                                        {{ runtimeCheckUnlimited($package->max_students) }}</span>
+                                </li>
+                                <li>
+                                    @if($package->max_tutors > 0 || $package->max_tutors == -1)
+                                        <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
+                                    @else
+                                        <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
+                                    @endif
+                                    <span class="x-text font-weight-500">@lang('lang.max_tutors') -
+                                        {{ runtimeCheckUnlimited($package->max_tutors) }}</span>
                                 </li>
 
-                                <!--package_limits_clients-->
                                 <li>
-                                    @if($package->limits_clients > 0)
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
+                                    @if($package->max_student_packages > 0 || $package->max_student_packages == -1)
+                                        <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
+                                        <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
                                     @endif
-                                    <span class="x-text font-weight-500">@lang('lang.clients') -
-                                        {{ runtimeCheckUnlimited($package->limits_clients) }}</span>
+                                    <span class="x-text font-weight-500">@lang('lang.max_student_packages') -
+                                        {{ runtimeCheckUnlimited($package->max_student_packages) }}</span>
                                 </li>
 
-
-                                <!--package_limits_projects-->
                                 <li>
-                                    @if($package->limits_projects > 0)
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
+                                    @if($package->max_monthly_packages > 0 || $package->max_monthly_packages == -1)
+                                        <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
                                     @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
+                                        <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
                                     @endif
-                                    <span class="x-text font-weight-500">@lang('lang.projects') -
-                                        {{ runtimeCheckUnlimited($package->limits_projects) }}</span>
+                                    <span class="x-text font-weight-500">@lang('lang.max_monthly_packages') -
+                                        {{ runtimeCheckUnlimited($package->max_monthly_packages) }}</span>
                                 </li>
 
-                                <!--package_module_tasks-->
-                                <li>
-                                    @if($package->module_tasks == 'yes')
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
-                                    @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
-                                    @endif
-                                    <span class="x-text">@lang('lang.tasks')</span>
-                                </li>
-
-                                <!--package_module_leads-->
-                                <li>
-                                    @if($package->module_leads == 'yes')
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
-                                    @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
-                                    @endif
-                                    <span class="x-text">@lang('lang.leads')</span>
-                                </li>
-
-                                <!--package_module_invoices-->
-                                <li>
-                                    @if($package->module_invoices == 'yes')
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
-                                    @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
-                                    @endif
-                                    <span class="x-text">@lang('lang.invoices')</span>
-                                </li>
-
-                                <!--package_module_estimates-->
-                                <li>
-                                    @if($package->module_estimates == 'yes')
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
-                                    @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
-                                    @endif
-                                    <span class="x-text">@lang('lang.estimates')</span>
-                                </li>
-
-                                <!--package_module_subscriptions-->
-                                <li>
-                                    @if($package->module_subscriptions == 'yes')
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
-                                    @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
-                                    @endif
-                                    <span class="x-text">@lang('lang.subscriptions')</span>
-                                </li>
-
-                                <!--package_module_contracts-->
-                                <li>
-                                    @if($package->module_contracts == 'yes')
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
-                                    @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
-                                    @endif
-                                    <span class="x-text">@lang('lang.contracts')</span>
-                                </li>
-
-                                <!--package_module_proposals-->
-                                <li>
-                                    @if($package->module_proposals == 'yes')
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
-                                    @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
-                                    @endif
-                                    <span class="x-text">@lang('lang.proposals')</span>
-                                </li>
-
-                                <!--package_module_tickets-->
-                                <li>
-                                    @if($package->module_tickets == 'yes')
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
-                                    @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
-                                    @endif
-                                    <span class="x-text">@lang('lang.tickets')</span>
-                                </li>
-
-                                <!--package_module_expense-->
-                                <li>
-                                    @if($package->module_expense == 'yes')
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
-                                    @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
-                                    @endif
-                                    <span class="x-text">@lang('lang.expenses')</span>
-                                </li>
-
-                                <!--package_module_messages-->
-                                <li>
-                                    @if($package->module_messages == 'yes')
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
-                                    @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
-                                    @endif
-                                    <span class="x-text">@lang('lang.instant_messaging')</span>
-                                </li>
-
-                                <!--package_module_timetracking-->
-                                <li>
-                                    @if($package->module_timetracking == 'yes')
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
-                                    @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
-                                    @endif
-                                    <span class="x-text">@lang('lang.time_tracking')</span>
-                                </li>
-
-                                <!--package_module_knowledgebase-->
-                                <li>
-                                    @if($package->module_knowledgebase == 'yes')
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
-                                    @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
-                                    @endif
-                                    <span class="x-text">@lang('lang.knowledgebase')</span>
-                                </li>
-
-                                <!--package_module_reminders-->
-                                <li>
-                                    @if($package->module_reminders == 'yes')
-                                    <span class="x-icon x-icon-yes"><i class="mdi mdi-check"></i></span>
-                                    @else
-                                    <span class="x-icon x-icon-no"><i class="mdi mdi-window-close"></i></span>
-                                    @endif
-                                    <span class="x-text">@lang('lang.reminders')</span>
-                                </li>
                             </ul>
                             @if($package->subscription_options == 'free')
                             <a type="button" href="{{ url('account/signup?ref=free_'.$package->id) }}"

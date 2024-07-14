@@ -39,7 +39,7 @@ class CreateAccountRequest extends FormRequest
             'email_address' => [
                 'required',
                 'email',
-                Rule::unique('tenants', 'tenant_email'),
+                Rule::unique('tenants', 'email'),
             ],
             'password' => [
                 'required',
@@ -49,7 +49,8 @@ class CreateAccountRequest extends FormRequest
                 'required',
                 Rule::unique('tenants', 'subdomain'),
                 function ($attribute, $value, $fail) {
-                    if ($value != "" && !preg_match("/^[a-zA-Z0-9]*$/", $value)) {
+                    if ($value != "" && !preg_match("/^[a-zA-Z0-9_-]*$/", $value)) {
+
                         return $fail(__('lang.must_only_contain_letters_numbers'));
                     }
                 },
@@ -67,7 +68,7 @@ class CreateAccountRequest extends FormRequest
                 'required',
                 function ($attribute, $value, $fail) {
                     $plan_id = str_replace(['monthly_', 'yearly_', 'free_'], '', $value);
-                    if ($value != "" && Package::Where('package_id', $plan_id)->Where('package_status', 'active')->doesntExist()) {
+                    if ($value != "" && Package::Where('id', $plan_id)->Where('status', true)->doesntExist()) {
                         return $fail(__('lang.package_not_found'));
                     }
                 },
@@ -77,13 +78,26 @@ class CreateAccountRequest extends FormRequest
 
     public function failedValidation(Validator $validator): void
     {
-
         $errors = $validator->errors();
         $messages = '';
-        foreach ($errors->all() as $message) {
-            $messages .= "<li>$message</li>";
-        }
 
-        abort(409, $messages);
+        foreach ($errors->all() as $key => $message) {
+            $messages .= "<li>$key .' '.$message</li>";
+        }
+        if ($this->ajax() || $this->wantsJson()) {
+
+            $response = response()->json([
+                'notification' => [
+                    'type' => 'error',
+                    'value' => $messages
+                ]
+            ], 422);
+
+            throw new \Illuminate\Validation\ValidationException($validator, $response);
+        } else {
+
+
+            abort(409, $messages);
+        }
     }
 }

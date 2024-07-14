@@ -14,7 +14,7 @@ class PricingController extends Controller
         $footer = Frontend::Where('name', 'page-footer')->first();
 
         $packages = Package::Where('visibility', 'visible')
-            ->Where('status', 'active')
+            ->Where('status', true)
             ->orderBy('amount_monthly', 'asc')->get();
         $content = Frontend::Where('name', 'page-pricing')->first();
         $cta = Frontend::Where('name', 'page-footer-cta')->first();

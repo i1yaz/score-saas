@@ -96,6 +96,7 @@ class CreateTenantRepository
                         'saas_email_server_type' => 'local',
                         'saas_email_forwarding_address' => $tenant->email,
                         'saas_email_local_address' => $tenant->email_local_email,
+                        'email_verified_at' => null,
                         //defaults
                         'system_language_default' => $defaults->language_default??'english',
                         'system_timezone' => $defaults->timezone,

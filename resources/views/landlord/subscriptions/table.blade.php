@@ -26,13 +26,13 @@
                     <td><span class="badge {{runtimeSubscriptionStatusColors($subscription->status)}}">{{runtimeSubscriptionStatusLang($subscription->status)}}</span></td>
                     <td>{{ $subscription->gateway_name }}</td>
                     <td  style="width: 120px">
-                        {!! Form::open(['route' => ['taxes.destroy', $subscription->id], 'method' => 'delete']) !!}
+                        {!! Form::open(['route' => ['landlord.subscriptions.destroy', $subscription->id], 'method' => 'delete']) !!}
                         <div class='btn-group'>
-                            <a href="{{ route('taxes.show', [$subscription->id]) }}"
+                            <a href="{{ route('landlord.subscriptions.show', [$subscription->id]) }}"
                                class='btn btn-default btn-xs'>
                                 <i class="far fa-eye"></i>
                             </a>
-                            <a href="{{ route('taxes.edit', [$subscription->id]) }}"
+                            <a href="{{ route('landlord.subscriptions.edit', [$subscription->id]) }}"
                                class='btn btn-default btn-xs'>
                                 <i class="far fa-edit"></i>
                             </a>
