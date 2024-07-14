@@ -2,8 +2,16 @@
 
 namespace App\Console;
 
+use App\CronJobs\Landlord\CleanupCron;
+use App\CronJobs\Landlord\Emails\EmailCron;
 use Illuminate\Console\Scheduling\Schedule;
+use App\CronJobs\Landlord\Gateways\RoutineTasks;
+use App\CronJobs\EmailCron as RegularEmailCronJob;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\CronJobs\Landlord\Subscriptions\SubscriptionPaymentCron;
+use App\CronJobs\Landlord\Subscriptions\SubscriptionActivatedCron;
+use App\CronJobs\Landlord\Subscriptions\SubscriptionCancelledCron;
+use App\CronJobs\Landlord\Subscriptions\SubscriptionPaymentFailedCron;
 
 class Kernel extends ConsoleKernel
 {
@@ -22,20 +30,20 @@ class Kernel extends ConsoleKernel
                 ->everyFifteenMinutes()
                 ->appendOutputTo(storage_path('logs/scheduler.log'));
         }
-        $schedule->call(new \App\Cronjobs\Landlord\Emails\EmailCron)->everyMinute();
-        $schedule->call(new \App\Cronjobs\Landlord\CleanupCron)->everyMinute();
-        $schedule->call(new \App\Cronjobs\Landlord\Gateways\RoutineTasks)->everyMinute();
-        $schedule->call(new \App\Cronjobs\Landlord\Subscriptions\SubscriptionActivatedCron)->everyMinute();
-        $schedule->call(new \App\Cronjobs\Landlord\Subscriptions\SubscriptionCancelledCron)->everyMinute();
-        $schedule->call(new \App\Cronjobs\Landlord\Subscriptions\SubscriptionPaymentCron)->everyMinute();
-        $schedule->call(new \App\Cronjobs\Landlord\Subscriptions\SubscriptionPaymentFailedCron)->everyMinute();
+        $schedule->call(new EmailCron)->everyMinute();
+        $schedule->call(new CleanupCron)->everyMinute();
+        $schedule->call(new RoutineTasks)->everyMinute();
+        $schedule->call(new SubscriptionActivatedCron)->everyMinute();
+        $schedule->call(new SubscriptionCancelledCron)->everyMinute();
+        $schedule->call(new SubscriptionPaymentCron)->everyMinute();
+        $schedule->call(new SubscriptionPaymentFailedCron)->everyMinute();
 
 
 
         // -----------------------------------------------------------[TENANTS]-------------------------------------------------------------------
 
         //send [regular] queued emails
-        $schedule->call(new \App\Cronjobs\EmailCron)->everyMinute();
+        $schedule->call(new RegularEmailCronJob)->everyMinute();
     }
 
     /**
