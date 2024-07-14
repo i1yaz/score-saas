@@ -59,7 +59,12 @@ return [
         'proctor' => [
             'driver' => 'session',
             'provider' => 'proctors',
-        ],
+            //MULTITENANCY
+            'landlord' => [
+                'driver' => 'session',
+                'provider' => 'landlord',
+            ],
+        ]
     ],
 
     /*
@@ -103,11 +108,15 @@ return [
         'proctors' => [
             'driver' => 'eloquent',
             'model' => \App\Models\Proctor::class,
-        ],
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+            'landlord' => [
+                'driver' => 'eloquent',
+                'model' => App\Models\Landlord\User::class,
+            ],
+            // 'users' => [
+            //     'driver' => 'database',
+            //     'table' => 'users',
+            // ],
+        ]
     ],
 
     /*

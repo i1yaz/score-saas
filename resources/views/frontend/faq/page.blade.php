@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+@include('frontend.layout.header')
+
+<body class="inner-page faq">
+
+    @include('frontend.layout.menu')
+
+    @include('frontend.layout.preloader')
+
+    <!--page heading-->
+    <div class="container page-wrapper faq">
+
+        <div class="page-header faq-header text-center">
+            <h2>{!! _clean($content->data_1) !!}</h2>
+            <h5>{!! _clean($content->data_2) !!}</h5>
+        </div>
+
+
+        <!--faq container-->
+        <div class="faq-container">
+
+            @foreach($faqs as $faq)
+            <div class="each-faq" data-target="faq_{{ $faq->id }}">
+                <div class="faq-title">
+                    {{ $faq->title }}
+                </div>
+                <div class="faq-content hidden" id="faq_{{ $faq->id }}">
+                    {!! _clean($faq->content) !!}
+                </div>
+            </div>
+            @endforeach
+
+        </div>
+    </div>
+
+    @include('frontend.layout.footer')
+
+    @include('frontend.layout.footerjs')
+</body>
+
+</html>

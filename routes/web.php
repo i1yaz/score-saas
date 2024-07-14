@@ -4,6 +4,10 @@ use App\Helpers\MonthlyInstallments;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\Dashboards\ProctorDashboardController;
+use App\Http\Controllers\Frontend\ContactController;
+use App\Http\Controllers\Frontend\FaqController;
+use App\Http\Controllers\Frontend\HomeController;
+use App\Http\Controllers\Frontend\PricingController;
 use App\Http\Controllers\InstallmentController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\InvoicePackageTypeController;
@@ -11,6 +15,7 @@ use App\Http\Controllers\LineItemController;
 use App\Http\Controllers\MockTestCodeController;
 use App\Http\Controllers\MockTestController;
 use App\Http\Controllers\MonthlyInvoicePackageController;
+use App\Http\Controllers\OnetimeAuthController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\ParentController;
 use App\Http\Controllers\PaymentController;
@@ -18,6 +23,7 @@ use App\Http\Controllers\PaymentGateways\StripeController;
 use App\Http\Controllers\ProctorController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\SessionController;
+use App\Http\Controllers\Settings\BillingController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentTutoringPackageController;
 use App\Http\Controllers\SubjectController;
@@ -45,19 +51,43 @@ use Illuminate\Support\Facades\Route;
 //Route::get('packages/{package}/edit',[App\Http\Controllers\SchoolController::class,'edit'])->name('packages.edit')->middleware(['permission:package-edit']);
 //Route::patch('packages/{package}',[App\Http\Controllers\SchoolController::class,'update'])->name('packages.update')->middleware(['permission:package-edit']);
 //Route::delete('packages/{package}',[App\Http\Controllers\SchoolController::class,'destroy'])->name('packages.destroy')->middleware(['permission:package-destroy']);
-//Route::get('invoice-reminder',function (){
-//    Artisan::call('invoice:payment-reminder');
-//});
-Route::get('/', function () {
-    return redirect()->route('home');
+Route::get('invoice-reminder',function (){
+    Artisan::call('invoice:payment-reminder');
 });
 
+$host = config('system.landlord-domain-without-protocol');
+
+
+
+Route::get('/', function () {
+    return redirect('/login');
+});
+
+
+Route::get('/list-routes', function () {
+    $routes = collect(\Route::getRoutes())->map(function ($route) {
+        return [
+            'uri' => $route->uri(),
+            'method' => $route->methods()[0],
+            'name' => $route->getName(),
+            'action' => $route->getActionName(),
+        ];
+    });
+
+    return response()->json($routes);
+});
+Route::get("auth", [OnetimeAuthController::class, 'OnetimeAuthentication']);
+
 Route::get('invoice/{invoice}/public-view/{type?}', [InvoiceController::class, 'showPublicInvoice']);
-Auth::routes(['register' => false]);
+Auth::routes(['register' => false,'verify'=>true]);
+Route::get('admin', function () {
+    return redirect('admin/login');
+});
 Route::get('admin/login', [LoginController::class, 'showAdminLoginForm'])->name('admin.login');
 Route::get('payment/success', [PaymentController::class, 'success'])->name('payment-success');
 Route::get('payment/failed', [PaymentController::class, 'failed'])->name('payment-failed');
 Route::post('stripe-webhooks', [StripeController::class, 'webhooks'])->name('stripe-webhooks');
+Route::get('account-status/{status}', [LoginController::class, 'accountStatus'])->name('account-status');
 
 /**
  * @return void
@@ -67,7 +97,10 @@ function getProctorRoutes(): void
     Route::get('proctor/dashboard', [ProctorDashboardController::class, 'index'])->name('proctor-dashboard.index')->middleware('permission:proctor_dashboard-index');
 }
 
-Route::group(['middleware' => ['auth:web,parent,student,tutor,client,proctor']], function () {
+Route::any('package/payment/success/{gateway}', [BillingController::class, 'packagePaymentSuccess'])->name('package-payment-success');
+Route::any('package/payment/failed/{gateway}', [BillingController::class, 'packagePaymentFailed'])->name('package-payment-failed');
+
+Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], function ($subdomain) {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     //Parent
     Route::get('parents', [ParentController::class, 'index'])->name('parents.index')->middleware(['permission:parent-index']);
@@ -262,5 +295,10 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor,client,proctor']],
     Route::patch('proctors/{proctor}', [ProctorController::class, 'update'])->name('proctors.update')->middleware(['permission:proctor-edit']);
     Route::delete('proctors/{proctor}', [ProctorController::class, 'destroy'])->name('proctors.destroy')->middleware(['permission:proctor-destroy']);
     Route::get('proctors-ajax', [ProctorController::class, 'proctorsAjax'])->name('proctors-ajax')->middleware(['permission:proctor-create']);
+    //Settings
+    Route::get('settings/billing/packages', [BillingController::class, 'showPackages'])->name('settings-billing.show-packages');
+    Route::post('settings/billing/{package}/change-packages', [BillingController::class, 'changePackage'])->name('settings-billing.change-package');
+    Route::get('settings/billing/{package}/payment-required', [BillingController::class, 'paymentRequired'])->name('settings-billing.payment-required');
+    Route::post('settings/billing/{unique_id}/pay', [BillingController::class, 'pay'])->name('settings-billing.pay');
 
 });

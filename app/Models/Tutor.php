@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -12,10 +13,9 @@ use Laratrust\Contracts\LaratrustUser;
 use Laratrust\Traits\HasRolesAndPermissions;
 use Laravel\Sanctum\HasApiTokens;
 
-class Tutor extends Authenticatable implements LaratrustUser
+class Tutor extends Authenticatable implements LaratrustUser, MustVerifyEmail
 {
     use HasApiTokens, HasFactory, HasRolesAndPermissions,Notifiable;
-
     protected string $guard = 'tutors';
 
     protected static function boot(): void

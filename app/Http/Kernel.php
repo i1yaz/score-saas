@@ -6,6 +6,12 @@ use App\Http\Middleware\ACL;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\DefaultWebMiddleware;
 use App\Http\Middleware\EncryptCookies;
+use App\Http\Middleware\General\BootTheme;
+use App\Http\Middleware\General\General;
+use App\Http\Middleware\General\Settings;
+use App\Http\Middleware\General\StripHtmlTags;
+use App\Http\Middleware\Landlord\BootMail;
+use App\Http\Middleware\Landlord\BootSystem;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\TrimStrings;
@@ -29,6 +35,7 @@ use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Spatie\Multitenancy\Http\Middleware\NeedsTenant;
 
 class Kernel extends HttpKernel
 {
@@ -70,6 +77,44 @@ class Kernel extends HttpKernel
             ThrottleRequests::class.':api',
             SubstituteBindings::class,
         ],
+        'landlord' => [
+            BootSystem::class,
+            BootMail::class,
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartSession::class,
+            // \Illuminate\Session\Middleware\AuthenticateSession::class,
+            ShareErrorsFromSession::class,
+            VerifyCsrfToken::class,
+            SubstituteBindings::class,
+            StripHtmlTags::class,
+        ],
+        'tenant' => [
+            NeedsTenant::class,
+            Middleware\General\BootSystem::class,
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartSession::class,
+            // \Illuminate\Session\Middleware\AuthenticateSession::class,
+            ShareErrorsFromSession::class,
+            VerifyCsrfToken::class,
+            SubstituteBindings::class,
+            Middleware\General\BootMail::class,
+            General::class,
+            StripHtmlTags::class,
+        ],
+        'frontend' => [
+            BootSystem::class,
+            BootMail::class,
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartSession::class,
+            // \Illuminate\Session\Middleware\AuthenticateSession::class,
+            ShareErrorsFromSession::class,
+            VerifyCsrfToken::class,
+            SubstituteBindings::class,
+            StripHtmlTags::class,
+        ],
     ];
 
     /**
@@ -93,5 +138,24 @@ class Kernel extends HttpKernel
         'verified' => EnsureEmailIsVerified::class,
         'acl.access' => ACL::class,
         'web.general' => WebGeneralMiddleware::class,
+
+        /** ---------------------------------------------------------------------------------
+         * [SAAS] MIDDLEWARE
+         *-----------------------------------------------------------------------------------*/
+        'accountStatus' => \App\Http\Middleware\MaxLimits\AccountStatus::class,
+        'accountLimitsClients' => \App\Http\Middleware\MaxLimits\AccountLimitsClients::class,
+        'accountLimitsTeam' => \App\Http\Middleware\MaxLimits\AccountLimitsTeam::class,
+        'accountLimitsProjects' => \App\Http\Middleware\MaxLimits\AccountLimitsProjects::class,
+        'primaryAdmin' => \App\Http\Middleware\Landlord\PrimaryAdmin::class,
+
+        /** ---------------------------------------------------------------------------------
+         * Application MIDDLEWARE
+         *-----------------------------------------------------------------------------------*/
+
+        //[general]
+        'adminCheck' => \App\Http\Middleware\General\AdminCheck::class,
+        'generalMiddleware' => \App\Http\Middleware\General\General::class,
+        'FileSecurityCheck' => \App\Http\Middleware\FileUpload\FileSecurityCheck::class,
+
     ];
 }

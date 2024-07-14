@@ -928,6 +928,16 @@ class PermissionSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]
+            //Settings
+            //            [
+            //                'name' => 'settings_billing-show_packages',
+            //                'display_name' => 'Settings Show Packages',
+            //                'description' => 'Settings Show Packages',
+            //                'resource' => 'Settings',
+            //                'created_at' => Carbon::now(),
+            //                'updated_at' => Carbon::now(),
+            //            ],
+
         ]);
     }
 }

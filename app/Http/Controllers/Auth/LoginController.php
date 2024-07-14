@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class LoginController extends Controller
 {
@@ -168,6 +169,26 @@ class LoginController extends Controller
     private function proctorLogin(Request $request)
     {
         return $this->loginByRoleGuards($request, 'proctor');
+    }
 
+    public function accountStatus($status = 'deactivated')
+    {
+        $message = '';
+
+        switch ($status) {
+            case 'deactivated':
+                $title = "Account Deactivated";
+                $message = "Your account has been deactivated. Please contact support for more information.";
+                break;
+            case 'not-verified':
+                $title = "Email Verification Required";
+                $message = "Please verify your email address to continue.";
+                break;
+            default:
+                $title = "Account Status";
+                $message = "Your account status is unknown. Please contact support for more information.";
+                break;
+        }
+        return view('restrict_access.account-status',compact('title','message'));
     }
 }

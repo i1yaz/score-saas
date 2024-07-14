@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Cache;
 
 class Payment extends Model
 {
+
     protected static function boot(): void
     {
         parent::boot();

@@ -28,7 +28,6 @@
             <div class="card-header">
                 <h3 class="card-title">Payments</h3>
             </div>
-
             @include('payments.table')
         </div>
     </div>

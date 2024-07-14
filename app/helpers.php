@@ -336,6 +336,17 @@ if (! function_exists('cleanAmountWithCurrencyFormat')) {
     }
 }
 
+if (! function_exists('formatDateTime')) {
+    function formatDateTime($date): string
+    {
+        if (empty($date)) {
+            return '';
+        }
+
+        return date('m/d/Y H:i', strtotime($date));
+    }
+}
+
 if (! function_exists('formatDate')) {
     function formatDate(Carbon|string $date): string
     {
@@ -1041,13 +1052,20 @@ if (! function_exists('getFutureDueDate')) {
     }
 }
 
-if (! function_exists('getCurrentTenant')) {
-    function getCurrentTenant($tenantNumberOnly=false,$slash=null): int|string
+if (! function_exists('getCurrentTenantId')) {
+    function getCurrentTenantId()
     {
-        if ($tenantNumberOnly){
-            return 1;
+        if ($tenant = getCurrentTenant()) {
+            return $tenant->id;
         }
-        return 'tenant_1'.$slash;
+    }
+}
+if (! function_exists('getCurrentTenant')) {
+    function getCurrentTenant()
+    {
+        if(app('currentTenant')){
+            return app('currentTenant');
+        }
     }
 }
 if (! function_exists('getLastThirtyDays')) {
@@ -1218,5 +1236,15 @@ if (!function_exists('getActiveInactiveArray')){
     function getActiveInactiveArray(): array
     {
         return ['yes' =>'Active','no'=>'Inactive'];
+    }
+}
+if(!function_exists('twoIndexArrayToKeyValue')){
+    function twoIndexArrayToKeyValue(array $input,$keyColumn=0,$valueColumn=1): array
+    {
+        $result = [];
+        foreach ($input as  $value) {
+            $result[$value[$keyColumn]] = $value[$valueColumn];
+        }
+        return $result;
     }
 }

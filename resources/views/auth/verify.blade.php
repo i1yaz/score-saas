@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('restrict_access.app')
 
 @section('content')
     <div class="container">
