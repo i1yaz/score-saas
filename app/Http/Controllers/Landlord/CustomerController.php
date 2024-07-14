@@ -14,7 +14,7 @@ use App\Models\Landlord\Schedule;
 use App\Models\Landlord\Subscription;
 use App\Repositories\Landlord\CreateTenantRepository;
 use App\Repositories\Landlord\SubscriptionsRepository;
-use App\Repositories\Landlord\tenantsRepository;
+use App\Repositories\Landlord\TenantsRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Hash;
@@ -24,7 +24,7 @@ use Spatie\Multitenancy\Models\Tenant;
 
 class CustomerController extends AppBaseController
 {
-    public function __construct( protected tenantsRepository $tenantsRepo,
+    public function __construct( protected TenantsRepository $tenantsRepo,
         protected SubscriptionsRepository $subscriptionRepo
     ) {
         parent::__construct();
