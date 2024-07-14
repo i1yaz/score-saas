@@ -157,15 +157,16 @@ class SubscriptionsRepository
         }
 
         //paid packages - free trial
-        if ($package->subscription_options == 'paid' && $data['free_trial'] == 'yes') {
-            $subscription_status = 'free-trial';
-            $free_trial = 'yes';
-            $subscription_trial_end = \Carbon\Carbon::now()->addDays($data['free_trial_days'])->format('Y-m-d');
-            $subscription_amount = ($data['billing_cycle'] == 'monthly') ? $package->amount_monthly : $package->amount_yearly;
-            $subscription_date_started = null;
-        }
+        // if ($package->subscription_options == 'paid' && $data['free_trial'] == 'yes') {
+        //     $subscription_status = 'free-trial';
+        //     $free_trial = 'yes';
+        //     $subscription_trial_end = \Carbon\Carbon::now()->addDays($data['free_trial_days'])->format('Y-m-d');
+        //     $subscription_amount = ($data['billing_cycle'] == 'monthly') ? $package->amount_monthly : $package->amount_yearly;
+        //     $subscription_date_started = null;
+        // }
 
         //paid packages - free trial
+        $data['free_trial']= 'no';
         if ($package->subscription_options == 'paid' && $data['free_trial'] == 'no') {
             $subscription_status = 'awaiting-payment';
             $free_trial = 'no';
@@ -174,14 +175,14 @@ class SubscriptionsRepository
             $subscription_date_started = null;
         }
 
-        //free packages
-        if ($package->subscription_options == 'free') {
-            $subscription_status = 'active';
-            $free_trial = 'no';
-            $subscription_trial_end = null;
-            $subscription_amount = 0;
-            $subscription_date_started = now();
-        }
+        // //free packages
+        // if ($package->subscription_options == 'free') {
+        //     $subscription_status = 'active';
+        //     $free_trial = 'no';
+        //     $subscription_trial_end = null;
+        //     $subscription_amount = 0;
+        //     $subscription_date_started = now();
+        // }
 
         $subscription = new Subscription();
         $subscription->setConnection('landlord');

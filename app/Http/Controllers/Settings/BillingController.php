@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Settings;
 use App\Http\Controllers\Controller;
 use App\Models\Landlord\Package;
 use App\Models\Landlord\Setting;
+use App\Models\Landlord\Subscription;
+use App\Models\Landlord\Tenant;
 use App\Models\MonthlyInvoicePackage;
 use App\Models\Student;
 use App\Models\StudentTutoringPackage;
 use App\Models\Tutor;
 use App\Repositories\Landlord\SubscriptionsRepository;
+use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Laracasts\Flash\Flash;
@@ -155,6 +158,19 @@ class BillingController extends Controller
     public function packagePaymentFailed(Request $request)
     {
         dd($request);
+    }
+    public function paymentRequired(Request $request,$id) {
+        $landlord_settings = Setting::on('landlord')->where('id', 'default')->first();
+        if (!$package = Package::On('landlord')->Where('id', $id)->first()) {
+            Log::error("changing plan failed - the package could not be found", ['process' => '[change-subscription-plan]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'plain_id' => $id]);
+            abort(409, __('lang.error_message_with_code') . config('app.debug_ref'));
+        }
+        $subscription = Subscription::on('landlord')->where('customer_id',getCurrentTenantId())
+                        ->where('status','awaiting-payment')->first();
+        $payload = [
+            'show' => 'payment-required',
+        ];
+        return view('settings.billing.notices',  compact('payload','package','subscription','landlord_settings'));
     }
 
 }

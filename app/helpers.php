@@ -1047,10 +1047,20 @@ if (! function_exists('getFutureDueDate')) {
     }
 }
 
-if (! function_exists('getCurrentTenant')) {
-    function getCurrentTenant(): int
+if (! function_exists('getCurrentTenantId')) {
+    function getCurrentTenantId()
     {
-        return 1;
+        if ($tenant = getCurrentTenant()) {
+            return $tenant->id;
+        }
+    }
+}
+if (! function_exists('getCurrentTenant')) {
+    function getCurrentTenant()
+    {
+        if(app('currentTenant')){
+            return app('currentTenant');
+        }
     }
 }
 if (! function_exists('getLastThirtyDays')) {

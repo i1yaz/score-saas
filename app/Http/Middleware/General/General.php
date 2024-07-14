@@ -11,6 +11,7 @@ namespace App\Http\Middleware\General;
 use App\Http\Responses\Account\Notices\NewPaymentResponse;
 use App\Http\Responses\Account\Notices\SubscriptionCancelledFailedResponse;
 use App\Models\Setting;
+use Auth;
 use Cache;
 use Closure;
 use Illuminate\Support\Facades\DB;
@@ -27,7 +28,6 @@ class General {
     public function handle($request, Closure $next) {
         $this->lastSeen();
         $this->setLanguage();
-        $this->isPaymentCompleted();
         //check account status
 
         if (auth('web')->check()) {
@@ -38,8 +38,10 @@ class General {
                     return $next($request);
                 } else {
                     request()->session()->flash('error-notification-long', __('lang.email_verification_required'));
-                    auth()->logout();
-                    return redirect(route('account-status', ['status' => 'not-verified']));
+                    if(in_array(request()->route()->getName(),['verification.notice','verification.verify','verification.resend'])) {
+                        return $next($request);
+                    }
+                    return redirect('email/verify');
 
                 }
             }
@@ -56,6 +58,13 @@ class General {
             }
         }
 
+        // if(in_array(request()->route()->getName(),['settings-billing.packages','settings-billing.change-package','settings-billing.payment-required','settings-billing.subscription-cancelled-failed','settings-billing.pay'])) {
+        //     return $next($request);
+        // }
+
+        // if(Auth::check()){
+        //     return $this->isPaymentCompleted($next,$request);
+        // }
         return $next($request);
     }
 
@@ -108,49 +117,34 @@ class General {
         ]);
     }
 
-    private function isPaymentCompleted()
+    private function isPaymentCompleted($next,$request)
     {
-        $settings = Setting::Where('id', 1)->first();
-        if (!$subscription = DB::connection('landlord')
+        if (!$settings = Setting::Where('id', 'default')->first()) {
+            $settings = Setting::Where('id', 1)->first();
+        }
+        //subscription is awaiting payment
+        if ($settings->saas_status == 'awaiting-payment') {
+            return redirect("settings/billing/{$settings->saas_package_id}/payment-required");
+        }elseif (!$subscription = DB::connection('landlord')
             ->table('subscriptions')
             ->where('customer_id', $settings->saas_tenant_id)
             ->where('archived', 'yes')
             ->first()) {
             Log::info("unable to fetch the tenants subscription from landlord database - record not found", ['process' => '[tenant-notices]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'tenant_id' => $settings->saas_tenant_id]);
-            return redirect('/settings/billing/packages');
-        }
-
-        //get admin payment gateway settings
-        if (!$landlord_settings = DB::connection('landlord')
+            return redirect('settings/billing/packages');
+        }elseif (!$landlord_settings = DB::connection('landlord')
             ->table('settings')
             ->where('settings_id', 'default')
             ->first()) {
-            Log::critical("unable to fetch the landlord settimgs table", ['process' => '[tenant-notices]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'tenant_id' => $settings->settings_saas_tenant_id]);
+            Log::critical("unable to fetch the landlord settimgs table", ['process' => '[tenant-notices]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'tenant_id' => $settings->saas_tenant_id]);
             abort(409, __('lang.error_message_with_code') . config('app.debug_ref'));
-        }
-
-        //get customer package
-        if (!$package = DB::connection('landlord')
+        }elseif (!$package = DB::connection('landlord')
             ->table('packages')
-            ->where('package_id', $settings->settings_saas_package_id)
+            ->where('package_id', $settings->saas_package_id)
             ->first()) {
-            Log::critical("unable to fetch the customer plan from the landlord database", ['process' => '[tenant-notices]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'plan_id' => $settings->settings_saas_package_id]);
+            Log::critical("unable to fetch the customer plan from the landlord database", ['process' => '[tenant-notices]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'plan_id' => $settings->saas_package_id]);
             abort(409, __('lang.error_message_with_code') . config('app.debug_ref'));
-        }
-
-        //subscription is awaiting payment
-        if ($settings->settings_saas_status == 'awaiting-payment') {
-            $payload = [
-                'page' => $this->pageSettings('index'),
-                'subscription' => $subscription,
-                'package' => $package,
-                'landlord_settings' => $landlord_settings,
-            ];
-            return new NewPaymentResponse($payload);
-        }
-
-        //subscription is awaiting payment
-        if ($settings->settings_saas_status == 'cancelled') {
+        }elseif ($settings->saas_status == 'cancelled') {
             $payload = [
                 'page' => $this->pageSettings('index'),
                 'subscription' => $subscription,
@@ -159,6 +153,7 @@ class General {
             ];
             return new SubscriptionCancelledFailedResponse($payload);
         }
+        return $next($request);
 
     }
 

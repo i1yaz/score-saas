@@ -67,7 +67,7 @@ class EmailTemplateController extends Controller
         }
 
         $image = $request->file('image');
-        $tenant = getCurrentTenant();
+        $tenant = getCurrentTenantId();
         $imageName = time().'.'.$image->getClientOriginalExtension();
         $path = "pictures/email-images/tenant-{$tenant}/{$request->template_id}";
         storeFile($path, $image, $imageName);

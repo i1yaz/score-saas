@@ -60,11 +60,22 @@ Route::get('/', function () {
 });
 
 
+Route::get('/list-routes', function () {
+    $routes = collect(\Route::getRoutes())->map(function ($route) {
+        return [
+            'uri' => $route->uri(),
+            'method' => $route->methods()[0],
+            'name' => $route->getName(),
+            'action' => $route->getActionName(),
+        ];
+    });
 
+    return response()->json($routes);
+});
 Route::get("auth", [OnetimeAuthController::class, 'OnetimeAuthentication']);
 
 Route::get('invoice/{invoice}/public-view/{type?}', [InvoiceController::class, 'showPublicInvoice']);
-Auth::routes(['register' => false]);
+Auth::routes(['register' => false,'verify'=>true]);
 Route::get('admin', function () {
     return redirect('admin/login');
 });
@@ -243,6 +254,7 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], functio
     //Settings
     Route::get('settings/billing/packages', [BillingController::class, 'showPackages'])->name('settings-billing.show-packages');
     Route::post('settings/billing/{package}/change-packages', [BillingController::class, 'changePackage'])->name('settings-billing.change-package');
+    Route::get('settings/billing/{package}/payment-required', [BillingController::class, 'paymentRequired'])->name('settings-billing.payment-required');
     Route::post('settings/billing/{unique_id}/pay', [BillingController::class, 'pay'])->name('settings-billing.pay');
 
 });
