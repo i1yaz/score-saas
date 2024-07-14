@@ -12,16 +12,14 @@
  *-----------------------------------------------------------------------------------------------------*/
 
 namespace App\CronJobs\Landlord\Subscriptions;
-use App\Repositories\UserRepository;
+
 use Exception;
 use Illuminate\Support\Facades\Log;
 use Spatie\Multitenancy\Models\Tenant;
 
 class SubscriptionCancelledCron {
 
-    public function __invoke(
-        UserRepository $userrepo
-    ) {
+    public function __invoke() {
 
         //[MT] - landlord only
         if (\Spatie\Multitenancy\Models\Tenant::current()) {

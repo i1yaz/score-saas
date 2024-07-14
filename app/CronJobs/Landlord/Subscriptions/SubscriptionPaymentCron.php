@@ -22,8 +22,7 @@ use Spatie\Multitenancy\Models\Tenant;
 
 class SubscriptionPaymentCron {
 
-    public function __invoke(
-    ) {
+    public function __invoke() {
 
         //[MT] - landlord only
         if (\Spatie\Multitenancy\Models\Tenant::current()) {

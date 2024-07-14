@@ -44,7 +44,7 @@ class RoutineTasks {
         $this->cancelSubscriptions();
 
         //update the default product teh payment gateways like (Paypal)
-        $this->updateDefaultProduct();
+        // $this->updateDefaultProduct();
         Log::info('RoutineTasks: Ran successfully');
     }
 
