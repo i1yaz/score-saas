@@ -2,6 +2,7 @@
 
 namespace App\CronJobs\Landlord\Scheduled;
 
+use App\Models\Landlord\Schedule;
 use App\Repositories\Landlord\DatabaseRepository;
 use Illuminate\Support\Facades\Log;
 use Spatie\Multitenancy\Models\Tenant;
@@ -41,7 +42,7 @@ class DeleteDatabasesCron {
         $limit = 1;
         $count = 0;
 
-        if ($scheduled = \App\Models\Landlord\Schedule::on('landlord')->Where('type', 'delete-database')
+        if ($scheduled = Schedule::on('landlord')->Where('type', 'delete-database')
             ->Where('status', 'new')
             ->Where('attempts', '<=', 3)
             ->take($limit)->get()) {

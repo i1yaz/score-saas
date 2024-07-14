@@ -17,10 +17,10 @@ class DatabaseRepository
         Log::info("creating a new tenant database - started", ['process' => '[database-repository]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
         return $this->tenantDatabaseMysqlUser();
     }
-    public function deleteDatabase($database_name): void
+    public function deleteDatabase($database_name): bool
     {
         Log::info("deleting a database ($database_name) - started", ['process' => '[database-repository]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__]);
-        $this->deleteDatabaseDirect($database_name);
+        return $this->deleteDatabaseDirect($database_name);
     }
     public function tenantDatabaseMysqlUser(): bool|string
     {
