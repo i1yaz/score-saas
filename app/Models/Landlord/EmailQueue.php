@@ -5,7 +5,7 @@ namespace App\Models\Landlord;
 use App\Models\BaseModel;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string|null $created
@@ -52,5 +52,6 @@ use App\Models\BaseModel;
  */
 class EmailQueue extends BaseModel
 {
+    protected $fillable = ['status','started_at'];
 
 }

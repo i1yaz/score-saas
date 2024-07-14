@@ -8,6 +8,7 @@ use App\Repositories\Landlord\PaypalRepository;
 use App\Repositories\Landlord\PaystackRepository;
 use App\Repositories\Landlord\StripeRepository;
 use Illuminate\Support\Facades\Log;
+use Spatie\Multitenancy\Models\Tenant;
 
 class RoutineTasks {
 
@@ -21,7 +22,7 @@ class RoutineTasks {
 //        PayStackRepository $payStackRepo
 
     ) {
-        if (\Spatie\Multitenancy\Models\Tenant::current()) {
+        if (Tenant::current()) {
             return;
         }
 

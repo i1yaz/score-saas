@@ -9,10 +9,14 @@
 
 namespace App\CronJobs\Landlord;
 use Illuminate\Support\Facades\Log;
+use Spatie\Multitenancy\Models\Tenant;
 
 class CleanupCron {
 
     public function __invoke() {
+        if (Tenant::current()) {
+            return;
+        }
         runtimeLandlordCronConfig();
         $this->requeueStuckScheduledTasks();
     }

@@ -7,6 +7,7 @@ define('LARAVEL_START', microtime(true));
 //define('BASE_PATH', realpath(__DIR__));
 define('BASE_DIR', realpath(__DIR__ . '/../'));
 
+
 /*
 |--------------------------------------------------------------------------
 | Check If The Application Is Under Maintenance

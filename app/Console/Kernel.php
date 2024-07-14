@@ -2,11 +2,22 @@
 
 namespace App\Console;
 
+use App\CronJobs\DirectEmailCron;
 use App\CronJobs\Landlord\CleanupCron;
 use App\CronJobs\Landlord\Emails\EmailCron;
+use App\CronJobs\Landlord\SyncPackagesCron;
+use App\Cronjobs\Stripe\SubscriptionCancelled;
+use App\Cronjobs\Stripe\SubscriptionPayment;
+use App\Cronjobs\Stripe\SubscriptionPushCancellation;
+use App\Cronjobs\Stripe\SubscriptionRenewal;
+use App\Cronjobs\Stripe\SubscriptionUpdateTransaction;
 use Illuminate\Console\Scheduling\Schedule;
+use App\CronJobs\Landlord\TenantsCronStatus;
+use App\Cronjobs\Landlord\CustomerStatusCron;
 use App\CronJobs\Landlord\Gateways\RoutineTasks;
 use App\CronJobs\EmailCron as RegularEmailCronJob;
+use App\CronJobs\Landlord\Scheduled\UpdateEmailDomain;
+use App\CronJobs\Landlord\Scheduled\DeleteDatabasesCron;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\CronJobs\Landlord\Subscriptions\SubscriptionPaymentCron;
 use App\CronJobs\Landlord\Subscriptions\SubscriptionActivatedCron;
@@ -20,6 +31,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
+        define('BASE_DIR', realpath(__DIR__ . '/../../'));
+
         if (\App::environment(['local'])) {
             $schedule->command('report:monthly-package-usage')
                 ->everyFifteenMinutes()
@@ -39,11 +52,44 @@ class Kernel extends ConsoleKernel
         $schedule->call(new SubscriptionPaymentFailedCron)->everyMinute();
 
 
+        $schedule->call(new SyncPackagesCron)->everyFiveMinutes(); //[not less then 5 mins]
+        $schedule->call(new DeleteDatabasesCron)->everyFiveMinutes(); //[not less then 5 mins]
+        $schedule->call(new UpdateEmailDomain)->everyMinute();
+        $schedule->call(new TenantsCronStatus)->everyMinute();
+        $schedule->call(new CustomerStatusCron)->hourly();
+        $schedule->call(new DeleteDatabasesCron)->everyMinute();
+
+
 
         // -----------------------------------------------------------[TENANTS]-------------------------------------------------------------------
 
         //send [regular] queued emails
         $schedule->call(new RegularEmailCronJob)->everyMinute();
+
+         //send [direct] queued emails
+         $schedule->call(new DirectEmailCron)->everyMinute();
+
+//         //send pdf generating emails (invoice & estimate)
+//         $schedule->call(new \App\Cronjobs\EmailBillsCron)->everyMinute();
+//
+//         //process webhooks for all onetime payments
+//         $schedule->call(new \App\Cronjobs\Onetime\OnetimePayment)->everyMinute();
+
+//         //process webhooks for stripe subscription payments
+//         $schedule->call(new SubscriptionPayment)->everyMinute();
+//
+//         //process webhooks for stripe subscription renewal
+//         $schedule->call(new SubscriptionRenewal)->everyMinute();
+//
+//         //process webhooks for stripe cancellation that was initiated in strip
+//         $schedule->call(new SubscriptionCancelled)->everyMinute();
+//
+//         //process webhooks for stripe cancellation that was initiated in the dashboard
+//         $schedule->call(new SubscriptionPushCancellation)->everyMinute();
+//
+//         //process webhooks for stripe subscription renewal
+//         $schedule->call(new SubscriptionUpdateTransaction)->hourly();
+
     }
 
     /**

@@ -51,7 +51,7 @@ class SendQueued extends Mailable {
             ->with([
                 'content' => $this->data->message,
             ])
-            ->view('landlord.emails.template');
+            ->view('landlord.email.send-queued');
 
         //attachments
         if ($this->data->attachments != '') {

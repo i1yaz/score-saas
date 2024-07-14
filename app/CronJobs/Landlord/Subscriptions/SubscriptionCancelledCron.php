@@ -22,7 +22,7 @@ class SubscriptionCancelledCron {
     public function __invoke() {
 
         //[MT] - landlord only
-        if (\Spatie\Multitenancy\Models\Tenant::current()) {
+        if (Tenant::current()) {
             return;
         }
 

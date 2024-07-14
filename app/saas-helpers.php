@@ -506,6 +506,7 @@ function runtimeFrontendMenuSignup($url = '') {
 
 function middlwareBootSystem() {
     $settings = \App\Models\Setting::where('id', 1)
+        ->orWhere('id', 'default')
         ->first();
     date_default_timezone_set($settings->system_timezone);
     if ($settings->system_currency_position == 'left') {
@@ -561,7 +562,9 @@ function middlwareBootSystem() {
 function middlewareBootMail() {
 
     $settings = \App\Models\Setting::find(1);
-    $landlord_settings = Setting::On('landlord')->Where('id', 'default')->first();
+    $landlord_settings = Setting::On('landlord')->Where('id', 'default')
+        ->orWhere('id', 1)
+        ->first();
 
     $email_signature = '';
     $email_footer = '';
