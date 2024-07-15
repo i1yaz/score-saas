@@ -217,6 +217,25 @@
             </a>
         </li>
         @endpermission
+        @permission(['settings_stripe-update'])
+        <li class="nav-item {{Request::is(['settings/stripe'])?'menu-is-opening menu-open active':''}}">
+            <a href="#" class="nav-link {{Request::is(['settings/stripe'])?'active':''}}">
+                <p>
+                    Payment Gateways
+                    <i class="fas fa-angle-left right"></i>
+                </p>
+            </a>
+            @permission('settings_stripe-update')
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="{{route('settings.stripe.show')}}" class="nav-link {{ Request::is('settings/stripe') ? 'active' : '' }}">
+                        <p>Stripe</p>
+                    </a>
+                </li>
+            </ul>
+            @endpermission
+        </li>
+        @endpermission
         <li class="nav-item">
             <a href="{{ route('settings-billing.show-packages') }}" class="nav-link {{ Request::is('settings-billing.show-packages') ? 'active' : '' }}">
                 <p>Packages</p>

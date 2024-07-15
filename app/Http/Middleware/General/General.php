@@ -28,6 +28,7 @@ class General {
     public function handle($request, Closure $next) {
         $this->lastSeen();
         $this->setLanguage();
+        $this->setStripe();
         //check account status
 
         if (auth('web')->check()) {
@@ -155,6 +156,18 @@ class General {
         }
         return $next($request);
 
+    }
+
+    private function setStripe()
+    {
+        if (!$settings = Setting::select(['stripe_public_key','stripe_secret_key','stripe_webhooks_key','stripe_status'])->Where('id', 'default')->first()) {
+            $settings = Setting::select(['stripe_public_key','stripe_secret_key','stripe_webhooks_key','stripe_status'])->Where('id', 1)->first();
+        }
+        if ($settings->stripe_status == 'enabled') {
+            config(['services.stripe.key' => $settings->stripe_public_key]);
+            config(['services.stripe.secret' => $settings->stripe_secret_key]);
+            config(['services.stripe.webhook_secret_key' => $settings->stripe_webhooks_key]);
+        }
     }
 
 }

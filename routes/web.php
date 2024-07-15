@@ -23,6 +23,7 @@ use App\Http\Controllers\PaymentGateways\StripeController;
 use App\Http\Controllers\ProctorController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\SessionController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\Settings\BillingController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentTutoringPackageController;
@@ -63,19 +64,21 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
+if (App::environment('local')) {
+    Route::get('/list-routes', function () {
+        $routes = collect(\Route::getRoutes())->map(function ($route) {
+            return [
+                'uri' => $route->uri(),
+                'method' => $route->methods()[0],
+                'name' => $route->getName(),
+                'action' => $route->getActionName(),
+            ];
+        });
 
-Route::get('/list-routes', function () {
-    $routes = collect(\Route::getRoutes())->map(function ($route) {
-        return [
-            'uri' => $route->uri(),
-            'method' => $route->methods()[0],
-            'name' => $route->getName(),
-            'action' => $route->getActionName(),
-        ];
+        return response()->json($routes);
     });
+}
 
-    return response()->json($routes);
-});
 Route::get("auth", [OnetimeAuthController::class, 'OnetimeAuthentication']);
 
 Route::get('invoice/{invoice}/public-view/{type?}', [InvoiceController::class, 'showPublicInvoice']);
@@ -300,5 +303,8 @@ Route::group(['middleware' => ['auth:web,parent,student,tutor,client']], functio
     Route::post('settings/billing/{package}/change-packages', [BillingController::class, 'changePackage'])->name('settings-billing.change-package');
     Route::get('settings/billing/{package}/payment-required', [BillingController::class, 'paymentRequired'])->name('settings-billing.payment-required');
     Route::post('settings/billing/{unique_id}/pay', [BillingController::class, 'pay'])->name('settings-billing.pay');
+
+    Route::get('settings/stripe', [SettingController::class, 'stripeSettings'])->name('settings.stripe.show')->middleware('permission:settings_stripe-update');
+    Route::post('settings/stripe', [SettingController::class, 'stripeSettingsUpdate'])->name('settings.stripe.update')->middleware('permission:settings_stripe-update');
 
 });

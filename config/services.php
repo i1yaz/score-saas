@@ -31,9 +31,9 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
     'stripe' => [
-        'key' => env('STRIPE_KEY'),
-        'secret_key' => env('STRIPE_SECRET'),
-        'webhook_secret_key' => env('STRIPE_WEBHOOK_SECRET_KEY'),
+//        'key' => env('STRIPE_KEY'),
+//        'secret_key' => env('STRIPE_SECRET'),
+//        'webhook_secret_key' => env('STRIPE_WEBHOOK_SECRET_KEY'),
         'subscription_interval' => env('STRIPE_SUBSCRIPTION_INTERVAL', 'month'),
     ],
 ];

@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Laracasts\Flash\Flash;
 use Stripe\Checkout\Session as StripeSession;
 use Stripe\Exception\ApiErrorException;
@@ -251,8 +252,22 @@ class StripeController extends AppBaseController
      */
     public function webhooks(Request $request)
     {
-        $payload = $request->all();
-        \Log::channel('stripe_success')->info('Stripe webhook', $request->all());
+        $payload = @file_get_contents('php://input');
+        try {
+            $event = \Stripe\Webhook::constructEvent(
+                $payload, $_SERVER['HTTP_STRIPE_SIGNATURE'], config('system.stripe_webhooks_key')
+            );
+        } catch (\UnexpectedValueException$e) {
+            Log::error("stripe webhook data is invalid", ['process' => '[landlord][stripe-webhooks]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'payload' => $payload]);
+            http_response_code(400);
+            die('Stripe payload is invalid');
+        } catch (\Stripe\Exception\SignatureVerificationException$e) {
+            Log::critical("Stripe signing id (signature) does not match the one in database", ['process' => '[landlord][stripe-webhooks]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'payload' => $payload]);
+            http_response_code(400);
+            die('Signing signature does not match');
+        }
+        $payload = $event->toArray();
+        \Log::channel('stripe_success')->info('Stripe webhook', $payload);
         if ($payload['type'] === 'checkout.session.completed') {
             if ($payload['data']['object']['mode'] === 'subscription') {
                 $sessionData = $payload['data']['object'];

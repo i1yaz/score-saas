@@ -927,6 +927,14 @@ class PermissionSeeder extends Seeder
                 'resource' => 'Mock Test',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'settings_stripe-update',
+                'display_name' => 'View/Update Stripe Settings',
+                'description' => 'View/Update Stripe Settings',
+                'resource' => 'Stripe',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]
             //Settings
             //            [
