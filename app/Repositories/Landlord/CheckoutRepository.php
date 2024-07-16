@@ -132,7 +132,7 @@ class CheckoutRepository {
         \App\Models\Landlord\Tenant::on('landlord')->where('id', $subscription->customer_id)
             ->update(['tenant_status' => 'active']);
         //update session as processed
-        PaymentSession::on('landlord')->Where('session_gateway_ref', $data['checkout_session_id'])
+        PaymentSession::on('landlord')->Where('gateway_ref', $data['checkout_session_id'])
             ->update(['status' => 'completed']);
         Log::info("completing a checkout session - completed", ['process' => '[checkout-repository]', config('app.debug_ref'), 'function' => __function__, 'file' => basename(__FILE__), 'line' => __line__, 'path' => __file__, 'data' => $data]);
         return true;

@@ -145,7 +145,7 @@ class SubscriptionController extends Controller
         $webhook->source = 'stripe';
         $webhook->gateway_id = $event->data->object->id;
         $webhook->type = $event->type;
-        $webhook->crm_reference = 'subscription-payment';
+        $webhook->reference = 'subscription-payment';
         $webhook->transaction_type = 'subscription';
         $webhook->amount = $event->data->object->amount_paid / 100;
         $webhook->currency = $event->data->object->currency;

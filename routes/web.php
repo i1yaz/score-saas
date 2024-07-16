@@ -56,8 +56,6 @@ Route::get('invoice-reminder',function (){
     Artisan::call('invoice:payment-reminder');
 });
 
-$host = config('system.landlord-domain-without-protocol');
-
 
 
 Route::get('/', function () {

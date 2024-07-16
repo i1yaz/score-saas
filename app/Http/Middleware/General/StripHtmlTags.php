@@ -16,7 +16,7 @@ class StripHtmlTags {
      * @return mixed
      */
     public function handle(Request $request, Closure $next) {
-        if (config('app.env') == 'staging') {
+        if (config('app.env') == 'staging' && !Str::contains(request()->url(), ['webhook','list-routes'])){
             $AUTH_USER = 'tutorcentrum';
             $AUTH_PASS = 'TutorcenTrum@123';
             header('Cache-Control: no-cache, must-revalidate, max-age=0');
